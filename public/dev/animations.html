@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animation keyframes</title>
+<!-- Contributor tool: renders every keyframe of each exercise animation side by side.
+     Open /dev/animations.html?ids=gobletsquat,pushup (or ?ids=all). Optional: &size=240&view=side -->
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/build/three.module.js", "three/addons/": "/vendor/three/examples/jsm/" } }
+</script>
+<style>
+  body { margin: 0; padding: 12px; font: 12px/1.35 system-ui, sans-serif; background: #0f1620; color: #dbe5f0; }
+  h2 { font-size: 14px; margin: 14px 0 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  figure { margin: 0; background: #172231; border-radius: 6px; overflow: hidden; }
+  figcaption { padding: 4px 6px; max-width: var(--w); }
+  img { display: block; }
+  #stage { position: fixed; left: -9999px; top: 0; }
+  .missing { color: #ff9a7a; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="out"></div>
+<script type="module">
+import { Stage, prepareClip } from "../js/anim/stage.js";
+import { animationIds, getAnimation } from "../js/anim/clips/index.js";
+
+const q = new URLSearchParams(location.search);
+const size = Number(q.get("size")) || 220;
+const view = q.get("view") || null;
+const ids = (q.get("ids") || "all") === "all" ? animationIds() : q.get("ids").split(",");
+document.documentElement.style.setProperty("--w", size + "px");
+const box = document.getElementById("stage");
+box.style.width = box.style.height = size + "px";
+const stage = new Stage(box, { interactive: false, preserve: true, autoplay: false });
+const out = document.getElementById("out");
+
+for (const id of ids) {
+  const anim = getAnimation(id);
+  const h = document.createElement("h2");
+  h.textContent = id;
+  out.appendChild(h);
+  if (!anim) {
+    h.className = "missing";
+    h.textContent += " (no animation)";
+    continue;
+  }
+  anim.clips.forEach((raw, ci) => {
+    const clip = prepareClip(raw);
+    const row = document.createElement("div");
+    row.className = "row";
+    const times = clip.keys.slice(0, -1).map((k) => k.t);
+    for (const t of times) {
+      const url = stage.snapshot(id, ci, t + 0.001, view);
+      const key = clip.keys.find((k) => k.t === t);
+      const fig = document.createElement("figure");
+      fig.innerHTML = `<img width="${size}" height="${size}"><figcaption>${ci}: ${clip.title} · t=${t.toFixed(1)}<br>${key && key.cue ? key.cue : ""}</figcaption>`;
+      fig.querySelector("img").src = url;
+      row.appendChild(fig);
+    }
+    out.appendChild(row);
+  });
+}
+window.__done = true;
+</script>
+</body>
+</html>

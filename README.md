@@ -1,2 +1,182 @@
-# Bryan-Johnson-workout-website
-Bryan Johnson personalized workout plan for 6 days without gym equipment
+# Home Protocol — a Bryan Johnson–inspired home workout tracker
+
+A local web app that plans and tracks a six-day home workout built from **Bryan Johnson's public exercise protocol** (his October 2026 weekly template), rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands.
+
+- **What to do each day**, block by block, with doses that grow over three phases (Re-entry → Build → Blueprint).
+- **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
+- **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
+- **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
+- **Skipped days are fine**: skip with a reason and a note, swap sessions around, and phases only advance with sessions you actually did.
+- **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
+- **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
+- **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
+- Week view, history calendar with skip reasons, progress charts, an exercise library and the full plan with sources.
+
+![The Today screen: the day's blocks on the left, the selected exercise with its 3D animation and set logger on the right](docs/screenshots/today.png)
+
+<p>
+<img src="docs/screenshots/exercise.png" width="32%" alt="An exercise page with its animation, steps and videos">
+<img src="docs/screenshots/progress.png" width="32%" alt="Progress charts: sessions, Zone 2 and hard-cardio minutes per week">
+<img src="docs/screenshots/history.png" width="32%" alt="History calendar with skip reasons">
+</p>
+<p>
+<img src="docs/screenshots/setup.png" width="49%" alt="First-run setup: choosing optional add-ons">
+<img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
+<img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
+</p>
+
+> Unofficial and not affiliated with or endorsed by Bryan Johnson or Blueprint. It's a training plan, not medical advice. If you have been inactive for a while, are over 50 or have a heart condition, check with a doctor before hard intervals.
+
+## Run it locally
+
+You need [Node.js](https://nodejs.org) 18 or newer.
+
+```bash
+git clone https://github.com/liviux/Bryan-Johnson-workout-website.git
+cd Bryan-Johnson-workout-website
+npm install
+npm start
+```
+
+Open **http://localhost:3030**. The first visit opens a short setup where you enter your details and pick add-ons.
+
+- Different port: `PORT=8080 npm start`
+- Use it from your phone on the same Wi-Fi: `HOST=0.0.0.0 npm start`, then open `http://<your-computer's-IP>:3030`. There is no login, so only do this on a network you trust.
+- Keep your data somewhere else (e.g. a synced folder): `DATA_DIR=/path/to/folder npm start`
+- On Windows (PowerShell) set the variables first: `$env:PORT=8080; npm start`
+
+`npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node.
+
+To update later: `git pull`, then `npm install` again. Your `data/` folder is left alone.
+
+## Your data
+
+Everything stays on your computer, in the `data/` folder, which is **git-ignored** so it never ends up on GitHub:
+
+```
+data/
+  profile.json          your details, settings and chosen add-ons
+  days/2026-10-14.json  one file per day: sets, reps, notes, skip reason…
+```
+
+- **Back up** by copying `data/`, or use *Settings → Export backup* (one JSON file). *Import backup* merges or replaces.
+- If the app is opened without its server (for example through some other web server), it can't write files, so it keeps your data in the browser instead and says so in the sidebar and in Settings. Use `npm start` to get files, 3D and fonts.
+
+## Your details (what adjusts the plan)
+
+Enter them in the first-run setup; change them any time in **Settings** (or edit `data/profile.json` while the app is stopped).
+
+| Setting | What it changes |
+|---|---|
+| Age, or a measured max heart rate | Heart-rate zones everywhere (max = 208 − 0.7 × age unless you enter your own) |
+| Weight, sex, age, training level | Starting dumbbell weights, scaled from the plan's reference (75 kg man, 38, returning to training) |
+| Heaviest dumbbell | Suggested weights are capped at it |
+| Units | kg/cm or lb/in throughout |
+| Training level + starting phase | Where you start; phases then advance after 12 and 24 completed sessions (18 and 24 for "new to training"). Skipped days don't count. You can lock a phase. |
+| Start date | Day one of your program |
+| Add-ons | Which optional blocks appear after the main session |
+
+Suggested weights are starting points. In every phase the effort target (how many good reps you leave in the tank) decides the real weight.
+
+## The week
+
+| Day | Session |
+|---|---|
+| Mon | Strength A: squat, push, pull + knees |
+| Tue | Intervals 1: 20-second bursts + Zone 2 + back & core |
+| Wed | Strength B: pull, knees & mobility |
+| Thu | Intervals 2: Norwegian 4×4 + stability |
+| Fri | Strength C: power, lunge, press + tendons |
+| Sat | Zone 2 + long stretch (swap for a walk, hike or ride outside any time) |
+| Sun | Rest |
+
+About 41–50 minutes a session in weeks 1–2, growing to 54–66 minutes from week 7, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the phases, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+
+## Add-ons
+
+Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
+
+**Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
+
+**Make your own**: copy `public/js/data/addons/posture.js`, change the items (any exercise id from `public/js/data/exercises.js`), the schedule and the metrics, then add it to `ADDONS` in `public/js/data/addons/index.js`. Logging, auto-save, history and the setup screen pick it up automatically.
+
+## Changing the plan
+
+- `public/js/data/program.js` — the days, blocks and doses per phase, phases, rules, sources.
+- `public/js/data/exercises.js` — every exercise: how-to steps, Bryan's notes, videos (with timestamps into his videos), equipment, what it's logged as.
+- `public/js/data/addons/` — optional blocks.
+- `public/js/anim/clips/` — the 3D animations. See [docs/ANIMATIONS.md](docs/ANIMATIONS.md) for how to write or tweak one, and open `/dev/animations.html?ids=pushup` to see every keyframe side by side.
+
+Text in the data can use tokens that adapt to each user: `{hr:60-70}` becomes the user's heart-rate range, `{kg:10-14}` a weight scaled to them in their units, `{cm:30}` a length in their units.
+
+## Project layout
+
+```
+server.js                 tiny Node server: serves the app, reads/writes data/ (no dependencies)
+public/
+  index.html, css/app.css
+  js/main.js              routing and app shell
+  js/store.js             state + auto-save (server, with a browser-storage fallback)
+  js/plan.js              program logic: sessions, phases, status, stats
+  js/personalize.js       heart-rate zones, weight scaling, units, phases
+  js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
+  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs
+  js/anim/                three.js mannequin, inverse kinematics, props, exercise clips
+  js/data/                the plan, exercises, videos, add-ons
+docs/ANIMATIONS.md        guide to the animation system
+data/                     your data (created on first run, git-ignored)
+```
+
+## Credits
+
+- Exercise selection and doses follow Bryan Johnson's public material (his protocol pages, posture guide, bone-density protocol, videos and posts on X); every source is listed on *The plan* page. Videos belong to their creators and are embedded from YouTube.
+- 3D rendering with [three.js](https://threejs.org). Fonts: Inter, Barlow Condensed, JetBrains Mono (SIL Open Font License), via Fontsource.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+<details>
+<summary><b>How this was made: the prompts and the other models compared</b></summary>
+
+The plan and this app were built with Claude Code from the prompts below, quoted as written (attachment paths removed). A couple of short status messages in between ("you should have access to the repo", "how much work is left?") are left out.
+
+**1. The plan**
+
+> check online all resources from Bryan Johnson or from someone who studied his workouts. (especially everything he posted on social media and his official websites). i want you to know everything, BUT i want you to help me using his latest suggestions, as i know he often changes things to better results. (so rememebr i'm interested only in what Bryan Johnson suggest/is doing, not anybody else).
+>
+> now i want to make a personalised workout plan for me 6 days out of 7, only sunday i rest. it should last max 60-70 minutes and be with my bodyweight and small equipment (even adjustable dumbells, pull up bar, etc), workout accesories, i dont want to buy big things that i dont have space to place them - so replace his gym equipment with similar routines with bodyweight or small workout accesories. also i will have a simple treradmill below my desk to walk/run from time to time, but thats extra, just for your information, i will use it from time to time when im working from my computer, separate from your workout.
+>
+> also each day i want to correct my posture, so add another EXTRA 5-10 minutes so i can coorect my posture as i often stay in a bad position at the computer (tech neck, shoulders too in front, upper body in principle) - until i consider im ok.
+>
+> you shuold both explain me what to do each day, each exercies and if you can give me a link to where he is doing or another video to see how to correctlly do it. (in my first weeks i will do a lighter version of course, until i can get fit again and comfortable)
+>
+> as you can see this is a important thing for me so i want you DO TO A LOT OF RESEARCH UNTIL YOU GIVE ME THE REUSLT!
+>
+> some details about me, not sure if needed, but might help ( male, 38 years old, 1.88, 75kg, i did a lot of fitness in the past, but for last 4 years almost nothing so i want to start over again +  no joint pain or past injuries in body) - answer me in metric system (kg, cm) as i live in Romania.
+>
+> you do not need to give me anythig else beside what i requested (like meds, rest, sleep, nutrition). i have a heart rate device already, so no interested in sucha device.
+
+**2. Comparing other AI results**
+
+> [attached: an archive with 13 plans made by other AI models] i got the follwoing different results, can you check them and adjust your version if you missed anything or if its better explained/better path somewhere else, basically read them to optimise/adjust/correct your version. if you are not sure which is better or if you need any other guidance ask me so i pick what i like better. then give me a final version
+
+Claude asked three questions; the answers:
+
+- *Weekly layout* (newest template / newest, all at home / keep the first layout) → "all are indoor sesions, i dont live in california, but in romania. i can do some extra activities from time tot ime though. so pick newest all at home"
+- *How Bryan-specific should the strength days be* (hybrid / his signature routine / official basics only) → "Hybrid"
+- *Posture block* (Bryan only / Bryan + 2 classics) → "Bryan + 2 classics"
+
+**3. The web app**
+
+> after you defined your guide create a beautifull website where i can see what to do each day, track them, repetitions and other observations per day, links to where i can find them, even embedings of videeo workouts (multiple, easy to change between them). it should have some sort of persistence, it will be hosted locally. there might be days when i skip for different reasons so take that in mind also (and i could write why i skipped). i want auto-save so user doesnt need to click on a save button. i would even prefer code animations and/or graphics with each exercise what is needed to be done (use javascript, three.js or whateer you want to do the best animations around and graphics and such)
+> i will open source it on github so other can use it too, so make a small readme with instructions how to install it locally and run it (and local data to be gitignored of course). and where users should write their data so the exercises are adjusted per their weight, age, fit level.
+> and the extra thing that i wanted, correcting the posture should be an optional eleemnt at the end, but same tracking mechanism (or slightlly different if tis the case) maybe i will add other extra/option/additional elements in the future (user should pick at configurating time (fist time opening the webapp) if they are interested in this addiiotnal elemtn or not.
+> while i did start this project in this repo, which is irelevant to what i want, i want you to move everything inside https://github.com/liviux/Bryan-Johnson-workout-website which you should have access inside or if dont give me a zip and i will move there. i even want you to add in the readme at the end, collapsed by default, the prompts used to make this webapp and the other models that were used for you to adjust your final result (just the name that you get from the file names)
+
+**Other models whose plans were compared** (names from the file names):
+copilot, deepseek, ernie, gemini, glm, grok, longact, luna-max, minimax, mistral, muse, perpl, sol-max
+
+</details>

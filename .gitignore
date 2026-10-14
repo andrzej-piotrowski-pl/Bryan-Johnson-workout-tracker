@@ -1,0 +1,12 @@
+# Your personal data (profile, daily logs). Never committed.
+data/
+
+# Dependencies
+node_modules/
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

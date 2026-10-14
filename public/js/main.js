@@ -1,0 +1,113 @@
+// App shell: boots the store, draws navigation, routes #/view/param to views,
+// and shows the save status. First run (no profile yet) goes to the setup wizard.
+
+import * as store from "./store.js";
+import { icon } from "./components/icons.js";
+import { esc } from "./util.js";
+
+const VIEWS = {
+  today: () => import("./views/today.js"),
+  day: () => import("./views/today.js"),
+  week: () => import("./views/week.js"),
+  history: () => import("./views/history.js"),
+  progress: () => import("./views/progress.js"),
+  library: () => import("./views/library.js"),
+  plan: () => import("./views/plan.js"),
+  settings: () => import("./views/settings.js"),
+  setup: () => import("./views/setup.js"),
+};
+
+const NAV = [
+  ["today", "Today", "today"],
+  ["week", "This week", "week"],
+  ["history", "History", "history"],
+  ["progress", "Progress", "progress"],
+  ["library", "Exercises", "library"],
+  ["plan", "The plan", "plan"],
+  ["settings", "Settings", "settings"],
+];
+const TABS = [
+  ["today", "Today", "today"],
+  ["week", "Week", "week"],
+  ["history", "History", "history"],
+  ["library", "Exercises", "library"],
+  ["settings", "More", "dots"],
+];
+
+const viewEl = document.getElementById("view");
+let current = null;
+let token = 0;
+
+function drawNav(route) {
+  const active = route === "day" ? "today" : route;
+  document.getElementById("nav").innerHTML = NAV.map(
+    ([id, label, ic]) => `<a href="#/${id}" ${active === id ? 'aria-current="page"' : ""}>${icon(ic)}<span>${esc(label)}</span></a>`
+  ).join("");
+  const moreActive = ["settings", "plan", "progress"].includes(active);
+  document.getElementById("tabbar").innerHTML = TABS.map(
+    ([id, label, ic]) => `<a href="#/${id}" ${active === id || (id === "settings" && moreActive) ? 'aria-current="page"' : ""}>${icon(ic)}<span>${esc(label)}</span></a>`
+  ).join("");
+  const setup = route === "setup";
+  document.querySelector(".sidebar").hidden = setup;
+  document.querySelector(".topbar").hidden = setup;
+  document.getElementById("tabbar").hidden = setup;
+  document.getElementById("app").style.gridTemplateColumns = setup ? "minmax(0,1fr)" : "";
+}
+
+function parseHash() {
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
+  return { route: VIEWS[parts[0]] ? parts[0] : "today", params: parts.slice(1) };
+}
+
+async function route() {
+  const my = ++token;
+  let { route: name, params } = parseHash();
+  if (!store.state.profile && name !== "setup") {
+    location.replace("#/setup");
+    return;
+  }
+  if (store.state.profile && name === "setup" && !params.includes("redo")) {
+    location.replace("#/today");
+    return;
+  }
+  const mod = await VIEWS[name]();
+  if (my !== token) return;
+  if (current && current.destroy) current.destroy();
+  drawNav(name);
+  // A fresh container per view, so event listeners never outlive their view.
+  viewEl.innerHTML = "";
+  const host = document.createElement("div");
+  viewEl.appendChild(host);
+  current = mod.render(host, params) || null;
+  viewEl.focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+}
+
+function drawStatus(s) {
+  const local = store.state.mode === "local";
+  const text = {
+    idle: local ? "Saved in this browser" : "All changes saved",
+    pending: "Saving…",
+    saving: "Saving…",
+    saved: local ? "Saved in this browser" : "All changes saved",
+    offline: "Can't reach the server — will retry",
+  }[s];
+  for (const id of ["save-status", "save-status-top"]) {
+    const el = document.getElementById(id);
+    el.dataset.s = s;
+    el.innerHTML = `<span class="dot"></span><span>${esc(text)}</span>`;
+    el.title = local ? "No local server found: data is kept in this browser only. Run `npm start` to save to files." : `Saved to ${store.state.dataDir}/ on this computer`;
+  }
+}
+
+window.addEventListener("beforeunload", (e) => {
+  if (store.hasUnsaved() && store.state.saveStatus === "offline") {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+await store.init();
+store.onStatus(drawStatus);
+window.addEventListener("hashchange", route);
+route();

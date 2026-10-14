@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home Protocol · workout tracker</title>
+<meta name="description" content="Unofficial home workout planner and tracker based on Bryan Johnson's public exercise protocol.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource-variable/inter/index.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/600.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/700.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/jetbrains-mono/500.css">
+<link rel="stylesheet" href="/css/app.css">
+<script>
+  // Apply the saved theme before first paint (no flash).
+  try {
+    var t = JSON.parse(localStorage.getItem("hp:theme") || '"system"');
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/build/three.module.js", "three/addons/": "/vendor/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" aria-label="Main">
+    <a class="brand" href="#/today">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text"><b>Home Protocol</b><small>Bryan Johnson–inspired</small></span>
+    </a>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="save-status" id="save-status" role="status" aria-live="polite"></div>
+    </div>
+  </aside>
+  <header class="topbar">
+    <a class="brand small" href="#/today"><span class="brand-mark" aria-hidden="true"></span><b>Home Protocol</b></a>
+    <div class="save-status" id="save-status-top" role="status" aria-live="polite"></div>
+  </header>
+  <main class="main" id="view" tabindex="-1"></main>
+  <nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+</div>
+<div id="overlay-root"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:24px">This app needs JavaScript.</p></noscript>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
