@@ -18,8 +18,9 @@ function getStage() {
 }
 
 export function thumbnail(id) {
-  const dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
-  const key = `${id}:${dark ? "d" : "l"}`;
+  const root = document.documentElement;
+  const dark = root.dataset.scheme ? root.dataset.scheme === "dark" : root.dataset.theme === "dark" || (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+  const key = `${id}:${root.dataset.skin || ""}:${dark ? "d" : "l"}`;
   if (cache.has(key)) return cache.get(key);
   const p = (queue = queue.then(async () => {
     const stage = await getStage();

@@ -9,16 +9,10 @@ import { phaseFor } from "../plan.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
+import { SKINS, applyLook, currentSkin, skinById, skinPickerHtml } from "../themes.js";
+import { openSkinBar } from "../components/skin-bar.js";
 
 const LB = 2.20462;
-
-export function applyTheme(theme) {
-  if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
-  else delete document.documentElement.dataset.theme;
-  try {
-    localStorage.setItem("hp:theme", JSON.stringify(theme || "system"));
-  } catch {}
-}
 
 export function render(el) {
   const p = () => state.profile;
@@ -74,9 +68,15 @@ export function render(el) {
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
       </section>
 
-      <section class="card card-pad" style="display:grid;gap:12px">
+      <section class="card card-pad" style="display:grid;gap:14px">
         <h3>Appearance</h3>
-        ${seg("theme", [{ id: "system", name: "System" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system")}
+        <p class="muted" style="font-size:0.86rem">Each theme changes the layout, type and colours, not just the palette. Your data and settings stay the same.</p>
+        ${skinPickerHtml(st.skin)}
+        <div class="live-row">
+          <button type="button" class="btn" data-live>${icon("eye")} Try themes live</button>
+          <small class="muted">Opens Today with a switcher at the top of the screen: ${esc(SKINS.map((s, i) => `${String.fromCharCode(65 + i)} ${s.name}`).join(", "))}. Hover a letter for its name, move between pages as you like, and close it with ×.</small>
+        </div>
+        <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
@@ -132,6 +132,7 @@ export function render(el) {
         const days = Object.keys(data.days || {}).length;
         const replace = await confirmDialog({ title: "Import backup", message: `The file has ${days} logged days${data.profile ? " and a profile" : ""}. Replace everything you have now? (Cancel merges instead: days in the file overwrite the same dates.)`, confirm: "Replace all", danger: true });
         await importAll(data, replace ? "replace" : "merge");
+        applyLook(state.profile && state.profile.settings);
         toast(`Imported ${days} days`);
         draw();
       } catch (err) {
@@ -144,6 +145,21 @@ export function render(el) {
   el.addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.hasAttribute("data-live")) {
+      openSkinBar();
+      location.hash = "#/today";
+      return;
+    }
+    if (b.dataset.skin) {
+      updateProfile((pr) => {
+        pr.settings = pr.settings || {};
+        pr.settings.skin = b.dataset.skin;
+      });
+      applyLook(p().settings);
+      draw();
+      el.querySelector(`[data-skin="${b.dataset.skin}"]`).focus();
+      return;
+    }
     const sg = b.closest("[data-seg]");
     if (sg) {
       const name = sg.dataset.seg;
@@ -157,7 +173,7 @@ export function render(el) {
         else if (name === "rest") pr.settings.restSec = Number(v);
         else if (name === "theme") pr.settings.theme = v;
       });
-      if (name === "theme") applyTheme(v);
+      if (name === "theme") applyLook(p().settings);
       draw();
       return;
     }
@@ -176,5 +192,14 @@ export function render(el) {
     }
   });
 
+  // The floating switcher can change the theme while this page is open.
+  function onLook() {
+    const cur = currentSkin();
+    el.querySelectorAll(".skin-card").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.skin === cur.id)));
+    if (!!el.querySelector('[data-seg="theme"]') !== cur.modes.length > 1) draw();
+  }
+  window.addEventListener("hp:look", onLook);
+
   draw();
+  return { destroy: () => window.removeEventListener("hp:look", onLook) };
 }

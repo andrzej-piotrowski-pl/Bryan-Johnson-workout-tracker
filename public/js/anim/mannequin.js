@@ -152,9 +152,23 @@ export function createMannequin() {
     mats.hl.emissiveIntensity = 0.25 + 0.35 * v;
   }
 
-  function setTheme(dark) {
-    mats.body.color.set(dark ? 0xdfe6ef : 0xf4f6f9);
-    mats.joint.color.set(dark ? 0xc2ccd9 : 0xd5dce6);
+  // colors: optional { body, hl } hex strings from the theme.
+  function setTheme(dark, colors = {}) {
+    mats.body.color.set(colors.body || (dark ? 0xdfe6ef : 0xf4f6f9));
+    mats.joint.color.set(colors.body || (dark ? 0xc2ccd9 : 0xd5dce6));
+    if (colors.body) mats.joint.color.multiplyScalar(0.88);
+    if (colors.hl) {
+      const hl = new THREE.Color(colors.hl);
+      mats.hl.color.copy(hl);
+      mats.hlJoint.color.copy(hl).multiplyScalar(0.85);
+      mats.hl.emissive.copy(hl).multiplyScalar(0.35);
+      mats.hlJoint.emissive.copy(hl).multiplyScalar(0.35);
+    } else {
+      mats.hl.color.set(0x34d6a4);
+      mats.hlJoint.color.set(0x27b88b);
+      mats.hl.emissive.set(0x0d6b4c);
+      mats.hlJoint.emissive.set(0x0d6b4c);
+    }
   }
 
   function dispose() {

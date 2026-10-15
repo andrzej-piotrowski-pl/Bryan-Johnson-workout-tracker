@@ -10,6 +10,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
+- **Seven themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
 - Week view, history calendar with skip reasons, progress charts, an exercise library and the full plan with sources.
 
 ![The Today screen: the day's blocks on the left, the selected exercise with its 3D animation and set logger on the right](docs/screenshots/today.png)
@@ -20,7 +21,10 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 <img src="docs/screenshots/history.png" width="32%" alt="History calendar with skip reasons">
 </p>
 <p>
-<img src="docs/screenshots/setup.png" width="49%" alt="First-run setup: the accessories you need, each shown in a 3D example exercise">
+<img src="docs/screenshots/setup.png" width="49%" alt="First-run setup: choosing a theme">
+<img src="docs/screenshots/setup-accessories.png" width="49%" alt="First-run setup: the accessories you need, each shown in a 3D example exercise">
+</p>
+<p>
 <img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
 <img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
 </p>
@@ -75,6 +79,7 @@ Enter them in the first-run setup; change them any time in **Settings** (or edit
 | Training level | Where you start: "New to training" and "Returning" start in Re-entry, "Active" in Build, "Well trained" in Blueprint. Phases then advance after 12 and 24 completed sessions (18 and 24 for "new to training"); skipped days don't count. Change your level in Settings any time you want harder or easier workouts: the weights rescale and the phase count restarts from that level. You can also lock a phase. |
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
+| Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
 
 Suggested weights are starting points. In every phase the effort target (how many good reps you leave in the tank) decides the real weight.
 
@@ -91,6 +96,35 @@ Suggested weights are starting points. In every phase the effort target (how man
 | Sun | Rest |
 
 About 41–50 minutes a session in weeks 1–2, growing to 54–66 minutes from week 7, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the phases, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+
+## Themes
+
+Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. To compare them on your own pages, use **Try themes live** there: a small switcher floats at the top of the screen with one letter per theme (hover for the name) while you move around the app; close it with ×. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
+
+The six new ones follow public design guides, two each: [taste-skill](https://github.com/Leonxlnx/taste-skill), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) and [impeccable](https://github.com/pbakaus/impeccable).
+
+| Theme | Guide | What's different |
+|---|---|---|
+| **Original** | — | The first look: sidebar on the left, rounded cards, teal accent. |
+| **Chapters** | taste-skill | Navigation across the top, a full-width hero in huge type, and every block of the day as its own flat colour field (sage warm-up, acid power, orange strength, black Zone 2). Square corners, one typeface, no lines or shadows. |
+| **Dark room** | taste-skill | Always dark. The 3D figure is the lit exhibit on the left, the session in the middle, navigation as a short list on the right. Light condensed type, round buttons. |
+| **Pulse** | ui-ux-pro-max | Its fitness-app recipe: black (or light) with orange and green, a slim icon rail, bento tiles and a big animated progress ring. Finished exercises turn green. |
+| **Lab** | ui-ux-pro-max | Its longevity-app recipe: a Swiss grid with ruled lines and no rounded corners, figures in mono, a tabbed masthead, and three columns on wide screens (session, list, exercise). |
+| **Olympia** | impeccable | A colour for each kind of session, after the 1972 Munich Games signage: blue strength, orange intervals, green Zone 2, silver rest. The header, the hero and the 3D floor take the colour of the day you're looking at. The list leads on the left. |
+| **Course** | impeccable | The session drawn as an orienteering course: a start triangle, a purple control circle per exercise, a finish double circle. One column; an exercise opens in place under its row instead of in a side panel. |
+
+<p>
+<img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme: top navigation, a black hero with huge type, blocks as colour fields">
+<img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme: the 3D figure lit on the left, the session in the middle, navigation on the right">
+<img src="docs/screenshots/theme-pulse.png" width="32%" alt="Pulse theme: icon rail, bento tiles and a big orange progress ring on black">
+</p>
+<p>
+<img src="docs/screenshots/theme-lab.png" width="32%" alt="Lab theme: a ruled Swiss layout in three columns">
+<img src="docs/screenshots/theme-olympia.png" width="32%" alt="Olympia theme: an orange header and hero on an intervals day, the list on the left">
+<img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme: exercises as controls on a purple course line, one opened in place">
+</p>
+
+How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
 ## Add-ons
 
@@ -114,16 +148,19 @@ Text in the data can use tokens that adapt to each user: `{hr:60-70}` becomes th
 ```
 server.js                 tiny Node server: serves the app, reads/writes data/ (no dependencies)
 public/
-  index.html, css/app.css
+  index.html, css/app.css  the app and the Original look
+  css/themes.css          the other six themes
+  js/themes.js            the theme list, switching, and the theme picker
   js/main.js              routing and app shell
   js/store.js             state + auto-save (server, with a browser-storage fallback)
   js/plan.js              program logic: sessions, phases, status, stats
   js/personalize.js       heart-rate zones, weight scaling, units, phases
   js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
-  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs
+  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme switcher
   js/anim/                three.js mannequin, inverse kinematics, props, exercise clips
   js/data/                the plan, exercises, videos, add-ons
 docs/ANIMATIONS.md        guide to the animation system
+docs/THEMES.md            how the themes work and how to add one
 data/                     your data (created on first run, git-ignored)
 ```
 
