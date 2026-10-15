@@ -134,15 +134,17 @@ The six new ones follow public design guides, two each: [taste-skill](https://gi
 | **Course** | impeccable | The session drawn as an orienteering course: a start triangle, a purple control circle per exercise, a finish double circle. One column; an exercise opens in place under its row instead of in a side panel. |
 
 <p>
-<img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme: top navigation, a black hero with huge type, blocks as colour fields">
-<img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme: the 3D figure lit on the left, the session in the middle, navigation on the right">
-<img src="docs/screenshots/theme-pulse.png" width="32%" alt="Pulse theme: icon rail, bento tiles and a big orange progress ring on black">
+<img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme with Anime animation: top navigation, a black hero with huge type, blocks as colour fields">
+<img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme with Stardust animation: the figure on the left, the session in the middle, navigation on the right">
+<img src="docs/screenshots/theme-pulse.png" width="32%" alt="Pulse theme with Synthwave animation: icon rail, bento tiles and a big progress ring on black">
 </p>
 <p>
-<img src="docs/screenshots/theme-lab.png" width="32%" alt="Lab theme: a ruled Swiss layout in three columns">
-<img src="docs/screenshots/theme-olympia.png" width="32%" alt="Olympia theme: an orange header and hero on an intervals day, the list on the left">
-<img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme: exercises as controls on a purple course line, one opened in place">
+<img src="docs/screenshots/theme-lab.png" width="32%" alt="Lab theme with Blueprint animation: a ruled Swiss layout in three columns">
+<img src="docs/screenshots/theme-olympia.png" width="32%" alt="Olympia theme with Pictogram animation: an orange header and hero on an intervals day, the list on the left">
+<img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme with Doodle animation: exercises as controls on a purple course line, one opened in place">
 </p>
+
+Each screenshot uses a different animation style: Chapters with **Anime**, Dark room with **Stardust**, Pulse with **Synthwave**, Lab with **Blueprint**, Olympia with **Pictogram**, and Course with **Doodle**. Themes and animation styles can be mixed freely.
 
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 

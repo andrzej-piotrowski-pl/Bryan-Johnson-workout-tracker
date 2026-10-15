@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.3] - 2026-10-15
+
+### Changed
+- README theme screenshots now show six different animation styles, with each pairing named.
+
 ## [1.11.2] - 2026-10-15
 
 ### Fixed
