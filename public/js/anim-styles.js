@@ -1,9 +1,6 @@
-// Animation styles: other ways to draw the 3D figure, on top of the original
-// mannequin. Picked in Settings → Animation style or from the floating style bar
-// (components/anim-bar.js).
-//
-// A test for now: the styles apply only to the exercises in STYLED_EXERCISES
-// (Zone 2: "Easy step-ups or marching"); every other exercise keeps the mannequin.
+// Animation styles: other ways to draw the exercise animations, on top of the
+// original mannequin. Picked in Settings → Animation style or from the floating style
+// bar (components/anim-bar.js). They apply to every exercise (STYLED_EXERCISES).
 //
 // The choice is profile.settings.animStyle; <html data-anim> carries it for the 3D
 // stages, which listen for "hp:anim". The styles themselves are in js/anim/styles/.
@@ -16,20 +13,20 @@ import { esc } from "./util.js";
 // fragment shader on plain WebGL. fun: one of the funny ones.
 export const ANIM_STYLES = [
   { id: "athlete", name: "Athlete", tech: "3d", after: "Semi-realistic, like Mixamo characters", blurb: "Skin, a T-shirt, shorts and trainers under soft studio light. The closest to a real person to copy." },
-  { id: "mannequin", name: "Mannequin", tech: "3d", after: "The original", blurb: "Smooth grey figure; the muscles being worked light up. Every other exercise uses it." },
+  { id: "mannequin", name: "Mannequin", tech: "3d", after: "The original", blurb: "Smooth grey figure; the muscles being worked light up. The look the app started with." },
   { id: "anime", name: "Anime", tech: "3d", after: "VRM avatars with MToon shading", blurb: "Soft cel shading with tinted shadows, a rim light, thin outlines, big eyes and spiky hair." },
   { id: "lowpoly", name: "Low poly", tech: "3d", after: "Quaternius' free game characters", blurb: "Faceted shapes and flat colours. Light to draw and very clear to read." },
   { id: "cartoon", name: "Cartoon", tech: "3d", after: "Classic cel shading with ink outlines", blurb: "Two hard tones, thick black outlines and bold colours; the worked muscles get a yellow outline." },
-  { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "Built from blocks with pixel-art faces and clothes, on grass with a cobblestone step." },
+  { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "Built from blocks with pixel-art faces and clothes, on grass, with pixel-textured props." },
   { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sign figure on a blue tile: even bars for limbs, a floating round head, the worked muscles in orange. Drawn as SVG." },
   { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "Brush strokes on rice paper that leave fading ink trails, an ensō circle for the head and red washes on the worked muscles. Drawn on a 2D canvas." },
   { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "The figure typed out in characters on a glowing CRT, with a floor grid; the worked muscles in amber. Drawn as text." },
   { id: "chrome", name: "Liquid chrome", tech: "shader", after: "Liquid-metal studio renders", blurb: "A mirror-finish body that flows like poured metal, reflecting the studio, the floor and itself; gold where the muscles work. Ray-marched in one WebGL shader." },
   { id: "synthwave", name: "Synthwave", tech: "canvas", after: "1980s retro-futurism", blurb: "Neon tubes on a scrolling grid under a striped sunset, mirrored on a wet floor; the worked muscles in hot pink. Drawn on a 2D canvas." },
-  { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing that measures you: live knee, hip and elbow angles, centre lines, hatched muscles, the step dimensioned and a title block. Drawn as SVG." },
+  { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing that measures you: live knee, hip and elbow angles, centre lines, hatched muscles, steps and boxes dimensioned and a title block naming the exercise. Drawn as SVG." },
   { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
-  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about step-ups. Drawn as SVG." },
-  { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every step. Drawn on a 2D canvas." },
+  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops, tally marks for reps and opinions about every exercise. Drawn as SVG." },
+  { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
 ];
 
 // The style until you pick one.
@@ -37,8 +34,12 @@ export const DEFAULT_ANIM_STYLE = "athlete";
 // What the exercises without styles show.
 export const BASE_ANIM_STYLE = "mannequin";
 
-// Exercise ids (data/exercises.js) the styles are tried on.
-export const STYLED_EXERCISES = ["zone2"];
+// Which exercises take the styles: "all", or a list of exercise ids (data/exercises.js)
+// to try them on a few first.
+export const STYLED_EXERCISES = "all";
+
+// The exercise the Settings preview shows first.
+export const PREVIEW_EXERCISE = "zone2";
 
 export function animStyleById(id) {
   return ANIM_STYLES.find((s) => s.id === id) || ANIM_STYLES.find((s) => s.id === DEFAULT_ANIM_STYLE);
@@ -49,7 +50,7 @@ export function currentAnimStyle() {
 }
 
 export function hasAnimStyles(exId) {
-  return STYLED_EXERCISES.includes(exId);
+  return STYLED_EXERCISES === "all" || STYLED_EXERCISES.includes(exId);
 }
 
 // The style an exercise is drawn in: the chosen one if the exercise takes styles.

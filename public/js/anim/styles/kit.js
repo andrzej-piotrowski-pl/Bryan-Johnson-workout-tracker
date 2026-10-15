@@ -382,15 +382,20 @@ export function hash(...n) {
 }
 
 // Replaces a prop mesh's material with make(original), one per original, and
-// optionally outlines it.
+// optionally outlines it. See-through materials (the wall) stay see-through and get no
+// outline; make may return the original to leave a material alone.
 export function propDresser(make, outlineMat = null) {
   const cache = new Map();
   return (mesh) => {
     if (mesh.userData.outline) return;
     const src = mesh.material;
-    if (!cache.has(src)) cache.set(src, make(src));
+    if (!cache.has(src)) {
+      const m = make(src);
+      if (m !== src && src.transparent) Object.assign(m, { transparent: true, opacity: src.opacity, depthWrite: src.depthWrite });
+      cache.set(src, m);
+    }
     mesh.material = cache.get(src);
-    if (outlineMat && !mesh.children.some((c) => c.userData.outline)) outline(mesh, outlineMat);
+    if (outlineMat && !src.transparent && !mesh.children.some((c) => c.userData.outline)) outline(mesh, outlineMat);
   };
 }
 

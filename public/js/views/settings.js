@@ -2,6 +2,7 @@
 // theme, animation style, and your data (export, import, reset). Everything saves as you type.
 
 import { ADDONS } from "../data/addons/index.js";
+import { CATEGORIES, EXERCISES } from "../data/exercises.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
 import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
 import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone } from "../plan.js";
@@ -11,7 +12,7 @@ import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
 import { SKINS, applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
 import { openSkinBar } from "../components/skin-bar.js";
-import { ANIM_STYLES, STYLED_EXERCISES, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
+import { ANIM_STYLES, PREVIEW_EXERCISE, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
 import { openAnimBar } from "../components/anim-bar.js";
 import { createStagePanel } from "../components/stage-panel.js";
 import { thumbnail } from "../components/thumbs.js";
@@ -24,11 +25,17 @@ export function render(el) {
   const w = (kg) => (kg == null ? "" : imperial() ? Math.round(kg * LB * 10) / 10 : kg);
   const hgt = (cm) => (cm == null ? "" : imperial() ? Math.round(cm / 2.54) : cm);
 
-  // The animation style preview: one 3D stage, kept across redraws of the page.
+  // The animation style preview: one 3D stage, kept across redraws of the page, on the
+  // exercise picked under it (remembered for this tab).
+  let previewEx = PREVIEW_EXERCISE;
+  try {
+    const kept = sessionStorage.getItem("hp:animpreview");
+    if (kept && EXERCISES[kept]) previewEx = kept;
+  } catch {}
   const previewEl = document.createElement("div");
   previewEl.className = "anim-preview";
   const preview = createStagePanel(previewEl);
-  preview.load(STYLED_EXERCISES[0]);
+  preview.load(previewEx);
 
   function drawPage() {
     const pr = p();
@@ -86,13 +93,14 @@ export function render(el) {
       </section>
 
       <section class="card card-pad" style="display:grid;gap:14px">
-        <h3>Animation style <span class="badge-test">Test</span></h3>
-        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animation. For now they only apply to <b>Zone 2: easy step-ups or marching</b>, shown below; every other exercise keeps the mannequin. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, as text or in a WebGL shader of their own. The movement is the same in all of them.</p>
+        <h3>Animation style</h3>
+        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animations, on every exercise. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, as text or in a WebGL shader of their own. The movement is the same in all of them.</p>
         <div data-anim-preview></div>
+        <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
         ${animStylePickerHtml(st.animStyle)}
         <div class="live-row">
           <button type="button" class="btn" data-anim-live>${icon("eye")} Try styles live</button>
-          <small class="muted">Opens Zone 2 with a switcher at the top of the screen, one number per style (${ANIM_STYLES.length}; hover for the name, or ‹ › on a phone). Close it with ×.</small>
+          <small class="muted">Opens today's session (or the exercise above, on a phone or a rest day) with a switcher at the top of the screen, one number per style (${ANIM_STYLES.length}; hover for the name, or ‹ › on a phone). Close it with ×.</small>
         </div>
       </section>
 
@@ -130,7 +138,14 @@ export function render(el) {
 
   el.addEventListener("change", async (e) => {
     const t = e.target;
-    if (t.dataset.switch) {
+    if (t.matches("[data-anim-ex]")) {
+      previewEx = t.value;
+      try {
+        sessionStorage.setItem("hp:animpreview", previewEx);
+      } catch {}
+      preview.load(previewEx);
+      fillAnimThumbs();
+    } else if (t.dataset.switch) {
       const name = t.dataset.switch;
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
@@ -166,7 +181,7 @@ export function render(el) {
     }
     if (b.hasAttribute("data-anim-live")) {
       openAnimBar();
-      location.hash = styledToday() ? "#/today" : `#/library/${STYLED_EXERCISES[0]}`;
+      location.hash = styledToday() ? "#/today" : `#/library/${previewEx}`;
       return;
     }
     if (b.dataset.animStyle) {
@@ -238,7 +253,8 @@ export function render(el) {
   window.addEventListener("hp:look", onLook);
   window.addEventListener("hp:anim", onAnim);
 
-  // Is a styled exercise in today's session, where Today will show it beside the list?
+  // Is an exercise that takes styles in today's session, where Today will show it
+  // beside the list?
   function styledToday() {
     const today = todayIso();
     const def = dayDef(sessionKeyFor(today));
@@ -246,10 +262,13 @@ export function render(el) {
     return wide && !!def && def.blocks.some((bl) => blockItems(bl, levelFor(today)).some((it) => hasAnimStyles(it.ex)));
   }
 
-  // A still of the styled exercise on each style's card (in this theme's colours).
+  // A still of the preview exercise on each style's card (in this theme's colours). A
+  // newer pick wins over stills still being drawn for the last one.
   function fillAnimThumbs() {
+    const ex = previewEx;
     el.querySelectorAll("img[data-anim-thumb]").forEach((img) => {
-      thumbnail(STYLED_EXERCISES[0], img.dataset.animThumb).then((url) => {
+      thumbnail(ex, img.dataset.animThumb).then((url) => {
+        if (ex !== previewEx) return;
         img.src = url;
         img.hidden = false;
       });

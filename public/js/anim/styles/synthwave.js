@@ -2,9 +2,10 @@
 // behind wireframe mountains, a magenta grid scrolls across the floor in true
 // perspective (the same camera as every other style, so the view buttons still
 // work), and the figure is mirrored on the wet floor. Cyan tubes, hot pink where
-// the muscles work. Drawn on a 2D canvas, without three.js.
+// the muscles work and a pink heart for heart work; props are dark shapes edged in
+// violet neon, dumbbells and bars cyan, bands pink. Drawn on a 2D canvas, without three.js.
 
-import { asLayer, boxFaces, depthOf, fitCanvas, horizonY, litRegions, projectSegment } from "./flat.js";
+import { asLayer, depthOf, dumbbellHeads, fitCanvas, horizonY, isLit, litRegions, projectSegment, sceneFaces } from "./flat.js";
 import { hash } from "./kit.js";
 
 const CYAN = [33, 246, 255];
@@ -145,7 +146,7 @@ export function createFigure() {
     const P = (n) => view.project(flip ? { x: J[n].x, y: -J[n].y, z: J[n].z } : J[n]);
     const near = P("hipL").z + P("shoulderL").z < P("hipR").z + P("shoulderR").z ? "L" : "R";
     const far = near === "L" ? "R" : "L";
-    const col = (region) => (lit.has(region) ? PINK : CYAN);
+    const col = (region) => (isLit(lit, region) ? PINK : CYAN);
     const limb = (s, a) => {
       T(["hip" + s, "knee" + s].map(P), u * 0.022, col("thigh" + s), a);
       T(["knee" + s, "ankle" + s, "heel" + s, "toe" + s, "ankle" + s].map(P), u * 0.02, col("shin" + s), a);
@@ -153,8 +154,8 @@ export function createFigure() {
       T(["elbow" + s, "wrist" + s, "hand" + s].map(P), u * 0.018, col("forearm" + s), a);
     };
     limb(far, alpha * 0.55);
-    T(["shoulderL", "shoulderR", "hipR", "hipL"].map(P), u * 0.022, CYAN, alpha, true);
-    if (lit.has("chest")) {
+    T(["shoulderL", "shoulderR", "hipR", "hipL"].map(P), u * 0.022, col("torso"), alpha, true);
+    if (lit.heart) {
       // A pink heart pulsing in the chest.
       const c = view.project(flip ? { x: J.thoracic.x, y: -J.thoracic.y - 0.1, z: J.thoracic.z } : { x: J.thoracic.x, y: J.thoracic.y + 0.1, z: J.thoracic.z });
       const r = u * 0.05 * (0.9 + 0.2 * Math.abs(Math.sin(t * 4)));
@@ -165,7 +166,7 @@ export function createFigure() {
       }
       T(heart, u * 0.012, PINK, alpha, true);
     }
-    T(["neckBase", "headJoint"].map(P), u * 0.018, CYAN, alpha);
+    T(["neckBase", "headJoint"].map(P), u * 0.018, col("neck"), alpha);
     const head = P("head");
     const ring = [];
     const r = u * 0.1;
@@ -220,21 +221,35 @@ export function createFigure() {
     ctx.globalCompositeOperation = "lighter";
     body(view, u, true, 0.22);
     ctx.globalCompositeOperation = "source-over";
-    // The step: dark faces that hide the grid, neon violet edges.
-    for (const spec of view.props) {
-      for (const f of boxFaces(spec, view)) {
+    // Props: dark faces that hide the grid, neon edges (the wall: faint edges only).
+    for (const f of sceneFaces(view)) {
+      if (!f.ghost) {
         ctx.fillStyle = f.light === 1 ? "#1b0838" : "#10042a";
         ctx.beginPath();
         f.pts.forEach((p) => ctx.lineTo(p.x, p.y));
         ctx.closePath();
         ctx.fill();
-        ctx.globalCompositeOperation = "lighter";
-        tube(ctx, f.pts, u * 0.012, VIOLET, 0.8, true);
-        ctx.globalCompositeOperation = "source-over";
       }
+      ctx.globalCompositeOperation = "lighter";
+      tube(ctx, f.pts, u * 0.012, f.kind === "metal" ? CYAN : f.kind === "band" ? PINK : VIOLET, f.ghost ? 0.3 : 0.8, true, f.ghost);
+      ctx.globalCompositeOperation = "source-over";
     }
     ctx.globalCompositeOperation = "lighter";
     body(view, u, false, 1);
+    // What the hands hold: neon dumbbells, pink bands, a violet string.
+    const at = view.attachments;
+    for (const db of at.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db);
+      const A = view.project(a), B = view.project(b), R = Math.max(2, u * r);
+      tube(ctx, [A, B], u * 0.014, CYAN, 1);
+      for (const c of [A, B]) {
+        const ring = [];
+        for (let i = 0; i <= 16; i++) ring.push({ x: c.x + Math.cos((i / 16) * Math.PI * 2) * R, y: c.y + Math.sin((i / 16) * Math.PI * 2) * R });
+        tube(ctx, ring, u * 0.012, CYAN, 1, true);
+      }
+    }
+    for (const [a, b] of at.bands) tube(ctx, [view.project(a), view.project(b)], u * 0.012, PINK, 1);
+    if (at.string) tube(ctx, at.string.map((p) => view.project(p)), u * 0.008, VIOLET, 0.8, false, true);
     ctx.globalCompositeOperation = "source-over";
     // Scanlines.
     ctx.setTransform(1, 0, 0, 1, 0, 0);

@@ -3,10 +3,16 @@
 // field: a rounded capsule per bone, melted together with a smooth minimum, so the
 // joints blend like poured metal. Each pixel casts a ray into it, then a second ray
 // for the reflection, so the figure reflects the studio's softboxes, the glossy
-// floor, the step and itself. Soft shadows, contact occlusion, gold where the
-// muscles work, filmic tone mapping and a little grain.
+// floor, the props and itself. The props are distance fields too: boxes (benches,
+// chairs, door frames…), a wedge (the slant board), mirror-metal bars and dumbbells,
+// glossy bands. Soft shadows, contact occlusion, gold where the muscles work, filmic
+// tone mapping and a little grain.
 
-import { asLayer, litRegions } from "./flat.js";
+import { asLayer, isLit, litRegions, propParts } from "./flat.js";
+
+const NBOX = 12, NDB = 3, NBAND = 4;
+// Prop materials, by the kind flat.js gives each solid (the shader adds 10).
+const KINDS = { prop: 0, propDark: 1, wood: 2, mat: 3, wall: 4, metal: 5, band: 6 };
 
 const NSEG = 16;
 // Capsules: [from joint, to joint, radius at from, radius at to, region].
@@ -44,10 +50,21 @@ uniform vec2 uR[NSEG];
 uniform float uHl[NSEG];
 uniform vec3 uHead;
 uniform vec4 uBound;
-uniform vec3 uBoxC;
-uniform vec3 uBoxH;
-uniform float uBoxYaw;
-uniform float uHasBox;
+#define NBOX ${NBOX}
+#define NDB ${NDB}
+#define NBAND ${NBAND}
+uniform vec3 uBoxC[NBOX];
+uniform vec3 uBoxH[NBOX];
+uniform vec2 uBoxYK[NBOX];
+uniform float uNumBox;
+uniform vec4 uWedge;
+uniform vec4 uWedgeCY;
+uniform vec3 uDbC[NDB];
+uniform vec4 uDbAS[NDB];
+uniform float uNumDb;
+uniform vec3 uBandA[NBAND];
+uniform vec4 uBandBK[NBAND];
+uniform float uNumBand;
 uniform float uPulse;
 uniform float uSeed;
 
@@ -85,20 +102,60 @@ float figureGold(vec3 p) {
   }
   return g;
 }
-float box(vec3 p) {
-  vec3 q = p - uBoxC;
-  float c = cos(uBoxYaw), s = sin(uBoxYaw);
-  q.xz = mat2(c, -s, s, c) * q.xz;
-  vec3 d = abs(q) - (uBoxH - 0.014);
-  return length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0) - 0.014;
+// p in the frame of a prop centred at c and turned by yaw.
+vec3 local(vec3 p, vec3 c, float yaw) {
+  vec3 q = p - c;
+  float co = cos(yaw), si = sin(yaw);
+  q.xz = mat2(co, si, -si, co) * q.xz;
+  return q;
+}
+float sdBox(vec3 q, vec3 h) {
+  float r = min(0.012, min(h.x, min(h.y, h.z)) * 0.8);
+  vec3 d = abs(q) - (h - r);
+  return length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0) - r;
+}
+float sdCylinder(vec3 p, vec3 a, vec3 b, float r) {
+  vec3 ba = b - a, pa = p - a;
+  float baba = dot(ba, ba), paba = dot(pa, ba);
+  float x = length(pa * baba - ba * paba) - r * baba;
+  float y = abs(paba - baba * 0.5) - baba * 0.5;
+  float x2 = x * x, y2 = y * y * baba;
+  float d = (max(x, y) < 0.0) ? -min(x2, y2) : (((x > 0.0) ? x2 : 0.0) + ((y > 0.0) ? y2 : 0.0));
+  return sign(d) * sqrt(abs(d)) / baba;
+}
+// Everything that isn't the figure, and its material (10 + the prop's kind).
+vec2 props(vec3 p) {
+  vec2 r = vec2(1e5, 0.0);
+  for (int i = 0; i < NBOX; i++) {
+    if (float(i) >= uNumBox) break;
+    float d = sdBox(local(p, uBoxC[i], uBoxYK[i].x), uBoxH[i]);
+    if (d < r.x) r = vec2(d, 10.0 + uBoxYK[i].y);
+  }
+  if (uWedge.w > 0.5) {
+    vec3 q = local(p, uWedgeCY.xyz, uWedgeCY.w);
+    vec3 n = normalize(vec3(0.0, uWedge.y, uWedge.z));
+    float d = max(sdBox(q - vec3(0.0, uWedge.z * 0.5, 0.0), vec3(uWedge.x, uWedge.z, uWedge.y) * 0.5), dot(q - vec3(0.0, 0.0, uWedge.y * 0.5), n));
+    if (d < r.x) r = vec2(d, 12.0);
+  }
+  for (int i = 0; i < NDB; i++) {
+    if (float(i) >= uNumDb) break;
+    vec3 c = uDbC[i], ax = uDbAS[i].xyz;
+    float s = uDbAS[i].w, o = 0.07 + 0.035 * s, hl = 0.035 * s;
+    float d = min(sdCylinder(p, c + ax * (o - hl), c + ax * (o + hl), 0.056 * s), sdCylinder(p, c - ax * (o - hl), c - ax * (o + hl), 0.056 * s));
+    d = min(d, capsule(p, c - ax * o, c + ax * o, vec2(0.016)));
+    if (d < r.x) r = vec2(d, 15.0);
+  }
+  for (int i = 0; i < NBAND; i++) {
+    if (float(i) >= uNumBand) break;
+    float d = capsule(p, uBandA[i], uBandBK[i].xyz, vec2(uBandBK[i].w > 16.5 ? 0.006 : 0.01));
+    if (d < r.x) r = vec2(d, uBandBK[i].w);
+  }
+  return r;
 }
 vec2 map(vec3 p) {
   vec2 r = vec2(figure(p), 1.0);
-  if (uHasBox > 0.5) {
-    float b = box(p);
-    if (b < r.x) r = vec2(b, 2.0);
-  }
-  return r;
+  vec2 q = props(p);
+  return q.x < r.x ? q : r;
 }
 vec2 march(vec3 ro, vec3 rd, float tmax, int steps) {
   float t = 0.0;
@@ -138,13 +195,13 @@ float softShadow(vec3 ro, vec3 rd, float jitter) {
       if (res < 0.003 || t > t1) break;
     }
   }
-  if (uHasBox > 0.5) {
+  {
     float t = 0.012 + 0.02 * jitter, ph = 1e10;
-    for (int i = 0; i < 24; i++) {
-      float h = box(ro + rd * t);
+    for (int i = 0; i < 32; i++) {
+      float h = props(ro + rd * t).x;
       res = min(res, penumbra(h, t, ph));
       t += clamp(h, 0.01, 0.3);
-      if (res < 0.003 || t > 2.5) break;
+      if (res < 0.003 || t > 3.0) break;
     }
   }
   res = clamp(res, 0.0, 1.0);
@@ -192,26 +249,33 @@ vec3 floorColor(vec3 p) {
   vec3 col = vec3(0.05, 0.053, 0.06) * (0.25 + 1.6 * spot * mix(0.18, 1.0, sh));
   return col * mix(0.55, 1.0, occlusion(p, vec3(0.0, 1.0, 0.0)));
 }
-vec3 boxColor(vec3 p, vec3 n, vec3 rd) {
+// A prop's surface, by material: matte charcoal, dark, wood, the teal mat, the wall,
+// mirror metal (bars, dumbbells), glossy orange bands, a blue string.
+vec3 propColor(vec3 p, vec3 n, vec3 rd, float m) {
+  float fres = pow(1.0 - max(dot(n, -rd), 0.0), 5.0);
+  if (m > 14.5 && m < 15.5) return env(reflect(rd, n)) * vec3(0.72, 0.74, 0.78) * mix(0.6, 1.0, occlusion(p, n));
+  vec3 base = m < 10.5 ? vec3(0.032, 0.034, 0.04) : m < 11.5 ? vec3(0.018, 0.019, 0.022) : m < 12.5 ? vec3(0.1, 0.06, 0.032) : m < 13.5 ? vec3(0.018, 0.085, 0.07) : m < 14.5 ? vec3(0.04, 0.042, 0.048) : m < 16.5 ? vec3(0.95, 0.3, 0.05) : vec3(0.15, 0.35, 0.95);
   float dif = max(dot(n, KEY), 0.0) * mix(0.3, 1.0, softShadow(p + n * 0.003, KEY, 0.5));
-  vec3 col = vec3(0.032, 0.034, 0.04) * (0.4 + 2.4 * dif) * occlusion(p, n);
-  return col + env(reflect(rd, n)) * (0.04 + 0.3 * pow(1.0 - max(dot(n, -rd), 0.0), 5.0));
+  vec3 col = base * (0.4 + 2.4 * dif) * occlusion(p, n);
+  return col + env(reflect(rd, n)) * ((m > 15.5 ? 0.12 : 0.04) + 0.3 * fres);
 }
 vec3 metal(float gold) {
   return mix(vec3(0.93, 0.95, 0.98), vec3(1.0, 0.72, 0.3) * (1.0 + 0.25 * uPulse), gold);
 }
-// What a reflected ray sees: one level deep, no further reflections.
-vec3 trace(vec3 ro, vec3 rd) {
+// What a reflected ray sees: one level deep, no further reflections. sky: how much of
+// the studio's lights it sees when it hits nothing (the floor mirrors only the dark
+// backdrop, so the softboxes don't show up as slabs of light on it).
+vec3 trace(vec3 ro, vec3 rd, float sky) {
   float tf = rd.y < -1e-4 ? -ro.y / rd.y : 1e9;
   vec2 h = march(ro, rd, min(tf, 8.0), 64);
   if (h.y > 0.5) {
     vec3 p = ro + rd * h.x;
     vec3 n = normalAt(p);
     if (h.y < 1.5) return env(reflect(rd, n)) * metal(figureGold(p)) * 0.85;
-    return boxColor(p, n, rd);
+    return propColor(p, n, rd, h.y);
   }
   if (tf < 1e8) return floorColor(ro + rd * tf);
-  return env(rd);
+  return mix(backdrop(rd), env(rd), sky);
 }
 vec3 aces(vec3 x) {
   return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);
@@ -228,16 +292,16 @@ void main() {
     vec3 p = ro + rd * h.x;
     vec3 n = normalAt(p);
     if (h.y < 1.5) {
-      vec3 refl = trace(p + n * 0.004, reflect(rd, n));
+      vec3 refl = trace(p + n * 0.004, reflect(rd, n), 1.0);
       float fres = mix(0.72, 1.0, pow(1.0 - max(dot(n, -rd), 0.0), 4.0));
       col = refl * metal(figureGold(p)) * fres * mix(0.5, 1.0, occlusion(p, n));
     } else {
-      col = boxColor(p, n, rd);
+      col = propColor(p, n, rd, h.y);
     }
   } else if (tf < 1e8) {
     vec3 p = ro + rd * tf;
     float fres = 0.08 + 0.5 * pow(1.0 - abs(rd.y), 5.0);
-    col = floorColor(p) + trace(p + vec3(0.0, 0.001, 0.0), reflect(rd, vec3(0.0, 1.0, 0.0))) * fres;
+    col = floorColor(p) + trace(p + vec3(0.0, 0.001, 0.0), reflect(rd, vec3(0.0, 1.0, 0.0)), 0.0) * fres;
     col = mix(col, backdrop(rd), smoothstep(3.0, 7.0, length(p.xz)));
   } else {
     col = backdrop(rd);
@@ -274,7 +338,9 @@ export function createFigure() {
   gl.enableVertexAttribArray(aPos);
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
   const U = {};
-  for (const n of ["uRes", "uWorld", "uInvProj", "uCam", "uA", "uB", "uR", "uHl", "uHead", "uBound", "uBoxC", "uBoxH", "uBoxYaw", "uHasBox", "uPulse", "uSeed"]) U[n] = gl.getUniformLocation(prog, n);
+  for (const n of ["uRes", "uWorld", "uInvProj", "uCam", "uA", "uB", "uR", "uHl", "uHead", "uBound", "uBoxC", "uBoxH", "uBoxYK", "uNumBox", "uWedge", "uWedgeCY", "uDbC", "uDbAS", "uNumDb", "uBandA", "uBandBK", "uNumBand", "uPulse", "uSeed"]) U[n] = gl.getUniformLocation(prog, n);
+  const BC = new Float32Array(NBOX * 3), BH = new Float32Array(NBOX * 3), BYK = new Float32Array(NBOX * 2);
+  const DC = new Float32Array(NDB * 3), DAS = new Float32Array(NDB * 4), NA = new Float32Array(NBAND * 3), NBK = new Float32Array(NBAND * 4);
 
   const A = new Float32Array(NSEG * 3), B = new Float32Array(NSEG * 3), R = new Float32Array(NSEG * 2), HL = new Float32Array(NSEG);
   SEGS.forEach(([, , r0, r1], i) => R.set([r0, r1], i * 2));
@@ -306,7 +372,7 @@ export function createFigure() {
     SEGS.forEach(([a, b, , , region], i) => {
       A.set([J[a].x, J[a].y, J[a].z], i * 3);
       B.set([J[b].x, J[b].y, J[b].z], i * 3);
-      HL[i] = lit.has(region) ? 1 : 0;
+      HL[i] = isLit(lit, region) ? 1 : 0;
       cx += J[a].x + J[b].x;
       cy += J[a].y + J[b].y;
       cz += J[a].z + J[b].z;
@@ -327,15 +393,40 @@ export function createFigure() {
     gl.uniform1fv(U.uHl, HL);
     gl.uniform3f(U.uHead, J.head.x, J.head.y, J.head.z);
     gl.uniform4f(U.uBound, c[0], c[1], c[2], rad + 0.16);
-    const step = view.props.find((p) => p.type === "step" || p.type === "box");
-    if (step) {
-      const w = step.w ?? (step.type === "step" ? 0.62 : 0.45), d = step.d ?? (step.type === "step" ? 0.34 : 0.42), h = step.h ?? (step.type === "step" ? 0.18 : 0.45);
-      const [x = 0, , z = 0] = step.pos || [];
-      gl.uniform3f(U.uBoxC, x, h / 2, z);
-      gl.uniform3f(U.uBoxH, w / 2, h / 2, d / 2);
-      gl.uniform1f(U.uBoxYaw, ((step.rotY || 0) * Math.PI) / 180);
+    // The props as boxes and a wedge; what the hands hold as dumbbells and bands.
+    let nb = 0, wedge = null;
+    for (const part of view.props.flatMap(propParts)) {
+      if (part.wedge) wedge = part;
+      else if (nb < NBOX) {
+        BC.set(part.c, nb * 3);
+        BH.set(part.h, nb * 3);
+        BYK.set([part.yaw, KINDS[part.kind] ?? 0], nb * 2);
+        nb++;
+      }
     }
-    gl.uniform1f(U.uHasBox, step ? 1 : 0);
+    gl.uniform3fv(U.uBoxC, BC);
+    gl.uniform3fv(U.uBoxH, BH);
+    gl.uniform2fv(U.uBoxYK, BYK);
+    gl.uniform1f(U.uNumBox, nb);
+    gl.uniform4f(U.uWedge, ...(wedge ? [...wedge.wedge, 1] : [0, 0, 0, 0]));
+    gl.uniform4f(U.uWedgeCY, ...(wedge ? [...wedge.c, wedge.yaw] : [0, 0, 0, 0]));
+    const at = view.attachments;
+    const dbs = at.dumbbells.slice(0, NDB);
+    dbs.forEach((db, i) => {
+      DC.set([db.c.x, db.c.y, db.c.z], i * 3);
+      DAS.set([db.axis.x, db.axis.y, db.axis.z, db.size], i * 4);
+    });
+    gl.uniform3fv(U.uDbC, DC);
+    gl.uniform4fv(U.uDbAS, DAS);
+    gl.uniform1f(U.uNumDb, dbs.length);
+    const lines = [...at.bands.map((b) => [...b, 16]), ...(at.string ? [[...at.string, 17]] : [])].slice(0, NBAND);
+    lines.forEach(([a, b, m], i) => {
+      NA.set([a.x, a.y, a.z], i * 3);
+      NBK.set([b.x, b.y, b.z, m], i * 4);
+    });
+    gl.uniform3fv(U.uBandA, NA);
+    gl.uniform4fv(U.uBandBK, NBK);
+    gl.uniform1f(U.uNumBand, lines.length);
     gl.uniform1f(U.uPulse, pulse);
     gl.uniform1f(U.uSeed, still ? 0 : (now % 1000) / 10);
     gl.drawArrays(gl.TRIANGLES, 0, 3);

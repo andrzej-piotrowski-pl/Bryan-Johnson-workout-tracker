@@ -2,16 +2,17 @@
 // tied to a spot on a limb (or in the torso or head) and chases it with its own
 // lag, so the body shimmers and its moving parts smear into light trails, like a
 // long exposure. The joints shine as stars joined by faint constellation lines, the
-// worked muscles burn gold, and the step is a constellation of its own. Drawn on a
+// worked muscles burn gold (a gold heart beats for heart work), and the props,
+// dumbbells and bands are constellations of their own. Drawn on a
 // 2D canvas, without three.js.
 
-import { asLayer, boxFaces, fitCanvas, litRegions } from "./flat.js";
+import { asLayer, dumbbellHeads, fitCanvas, isLit, litRegions, sceneFaces } from "./flat.js";
 import { hash } from "./kit.js";
 
 const COUNT = 1800;
 // Where the particles live, with each piece's share of them and its radius (metres).
 const PIECES = [
-  { kind: "torso", region: "chest", share: 0.24 },
+  { kind: "torso", region: "torso", share: 0.24 },
   { kind: "head", region: "head", share: 0.08, r: 0.1 },
   ...["L", "R"].flatMap((s) => [
     { kind: "limb", region: "thigh" + s, joints: ["hip" + s, "knee" + s], share: 0.07, r: 0.065 },
@@ -140,18 +141,16 @@ export function createFigure() {
     PIECES.forEach((piece, i) => piece.joints && (P[i] = piece.joints.map((n) => view.project(J[n]))));
     ctx.globalCompositeOperation = "lighter";
 
-    // The step and a ring on the floor, as constellations.
-    ctx.strokeStyle = "rgba(140,170,255,0.22)";
+    // The props and a ring on the floor, as constellations (the wall fainter).
     ctx.lineWidth = 0.8;
     ctx.setLineDash([2, 4]);
-    for (const spec of view.props) {
-      for (const f of boxFaces(spec, view)) {
-        ctx.beginPath();
-        f.pts.forEach((p) => ctx.lineTo(p.x, p.y));
-        ctx.closePath();
-        ctx.stroke();
-        for (const p of f.pts) ctx.drawImage(starBlue, p.x - 5, p.y - 5, 10, 10);
-      }
+    for (const f of sceneFaces(view)) {
+      ctx.strokeStyle = f.ghost ? "rgba(140,170,255,0.1)" : f.kind === "band" ? "rgba(255,185,90,0.5)" : "rgba(140,170,255,0.22)";
+      ctx.beginPath();
+      f.pts.forEach((p) => ctx.lineTo(p.x, p.y));
+      ctx.closePath();
+      ctx.stroke();
+      if (!f.ghost) for (const p of f.pts) ctx.drawImage(f.kind === "metal" ? starGold : starBlue, p.x - 5, p.y - 5, 10, 10);
     }
     ctx.beginPath();
     for (let i = 0; i <= 48; i++) {
@@ -188,7 +187,7 @@ export function createFigure() {
       p.py = p.y;
       p.x += (tg.x - p.x) * k;
       p.y += (tg.y - p.y) * k;
-      const gold = lit.has(PIECES[p.pi].region) ? 3 : 0;
+      const gold = isLit(lit, PIECES[p.pi].region) ? 3 : 0;
       const path = batches[gold + p.size];
       path.moveTo(still || fresh ? p.x - 0.6 : p.px, still || fresh ? p.y : p.py);
       path.lineTo(p.x + 0.01, p.y + 0.01);
@@ -202,12 +201,52 @@ export function createFigure() {
       ctx.stroke(b);
     });
 
-    // The joints shine as stars.
+    // The joints shine as stars, gold next to worked muscles.
+    const STAR_REGION = { knee: "thigh", hip: "thigh", ankle: "shin", shoulder: "upperArm", elbow: "upperArm", hand: "forearm" };
     for (const n of STARS) {
       const p = view.project(J[n]);
-      const region = n.startsWith("knee") || n.startsWith("hip") ? "thigh" + n.slice(-1) : n === "neckBase" ? "chest" : "";
+      const base = n.replace(/[LR]$/, "");
+      const region = STAR_REGION[base] ? STAR_REGION[base] + n.slice(-1) : n === "neckBase" ? "neck" : n === "pelvis" ? "torso" : "";
       const s = n === "head" ? 34 : 22;
-      ctx.drawImage(lit.has(region) ? starGold : starBlue, p.x - s / 2, p.y - s / 2, s, s);
+      ctx.drawImage(region && isLit(lit, region) ? starGold : starBlue, p.x - s / 2, p.y - s / 2, s, s);
+    }
+    // Heart work: a gold star beating in the chest.
+    if (lit.heart) {
+      const c = view.project(J.thoracic.clone().lerp(J.neckBase, 0.45));
+      const s = (still ? 40 : 30 + 16 * Math.abs(Math.sin(now * 3.2))) * Math.max(0.6, u / 200);
+      ctx.drawImage(starGold, c.x - s / 2, c.y - s / 2, s, s);
+    }
+    // What the hands hold: dumbbells as rings of stars on a handle, bands as gold dust.
+    const at = view.attachments;
+    for (const db of at.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db);
+      const A = view.project(a), B = view.project(b), R = Math.max(3, u * r);
+      ctx.strokeStyle = "rgba(200,220,255,0.5)";
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y);
+      ctx.lineTo(B.x, B.y);
+      ctx.stroke();
+      for (const c of [A, B]) for (let i = 0; i < 6; i++) {
+        const t = (i / 6) * Math.PI * 2;
+        ctx.drawImage(starBlue, c.x + Math.cos(t) * R - 4, c.y + Math.sin(t) * R - 4, 8, 8);
+      }
+    }
+    for (const [a, b] of at.bands) {
+      const A = view.project(a), B = view.project(b);
+      for (let i = 0; i <= 14; i++) {
+        const t = i / 14, tw = 6 + 4 * Math.abs(Math.sin(now * 3 + i));
+        ctx.drawImage(starGold, A.x + (B.x - A.x) * t - tw / 2, A.y + (B.y - A.y) * t - tw / 2, tw, tw);
+      }
+    }
+    if (at.string) {
+      const [A, B] = at.string.map((p) => view.project(p));
+      ctx.strokeStyle = "rgba(200,220,255,0.25)";
+      ctx.setLineDash([2, 5]);
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y);
+      ctx.lineTo(B.x, B.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
     ctx.globalCompositeOperation = "source-over";
   }

@@ -72,7 +72,15 @@ export function createFigure() {
     cube(0.125, 0.085, 0.25, M.shoe, "foot" + s, [0, -0.034, 0.06], "foot" + s);
   }
 
-  const stone = pixels(noise(16, 16, "g", "G", 9, 0.35));
+  // Props get a pixel texture in their own colour (a cobblestone grey step, wood, the
+  // mat); metal and the see-through wall stay as they are.
+  const grain = canvasTexture(16, 16, (x) => {
+    for (let i = 0; i < 256; i++) {
+      const v = 200 + Math.round(55 * hash(i, 9)) - (hash(i, 10) < 0.3 ? 60 : 0);
+      x.fillStyle = `rgb(${v},${v},${v})`;
+      x.fillRect(i % 16, Math.floor(i / 16), 1, 1);
+    }
+  }, { nearest: true });
   return {
     group: rig.group,
     look: (dark) => ({
@@ -94,7 +102,7 @@ export function createFigure() {
         m.emissive.copy(hlColor).multiplyScalar(0.25);
       }
     },
-    dressProp: propDresser(() => lambert(stone)),
+    dressProp: propDresser((src) => (src.metalness > 0.3 || src.transparent ? src : lambert(grain, src.color))),
     dispose: () => disposeTree(rig.group, [...Object.values(M), ...twins.all()]),
   };
 }

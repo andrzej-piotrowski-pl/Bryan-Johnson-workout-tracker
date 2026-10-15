@@ -3,6 +3,19 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.8.0] - 2026-10-15
+
+### Added
+- **All fifteen animation styles now work on every exercise** (all 62), not just Zone 2, with each exercise's props (wall, door, step, box, mat, sofa, chair, bench, doorframe and bar), dumbbells, bands and the string drawn in the style's own way.
+- **Settings → Animation style**: pick which exercise the preview and the style cards show.
+
+### Changed
+- Every exercise now shows your chosen style (Athlete unless you picked another). Pick Mannequin to get the original grey figure back everywhere.
+- In every style the muscles the exercise works light up, and the beating heart appears only on cardio.
+- Blueprint's title block names the exercise, and it dimensions steps and boxes only when there is one. Doodle has jokes for each kind of exercise and tallies the reps as they're counted; its speech bubble no longer covers the figure.
+- **Try styles live** opens today's session, or the exercise in the preview on a phone or a rest day.
+- The Animation style section is no longer marked as a test.
+
 ## [1.7.1] - 2026-10-15
 
 ### Fixed

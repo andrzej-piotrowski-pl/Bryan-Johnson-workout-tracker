@@ -10,9 +10,12 @@
 import { GROUPS } from "../mannequin.js";
 
 // The regions (the mannequin's part names) the highlighted muscle groups light up.
+// Heart work is kept apart (lit.heart): flat styles draw a heart for it, and keep the
+// chest region for chest muscles.
 export function litRegions(groups = []) {
   const lit = new Set();
-  for (const g of groups) for (const n of GROUPS[g] || []) lit.add(n);
+  for (const g of groups) if (g !== "heart") for (const n of GROUPS[g] || []) lit.add(n);
+  lit.heart = groups.includes("heart");
   return lit;
 }
 
@@ -48,31 +51,128 @@ export function bodyPieces(J, view) {
   return pieces.sort((a, b) => b.z - a.z);
 }
 
-// The faces of a box-shaped prop (step, box), projected, far to near, each with the
-// share of light it gets (top 1, sides less).
-export function boxFaces(spec, view) {
-  if (spec.type !== "step" && spec.type !== "box") return [];
-  const w = spec.w ?? (spec.type === "step" ? 0.62 : 0.45);
-  const d = spec.d ?? (spec.type === "step" ? 0.34 : 0.42);
-  const h = spec.h ?? (spec.type === "step" ? 0.18 : 0.45);
-  const [x0 = 0, , z0 = 0] = spec.pos || [];
-  const a = ((spec.rotY || 0) * Math.PI) / 180;
-  const corner = (sx, y, sz) => {
-    const lx = (sx * w) / 2, lz = (sz * d) / 2;
-    return view.project({ x: x0 + lx * Math.cos(a) + lz * Math.sin(a), y, z: z0 - lx * Math.sin(a) + lz * Math.cos(a) });
-  };
-  const c = {};
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (const [k, y] of [["b", 0], ["t", h]]) c[k + sx + sz] = corner(sx, y, sz);
+// ---------- props ----------
+//
+// Every prop (props.js) as simple solids: boxes in the prop's own frame, plus a wedge
+// for the slant board. kind says what it's made of, so a style can colour it:
+// "prop", "propDark", "wood", "metal", "mat", "band" or "wall" (see-through: ghost).
+
+function solids(spec) {
+  const B = (kind, cx, cy, cz, sx, sy, sz) => ({ kind, box: [cx, cy, cz, sx, sy, sz] });
+  switch (spec.type) {
+    case "wall": {
+      const w = spec.w ?? 2.2, h = spec.h ?? 2.3;
+      return [B("wall", 0, h / 2, 0, w, h, 0.05)];
+    }
+    case "step":
+    case "box": {
+      const step = spec.type === "step";
+      const w = spec.w ?? (step ? 0.62 : 0.45), d = spec.d ?? (step ? 0.34 : 0.42), h = spec.h ?? (step ? 0.18 : 0.45);
+      return [B(step ? "prop" : "wood", 0, h / 2, 0, w, h, d)];
+    }
+    case "bench": {
+      const w = spec.w ?? 0.42, d = spec.d ?? 1.15, h = spec.h ?? 0.46;
+      return [B("prop", 0, h - 0.04, 0, w, 0.08, d), ...[-1, 1].map((k) => B("propDark", 0, (h - 0.08) / 2, k * (d / 2 - 0.08), w * 0.8, h - 0.08, 0.06))];
+    }
+    case "chair": {
+      const s = 0.44, h = spec.h ?? 0.45, o = s / 2 - 0.03;
+      const parts = [B("wood", 0, h, 0, s, 0.05, s)];
+      for (const [x, z] of [[-o, -o], [o, -o], [-o, o], [o, o]]) parts.push(B("propDark", x, h / 2, z, 0.035, h, 0.035));
+      if (spec.back !== false) parts.push(B("wood", 0, h + 0.24, -s / 2 + 0.02, s, 0.42, 0.04));
+      return parts;
+    }
+    case "sofa": {
+      const w = spec.w ?? 1.7, d = 0.85;
+      return [B("prop", 0, 0.21, 0, w, 0.42, d), B("propDark", 0, 0.58, -d / 2 + 0.1, w, 0.42, 0.2)];
+    }
+    case "slant": {
+      const w = spec.w ?? 0.46, d = spec.d ?? 0.38;
+      return [{ kind: "wood", wedge: [w, d, d * Math.tan(((spec.angle ?? 14) * Math.PI) / 180)] }];
+    }
+    case "mat":
+      return [B("mat", 0, 0.006, 0, spec.w ?? 0.62, 0.012, spec.d ?? 1.85)];
+    case "doorframe": {
+      const w = spec.w ?? 0.9, h = spec.h ?? 2.05;
+      const parts = [...[-1, 1].map((k) => B("prop", k * (w / 2 + 0.035), h / 2, 0, 0.07, h, 0.14)), B("prop", 0, h + 0.04, 0, w + 0.14, 0.08, 0.14)];
+      if (spec.bar) parts.push(B("metal", 0, spec.barH ?? 2.0, spec.barZ ?? 0.08, w + 0.12, 0.032, 0.032));
+      return parts;
+    }
+    case "door": {
+      const w = spec.w ?? 0.86, h = 2.02;
+      const parts = [B("prop", 0, h / 2, 0, w, h, 0.04), ...[-1, 1].map((k) => B("propDark", k * (w / 2 + 0.03), (h + 0.06) / 2, 0, 0.06, h + 0.06, 0.1))];
+      if (spec.anchorH != null) parts.push(B("band", spec.anchorX ?? 0, spec.anchorH, 0.04, 0.044, 0.044, 0.06));
+      return parts;
+    }
+    case "bar":
+      return [B("metal", 0, spec.h ?? 2.0, 0, spec.w ?? 1.0, 0.032, 0.032)];
+    default:
+      return [];
+  }
+}
+
+// A prop's solids in world space: boxes as { kind, c: [x, y, z], h: [half sizes], yaw }
+// and the slant as { kind, wedge: [w, d, h], c, yaw } (high edge at its back, −Z).
+export function propParts(spec) {
+  const [x0 = 0, y0 = 0, z0 = 0] = spec.pos || [];
+  const yaw = ((spec.rotY || 0) * Math.PI) / 180;
+  const cos = Math.cos(yaw), sin = Math.sin(yaw);
+  return solids(spec).map((s) => {
+    if (s.wedge) return { kind: s.kind, wedge: s.wedge, c: [x0, y0, z0], yaw };
+    const [cx, cy, cz, sx, sy, sz] = s.box;
+    return { kind: s.kind, c: [x0 + cx * cos + cz * sin, y0 + cy, z0 - cx * sin + cz * cos], h: [sx / 2, sy / 2, sz / 2], yaw };
+  });
+}
+
+// The faces of a solid in world space, each with its outward normal and the share of
+// light it gets (top 1, front and back 0.62, sides 0.78, underneath 0.5).
+function solidFaces(part) {
+  const cos = Math.cos(part.yaw), sin = Math.sin(part.yaw);
+  const [x0, y0, z0] = part.c;
+  const W = (x, y, z) => ({ x: x0 + x * cos + z * sin, y: y0 + y, z: z0 - x * sin + z * cos });
+  const N = (x, y, z) => ({ x: x * cos + z * sin, y, z: -x * sin + z * cos });
+  if (part.wedge) {
+    const [w, d, h] = part.wedge, a = w / 2, b = d / 2;
+    const l = Math.hypot(d, h);
+    return [
+      { light: 0.95, n: N(0, d / l, h / l), pts: [W(-a, 0, b), W(a, 0, b), W(a, h, -b), W(-a, h, -b)] },
+      { light: 0.62, n: N(0, 0, -1), pts: [W(-a, 0, -b), W(-a, h, -b), W(a, h, -b), W(a, 0, -b)] },
+      { light: 0.78, n: N(1, 0, 0), pts: [W(a, 0, b), W(a, 0, -b), W(a, h, -b)] },
+      { light: 0.78, n: N(-1, 0, 0), pts: [W(-a, 0, b), W(-a, h, -b), W(-a, 0, -b)] },
+    ];
+  }
+  const [hx, hy, hz] = part.h;
+  // The box's centre is already in world space; build the faces around it in its frame.
+  const C = (x, y, z) => ({ x: part.c[0] + x * cos + z * sin, y: part.c[1] + y, z: part.c[2] - x * sin + z * cos });
   const faces = [
-    { light: 1, pts: [c["t-1-1"], c["t1-1"], c["t11"], c["t-11"]] },
-    { light: 0.62, pts: [c["b-11"], c["b11"], c["t11"], c["t-11"]] },
-    { light: 0.62, pts: [c["b-1-1"], c["b1-1"], c["t1-1"], c["t-1-1"]] },
-    { light: 0.78, pts: [c["b1-1"], c["b11"], c["t11"], c["t1-1"]] },
-    { light: 0.78, pts: [c["b-1-1"], c["b-11"], c["t-11"], c["t-1-1"]] },
+    { light: 1, n: N(0, 1, 0), pts: [C(-hx, hy, -hz), C(hx, hy, -hz), C(hx, hy, hz), C(-hx, hy, hz)] },
+    { light: 0.62, n: N(0, 0, 1), pts: [C(-hx, -hy, hz), C(hx, -hy, hz), C(hx, hy, hz), C(-hx, hy, hz)] },
+    { light: 0.62, n: N(0, 0, -1), pts: [C(-hx, -hy, -hz), C(hx, -hy, -hz), C(hx, hy, -hz), C(-hx, hy, -hz)] },
+    { light: 0.78, n: N(1, 0, 0), pts: [C(hx, -hy, -hz), C(hx, -hy, hz), C(hx, hy, hz), C(hx, hy, -hz)] },
+    { light: 0.78, n: N(-1, 0, 0), pts: [C(-hx, -hy, -hz), C(-hx, -hy, hz), C(-hx, hy, hz), C(-hx, hy, -hz)] },
   ];
-  // Painted far to near, the faces turned away end up hidden behind the others.
-  for (const f of faces) f.z = f.pts.reduce((s, p) => s + p.z, 0) / 4;
-  return faces.sort((p, q) => q.z - p.z);
+  if (part.c[1] - hy > 0.01) faces.push({ light: 0.5, n: N(0, -1, 0), pts: [C(-hx, -hy, -hz), C(hx, -hy, -hz), C(hx, -hy, hz), C(-hx, -hy, hz)] });
+  return faces;
+}
+
+// A prop's faces on screen: only the ones turned toward the camera, far to near, each
+// { pts, z, light, kind, ghost } (ghost: the see-through wall).
+export function propFaces(spec, view) {
+  const cam = view.camera.pos;
+  const out = [];
+  for (const part of propParts(spec)) {
+    for (const f of solidFaces(part)) {
+      const c = f.pts.reduce((a, p) => ({ x: a.x + p.x / f.pts.length, y: a.y + p.y / f.pts.length, z: a.z + p.z / f.pts.length }), { x: 0, y: 0, z: 0 });
+      if (f.n.x * (cam[0] - c.x) + f.n.y * (cam[1] - c.y) + f.n.z * (cam[2] - c.z) <= 0) continue;
+      const pts = f.pts.map((p) => view.project(p));
+      out.push({ pts, z: pts.reduce((a, p) => a + p.z, 0) / pts.length, light: f.light, kind: part.kind, ghost: part.kind === "wall" });
+    }
+  }
+  return out.sort((p, q) => q.z - p.z);
+}
+
+// The props' faces, all of them sorted together (so a mat under a bench sorts right).
+export function sceneFaces(view) {
+  return view.props.flatMap((spec) => propFaces(spec, view)).sort((p, q) => q.z - p.z);
 }
 
 // A smooth curve through points (Catmull-Rom), `n` samples per span.
@@ -133,4 +233,23 @@ export function horizonY(view) {
   const e = view.camera.world, c = view.camera.pos;
   const fx = -e[8], fz = -e[10], l = Math.hypot(fx, fz) || 1;
   return view.project({ x: c[0] + (fx / l) * 1000, y: c[1], z: c[2] + (fz / l) * 1000 }).y;
+}
+
+// A held dumbbell (from view.attachments) as its two heads: centres a and b, radius and
+// length along the handle, all in metres (props.js builds it the same way).
+export function dumbbellHeads(db) {
+  const o = 0.07 + 0.035 * db.size;
+  const at = (k) => ({ x: db.c.x + db.axis.x * o * k, y: db.c.y + db.axis.y * o * k, z: db.c.z + db.axis.z * o * k });
+  return { a: at(-1), b: at(1), r: 0.056 * db.size, len: 0.07 * db.size };
+}
+
+// Whether a drawn piece should light up: its own region, or one it stands in for in a
+// simple drawing (the shoulder joint goes with the upper arm, the hand with the
+// forearm; "torso" is lit by the chest, the abdomen or the pelvis).
+export function isLit(lit, region) {
+  if (region === "torso") return lit.has("chest") || lit.has("abdomen") || lit.has("pelvis");
+  const side = region.slice(-1);
+  if (region.startsWith("upperArm")) return lit.has(region) || lit.has("shoulder" + side);
+  if (region.startsWith("forearm")) return lit.has(region) || lit.has("hand" + side);
+  return lit.has(region);
 }

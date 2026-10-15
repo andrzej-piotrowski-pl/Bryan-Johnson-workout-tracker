@@ -1,10 +1,11 @@
 // Googly: a fuzzy purple monster in enormous trainers. Its googly eyes run on real
 // physics: each pupil is a little ball with weight, thrown about by every jolt of
 // the head and dropping back with gravity, bouncing off the rim. The antenna wobbles
-// on a spring, the mouth opens wider (buck teeth and all) the harder the step, and
-// the worked muscles turn hot pink and sparkle. Drawn on a 2D canvas, without three.js.
+// on a spring, the mouth opens wider (buck teeth and all) the deeper the knees bend,
+// and the worked muscles turn hot pink and sparkle; heart work beats on its belly.
+// Drawn on a 2D canvas, without three.js.
 
-import { asLayer, boxFaces, fitCanvas, litRegions } from "./flat.js";
+import { asLayer, dumbbellHeads, fitCanvas, isLit, litRegions, sceneFaces } from "./flat.js";
 import { hash } from "./kit.js";
 
 const FUR = "#8a6cff";
@@ -12,7 +13,27 @@ const FUR_DARK = "#6a4fe0";
 const FUR_LIGHT = "#b8a6ff";
 const PINK = "#ff5fa8";
 const PINK_LIGHT = "#ff9ccb";
+const INK = "#2b2140";
 
+// Props in candy colours by kind: [top, sides, front/back, outline]. The see-through
+// wall is a pale ghost.
+const CANDY = {
+  prop: ["#ffd166", "#f4a63a", "#e08e2b", "#7a3b12"],
+  propDark: ["#f2a65a", "#d9822f", "#c06e22", "#6a3210"],
+  wood: ["#8be8c8", "#5fcfaa", "#48b893", "#1f5c4c"],
+  mat: ["#7fdcf0", "#55c4dd", "#3fadc7", "#1d5a6b"],
+  metal: ["#e4e6ee", "#b9bccb", "#a2a6b8", "#4a4e5e"],
+  band: ["#ff6f86", "#ff4f6d", "#e8405e", "#7a1a2c"],
+  wall: ["#fffaf0", "#fff4e0", "#ffeed4", "#c9a27a"],
+};
+
+// Where each region sparkles: between two joints.
+const SPARKS = [
+  ["thighL", "hipL", "kneeL"], ["thighR", "hipR", "kneeR"], ["shinL", "kneeL", "ankleL"], ["shinR", "kneeR", "ankleR"],
+  ["footL", "heelL", "toeL"], ["footR", "heelR", "toeR"], ["upperArmL", "shoulderL", "elbowL"], ["upperArmR", "shoulderR", "elbowR"],
+  ["forearmL", "elbowL", "handL"], ["forearmR", "elbowR", "handR"], ["chest", "thoracic", "neckBase"], ["abdomen", "lumbar", "thoracic"],
+  ["pelvis", "pelvis", "lumbar"], ["neck", "neckBase", "headJoint"],
+];
 function angleAt(a, b, c) {
   const u = [a.x - b.x, a.y - b.y, a.z - b.z], v = [c.x - b.x, c.y - b.y, c.z - b.z];
   const d = (u[0] * v[0] + u[1] * v[1] + u[2] * v[2]) / (Math.hypot(...u) * Math.hypot(...v) || 1);
@@ -84,8 +105,8 @@ export function createFigure() {
     ctx.stroke();
   }
 
-  // A huge trainer from heel to toe.
-  function shoe(heel, toe, u) {
+  // A huge trainer from heel to toe (pink when the feet are worked).
+  function shoe(heel, toe, u, hot) {
     const ang = Math.atan2(toe.y - heel.y, toe.x - heel.x);
     const len = Math.max(u * 0.24, Math.hypot(toe.x - heel.x, toe.y - heel.y) * 1.5);
     const cx = (heel.x + toe.x) / 2 + Math.cos(ang) * len * 0.12, cy = (heel.y + toe.y) / 2 - u * 0.02;
@@ -94,8 +115,8 @@ export function createFigure() {
     ctx.rotate(ang);
     const flip = Math.abs(ang) > Math.PI / 2 ? -1 : 1;
     ctx.scale(1, flip);
-    ctx.fillStyle = "#fff";
-    ctx.strokeStyle = "#2b2140";
+    ctx.fillStyle = hot ? "#ffd3e8" : "#fff";
+    ctx.strokeStyle = INK;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.ellipse(0, -u * 0.012, len * 0.55, u * 0.06, 0, Math.PI, 0);
@@ -104,15 +125,42 @@ export function createFigure() {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = "#ff4f6d";
+    const stripe = hot ? PINK : "#ff4f6d";
+    ctx.fillStyle = stripe;
     ctx.fillRect(-len * 0.5, u * 0.005, len, u * 0.022);
-    ctx.strokeStyle = "#ff4f6d";
+    ctx.strokeStyle = stripe;
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(-len * 0.15, -u * 0.045);
     ctx.quadraticCurveTo(len * 0.05, -u * 0.005, len * 0.25, -u * 0.035);
     ctx.stroke();
     ctx.restore();
+  }
+
+  // A cartoon dumbbell: a dark handle and two chunky round heads with a shine.
+  function dumbbell(view, db, u) {
+    const { a, b, r } = dumbbellHeads(db);
+    const A = view.project(a), B = view.project(b), R = Math.max(3, u * r * 1.15);
+    ctx.lineCap = "round";
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = Math.max(2, R * 0.45);
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y);
+    ctx.lineTo(B.x, B.y);
+    ctx.stroke();
+    for (const c of [A, B]) {
+      ctx.fillStyle = "#3a2f5c";
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, R, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.beginPath();
+      ctx.arc(c.x - R * 0.35, c.y - R * 0.35, R * 0.28, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   function sparkle(x, y, s, a) {
@@ -185,34 +233,40 @@ export function createFigure() {
     ctx.ellipse(ground.x, ground.y, u * 0.42, u * 0.07, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // The step: a chunky candy-coloured block.
-    for (const spec of view.props) {
-      for (const f of boxFaces(spec, view)) {
-        ctx.fillStyle = f.light === 1 ? "#ffd166" : f.light > 0.7 ? "#f4a63a" : "#e08e2b";
-        ctx.strokeStyle = "#7a3b12";
-        ctx.lineWidth = 2;
-        ctx.lineJoin = "round";
-        ctx.beginPath();
-        f.pts.forEach((p) => ctx.lineTo(p.x, p.y));
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      }
+    // The props: chunky candy-coloured blocks.
+    ctx.lineJoin = "round";
+    for (const f of sceneFaces(view)) {
+      const c = CANDY[f.kind] || CANDY.prop;
+      ctx.globalAlpha = f.ghost ? 0.4 : 1;
+      ctx.fillStyle = f.light >= 0.95 ? c[0] : f.light > 0.7 ? c[1] : c[2];
+      ctx.strokeStyle = c[3];
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      f.pts.forEach((p) => ctx.lineTo(p.x, p.y));
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
     }
+    ctx.globalAlpha = 1;
 
     const near = P("hipL").z + P("shoulderL").z < P("hipR").z + P("shoulderR").z ? "L" : "R";
     const far = near === "L" ? "R" : "L";
-    const furOf = (region, dark) => (lit.has(region) ? (dark ? "#e2448f" : PINK) : dark ? FUR_DARK : FUR);
-    const tipOf = (region) => (lit.has(region) ? PINK_LIGHT : FUR_LIGHT);
+    const furOf = (region, dark) => (isLit(lit, region) ? (dark ? "#e2448f" : PINK) : dark ? FUR_DARK : FUR);
+    const tipOf = (region) => (isLit(lit, region) ? PINK_LIGHT : FUR_LIGHT);
     const limbs = (s, dark) => {
       furLimb([P("hip" + s), P("knee" + s)], u * 0.1, furOf("thigh" + s, dark), tipOf("thigh" + s), s === "L" ? 3 : 4);
       furLimb([P("knee" + s), P("ankle" + s)], u * 0.085, furOf("shin" + s, dark), tipOf("shin" + s), s === "L" ? 5 : 6);
-      shoe(P("heel" + s), P("toe" + s), u);
+      shoe(P("heel" + s), P("toe" + s), u, lit.has("foot" + s));
     };
+    // Each dumbbell goes with the hand nearest it (a goblet with either), drawn under the mitten.
+    const held = { L: [], R: [] };
+    for (const db of view.attachments.dumbbells) held[db.c.distanceTo(J.handL) < db.c.distanceTo(J.handR) ? "L" : "R"].push(db);
     const arm = (s, dark) => {
-      furLimb([P("shoulder" + s), P("elbow" + s), P("hand" + s)], u * 0.07, furOf("upperArm" + s, dark), tipOf("upperArm" + s), s === "L" ? 7 : 8);
+      furLimb([P("shoulder" + s), P("elbow" + s)], u * 0.07, furOf("upperArm" + s, dark), tipOf("upperArm" + s), s === "L" ? 7 : 8);
+      furLimb([P("elbow" + s), P("hand" + s)], u * 0.066, furOf("forearm" + s, dark), tipOf("forearm" + s), s === "L" ? 9 : 10);
+      for (const db of held[s]) dumbbell(view, db, u);
       const hp = P("hand" + s);
-      ctx.fillStyle = dark ? FUR_DARK : FUR;
+      ctx.fillStyle = isLit(lit, "forearm" + s) ? (dark ? "#e2448f" : PINK) : dark ? FUR_DARK : FUR;
       ctx.beginPath();
       ctx.arc(hp.x, hp.y, u * 0.05, 0, Math.PI * 2);
       ctx.fill();
@@ -231,19 +285,19 @@ export function createFigure() {
     const cx = (nb.x + pv.x) / 2, cy = (nb.y + pv.y) / 2 + u * 0.02;
     const rot = Math.atan2(pv.y - nb.y, pv.x - nb.x) - Math.PI / 2;
     const len = Math.hypot(pv.x - nb.x, pv.y - nb.y);
-    const bodyLit = lit.has("chest") || lit.has("abdomen") || lit.has("pelvis");
-    furBlob(cx, cy, u * 0.2, len * 0.62 + u * 0.06, rot, FUR, FUR_LIGHT, 11, u * 0.035);
+    const bodyLit = isLit(lit, "torso");
+    furBlob(cx, cy, u * 0.2, len * 0.62 + u * 0.06, rot, bodyLit ? PINK : FUR, bodyLit ? PINK_LIGHT : FUR_LIGHT, 11, u * 0.035);
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(rot);
-    ctx.fillStyle = "#c9b9ff";
+    ctx.fillStyle = bodyLit ? "#ffc2de" : "#c9b9ff";
     ctx.beginPath();
     ctx.ellipse(0, u * 0.03, u * 0.12, len * 0.42, 0, 0, Math.PI * 2);
     ctx.fill();
-    if (bodyLit) {
+    if (lit.heart) {
       // A heart on the belly, beating.
       const s = u * 0.05 * beat;
-      ctx.fillStyle = PINK;
+      ctx.fillStyle = bodyLit ? "#e8174f" : PINK;
       ctx.beginPath();
       ctx.moveTo(0, s * 0.9);
       ctx.bezierCurveTo(-s * 1.6, -s * 0.2, -s * 0.8, -s * 1.4, 0, -s * 0.5);
@@ -252,7 +306,34 @@ export function createFigure() {
     }
     ctx.restore();
 
-    // The head: a big furry ball with an antenna, huge eyes and a mouth.
+    // Bands as stretchy candy ropes; the string as a faint dashed line.
+    ctx.lineCap = "round";
+    for (const [a, b] of view.attachments.bands) {
+      const A = view.project(a), B = view.project(b);
+      ctx.strokeStyle = "#e8405e";
+      ctx.lineWidth = Math.max(3, u * 0.022);
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y);
+      ctx.lineTo(B.x, B.y);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.5)";
+      ctx.lineWidth = Math.max(1, u * 0.006);
+      ctx.stroke();
+    }
+    if (view.attachments.string) {
+      const [A, B] = view.attachments.string.map((p) => view.project(p));
+      ctx.strokeStyle = "rgba(122,59,18,0.55)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y);
+      ctx.lineTo(B.x, B.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // The head: a big furry ball with an antenna, huge eyes and a mouth; a pink fur
+    // collar when the neck is worked.
     const hd = P("head");
     const hx = hd.x, hy = hd.y - u * 0.04, hr = u * 0.16;
     // Antenna on a spring.
@@ -274,6 +355,10 @@ export function createFigure() {
     ctx.beginPath();
     ctx.arc(antenna.x, antenna.y, u * 0.028, 0, Math.PI * 2);
     ctx.fill();
+    if (lit.has("neck")) {
+      const nk = P("neckBase");
+      furBlob(nk.x, nk.y - u * 0.02, u * 0.15, u * 0.07, rot, PINK, PINK_LIGHT, 17, u * 0.03);
+    }
     furBlob(hx, hy, hr, hr * 0.95, 0, FUR, FUR_LIGHT, 13, u * 0.035);
 
     // Mouth: wider open the deeper the knee bends.
@@ -324,16 +409,16 @@ export function createFigure() {
     limbs(near, false);
 
     // Sparkles around the worked muscles.
-    for (const [region, a, b] of [["thighL", "hipL", "kneeL"], ["thighR", "hipR", "kneeR"], ["chest", "thoracic", "neckBase"]]) {
-      if (!lit.has(region)) continue;
+    SPARKS.forEach(([region, a, b], r) => {
+      if (!isLit(lit, region)) return;
       const A = P(a), B = P(b);
       for (let i = 0; i < 3; i++) {
-        const ph = still ? 0.5 : (now * 1.3 + i * 0.33 + hash(i, region.length)) % 1;
-        const t = hash(i, region.length + 7);
-        const x = A.x + (B.x - A.x) * t + (hash(i, 3) - 0.5) * u * 0.3, y = A.y + (B.y - A.y) * t + (hash(i, 4) - 0.5) * u * 0.2;
+        const ph = still ? 0.5 : (now * 1.3 + i * 0.33 + hash(i, r)) % 1;
+        const t = hash(i, r + 40);
+        const x = A.x + (B.x - A.x) * t + (hash(i, r + 80) - 0.5) * u * 0.3, y = A.y + (B.y - A.y) * t + (hash(i, r + 120) - 0.5) * u * 0.2;
         sparkle(x, y, u * 0.03 * Math.sin(Math.PI * ph), 0.95);
       }
-    }
+    });
   }
 
   return {

@@ -1,9 +1,10 @@
 // ASCII: the figure typed out in characters on a green-screen terminal. The scene is
 // rasterised at one pixel per character cell and each cell's brightness picks a
-// character from RAMP: a dotted floor grid, the step, then the body, its near side
-// brighter, the worked muscles in amber. Drawn as text in a <pre>, without three.js.
+// character from RAMP: a dotted floor grid, the props, then the body, its near side
+// brighter, the worked muscles and the bands in amber, a ♥ for heart work. Drawn as
+// text in a <pre>, without three.js.
 
-import { asLayer, boxFaces, litRegions } from "./flat.js";
+import { asLayer, dumbbellHeads, isLit, litRegions, sceneFaces } from "./flat.js";
 
 const RAMP = " .,:-=+*#%@";
 const BG = "#03130a";
@@ -30,6 +31,7 @@ export function createFigure() {
   let lit = new Set();
   let grid = { cols: 0, rows: 0, cw: 1, ch: 1, font: 10, w: 0, h: 0 };
   let cells = [];
+  let heartCell = null; // where a beating ♥ goes, for heart work
 
   // Cell size for the stage's size: about 5.5 px wide, 48 to 140 columns.
   function layout(w, h) {
@@ -61,8 +63,8 @@ export function createFigure() {
       // Floor grid, 30 cm squares.
       rx.strokeStyle = "rgb(80,0,0)";
       rx.lineWidth = grid.cw * 0.7;
-      for (let i = -4; i <= 4; i++) {
-        for (const [a, b] of [[{ x: i * 0.3, z: -1.2 }, { x: i * 0.3, z: 1.2 }], [{ x: -1.2, z: i * 0.3 }, { x: 1.2, z: i * 0.3 }]]) {
+      for (let i = -5; i <= 5; i++) {
+        for (const [a, b] of [[{ x: i * 0.3, z: -1.5 }, { x: i * 0.3, z: 1.5 }], [{ x: -1.5, z: i * 0.3 }, { x: 1.5, z: i * 0.3 }]]) {
           const p = view.project({ x: a.x, y: 0, z: a.z }), q = view.project({ x: b.x, y: 0, z: b.z });
           rx.beginPath();
           rx.moveTo(p.x, p.y);
@@ -70,12 +72,16 @@ export function createFigure() {
           rx.stroke();
         }
       }
-      for (const spec of view.props) {
-        for (const f of boxFaces(spec, view)) {
-          rx.fillStyle = `rgb(${Math.round(70 + 90 * f.light)},0,0)`;
-          rx.beginPath();
-          for (const p of f.pts) rx.lineTo(p.x, p.y);
-          rx.closePath();
+      for (const f of sceneFaces(view)) {
+        rx.beginPath();
+        for (const p of f.pts) rx.lineTo(p.x, p.y);
+        rx.closePath();
+        if (f.ghost) {
+          rx.strokeStyle = "rgb(70,0,0)"; // the see-through wall: just its edges
+          rx.lineWidth = grid.cw * 0.6;
+          rx.stroke();
+        } else {
+          rx.fillStyle = f.kind === "metal" ? "rgb(210,0,0)" : f.kind === "band" ? "rgb(200,255,0)" : `rgb(${Math.round(70 + 90 * f.light)},0,0)`;
           rx.fill();
         }
       }
@@ -84,7 +90,7 @@ export function createFigure() {
       const near = P("hipL").z + P("shoulderL").z < P("hipR").z + P("shoulderR").z ? "L" : "R";
       const far = near === "L" ? "R" : "L";
       const limb = (names, width, bright, region) => {
-        const g = lit.has(region) ? 255 : 0;
+        const g = isLit(lit, region) ? 255 : 0;
         const pts = names.map(P);
         for (const [k, b] of [[1, 0.55], [0.5, 1]]) {
           rx.strokeStyle = `rgb(${Math.round(bright * b)},${g},0)`;
@@ -104,7 +110,7 @@ export function createFigure() {
       side(far, 165);
       const torso = ["shoulderL", "shoulderR", "hipR", "hipL"].map(P);
       for (const [k, b] of [[0.24, 0.6], [0.08, 1]]) {
-        rx.fillStyle = rx.strokeStyle = `rgb(${Math.round(225 * b)},${lit.has("chest") ? 255 : 0},0)`;
+        rx.fillStyle = rx.strokeStyle = `rgb(${Math.round(225 * b)},${isLit(lit, "torso") ? 255 : 0},0)`;
         rx.lineWidth = u * k;
         rx.beginPath();
         for (const p of torso) rx.lineTo(p.x, p.y);
@@ -112,6 +118,7 @@ export function createFigure() {
         rx.fill();
         rx.stroke();
       }
+      limb(["neckBase", "headJoint"], 0.08, 230, "neck");
       const head = P("head");
       for (const [r, b] of [[0.13, 0.6], [0.085, 1]]) {
         rx.fillStyle = `rgb(${Math.round(255 * b)},0,0)`;
@@ -120,7 +127,42 @@ export function createFigure() {
         rx.fill();
       }
       side(near, 255);
-    }
+      // What the hands hold: dumbbells bright, bands in amber, the string dim.
+      const at = view.attachments;
+      for (const db of at.dumbbells) {
+        const { a, b, r } = dumbbellHeads(db);
+        const A = view.project(a), B = view.project(b);
+        rx.strokeStyle = rx.fillStyle = "rgb(235,0,0)";
+        rx.lineWidth = u * 0.04;
+        rx.beginPath();
+        rx.moveTo(A.x, A.y);
+        rx.lineTo(B.x, B.y);
+        rx.stroke();
+        for (const p of [A, B]) {
+          rx.beginPath();
+          rx.arc(p.x, p.y, Math.max(grid.cw * 0.7, u * r * 1.2), 0, Math.PI * 2);
+          rx.fill();
+        }
+      }
+      rx.lineWidth = Math.max(grid.cw * 0.8, u * 0.025);
+      for (const [a, b] of at.bands) {
+        const A = view.project(a), B = view.project(b);
+        rx.strokeStyle = "rgb(200,255,0)";
+        rx.beginPath();
+        rx.moveTo(A.x, A.y);
+        rx.lineTo(B.x, B.y);
+        rx.stroke();
+      }
+      if (at.string) {
+        const [A, B] = at.string.map((p) => view.project(p));
+        rx.strokeStyle = "rgb(90,0,0)";
+        rx.beginPath();
+        rx.moveTo(A.x, A.y);
+        rx.lineTo(B.x, B.y);
+        rx.stroke();
+      }
+      heartCell = lit.heart ? view.project(J.thoracic.clone().lerp(J.neckBase, 0.45)) : null;
+    } else heartCell = null;
     // Pixels → characters; runs of amber (<b>) and dim (<i>) cells are wrapped.
     const data = rx.getImageData(0, 0, cols, rows).data;
     cells = [];
@@ -133,6 +175,7 @@ export function createFigure() {
         let ch = RAMP[Math.min(RAMP.length - 1, Math.floor((data[i] / 256) * RAMP.length))];
         let tag = data[i + 1] > 128 && data[i] > 40 ? "b" : data[i] < 110 && ch !== " " ? "i" : "";
         if (y === 1 && x >= 2 && x < 2 + label.length) [ch, tag] = [label[x - 2], ""];
+        if (heartCell && x === Math.round((heartCell.x / w) * cols) && y === Math.round((heartCell.y / h) * rows - 0.5) && Math.floor(performance.now() / 420) % 3) [ch, tag] = ["♥", "b"];
         cells.push([ch, tag]);
         if (tag !== open) {
           if (open) line += `</${open}>`;

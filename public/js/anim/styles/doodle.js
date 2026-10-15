@@ -3,26 +3,30 @@
 // animation. The worked muscles get yellow highlighter, the heart a red-pen doodle;
 // the face strains on the way up, sweat drops fly, motion lines trail the feet, the
 // reps pile up as tally marks in the margin and a speech bubble complains about it
-// all. Drawn as SVG, without three.js.
+// all, with opinions to suit the kind of exercise. Props are doodled boxes with
+// hatched sides, dumbbells two scribbled circles on a stick, bands in red pen. Drawn
+// as SVG, without three.js.
 
-import { asLayer, boxFaces, litRegions } from "./flat.js";
+import { asLayer, dumbbellHeads, isLit, litRegions, sceneFaces } from "./flat.js";
 import { hash } from "./kit.js";
+import { EXERCISES } from "../../data/exercises.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const INK = "#22409a";
 const RED = "#d8332f";
 const HAND = `font-family="'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Segoe Print', 'Bradley Hand', cursive"`;
-const QUOTES = [
-  "Step up. Step down. Repeat until enlightened.",
-  "My legs just filed a complaint.",
-  "Zone 2 means I can still talk. Barely.",
-  "Is this the step? It's always the step.",
-  "Heart rate: yes.",
-  "I'm not sweating. I'm sparkling.",
-  "Up, up, down, down... no cheat codes?",
-  "Somewhere, a staircase is proud of me.",
-  "Talking pace. Talking. Pace. Pace.",
-];
+// Opinions, by the exercise's category; a few of the general ones join every list.
+const GENERAL = ["I'm not sweating. I'm sparkling.", "Form first. Ego later.", "My future self better say thanks.", "Remind me why I signed up?"];
+const QUOTES = {
+  "Cardio (indoor)": ["Step up. Step down. Repeat until enlightened.", "Zone 2 means I can still talk. Barely.", "Heart rate: yes.", "Talking pace. Talking. Pace. Pace.", "Up, up, down, down... no cheat codes?", "Somewhere, a staircase is proud of me."],
+  "Legs & knees": ["My legs just filed a complaint.", "Knees over toes. Dignity... pending.", "Every day is leg day now.", "Stairs will fear me.", "Squat like nobody's watching. Someone is."],
+  "Upper body": ["Arms: please clap.", "These dumbbells are heavier than they look.", "Building shoulders for carrying groceries.", "One more. Then one more. Then one more.", "My T-shirt sleeves are nervous."],
+  "Core & stability": ["Hold still. Hold. Still. Wobble.", "My core has entered the chat.", "A plank minute lasts about a week.", "Stability is a state of mind. Not mine.", "Abs: under construction."],
+  "Mobility & stretching": ["Stretching! Lying down with intent.", "Breathe in... ow... breathe out.", "Somewhere a yoga teacher just sighed.", "My hips don't lie. They complain.", "Flexible schedule, flexible hamstrings."],
+  Posture: ["Chin tucked. Dignity intact.", "Phone, it's not you, it's my neck.", "Shoulders back, like I own the place.", "Slightly taller than yesterday.", "My spine sends its regards."],
+  Power: ["Boing.", "Jump like the floor owes you money.", "Gravity: 1. Me: also 1.", "Land soft. Look cool.", "My calves just turned into springs."],
+  "Warm-up & balance": ["Just warming up. Spiritually.", "Balance is easy. Watch this. Wait—", "Flamingo mode: on.", "Loosening the hinges.", "Small circles. Big circles. Then lunch."],
+};
 const n = (v) => v.toFixed(1);
 
 // A smooth path through points (Catmull-Rom as cubic Béziers).
@@ -87,7 +91,7 @@ export function createFigure() {
   let still = false;
   let beat = 1;
   let reps = 0;
-  let up = false;
+  let exId = "";
   const trail = { L: [], R: [] }; // recent foot positions on screen, for motion lines
 
   function draw(view) {
@@ -114,11 +118,7 @@ export function createFigure() {
         `<path d="${curve(wobble(pts, sd + 500, amp))}" fill="none" stroke="${color}" stroke-width="${width * 0.5}" stroke-opacity="0.45" stroke-linecap="round"/>`;
     };
 
-    // Reps as tally marks in the margin: one each time the hips come up onto the step.
-    if (!still) {
-      if (!up && J.pelvis.y > 1.06) (up = true), reps++;
-      if (up && J.pelvis.y < 0.99) up = false;
-    }
+    // Reps as tally marks in the margin, as the stage counts them.
     const shown = still ? 7 : reps;
     o += `<text x="52" y="38" fill="${INK}" font-size="13" ${HAND}>reps:</text>`;
     for (let i = 0; i < Math.min(shown, 40); i++) {
@@ -135,24 +135,29 @@ export function createFigure() {
     for (let i = 0; i <= 9; i++) scribble.push({ x: g.x - u * 0.25 + (u * 0.5 * i) / 9, y: g.y - 3 + (i % 2) * 6 });
     o += `<path d="${curve(wobble(scribble, seed + 3, amp, 30))}" fill="none" stroke="${INK}" stroke-width="1.1" stroke-opacity="0.35"/>`;
 
-    // The step, outlined and hatched.
-    for (const spec of view.props) {
-      for (const f of boxFaces(spec, view)) {
-        o += `<path d="M${f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${f.light === 1 ? "#fdfbf3" : `url(#${id}-hatch)`}"/>`;
-        o += pen([...f.pts, f.pts[0]], 40 + Math.round(f.light * 10) + seed, 1.8);
+    // Props, outlined and hatched (the see-through wall only dashed, bars in thick pen).
+    sceneFaces(view).forEach((f, i) => {
+      if (f.ghost) {
+        o += `<path d="M${f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="none" stroke="${INK}" stroke-width="1.2" stroke-dasharray="5 6" stroke-opacity="0.45"/>`;
+        return;
       }
-    }
+      o += `<path d="M${f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${f.kind === "band" ? RED : f.light === 1 ? "#fdfbf3" : `url(#${id}-hatch)`}"/>`;
+      o += pen([...f.pts, f.pts[0]], 40 + i * 7 + seed, f.kind === "metal" ? 2.6 : 1.8);
+    });
 
     // Highlighter on the worked muscles, under the ink.
     const marker = (pts, width) => `<path d="M${pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}" fill="none" stroke="#ffe94a" stroke-opacity="0.75" stroke-width="${n(width)}" stroke-linecap="square" style="mix-blend-mode:multiply"/>`;
     for (const s of ["L", "R"]) {
-      if (lit.has("thigh" + s)) o += marker([P("hip" + s), P("knee" + s)], u * 0.11);
-      if (lit.has("shin" + s)) o += marker([P("knee" + s), P("ankle" + s)], u * 0.09);
-      if (lit.has("upperArm" + s)) o += marker([P("shoulder" + s), P("elbow" + s)], u * 0.08);
-      if (lit.has("forearm" + s)) o += marker([P("elbow" + s), P("hand" + s)], u * 0.07);
+      if (isLit(lit, "thigh" + s)) o += marker([P("hip" + s), P("knee" + s)], u * 0.11);
+      if (isLit(lit, "shin" + s)) o += marker([P("knee" + s), P("ankle" + s)], u * 0.09);
+      if (isLit(lit, "foot" + s)) o += marker([P("heel" + s), P("toe" + s)], u * 0.07);
+      if (isLit(lit, "upperArm" + s)) o += marker([P("shoulder" + s), P("elbow" + s)], u * 0.08);
+      if (isLit(lit, "forearm" + s)) o += marker([P("elbow" + s), P("hand" + s)], u * 0.07);
     }
     if (lit.has("pelvis")) o += marker([P("hipL"), P("hipR")], u * 0.14);
     if (lit.has("abdomen")) o += marker([P("lumbar"), P("thoracic")], u * 0.12);
+    if (lit.has("chest")) o += marker([P("thoracic"), P("neckBase")], u * 0.13);
+    if (lit.has("neck")) o += marker([P("neckBase"), P("headJoint")], u * 0.07);
 
     // The stick figure: arms from one shoulder point, legs from the hips, little feet.
     const neck = view.project(J.neckBase.clone().lerp(J.thoracic, 0.15));
@@ -218,7 +223,21 @@ export function createFigure() {
     }
 
     // A red-pen heart by the chest when the heart is working.
-    if (lit.has("chest")) {
+    // What the hands hold: dumbbells as two scribbled circles on a stick, bands in red pen.
+    const at = view.attachments;
+    for (const db of at.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db);
+      const A = view.project(a), B = view.project(b), R = Math.max(2.5, u * r);
+      o += pen([A, B], seed + 160, 2.2);
+      for (const c of [A, B]) o += `<path d="${wobblyCircle(c, R, seed + Math.round(c.x), amp * 0.5)}" fill="#fdfbf3" stroke="${INK}" stroke-width="1.8"/>`;
+    }
+    at.bands.forEach(([a, b], i) => (o += pen([view.project(a), view.project(b)], seed + 170 + i, 1.6, RED)));
+    if (at.string) {
+      const [a, b] = at.string.map((p) => view.project(p));
+      o += `<path d="M${n(a.x)} ${n(a.y)}L${n(b.x)} ${n(b.y)}" stroke="${INK}" stroke-width="1" stroke-dasharray="3 5" stroke-opacity="0.6"/>`;
+    }
+
+    if (lit.heart) {
       const c = view.project(J.thoracic.clone().lerp(J.neckBase, 0.4));
       const s = u * 0.045 * beat, x = c.x + u * 0.16, y = c.y - u * 0.02;
       o += `<path d="M${n(x)} ${n(y + s)}C${n(x - s * 1.6)} ${n(y - s * 0.2)} ${n(x - s * 0.8)} ${n(y - s * 1.4)} ${n(x)} ${n(y - s * 0.5)}C${n(x + s * 0.8)} ${n(y - s * 1.4)} ${n(x + s * 1.6)} ${n(y - s * 0.2)} ${n(x)} ${n(y + s)}Z" fill="${RED}" fill-opacity="0.85" stroke="${RED}" stroke-width="1.2"/>`;
@@ -227,27 +246,44 @@ export function createFigure() {
     }
 
     // The speech bubble: a new opinion every few seconds.
-    const quote = QUOTES[still ? 0 : Math.floor(now / 4.2) % QUOTES.length];
+    const pool = [...(QUOTES[(EXERCISES[exId] || {}).cat] || []), ...GENERAL];
+    const quote = pool[still ? 0 : Math.floor(now / 4.2) % pool.length];
     const lines = wrap(quote, 19);
-    const bw = Math.max(...lines.map((l) => l.length)) * 7 + 22, bh = lines.length * 16 + 14;
-    // The first spot round the head that's on the page, off the head and clear of the
-    // stage's buttons (top right).
+    const k = Math.min(1, Math.max(0.72, h / 380)); // a smaller bubble on thumbnails
+    const bw = (Math.max(...lines.map((l) => l.length)) * 7 + 22) * k, bh = (lines.length * 16 + 14) * k;
+    // The first spot round the head (or else elsewhere on the page, nearest the head
+    // first) that's on the page, off the figure and clear of the view buttons an
+    // interactive stage has (top right). If none is, no bubble: better quiet than
+    // covering the figure.
+    const page = [];
+    for (const y of [50, 120, 200, 280]) for (const x of [52, (w - bw) / 2, w - bw - 8]) page.push([x, y]);
+    const far = ([x, y]) => Math.hypot(x + bw / 2 - hd.x, y + bh / 2 - hd.y);
     const spots = [
       [hd.x + r * 1.1, hd.y - r * 1.3 - bh],
       [hd.x - r * 1.1 - bw, hd.y - r * 1.3 - bh],
       [hd.x + r * 1.5, hd.y - bh * 0.6],
       [hd.x - r * 1.5 - bw, hd.y - bh * 0.6],
+      ...page.sort((a, b) => far(a) - far(b)),
     ];
-    const fits = ([x, y]) => x >= 52 && x + bw <= w - 8 && y >= 50 && y + bh <= h - 80 && !(x + bw > w - 112 && y < 190);
-    const [bx, by] = spots.find(fits) || [Math.max(52, Math.min(w - bw - 8, spots[0][0])), Math.max(50, spots[0][1])];
-    const right = bx > hd.x;
-    const tail = right ? { x: bx + 18, y: by + bh } : { x: bx + bw - 18, y: by + bh };
-    const box = [{ x: bx, y: by + 6 }, { x: bx + 6, y: by }, { x: bx + bw - 6, y: by }, { x: bx + bw, y: by + 6 }, { x: bx + bw, y: by + bh - 6 }, { x: bx + bw - 6, y: by + bh }, { x: bx + 6, y: by + bh }, { x: bx, y: by + bh - 6 }];
-    o += `<path d="${curve(wobble([...box, box[0]], seed + 200, amp * 0.8, 24))}" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/>`;
-    const tip = { x: hd.x + (right ? r * 0.75 : -r * 0.75), y: hd.y - r * 0.75 };
-    if (tail.y < tip.y) o += `<path d="M${n(tail.x - 6)} ${n(tail.y - 1)}L${n(tip.x)} ${n(tip.y)}L${n(tail.x + 6)} ${n(tail.y - 1)}" fill="#ffffff" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>`;
-    else o += `<path d="M${n(right ? bx + 1 : bx + bw - 1)} ${n(by + bh / 2 - 6)}L${n(tip.x)} ${n(tip.y)}L${n(right ? bx + 1 : bx + bw - 1)} ${n(by + bh / 2 + 6)}" fill="#ffffff" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>`;
-    lines.forEach((l, i) => (o += `<text x="${n(bx + 11)}" y="${n(by + 20 + i * 16)}" fill="${INK}" font-size="12.5" ${HAND}>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</text>`));
+    const body = ["neckBase", "thoracic", "pelvis", "shoulderL", "shoulderR", "elbowL", "elbowR", "handL", "handR", "kneeL", "kneeR"].map(P);
+    const clear = (x, y) =>
+      (x > hd.x + r * 1.3 || x + bw < hd.x - r * 1.3 || y > hd.y + r * 1.3 || y + bh < hd.y - r * 1.3) &&
+      body.every((p) => p.x < x - 4 || p.x > x + bw + 4 || p.y < y - 4 || p.y > y + bh + 4);
+    const fits = ([x, y]) => x >= 52 && x + bw <= w - 8 && y >= 50 && y + bh <= h - 80 * k && clear(x, y) && !(view.interactive && x + bw > w - 112 && y < 190);
+    const spot = spots.find(fits);
+    if (spot) {
+      const [bx, by] = spot;
+      const right = bx > hd.x;
+      const tip = { x: hd.x + (right ? r * 0.75 : -r * 0.75), y: hd.y + (hd.y < by ? r * 0.2 : -r * 0.75) };
+      // The tail leaves the edge that faces the head (drawn first, so the bubble hides its root).
+      const cx = Math.max(bx + 14 * k, Math.min(bx + bw - 14 * k, tip.x)), cy = Math.max(by + 10 * k, Math.min(by + bh - 10 * k, tip.y));
+      const side = tip.y < by || tip.y > by + bh;
+      const root = side ? [{ x: cx - 6 * k, y: by + bh / 2 }, { x: cx + 6 * k, y: by + bh / 2 }] : [{ x: bx + bw / 2, y: cy - 6 * k }, { x: bx + bw / 2, y: cy + 6 * k }];
+      o += `<path d="M${n(root[0].x)} ${n(root[0].y)}L${n(tip.x)} ${n(tip.y)}L${n(root[1].x)} ${n(root[1].y)}" fill="#ffffff" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>`;
+      const box = [{ x: bx, y: by + 6 }, { x: bx + 6, y: by }, { x: bx + bw - 6, y: by }, { x: bx + bw, y: by + 6 }, { x: bx + bw, y: by + bh - 6 }, { x: bx + bw - 6, y: by + bh }, { x: bx + 6, y: by + bh }, { x: bx, y: by + bh - 6 }];
+      o += `<path d="${curve(wobble([...box, box[0]], seed + 200, amp * 0.8, 24))}" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/>`;
+      lines.forEach((l, i) => (o += `<text x="${n(bx + 11 * k)}" y="${n(by + (20 + i * 16) * k)}" fill="${INK}" font-size="${n(12.5 * k)}" ${HAND}>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</text>`));
+    }
     svg.innerHTML = o;
   }
 
@@ -256,6 +292,8 @@ export function createFigure() {
     update(joints, info = {}) {
       J = joints;
       still = !!info.still;
+      reps = info.rep || 0;
+      exId = info.id || "";
     },
     draw,
     setHighlight(groups) {

@@ -1,16 +1,18 @@
 // Blueprint: the figure as an engineering drawing that measures you while you move.
 // White line work on blueprint blue: limbs as outlined parts with dash-dot centre
 // lines, joints as crossed bolt holes, the far side in hidden (dashed) lines, the
-// worked muscles hatched like a cut section. Live angle dimensions at the hips and
-// knees, the step's height dimensioned, a ground line, a framed sheet and a title
-// block with readouts. Drawn as SVG, without three.js.
+// worked muscles hatched like a cut section, a heart called out for heart work. Live
+// angle dimensions at the hips and knees, a step or box's height dimensioned, props
+// and dumbbells drawn as parts, bands as amber cords, a ground line, a framed sheet
+// and a title strip naming the exercise, with readouts. Drawn as SVG, without three.js.
 
-import { asLayer, boxFaces, litRegions } from "./flat.js";
+import { asLayer, dumbbellHeads, isLit, litRegions, propFaces } from "./flat.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const PAPER = "#0f4477";
 const INK = "#eaf4ff";
 const n = (v) => v.toFixed(1);
+const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const FONT = `font-family="JetBrains Mono, ui-monospace, Menlo, Consolas, monospace"`;
 
 // The angle at b between the lines to a and c, in degrees (3D).
@@ -28,6 +30,7 @@ export function createFigure() {
   svg.setAttribute("aria-hidden", "true");
   let J = null;
   let lit = new Set();
+  let title = "Exercise", exId = "";
 
   function draw(view) {
     const { width: w, height: h } = view;
@@ -58,7 +61,7 @@ export function createFigure() {
       ["ELBOW L/R", `${Math.round(elbow("L"))}/${Math.round(elbow("R"))}°`],
       ["PELVIS", `${Math.round(J.pelvis.y * 1000)} mm`],
     ];
-    o += titleStrip(readouts, Math.max(150, w - 128));
+    o += titleStrip(readouts, Math.max(150, w - 128), title, exId);
     o += ground(view, u);
     for (const spec of view.props) o += prop(spec, view, u);
 
@@ -67,7 +70,7 @@ export function createFigure() {
       const pts = keys.map(P);
       const d = "M" + pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L");
       const W = u * width;
-      const fill = lit.has(region) ? `url(#${id}-hatch)` : PAPER;
+      const fill = isLit(lit, region) ? `url(#${id}-hatch)` : PAPER;
       let s = `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${n(W)}" stroke-linecap="round" stroke-linejoin="round"${hidden ? ` stroke-opacity="0.55"` : ""}/>`;
       s += `<path d="${d}" fill="none" stroke="${fill}" stroke-width="${n(Math.max(1, W - 2.6))}" stroke-linecap="round" stroke-linejoin="round"/>`;
       if (hidden) s += `<path d="${d}" fill="none" stroke="${PAPER}" stroke-width="${n(W + 1)}" stroke-dasharray="5 4" stroke-linecap="butt" opacity="0.55"/>`;
@@ -89,8 +92,8 @@ export function createFigure() {
     o += side(far, true);
     // Torso, neck and head.
     const torso = ["shoulderL", "shoulderR", "hipR", "hipL"].map(P);
-    o += `<path d="M${torso.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${lit.has("chest") ? `url(#${id}-hatch)` : PAPER}" stroke="${INK}" stroke-width="${n(u * 0.11)}" stroke-linejoin="round"/>`;
-    o += `<path d="M${torso.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${lit.has("chest") ? `url(#${id}-hatch)` : PAPER}" stroke="${lit.has("chest") ? `url(#${id}-hatch)` : PAPER}" stroke-width="${n(Math.max(1, u * 0.11 - 2.6))}" stroke-linejoin="round"/>`;
+    o += `<path d="M${torso.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${isLit(lit, "torso") ? `url(#${id}-hatch)` : PAPER}" stroke="${INK}" stroke-width="${n(u * 0.11)}" stroke-linejoin="round"/>`;
+    o += `<path d="M${torso.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${isLit(lit, "torso") ? `url(#${id}-hatch)` : PAPER}" stroke="${isLit(lit, "torso") ? `url(#${id}-hatch)` : PAPER}" stroke-width="${n(Math.max(1, u * 0.11 - 2.6))}" stroke-linejoin="round"/>`;
     const spine = ["neckBase", "thoracic", "lumbar", "pelvis"].map(P);
     o += `<path d="M${spine.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}" fill="none" stroke="${INK}" stroke-width="0.7" stroke-dasharray="10 3 2 3"/>`;
     o += part(["neckBase", "headJoint"], 0.08, "neck", false);
@@ -98,6 +101,32 @@ export function createFigure() {
     o += `<circle cx="${n(hd.x)}" cy="${n(hd.y)}" r="${n(hr)}" fill="${PAPER}" stroke="${INK}" stroke-width="1.3"/>`;
     o += `<path d="M${n(hd.x - hr * 1.3)} ${n(hd.y)}H${n(hd.x + hr * 1.3)}M${n(hd.x)} ${n(hd.y - hr * 1.3)}V${n(hd.y + hr * 1.3)}" stroke="${INK}" stroke-width="0.6" stroke-dasharray="6 2 1.5 2"/>`;
     o += side(near, false);
+
+    // What the hands hold: dumbbells as parts (two discs, a handle, a centre line), bands
+    // as amber cords, the string as a chain line.
+    const at = view.attachments;
+    for (const db of at.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db);
+      const A = view.project(a), B = view.project(b), R = Math.max(2.5, u * r);
+      o += `<path d="M${n(A.x)} ${n(A.y)}L${n(B.x)} ${n(B.y)}" stroke="${INK}" stroke-width="${n(u * 0.035)}" stroke-linecap="round"/><path d="M${n(A.x)} ${n(A.y)}L${n(B.x)} ${n(B.y)}" stroke="${PAPER}" stroke-width="${n(Math.max(1, u * 0.035 - 2.4))}" stroke-linecap="round"/>`;
+      for (const c of [A, B]) o += `<circle cx="${n(c.x)}" cy="${n(c.y)}" r="${n(R)}" fill="${PAPER}" stroke="${INK}" stroke-width="1.2"/><circle cx="${n(c.x)}" cy="${n(c.y)}" r="${n(R * 0.3)}" fill="none" stroke="${INK}" stroke-width="0.6"/>`;
+      o += `<path d="M${n(A.x - (B.x - A.x) * 0.25)} ${n(A.y - (B.y - A.y) * 0.25)}L${n(B.x + (B.x - A.x) * 0.25)} ${n(B.y + (B.y - A.y) * 0.25)}" stroke="${INK}" stroke-width="0.6" stroke-dasharray="6 2 1.5 2"/>`;
+    }
+    for (const [a, b] of at.bands) {
+      const A = view.project(a), B = view.project(b);
+      o += `<path d="M${n(A.x)} ${n(A.y)}L${n(B.x)} ${n(B.y)}" stroke="#ffd27a" stroke-width="2.2" stroke-linecap="round"/><path d="M${n(A.x)} ${n(A.y)}L${n(B.x)} ${n(B.y)}" stroke="${PAPER}" stroke-width="0.8"/>`;
+    }
+    if (at.string) {
+      const [A, B] = at.string.map((p) => view.project(p));
+      o += `<path d="M${n(A.x)} ${n(A.y)}L${n(B.x)} ${n(B.y)}" stroke="${INK}" stroke-width="0.9" stroke-dasharray="10 3 2 3"/>`;
+    }
+    // Heart work: a heart on the chest with a callout.
+    if (lit.heart) {
+      const c = view.project(J.thoracic.clone().lerp(J.neckBase, 0.45));
+      const k = u * 0.035, lx = c.x + u * 0.3, ly = c.y - u * 0.18;
+      o += `<path d="M${n(c.x)} ${n(c.y + k)}C${n(c.x - k * 1.6)} ${n(c.y - k * 0.2)} ${n(c.x - k * 0.8)} ${n(c.y - k * 1.4)} ${n(c.x)} ${n(c.y - k * 0.5)}C${n(c.x + k * 0.8)} ${n(c.y - k * 1.4)} ${n(c.x + k * 1.6)} ${n(c.y - k * 0.2)} ${n(c.x)} ${n(c.y + k)}Z" fill="url(#${id}-hatch)" stroke="#ffd27a" stroke-width="1"/>`;
+      o += `<path d="M${n(c.x + k)} ${n(c.y - k * 0.5)}L${n(lx)} ${n(ly)}h18" fill="none" stroke="${INK}" stroke-width="0.6"/><text x="${n(lx + 2)}" y="${n(ly - 3)}" fill="#ffe3a6" font-size="7.5" font-weight="700" ${FONT}>HEART</text>`;
+    }
 
     // Live angle dimensions at the near hip and both knees.
     o += arc(P("knee" + near), P("hip" + near), P("ankle" + near), u * 0.12, `KNEE ${Math.round(knee(near))}°`, 1);
@@ -122,7 +151,7 @@ export function createFigure() {
     return s;
   }
 
-  function titleStrip(readouts, maxW) {
+  function titleStrip(readouts, maxW, name, dwg) {
     const x = 20, y = 18, cw = 4.9; // cw: width of one 8 px mono character
     let line = "", width = 0;
     for (const [k, v] of readouts) {
@@ -132,9 +161,14 @@ export function createFigure() {
       line += (line ? '<tspan fill-opacity="0.4"> · </tspan>' : "") + item;
       width += len;
     }
-    const w = Math.min(maxW, Math.max(width + 14, 190));
+    // The name fits the strip: the drawing number goes first, then the name is cut short.
+    let head = name.toUpperCase(), num = `DWG HP-${dwg.toUpperCase()}`;
+    const fits = (t) => t.length * 5.6 + 14 <= maxW;
+    if (!fits(head + "  " + num)) num = "";
+    if (!fits(head)) head = head.slice(0, Math.max(4, Math.floor((maxW - 14) / 5.6) - 1)) + "…";
+    const w = Math.min(maxW, Math.max(width + 14, (head.length + (num ? num.length + 2 : 0)) * 5.6 + 14, 190));
     return `<g ${FONT} fill="${INK}"><rect x="${x}" y="${y}" width="${n(w)}" height="31" fill="${PAPER}" fill-opacity="0.85" stroke="${INK}" stroke-width="0.9"/>
-      <text x="${x + 7}" y="${y + 12}" font-size="8.5" font-weight="700" letter-spacing="0.5">HOME PROTOCOL · ZONE 2 <tspan font-weight="400" fill-opacity="0.6" letter-spacing="0">DWG Z2-STEP-UP · REV 1.7</tspan></text>
+      <text x="${x + 7}" y="${y + 12}" font-size="8.5" font-weight="700" letter-spacing="0.5">${esc(head)} <tspan font-weight="400" fill-opacity="0.6" letter-spacing="0">${esc(num)}</tspan></text>
       <path d="M${x} ${y + 16.5}h${n(w)}" stroke="${INK}" stroke-width="0.5" stroke-opacity="0.7"/>
       <text x="${x + 7}" y="${y + 27}" font-size="8">${line}</text></g>`;
   }
@@ -182,14 +216,17 @@ export function createFigure() {
 
   // The step: its faces outlined, hidden edges dashed underneath, and its height dimensioned.
   function prop(spec, view, u) {
-    const faces = boxFaces(spec, view);
+    const faces = propFaces(spec, view);
     if (!faces.length) return "";
     let s = "";
+    // The see-through wall in hidden (dashed) lines; everything else as solid parts.
     for (const f of faces) {
-      const d = "M" + f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L") + "Z";
-      s += `<path d="${d}" fill="none" stroke="${INK}" stroke-width="0.8" stroke-dasharray="4 3" stroke-opacity="0.6"/>`;
+      const d = `M${f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z`;
+      s += f.ghost
+        ? `<path d="${d}" fill="none" stroke="${INK}" stroke-width="0.8" stroke-dasharray="4 3" stroke-opacity="0.55"/>`
+        : `<path d="${d}" fill="${f.kind === "band" ? "#ffd27a" : PAPER}" fill-opacity="${f.light === 1 ? 0.55 : 0.85}" stroke="${INK}" stroke-width="${f.kind === "metal" ? 1.6 : 1.3}" stroke-linejoin="round"/>`;
     }
-    for (const f of faces) s += `<path d="M${f.pts.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}Z" fill="${PAPER}" fill-opacity="${f.light === 1 ? 0.55 : 0.85}" stroke="${INK}" stroke-width="1.3" stroke-linejoin="round"/>`;
+    if (spec.type !== "step" && spec.type !== "box") return s;
     // Height: on the bottom corner lowest on screen (nearest the viewer), offset outward.
     const hgt = spec.h ?? (spec.type === "step" ? 0.18 : 0.45);
     const w = spec.w ?? (spec.type === "step" ? 0.62 : 0.45), dp = spec.d ?? (spec.type === "step" ? 0.34 : 0.42);
@@ -211,8 +248,10 @@ export function createFigure() {
 
   return {
     dom: svg,
-    update(joints) {
+    update(joints, info = {}) {
       J = joints;
+      title = info.title || "Exercise";
+      exId = info.id || "";
     },
     draw,
     setHighlight(groups) {

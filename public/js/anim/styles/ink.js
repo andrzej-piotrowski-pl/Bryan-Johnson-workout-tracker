@@ -1,10 +1,12 @@
 // Ink brush: the figure painted in sumi-e brush strokes on rice paper. Each limb is
 // one stroke that swells and lifts, with dry-brush streaks; the near side in black
 // ink, the far side in a grey wash; the head an ensō circle; vermilion washes under
-// the worked muscles. Old frames fade slowly, so the movement leaves a trail of ink.
+// the worked muscles (a red heart for heart work). Props are sketched in grey ink, the
+// see-through wall only outlined; dumbbells are ink blots, bands vermilion lines.
+// Old frames fade slowly, so the movement leaves a trail of ink.
 // Drawn on 2D canvases, without three.js.
 
-import { asLayer, boxFaces, fitCanvas, litRegions, smooth } from "./flat.js";
+import { asLayer, dumbbellHeads, fitCanvas, isLit, litRegions, sceneFaces, smooth } from "./flat.js";
 import { hash } from "./kit.js";
 
 const PAPER = "#efe6d2";
@@ -169,37 +171,39 @@ export function createFigure() {
     if (!J) return;
     const u = view.scaleAt(J.pelvis);
 
-    // Ground and step, in a light grey ink.
+    // Ground and props, in a light grey ink.
     const g = view.project({ x: J.pelvis.x, y: 0, z: J.pelvis.z });
     brush(sx, [{ x: g.x - u * 0.75, y: g.y + u * 0.02 }, { x: g.x + u * 0.1, y: g.y + u * 0.03 }, { x: g.x + u * 0.8, y: g.y + u * 0.015 }], u * 0.05, rgba(INK, 0.22), 3, { dry: 2 });
     sx.lineJoin = "round";
-    for (const spec of view.props) {
-      for (const f of boxFaces(spec, view)) {
-        sx.strokeStyle = rgba(INK, 0.55);
-        sx.lineWidth = Math.max(1, u * 0.008);
-        sx.beginPath();
-        f.pts.forEach((p, i) => sx.lineTo(p.x + (hash(i, f.light * 9) - 0.5) * 1.5, p.y));
-        sx.closePath();
+    for (const f of sceneFaces(view)) {
+      sx.strokeStyle = rgba(INK, f.ghost ? 0.22 : f.kind === "metal" ? 0.85 : 0.55);
+      sx.lineWidth = Math.max(1, u * (f.kind === "metal" ? 0.012 : 0.008));
+      sx.beginPath();
+      f.pts.forEach((p, i) => sx.lineTo(p.x + (hash(i, f.light * 9) - 0.5) * 1.5, p.y));
+      sx.closePath();
+      if (!f.ghost) {
         sx.fillStyle = PAPER; // faces painted far to near hide the edges behind them
         sx.fill();
-        sx.fillStyle = f.light === 1 ? "rgba(60,50,40,0.06)" : "rgba(60,50,40,0.16)";
+        sx.fillStyle = f.kind === "band" ? rgba(RED, 0.6) : f.kind === "mat" ? "rgba(60,90,80,0.12)" : f.light === 1 ? "rgba(60,50,40,0.06)" : "rgba(60,50,40,0.16)";
         sx.fill();
-        sx.stroke();
       }
+      sx.stroke();
     }
 
     // The figure: red washes first, then ink, far side in grey.
     const P = (n) => view.project(J[n]);
     const near = P("hipL").z + P("shoulderL").z < P("hipR").z + P("shoulderR").z ? "L" : "R";
     for (const s of ["L", "R"]) {
-      if (lit.has("thigh" + s)) wash(tx, [P("hip" + s), P("knee" + s)], u * 0.2, 0.55 * beat);
-      if (lit.has("shin" + s)) wash(tx, [P("knee" + s), P("ankle" + s)], u * 0.16, 0.55 * beat);
-      if (lit.has("upperArm" + s)) wash(tx, [P("shoulder" + s), P("elbow" + s)], u * 0.15, 0.55 * beat);
-      if (lit.has("forearm" + s)) wash(tx, [P("elbow" + s), P("wrist" + s)], u * 0.13, 0.55 * beat);
+      if (isLit(lit, "thigh" + s)) wash(tx, [P("hip" + s), P("knee" + s)], u * 0.2, 0.55 * beat);
+      if (isLit(lit, "shin" + s)) wash(tx, [P("knee" + s), P("ankle" + s)], u * 0.16, 0.55 * beat);
+      if (isLit(lit, "foot" + s)) wash(tx, [P("heel" + s), P("toe" + s)], u * 0.12, 0.55 * beat);
+      if (isLit(lit, "upperArm" + s)) wash(tx, [P("shoulder" + s), P("elbow" + s)], u * 0.15, 0.55 * beat);
+      if (isLit(lit, "forearm" + s)) wash(tx, [P("elbow" + s), P("hand" + s)], u * 0.13, 0.55 * beat);
     }
-    if (lit.has("chest")) wash(tx, [view.project(J.thoracic.clone().lerp(J.neckBase, 0.4))], u * 0.36, 0.6 * beat);
+    if (lit.has("chest")) wash(tx, [P("thoracic"), view.project(J.thoracic.clone().lerp(J.neckBase, 0.6))], u * 0.3, 0.55 * beat);
     if (lit.has("pelvis")) wash(tx, [P("pelvis")], u * 0.26, 0.5 * beat);
     if (lit.has("abdomen")) wash(tx, [P("lumbar"), P("thoracic")], u * 0.2, 0.5 * beat);
+    if (lit.has("neck")) wash(tx, [P("neckBase"), P("headJoint")], u * 0.12, 0.6 * beat);
 
     const stroke = (side, names, width, seed, opts) => brush(tx, names.map(P), u * width, rgba(INK, side && side !== near ? 0.42 : 0.9), seed, opts);
     const far = near === "L" ? "R" : "L";
@@ -210,6 +214,43 @@ export function createFigure() {
     }
     const head = P("head");
     enso(tx, head, u * 0.1, u * 0.055, rgba(INK, 0.9));
+
+    // Heart work: a little vermilion heart beside the chest.
+    if (lit.heart) {
+      const c = view.project(J.thoracic.clone().lerp(J.neckBase, 0.45));
+      const k = u * 0.05 * beat, x = c.x + u * 0.14, y = c.y;
+      tx.fillStyle = rgba(RED, 0.85);
+      tx.beginPath();
+      tx.moveTo(x, y + k);
+      tx.bezierCurveTo(x - k * 1.6, y - k * 0.2, x - k * 0.8, y - k * 1.4, x, y - k * 0.5);
+      tx.bezierCurveTo(x + k * 0.8, y - k * 1.4, x + k * 1.6, y - k * 0.2, x, y + k);
+      tx.fill();
+    }
+    // What the hands hold: dumbbells as two ink blots on a handle; bands in vermilion.
+    const at = view.attachments;
+    for (const db of at.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db);
+      const A = view.project(a), B = view.project(b);
+      brush(tx, [A, B], u * 0.03, rgba(INK, 0.9), 31, { dry: 0, lift: 0.5 });
+      tx.fillStyle = rgba(INK, 0.92);
+      for (const p of [A, B]) {
+        tx.beginPath();
+        tx.arc(p.x, p.y, Math.max(2, u * r), 0, Math.PI * 2);
+        tx.fill();
+      }
+    }
+    for (const [a, b] of at.bands) brush(tx, [view.project(a), view.project(b)], Math.max(2, u * 0.02), rgba(RED, 0.85), 41, { dry: 1, lift: 0.4 });
+    if (at.string) {
+      const [a, b] = at.string.map((p) => view.project(p));
+      tx.strokeStyle = rgba(INK, 0.35);
+      tx.lineWidth = 1;
+      tx.setLineDash([4, 6]);
+      tx.beginPath();
+      tx.moveTo(a.x, a.y);
+      tx.lineTo(b.x, b.y);
+      tx.stroke();
+      tx.setLineDash([]);
+    }
   }
 
   return {

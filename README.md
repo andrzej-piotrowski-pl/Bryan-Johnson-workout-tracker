@@ -4,7 +4,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
-- **Animation styles (a test)**: fifteen ways to draw the animation, tried on Zone 2 for now: six three.js looks (Athlete, the default, plus the mannequin, Anime, Low poly, Cartoon and Voxel) and nine drawn without three.js, from a ray-marched liquid-chrome shader and a blueprint that measures your joint angles to a doodle with opinions and a monster with googly eyes.
+- **Animation styles**: fifteen ways to draw every exercise animation: six three.js looks (Athlete, the default, plus the mannequin, Anime, Low poly, Cartoon and Voxel) and nine drawn without three.js, from a ray-marched liquid-chrome shader and a blueprint that measures your joint angles to a doodle with opinions and a monster with googly eyes.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -81,7 +81,7 @@ Enter them in the first-run setup; change them any time in **Settings** (or edit
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
 | Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
-| Animation style | How the Zone 2 animation is drawn (see [Animation styles](#animation-styles-a-test)); changes nothing in the plan |
+| Animation style | How the exercise animations are drawn (see [Animation styles](#animation-styles)); changes nothing in the plan |
 
 Suggested weights are starting points. The effort target of your level (how many good reps you leave in the tank) decides the real weight.
 
@@ -128,35 +128,35 @@ The six new ones follow public design guides, two each: [taste-skill](https://gi
 
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
-## Animation styles (a test)
+## Animation styles
 
-Other ways to draw the exercise animation. For now they only apply to **Zone 2** ("Easy step-ups or marching" and the other Zone 2 step-ups); every other exercise keeps the mannequin. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview of Zone 2 and a card with a still of each style, or use **Try styles live** there: it opens Zone 2 with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
+Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
 Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other nine don't use three.js to draw: they get the joints projected to the screen (or, for Liquid chrome, the camera itself) and draw with SVG, a 2D canvas, text or a shader of their own, so the camera buttons and dragging still work in all of them.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
 | 1 | **Athlete** (default) | three.js | Semi-realistic, like Mixamo characters: skin, muscle-shaped limbs, T-shirt, shorts, trainers, hair and a face, under warm studio light; the worked muscles glow. |
-| 2 | **Mannequin** | three.js | The original smooth grey figure, which every other exercise uses. |
+| 2 | **Mannequin** | three.js | The original smooth grey figure the app started with. |
 | 3 | **Anime** | three.js | Cel shading after VRM avatars and their MToon shader: soft bands with violet shadows, a rim light, thin outlines, a big head with painted eyes and spiky pink hair. |
 | 4 | **Low poly** | three.js | Faceted, flat-coloured shapes like Quaternius' free game characters. |
 | 5 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
-| 6 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass with a cobblestone step. |
-| 7 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked limbs in orange, a heart on the chest. |
+| 6 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass; the props get a pixel texture in their own colour. |
+| 7 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
 | 8 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
 | 9 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
 | 10 | **Liquid chrome** | WebGL shader | A mirror-finish body that flows like poured metal, ray-marched per pixel in one fragment shader on plain WebGL: capsules melted together, reflections of the studio, the floor and itself, soft shadows, gold where the muscles work. It lowers its resolution by itself on slow devices. |
 | 11 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
-| 12 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the step's height dimensioned. |
+| 12 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
 | 13 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
-| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines, reps as tally marks in the margin and a speech bubble with opinions about step-ups. |
-| 15 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna, buck teeth and sparkling pink thighs. |
+| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines, reps as tally marks in the margin and a speech bubble with opinions about each kind of exercise. |
+| 15 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
 
-![The fifteen animation styles of the Zone 2 step-up](docs/screenshots/anim-styles.png)
+![The fifteen animation styles, each on a different exercise](docs/screenshots/anim-styles.png)
 
-![Today with the animation style switcher at the top, Zone 2 drawn in the Synthwave style](docs/screenshots/anim-live.png)
+![Today with the animation style switcher at the top, plank shoulder taps drawn in the Synthwave style](docs/screenshots/anim-live.png)
 
-To try the styles on more exercises, add their ids to `STYLED_EXERCISES` in `public/js/anim-styles.js`. How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
+How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 
 ## Add-ons
 

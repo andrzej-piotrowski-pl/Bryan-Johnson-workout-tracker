@@ -750,9 +750,10 @@ td.cur, th.cur { background: var(--accent-soft); }
 
 /* ---------- animation styles (Settings → Animation style) ---------- */
 
-.badge-test { display: inline-block; vertical-align: middle; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font: 600 0.7rem/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
 .anim-preview.stage { aspect-ratio: 2 / 1; border: 1px solid var(--line); border-radius: var(--r); }
 @media (max-width: 640px) { .anim-preview.stage { aspect-ratio: 1 / 1; } }
+.anim-preview-pick { margin-top: -4px; }
+.anim-preview-pick select { max-width: 420px; }
 .anim-thumb { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: calc(var(--r) * 0.7); background: var(--stage-bg); overflow: hidden; }
 .anim-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .anim-groups { display: grid; gap: 22px; }

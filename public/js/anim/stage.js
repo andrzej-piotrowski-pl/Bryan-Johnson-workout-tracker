@@ -549,7 +549,7 @@ export class Stage {
       const s = sampleClip(clip, t);
       const J = computeJoints(s.pose);
       // still: a single frame at a set time (thumbnails), not part of the playback.
-      this.figure.update(J, { t, still: time != null });
+      this.figure.update(J, { t, still: time != null, rep: this.rep, id: this.id, title: clip.title });
       this.propGroups[0].visible = !s.mirrored;
       this.propGroups[1].visible = s.mirrored;
       this.updateAttachments(clip, J, s.mirrored);
@@ -608,7 +608,27 @@ export class Stage {
       },
       props: clip ? (this.mirrored ? clip.props.map(mirrorSpec) : clip.props) : [],
       dark: this.dark,
+      interactive: this.opts.interactive, // a stage with view buttons in its top right
       camera: { pos: cam.position.toArray(), world: cam.matrixWorld.elements, invProj: cam.projectionMatrixInverse.elements },
+      attachments: this.attachments(),
+    };
+  }
+
+  // What the hands hold and the bands, as the 3D scene has them this frame (for flat
+  // styles): dumbbells { c, axis, size }, bands and the string as [end, end].
+  attachments() {
+    const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0);
+    const dumbbells = Object.entries(this.dumbbells)
+      .filter(([, d]) => d.visible)
+      .map(([k, d]) => ({ c: d.position.clone(), axis: X.clone().applyQuaternion(d.quaternion), size: k === "goblet" ? 1.15 : 1 }));
+    const ends = (m) => {
+      const half = Y.clone().applyQuaternion(m.quaternion).multiplyScalar(m.scale.y / 2);
+      return [m.position.clone().add(half), m.position.clone().sub(half)];
+    };
+    return {
+      dumbbells,
+      bands: this.bandPool.filter((b) => b.mesh.visible).map((b) => ends(b.mesh)),
+      string: this.stringLine.mesh.visible ? ends(this.stringLine.mesh) : null,
     };
   }
 

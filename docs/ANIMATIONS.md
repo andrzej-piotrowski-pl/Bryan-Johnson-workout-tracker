@@ -1,6 +1,7 @@
 # Writing exercise animations
 
-Every exercise has a looping 3D animation of a mannequin. Animations are plain
+Every exercise has a looping 3D animation of a figure, drawn in the animation style
+the user picks ([Animation styles](#animation-styles)). Animations are plain
 JavaScript data in `public/js/anim/clips/*.js`, keyed by the exercise id used in
 `public/js/data/exercises.js`. You describe a few key poses; the engine blends
 between them, solves the knees and elbows, and draws props and dumbbells.
@@ -186,10 +187,10 @@ optional `rotY` (degrees).
 ## Animation styles
 
 The clips only describe poses; how the figure is drawn is up to its style. The
-styles are a test, listed in `public/js/anim-styles.js` (`ANIM_STYLES`) and applied
-only to the exercises in `STYLED_EXERCISES` there (for now `zone2`); Athlete is the
-default (`DEFAULT_ANIM_STYLE`) and every other exercise shows the mannequin
-(`BASE_ANIM_STYLE`). The user picks one in Settings or from the floating switcher; the
+styles are listed in `public/js/anim-styles.js` (`ANIM_STYLES`) and apply to every
+exercise (`STYLED_EXERCISES = "all"`; a list of exercise ids there limits them to
+those, and the rest show the mannequin, `BASE_ANIM_STYLE`). Athlete is the default
+(`DEFAULT_ANIM_STYLE`). The user picks one in Settings or from the floating switcher; the
 choice is `profile.settings.animStyle`, set on `<html data-anim>`, and every stage
 redraws when the `hp:anim` event fires.
 
@@ -198,7 +199,8 @@ public/js/anim/styles/
   index.js      loads a style's module the first time it's used
   kit.js        shared parts for three.js styles: rig, body, outlines, toon ramps, glow
   flat.js       shared parts for the flat styles: body pieces on screen, prop faces,
-                curves, depth, segments clipped at the camera, the horizon
+                dumbbell heads, lit regions, curves, depth, segments clipped at the
+                camera, the horizon
   athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js             three.js figures
   pictogram.js  blueprint.js  doodle.js                              SVG
   ink.js  synthwave.js  stardust.js  googly.js                       2D canvas
@@ -207,8 +209,10 @@ public/js/anim/styles/
 ```
 
 Each style module exports `createFigure()`. The stage still samples the clip and
-computes the joints (`rig.js`) every frame and passes them to `figure.update(J)`, so
-every style plays every clip exactly like the mannequin.
+computes the joints (`rig.js`) every frame and passes them to
+`figure.update(J, { still, rep, id, title })` (a one-off frame for a thumbnail, the
+rep count, the exercise id and the clip's title), so every style plays every clip
+exactly like the mannequin.
 
 **A three.js style** returns a `group` the stage adds to its scene, plus
 `setHighlight(groups)`, `setPulse(v)`, `setTheme(dark, colors)` and `dispose()`, and
@@ -217,8 +221,9 @@ optionally:
 - `look` (or `look(dark)`): the lights around it, `{ hemi: [sky, ground, intensity],
   key: [colour, intensity], rim: [colour, intensity], tone: "none", exposure,
   floor: { color, grid, gridOpacity } }`. Anything left out keeps the mannequin's.
-- `dressProp(mesh)`: restyles each prop mesh (the cartoon's toon step with an outline,
-  the voxel's cobblestone).
+- `dressProp(mesh)`: restyles each prop mesh (the cartoon's toon props with outlines,
+  the voxel's pixel texture). `propDresser(make, outline)` in `kit.js` builds one that
+  keeps see-through materials (the wall) see-through and caches the new materials.
 
 `kit.js` does most of the work. `createRig()` gives anchors that follow the body
 (`pelvis`, `chest`, `head`, `handL`, `footR`, the joints…) to hang rigid parts on, and
@@ -232,17 +237,24 @@ tags every part with its region so `createHighlighter()` can light up muscle gro
 group; the stage lays it over the 3D canvas (which stays underneath, see-through, so
 dragging still turns the camera) and calls `figure.draw(view)` each frame. `view`
 has the size, `project(point)` to CSS pixels (with depth), `scaleAt(point)` in
-pixels per metre, the clip's props and the `camera` (position, world matrix and
-inverse projection), so the camera buttons and dragging work as usual. `flat.js`
-turns the joints into body pieces sorted far to near and props into faces, and has
-`depthOf`, `projectSegment` (cut where a line passes behind the camera, for floor
-grids) and `horizonY`. `update(J, { still })` tells a style when a frame is a one-off
-(a thumbnail) rather than playback, so trails, physics and wobble start clean. It
-also needs `snapshot()`, a data URL of the last frame, for thumbnails.
+pixels per metre, the clip's props, the `camera` (position, world matrix and
+inverse projection), so the camera buttons and dragging work as usual, `attachments`
+(the held dumbbells as `{ c, axis, size }`, the bands and the string as
+`[end, end]`, as the 3D scene has them this frame) and `interactive` (whether the
+stage has view buttons in its top right). `flat.js` turns the joints into body
+pieces sorted far to near and every prop into faces (`sceneFaces(view)`: boxes, the
+slant's wedge and bars, each with its kind and light, the wall marked `ghost`), and
+has `dumbbellHeads`, `litRegions` (the regions to light up, with `lit.heart` kept
+apart for cardio), `isLit`, `depthOf`, `projectSegment` (cut where a line passes
+behind the camera, for floor grids) and `horizonY`. `still` tells a style when a
+frame is a one-off (a thumbnail) rather than playback, so trails, physics and
+wobble start clean. It also needs `snapshot()`, a data URL of the last frame, for
+thumbnails.
 
 Liquid chrome shows how far that goes: it ignores the projection, takes the camera's
 matrices and casts a ray per pixel through a signed distance field built from the
 joints, in plain WebGL.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
-`ANIM_STYLES` in `anim-styles.js`, and check it with `/dev/animations.html?ids=zone2&style=yours`.
+`ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with
+`/dev/animations.html?ids=all&style=yours`.
