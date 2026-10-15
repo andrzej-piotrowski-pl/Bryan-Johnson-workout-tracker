@@ -3,7 +3,7 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
-## [Unreleased]
+## [1.5.0] - 2026-10-15
 
 ### Changed
 - **Your training level alone now sets the workouts.** Each of the four levels (New to training, Returning, Active, Well trained) has its own sets, reps, intervals and Zone 2 minutes; nothing moves on by itself. Your weight, sex and age still scale the suggested weights.
