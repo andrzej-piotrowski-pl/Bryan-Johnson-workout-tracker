@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.0] - 2026-10-15
+
+### Added
+- Linux users can start the app automatically at boot with the included systemd unit.
+- Tailscale HTTPS setup instructions for private access from other tailnet devices.
+
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 

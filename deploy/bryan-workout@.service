@@ -1,0 +1,16 @@
+[Unit]
+Description=Bryan Johnson workout tracker
+After=network.target tailscaled.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/Bryan-Johnson-workout-website
+Environment=HOST=127.0.0.1
+Environment=PORT=3030
+ExecStart=/usr/bin/node %h/Bryan-Johnson-workout-website/server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

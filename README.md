@@ -50,6 +50,24 @@ Open **http://localhost:3030**. The first visit opens a short setup where you en
 - Keep your data somewhere else (e.g. a synced folder): `DATA_DIR=/path/to/folder npm start`
 - On Windows (PowerShell) set the variables first: `$env:PORT=8080; npm start`
 
+### Run automatically on Linux
+
+The included systemd unit starts the app after each boot. It expects the repository at `~/Bryan-Johnson-workout-website` and Node at `/usr/bin/node`; edit those paths in the unit if yours are different.
+
+```sh
+sudo cp deploy/bryan-workout@.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now "bryan-workout@$(id -un)"
+```
+
+To open it over Tailscale with HTTPS, keep the app bound to localhost and run:
+
+```sh
+sudo tailscale serve --bg --https=10000 http://127.0.0.1:3030
+```
+
+Then open `https://<device>.<tailnet>.ts.net:10000` on a Tailscale device. This stays within your tailnet. The app has no login, so do not expose it with Tailscale Funnel or a public port forward.
+
 `npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node.
 
 To update later: `git pull`, then `npm install` again. Your `data/` folder is left alone.
