@@ -581,7 +581,9 @@ export class Stage {
   }
 
   // What a flat style needs to draw a frame: the size, a projection of world points
-  // to CSS pixels (x right, y down; z: depth, larger is further), and the props.
+  // to CSS pixels (x right, y down; z: depth, larger is further), the props, and the
+  // camera itself (position, world matrix, inverse projection) for styles that cast
+  // their own rays.
   flatView() {
     const cam = this.camera;
     cam.updateMatrixWorld();
@@ -606,6 +608,7 @@ export class Stage {
       },
       props: clip ? (this.mirrored ? clip.props.map(mirrorSpec) : clip.props) : [],
       dark: this.dark,
+      camera: { pos: cam.position.toArray(), world: cam.matrixWorld.elements, invProj: cam.projectionMatrixInverse.elements },
     };
   }
 

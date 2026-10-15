@@ -111,3 +111,26 @@ export function asLayer(el, className) {
   el.style.cssText = "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1";
   return el;
 }
+
+// How far in front of the camera a world point is, in metres (negative: behind it).
+export function depthOf(view, p) {
+  const e = view.camera.world, c = view.camera.pos;
+  return -((p.x - c[0]) * e[8] + (p.y - c[1]) * e[9] + (p.z - c[2]) * e[10]);
+}
+
+// A world segment projected to the screen, cut where it passes behind the camera;
+// null when it's all behind. Returns [start, end] screen points.
+export function projectSegment(view, a, b, near = 0.2) {
+  const da = depthOf(view, a), db = depthOf(view, b);
+  if (da < near && db < near) return null;
+  const cut = (near - da) / (db - da);
+  const at = (t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t });
+  return [view.project(da < near ? at(cut) : a), view.project(db < near ? at(cut) : b)];
+}
+
+// The screen height of the horizon: where the floor meets the sky, far away.
+export function horizonY(view) {
+  const e = view.camera.world, c = view.camera.pos;
+  const fx = -e[8], fz = -e[10], l = Math.hypot(fx, fz) || 1;
+  return view.project({ x: c[0] + (fx / l) * 1000, y: c[1], z: c[2] + (fz / l) * 1000 }).y;
+}

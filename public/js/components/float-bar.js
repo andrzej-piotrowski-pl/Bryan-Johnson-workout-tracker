@@ -4,14 +4,15 @@
 // It stays open as you move between pages, and across reloads in the same tab, until
 // closed. Hovering, focusing or tapping a button shows its name underneath.
 //
-//   createFloatBar({ key, rootClass, className, label, closeLabel, lead, items, current, onPick, event })
+//   createFloatBar({ key, rootClass, className, label, closeLabel, lead, items, current, onPick, event, compact })
 //   items(): [{ id, text, name, aria }]; current(): the chosen id; onPick(id): apply it
 //   (return false to close the bar instead); event: re-sync on this window event.
+//   compact: also add ‹ name › buttons, which replace the numbers on narrow screens.
 
 import { esc } from "../util.js";
 import { icon } from "./icons.js";
 
-export function createFloatBar({ key, rootClass, className, label, closeLabel, lead = "", items, current, onPick, event }) {
+export function createFloatBar({ key, rootClass, className, label, closeLabel, lead = "", items, current, onPick, event, compact = false }) {
   let bar = null;
   let flashTimer = null;
 
@@ -19,6 +20,12 @@ export function createFloatBar({ key, rootClass, className, label, closeLabel, l
     if (!bar) return;
     const cur = current();
     bar.querySelectorAll("[data-pick]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.pick === cur)));
+    const name = bar.querySelector(".bar-name");
+    if (name) {
+      const list = items();
+      const i = list.findIndex((it) => it.id === cur);
+      name.textContent = i >= 0 ? `${list[i].text} · ${list[i].name}` : "";
+    }
   }
 
   function pick(btn) {
@@ -26,7 +33,7 @@ export function createFloatBar({ key, rootClass, className, label, closeLabel, l
     // Show the name for a moment, so a tap on a phone (no hover) says what it picked.
     clearTimeout(flashTimer);
     bar.querySelectorAll(".show-name").forEach((b) => b.classList.remove("show-name"));
-    btn.classList.add("show-name");
+    if (btn.offsetParent) btn.classList.add("show-name");
     flashTimer = setTimeout(() => btn.classList.remove("show-name"), 1400);
     sync();
   }
@@ -50,18 +57,24 @@ export function createFloatBar({ key, rootClass, className, label, closeLabel, l
     } catch {}
     if (bar) return sync();
     bar = document.createElement("div");
-    bar.className = "skin-bar " + className;
+    bar.className = "skin-bar " + className + (compact ? " has-compact" : "");
     bar.setAttribute("role", "toolbar");
     bar.setAttribute("aria-label", label);
     bar.innerHTML =
       lead +
+      (compact ? `<span class="bar-compact"><button type="button" data-step="-1" data-name="Previous" aria-label="Previous">${icon("chevronL", "sm")}</button><span class="bar-name" aria-live="polite"></span><button type="button" data-step="1" data-name="Next" aria-label="Next">${icon("chevronR", "sm")}</button></span>` : "") +
       items().map((it) => `<button type="button" data-pick="${esc(it.id)}" data-name="${esc(it.name)}" aria-label="${esc(it.aria || it.name)}" aria-pressed="false">${esc(it.text)}</button>`).join("") +
       `<button type="button" class="skin-bar-close" data-name="Close" aria-label="${esc(closeLabel)}">${icon("x", "sm")}</button>`;
     bar.addEventListener("click", (e) => {
       const b = e.target.closest("button");
       if (!b) return;
       if (b.dataset.pick) pick(b);
-      else close();
+      else if (b.dataset.step) {
+        const list = items();
+        const i = list.findIndex((it) => it.id === current());
+        const next = list[(i + Number(b.dataset.step) + list.length) % list.length];
+        pick(bar.querySelector(`[data-pick="${CSS.escape(next.id)}"]`));
+      } else close();
     });
     bar.addEventListener("keydown", onKey);
     document.body.appendChild(bar);

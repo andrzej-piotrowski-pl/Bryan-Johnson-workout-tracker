@@ -739,6 +739,13 @@ td.cur, th.cur { background: var(--accent-soft); }
 /* the animation bar starts with a small figure, so the two bars can't be mixed up */
 .skin-bar .bar-lead { display: grid; place-items: center; width: 26px; height: 34px; opacity: 0.75; }
 @media (max-width: 440px) { .skin-bar button { width: 30px; } .skin-bar .bar-lead { width: 20px; } .skin-bar .skin-bar-close { margin-left: 6px; } }
+/* with many choices (the animation styles), phones get ‹ name › instead of the numbers */
+.skin-bar .bar-compact { display: none; align-items: center; gap: 2px; }
+.skin-bar .bar-name { min-width: 128px; padding: 0 6px; text-align: center; white-space: nowrap; font: 700 0.86rem/1 var(--font-body); }
+@media (max-width: 640px) {
+  .skin-bar.has-compact [data-pick] { display: none; }
+  .skin-bar.has-compact .bar-compact { display: flex; }
+}
 @media (prefers-reduced-motion: reduce) { .skin-bar { animation: none; } }
 
 /* ---------- animation styles (Settings → Animation style) ---------- */
@@ -748,4 +755,11 @@ td.cur, th.cur { background: var(--accent-soft); }
 @media (max-width: 640px) { .anim-preview.stage { aspect-ratio: 1 / 1; } }
 .anim-thumb { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: calc(var(--r) * 0.7); background: var(--stage-bg); overflow: hidden; }
 .anim-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.anim-groups { display: grid; gap: 22px; }
+.anim-group { display: grid; gap: 10px; }
+.anim-group h4 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 0.98rem; }
+.anim-group h4 small { font-weight: 400; font-size: 0.78rem; }
+.anim-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.anim-badge { padding: 2px 8px; border-radius: 999px; background: var(--surface-3); color: var(--ink-2); font: 600 0.66rem/1.5 var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; }
+.anim-badge.fun { background: #ffe066; color: #5a4300; }
 .anim-num { position: absolute; left: 6px; top: 6px; z-index: 1; min-width: 22px; padding: 2px 6px; border-radius: 6px; background: var(--ink); color: var(--bg); font-size: 0.75rem; text-align: center; }

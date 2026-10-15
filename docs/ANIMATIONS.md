@@ -186,9 +186,10 @@ optional `rotY` (degrees).
 ## Animation styles
 
 The clips only describe poses; how the figure is drawn is up to its style. The
-mannequin is the default. The others are a test, listed in `public/js/anim-styles.js`
-(`ANIM_STYLES`) and applied only to the exercises in `STYLED_EXERCISES` there (for
-now `zone2`). The user picks one in Settings or from the floating switcher; the
+styles are a test, listed in `public/js/anim-styles.js` (`ANIM_STYLES`) and applied
+only to the exercises in `STYLED_EXERCISES` there (for now `zone2`); Athlete is the
+default (`DEFAULT_ANIM_STYLE`) and every other exercise shows the mannequin
+(`BASE_ANIM_STYLE`). The user picks one in Settings or from the floating switcher; the
 choice is `profile.settings.animStyle`, set on `<html data-anim>`, and every stage
 redraws when the `hp:anim` event fires.
 
@@ -196,9 +197,13 @@ redraws when the `hp:anim` event fires.
 public/js/anim/styles/
   index.js      loads a style's module the first time it's used
   kit.js        shared parts for three.js styles: rig, body, outlines, toon ramps, glow
-  flat.js       shared parts for the flat styles: body pieces on screen, prop faces, curves
-  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js     three.js figures
-  pictogram.js (SVG)  ink.js (2D canvas)  ascii.js (text)       flat figures
+  flat.js       shared parts for the flat styles: body pieces on screen, prop faces,
+                curves, depth, segments clipped at the camera, the horizon
+  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js             three.js figures
+  pictogram.js  blueprint.js  doodle.js                              SVG
+  ink.js  synthwave.js  stardust.js  googly.js                       2D canvas
+  ascii.js                                                           text
+  chrome.js                                                          a WebGL fragment shader
 ```
 
 Each style module exports `createFigure()`. The stage still samples the clip and
@@ -227,9 +232,17 @@ tags every part with its region so `createHighlighter()` can light up muscle gro
 group; the stage lays it over the 3D canvas (which stays underneath, see-through, so
 dragging still turns the camera) and calls `figure.draw(view)` each frame. `view`
 has the size, `project(point)` to CSS pixels (with depth), `scaleAt(point)` in
-pixels per metre and the clip's props, so the camera buttons and dragging work as
-usual. `flat.js` turns the joints into body pieces sorted far to near and props into
-faces. It also needs `snapshot()`, a data URL of the last frame, for thumbnails.
+pixels per metre, the clip's props and the `camera` (position, world matrix and
+inverse projection), so the camera buttons and dragging work as usual. `flat.js`
+turns the joints into body pieces sorted far to near and props into faces, and has
+`depthOf`, `projectSegment` (cut where a line passes behind the camera, for floor
+grids) and `horizonY`. `update(J, { still })` tells a style when a frame is a one-off
+(a thumbnail) rather than playback, so trails, physics and wobble start clean. It
+also needs `snapshot()`, a data URL of the last frame, for thumbnails.
+
+Liquid chrome shows how far that goes: it ignores the projection, takes the camera's
+matrices and casts a ray per pixel through a signed distance field built from the
+joints, in plain WebGL.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it with `/dev/animations.html?ids=zone2&style=yours`.

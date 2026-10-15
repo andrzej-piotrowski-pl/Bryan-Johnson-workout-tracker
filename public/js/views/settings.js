@@ -87,12 +87,12 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:14px">
         <h3>Animation style <span class="badge-test">Test</span></h3>
-        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animation. For now they only apply to <b>Zone 2: easy step-ups or marching</b>, shown below; every other exercise keeps the mannequin. Styles 1–6 are three.js scenes; Pictogram, Ink brush and ASCII are drawn without three.js (SVG, a 2D canvas and text). The movement is the same in all of them.</p>
+        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animation. For now they only apply to <b>Zone 2: easy step-ups or marching</b>, shown below; every other exercise keeps the mannequin. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, as text or in a WebGL shader of their own. The movement is the same in all of them.</p>
         <div data-anim-preview></div>
         ${animStylePickerHtml(st.animStyle)}
         <div class="live-row">
           <button type="button" class="btn" data-anim-live>${icon("eye")} Try styles live</button>
-          <small class="muted">Opens Zone 2 with a switcher at the top of the screen: ${esc(ANIM_STYLES.map((s, i) => `${i + 1} ${s.name}`).join(", "))}. Close it with ×.</small>
+          <small class="muted">Opens Zone 2 with a switcher at the top of the screen, one number per style (${ANIM_STYLES.length}; hover for the name, or ‹ › on a phone). Close it with ×.</small>
         </div>
       </section>
 

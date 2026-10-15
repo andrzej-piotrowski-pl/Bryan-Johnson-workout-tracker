@@ -12,6 +12,12 @@ const MODULES = {
   pictogram: () => import("./pictogram.js"),
   ink: () => import("./ink.js"),
   ascii: () => import("./ascii.js"),
+  chrome: () => import("./chrome.js"),
+  synthwave: () => import("./synthwave.js"),
+  blueprint: () => import("./blueprint.js"),
+  stardust: () => import("./stardust.js"),
+  doodle: () => import("./doodle.js"),
+  googly: () => import("./googly.js"),
 };
 
 export async function loadFigure(id) {

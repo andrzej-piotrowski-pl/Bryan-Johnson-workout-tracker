@@ -3,6 +3,22 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.7.0] - 2026-10-15
+
+### Added
+- **Six new animation styles drawn without three.js**, still on Zone 2 only:
+  - **Liquid chrome**: a mirror-finish body that flows like poured metal, ray-marched in one WebGL shader, with reflections, soft shadows and gold on the worked muscles.
+  - **Synthwave**: neon tubes on a scrolling magenta grid under a striped sunset, mirrored on a wet floor.
+  - **Blueprint**: an engineering drawing with live knee, hip and elbow angles, hatched muscles and the step dimensioned.
+  - **Stardust**: about 1,800 particles in deep space that trail light as the body moves.
+  - **Doodle** (funny): a wobbly biro stick figure on notebook paper, with highlighter, sweat, tally marks for reps and a speech bubble with opinions.
+  - **Googly** (funny): a fuzzy monster in huge trainers whose googly eyes run on real physics.
+- The style cards in Settings are grouped into 3D scenes and styles drawn without three.js, each with a badge for how it's drawn (and which ones are funny).
+- On a phone, the floating style switcher shows ‹ name › instead of fifteen numbers.
+
+### Changed
+- **Athlete is now the default style and comes first**; Mannequin is number 2. If you already picked a style, you keep it. Every exercise without styles still shows the mannequin.
+
 ## [1.6.0] - 2026-10-15
 
 ### Added

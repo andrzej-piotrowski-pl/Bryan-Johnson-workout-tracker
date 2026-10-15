@@ -1,6 +1,6 @@
 // The live animation style switcher: like the theme switcher (skin-bar.js), a bar
 // floating at the top centre of every page, one numbered button per style (1 =
-// Mannequin, 2 = Athlete, …, in the order of ANIM_STYLES). Opened from Settings →
+// Athlete, 2 = Mannequin, …, in the order of ANIM_STYLES). Opened from Settings →
 // Animation style; picking a number switches and saves the style, and every 3D
 // figure on screen that takes styles redraws in it.
 
@@ -27,6 +27,7 @@ const bar = createFloatBar({
     applyAnimStyle(state.profile.settings);
   },
   event: "hp:anim",
+  compact: true,
 });
 
 export const openAnimBar = bar.open;
