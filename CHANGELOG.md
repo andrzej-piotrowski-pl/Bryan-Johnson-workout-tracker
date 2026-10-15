@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.10.2] - 2026-10-15
+
+### Fixed
+- Today now scrolls as one page across themes, without a separate scrollbar inside the exercise panel.
+
 ## [1.10.1] - 2026-10-15
 
 ### Fixed
