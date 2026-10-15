@@ -33,9 +33,16 @@ export function render(el) {
     if (kept && EXERCISES[kept]) previewEx = kept;
   } catch {}
   const previewEl = document.createElement("div");
-  previewEl.className = "anim-preview";
-  const preview = createStagePanel(previewEl);
-  preview.load(previewEx);
+  previewEl.className = "anim-preview stage";
+  let preview = null;
+  let disposed = false;
+  const previewObserver = new IntersectionObserver((entries) => {
+    if (disposed || !entries.some((entry) => entry.isIntersecting)) return;
+    previewObserver.disconnect();
+    preview = createStagePanel(previewEl);
+    preview.load(previewEx);
+    fillAnimThumbs();
+  }, { rootMargin: "200px" });
 
   function drawPage() {
     const pr = p();
@@ -92,7 +99,7 @@ export function render(el) {
         <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
-      <section class="card card-pad" style="display:grid;gap:14px">
+      <section class="card card-pad" data-anim-settings style="display:grid;gap:14px">
         <h3>Animation style</h3>
         <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animations, on every exercise. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, as text or in a WebGL shader of their own. The movement is the same in all of them.</p>
         <div data-anim-preview></div>
@@ -143,7 +150,7 @@ export function render(el) {
       try {
         sessionStorage.setItem("hp:animpreview", previewEx);
       } catch {}
-      preview.load(previewEx);
+      preview?.load(previewEx);
       fillAnimThumbs();
     } else if (t.dataset.switch) {
       const name = t.dataset.switch;
@@ -265,6 +272,7 @@ export function render(el) {
   // A still of the preview exercise on each style's card (in this theme's colours). A
   // newer pick wins over stills still being drawn for the last one.
   function fillAnimThumbs() {
+    if (!preview) return;
     const ex = previewEx;
     el.querySelectorAll("img[data-anim-thumb]").forEach((img) => {
       thumbnail(ex, img.dataset.animThumb).then((url) => {
@@ -278,15 +286,21 @@ export function render(el) {
   function draw() {
     drawPage();
     el.querySelector("[data-anim-preview]").replaceWith(previewEl);
-    fillAnimThumbs();
+    if (preview) fillAnimThumbs();
+    else {
+      previewObserver.disconnect();
+      previewObserver.observe(el.querySelector("[data-anim-settings]"));
+    }
   }
 
   draw();
   return {
     destroy() {
+      disposed = true;
+      previewObserver.disconnect();
       window.removeEventListener("hp:look", onLook);
       window.removeEventListener("hp:anim", onAnim);
-      preview.dispose();
+      preview?.dispose();
     },
   };
 }

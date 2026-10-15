@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.10.1] - 2026-10-15
+
+### Fixed
+- Settings stays responsive on open by loading animation previews only when they are near the screen.
+
 ## [1.10.0] - 2026-10-15
 
 ### Added

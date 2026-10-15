@@ -27,6 +27,7 @@ export function thumbnail(id, style = animStyleFor(id)) {
   const key = `${id}:${root.dataset.skin || ""}:${dark ? "d" : "l"}:${style}`;
   if (cache.has(key)) return cache.get(key);
   const p = (queue = queue.then(async () => {
+    await new Promise(requestAnimationFrame);
     const stage = await getStage();
     stage.setTheme(dark);
     await stage.setStyle(style);
