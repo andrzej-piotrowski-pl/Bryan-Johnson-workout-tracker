@@ -3,6 +3,17 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.1.0] - 2026-10-15
+
+### Added
+- Setup has a new **Accessories** step: what you need at home (dumbbells, pull-up bar, bands, mat, slant board, step or box, Nordic anchor), each shown in a 3D example exercise.
+- Changing your training level in Settings now switches you to that level's workouts: weights rescale and your phase restarts from the level's starting point.
+
+### Changed
+- Setup no longer asks you to pick a starting phase: your training level decides it. "Well trained" now starts in Blueprint (was Build).
+- The four training levels sit on one row in setup (two rows on a phone), with a note that you can change your level any time.
+- New default values in setup (age 30, 70 kg, 170 cm, "Prefer not to say", New to training, 20 kg heaviest dumbbell) instead of one person's details.
+
 ## [1.0.2] - 2026-10-15
 
 ### Changed

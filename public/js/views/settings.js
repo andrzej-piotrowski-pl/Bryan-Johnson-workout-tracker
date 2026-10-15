@@ -4,8 +4,8 @@
 import { ADDONS } from "../data/addons/index.js";
 import { PHASES } from "../data/program.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
-import { LEVELS, SEXES, bpmRange, hrMax, phaseLengths } from "../personalize.js";
-import { phaseFor, sessionsDone } from "../plan.js";
+import { LEVELS, SEXES, bpmRange, hrMax, phaseLengths, setLevel } from "../personalize.js";
+import { phaseFor } from "../plan.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
@@ -30,7 +30,6 @@ export function render(el) {
     const pr = p();
     const st = pr.settings || {};
     const ph = phaseFor(todayIso());
-    const done = sessionsDone();
     const lens = phaseLengths(pr);
     el.innerHTML = `<div class="page narrow">
       <div class="section-title"><h2>Settings</h2><span class="muted">Changes save automatically</span></div>
@@ -47,7 +46,7 @@ export function render(el) {
           <label class="field"><span>Height (${imperial() ? "in" : "cm"})</span><input class="input" data-f="height" inputmode="decimal" value="${esc(hgt(pr.heightCm))}"></label>
         </div>
         <div class="field"><span>Sex (scales starting weights)</span>${seg("sex", SEXES, pr.sex)}</div>
-        <label class="field"><span>Training level</span><select class="input" data-f="level">${LEVELS.map((l) => `<option value="${l.id}" ${pr.level === l.id ? "selected" : ""}>${esc(l.name)} — ${esc(l.detail)}</option>`).join("")}</select></label>
+        <label class="field"><span>Training level</span><select class="input" data-f="level">${LEVELS.map((l) => `<option value="${l.id}" ${pr.level === l.id ? "selected" : ""}>${esc(l.name)} — ${esc(l.detail)}</option>`).join("")}</select><small>Feeling more comfortable, or need it easier? Change your level any time: the starting weights rescale and your phase restarts at that level's starting point (${LEVELS.map((l) => `${esc(l.name)}: ${esc(PHASES[l.startPhase].name)}`).join(", ")}).</small></label>
         <div class="field"><span>Units</span>${seg("units", [{ id: "metric", name: "Metric (kg, cm)" }, { id: "imperial", name: "Imperial (lb, in)" }], pr.units, "accent")}</div>
         <div class="grid-form">
           <label class="field"><span>Heaviest dumbbell (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(w(pr.maxDumbbellKg))}"></label>
@@ -58,7 +57,7 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Phase</h3>
-        <p class="muted" style="font-size:0.86rem">You're in <b>${esc(PHASES[ph.phase].name)}</b>. ${done} sessions done so far. Phases advance after ${lens[0]} and then ${lens[1]} completed sessions; skipped days don't count. Lock a phase to stay in it.</p>
+        <p class="muted" style="font-size:0.86rem">You're in <b>${esc(PHASES[ph.phase].name)}</b>${ph.needed ? `, ${ph.done} of ${ph.needed} sessions done towards ${esc(PHASES[ph.phase + 1].name)}` : ""}. Your training level sets the starting phase; phases advance after ${lens[0]} and then ${lens[1]} completed sessions; skipped days don't count. Lock a phase to stay in it.</p>
         ${seg("phaseLock", [{ id: "auto", name: "Automatic" }, ...PHASES.map((x, i) => ({ id: String(i), name: x.name }))], pr.phaseLock == null || pr.phaseLock === "" ? "auto" : String(pr.phaseLock))}
         <div class="field"><span>Starting phase (for automatic mode)</span>${seg("startPhase", PHASES.map((x, i) => ({ id: String(i), name: x.name })), String(pr.startPhase || 0))}</div>
       </section>
@@ -114,7 +113,10 @@ export function render(el) {
 
   el.addEventListener("change", async (e) => {
     const t = e.target;
-    if (t.dataset.f === "level") updateProfile((pr) => (pr.level = t.value));
+    if (t.dataset.f === "level") {
+      updateProfile((pr) => setLevel(pr, t.value));
+      draw();
+    }
     else if (t.dataset.switch) {
       const name = t.dataset.switch;
       updateProfile((pr) => {

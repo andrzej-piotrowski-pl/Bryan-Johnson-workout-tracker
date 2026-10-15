@@ -836,36 +836,65 @@ export const TARGETS = [
   ],
 ];
 
+// icon, ex (an exercise whose animation shows the item) and use (how it's used in
+// that exercise) are for the setup screen.
 export const EQUIPMENT = {
   have: [
     {
       i: "Adjustable dumbbells",
       d: "Ideally up to 20–24 kg each, so the RDL, goblet squat and carries keep progressing.",
+      icon: "dumbbell",
+      ex: "ohpress",
+      use: "one in each hand, pressed from the shoulders to straight arms.",
     },
-    { i: "Doorway pull-up bar", d: "Pull-ups, chin-ups, hanging leg raises." },
+    {
+      i: "Doorway pull-up bar",
+      d: "Pull-ups, chin-ups, hanging leg raises.",
+      icon: "bar",
+      ex: "chinup",
+      use: "hang from the bar in a door frame and pull your chest up to it.",
+    },
   ],
   add: [
     {
       i: "Resistance bands + door anchor",
       d: "Light, medium and heavy. Face pulls, pull-aparts, butterfly, Pallof press, woodchop and pull-up assistance.",
+      icon: "band",
+      ex: "facepull",
+      use: "the band is anchored in the door at face height; pull it apart towards your ears.",
     },
-    { i: "Exercise mat", d: "For kneeling work, stretches and quieter landings." },
+    {
+      i: "Exercise mat",
+      d: "For kneeling work, stretches and quieter landings.",
+      icon: "mat",
+      ex: "pushup",
+      use: "hands on the mat; planks, floor work and stretches happen on it too.",
+    },
     {
       i: "Slant board or 2 small plates",
       d: "A foldable slant board (about 40 × 40 cm) or 2.5–5 kg plates under the heels: squats and Poliquin step-ups.",
+      icon: "slant",
+      ex: "gobletsquat",
+      use: "heels up on the slant board so the knees can travel far forward.",
     },
     {
       i: "A sturdy step and a knee-height box or chair",
       d: "A stair or 15–25 cm platform for step-up cardio, calf raises and Jefferson curls; a 30–45 cm box or solid chair for Friday’s step-ups.",
+      icon: "box",
+      ex: "stepup",
+      use: "drive up onto a knee-height box or solid chair, dumbbells in hand.",
     },
     {
       i: "Nordic anchor",
       d: "A heavy sofa or bed you can hook your heels under, or a door Nordic strap.",
+      icon: "anchor",
+      ex: "nordic",
+      use: "heels hooked under a sofa or strap while you lower yourself slowly.",
     },
   ],
   optional: [
     { i: "Jump rope", d: "Only if your ceiling and neighbours allow it." },
-    { i: "Weighted vest", d: "For Zone 2 from Phase 3 (Bryan’s bone protocol)." },
+    { i: "Weighted vest", d: "For Zone 2 from Phase 3 (Bryan’s bone protocol).", icon: "vest" },
   ],
 };
 

@@ -2,7 +2,8 @@
 // - heart-rate ranges from age (Tanaka: 208 − 0.7 × age) or a measured max,
 // - starting loads scaled by body weight, sex, age and training level,
 // - units (kg/cm or lb/in),
-// - which phase you are in, based on sessions actually completed (skipped days don't count).
+// - which phase you are in: your training level picks the starting phase, then it
+//   advances with sessions actually completed (skipped days don't count).
 //
 // The plan's loads were set for a 75 kg man of 38 returning to training ("returning");
 // everyone else gets the same loads scaled. They are starting points: the effort
@@ -10,12 +11,25 @@
 
 import { iso } from "./util.js";
 
+// Each level sets how heavy the starting weights are and which phase you start in.
+// Changing level later (Settings) restarts the phase count from that level's phase.
 export const LEVELS = [
-  { id: "new", name: "New to training", detail: "Little or no strength training before.", load: 0.7, startPhase: 0 },
-  { id: "returning", name: "Returning", detail: "Trained before, but out of practice for months or years.", load: 1.0, startPhase: 0 },
-  { id: "active", name: "Active", detail: "Training regularly over the last few months.", load: 1.15, startPhase: 1 },
-  { id: "trained", name: "Well trained", detail: "Lifting and doing hard cardio consistently for a year or more.", load: 1.3, startPhase: 1 },
+  { id: "new", name: "New to training", detail: "Little or no strength training before.", load: 0.7, startPhase: 0, plan: "Lightest weights and a longer, gentler first phase." },
+  { id: "returning", name: "Returning", detail: "Trained before, but out of practice for months or years.", load: 1.0, startPhase: 0, plan: "Easy first weeks to relearn the moves, then it builds." },
+  { id: "active", name: "Active", detail: "Training regularly over the last few months.", load: 1.15, startPhase: 1, plan: "Skips the easy weeks: 3 sets and real jumps from day one." },
+  { id: "trained", name: "Well trained", detail: "Lifting and doing hard cardio consistently for a year or more.", load: 1.3, startPhase: 2, plan: "The full plan from day one, with the heaviest weights." },
 ];
+
+// Switch training level: rescales loads and restarts the phase count from today
+// at the new level's starting phase. Logged days keep the phase they were done in.
+export function setLevel(p, id, since = iso(new Date())) {
+  const lvl = LEVELS.find((l) => l.id === id);
+  if (!lvl || p.level === id) return p;
+  p.level = id;
+  p.startPhase = lvl.startPhase;
+  p.levelSince = since;
+  return p;
+}
 
 export const SEXES = [
   { id: "male", name: "Male" },
@@ -26,13 +40,13 @@ export const SEXES = [
 export function defaultProfile() {
   return {
     name: "",
-    age: 38,
-    sex: "male",
-    weightKg: 75,
-    heightCm: 180,
-    level: "returning",
+    age: 30,
+    sex: "other",
+    weightKg: 70,
+    heightCm: 170,
+    level: "new",
     units: "metric",
-    maxDumbbellKg: 24,
+    maxDumbbellKg: 20,
     hrMax: null,
     startDate: iso(new Date()),
     startPhase: 0,

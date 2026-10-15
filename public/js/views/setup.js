@@ -1,22 +1,34 @@
 // First-run setup: who you are (for heart-rate zones and starting loads),
-// your training level, units, equipment, start date and optional add-ons.
+// your training level (which picks the starting phase), units, the accessories
+// you need (with a 3D example of each), start date and optional add-ons.
 
 import { ADDONS } from "../data/addons/index.js";
-import { PHASES } from "../data/program.js";
+import { EQUIPMENT, PHASES } from "../data/program.js";
+import { EXERCISES } from "../data/exercises.js";
 import { setProfile, state } from "../store.js";
 import { LEVELS, SEXES, bpmRange, defaultProfile, fmtLoad, hrMax } from "../personalize.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
+import { createStagePanel } from "../components/stage-panel.js";
 import { seg } from "../components/ui.js";
 
-const STEPS = ["Welcome", "About you", "Training", "Add-ons", "Ready"];
+const STEPS = ["Welcome", "About you", "Your level", "Accessories", "Add-ons", "Ready"];
 const LB = 2.20462;
+// Accessories with an example animation, in the order they're shown.
+const GEAR = [...EQUIPMENT.have, ...EQUIPMENT.add].filter((g) => g.ex);
+
+function gearUse(g) {
+  const ex = EXERCISES[g.ex];
+  return `${icon(g.icon)}<span><b>${esc(g.i)}</b> <span class="muted">${esc(g.d)}</span><br><span class="muted">Example, ${esc(ex ? ex.name.toLowerCase() : g.ex)}:</span> ${esc(g.use)}</span>`;
+}
 
 export function render(el, params) {
   const redo = params.includes("redo");
   const draft = redo && state.profile ? structuredClone(state.profile) : defaultProfile();
   let step = 0;
   let error = "";
+  let gear = 0;
+  let stage = null;
 
   const imperial = () => draft.units === "imperial";
   const wShow = (kg) => (kg == null ? "" : imperial() ? Math.round(kg * LB) : kg);
@@ -43,14 +55,14 @@ export function render(el, params) {
     }
     if (step === 2) {
       const lv = LEVELS.map((l) => `<button type="button" class="choice" data-level="${l.id}" aria-pressed="${draft.level === l.id}"><b>${esc(l.name)}</b><small>${esc(l.detail)}</small></button>`).join("");
+      const lvl = LEVELS.find((l) => l.id === draft.level) || LEVELS[0];
       const ex = (lo, hi) => fmtLoad(draft, lo, hi);
-      return `<div class="field"><span>Where are you starting from?</span><div class="choice-grid">${lv}</div></div>
+      return `<div class="field"><span>Where are you starting from?</span><div class="choice-grid levels">${lv}</div></div>
+        <p class="level-note">${icon("info")}<span><b>${esc(lvl.name)}:</b> ${esc(lvl.plan)} ${esc(PHASES[lvl.startPhase].effort)} The workouts then grow with you as you complete sessions.<br><span class="muted">You can change your level any time in Settings, when you feel ready for harder exercises or want easier ones.</span></span></p>
         <div class="grid-form">
-          <label class="field"><span>Heaviest dumbbell you have (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(wShow(draft.maxDumbbellKg))}"><small>Loads are capped at this.</small></label>
           <label class="field"><span>Measured max heart rate (optional)</span><input class="input" data-f="hrmax" inputmode="numeric" value="${esc(draft.hrMax ?? "")}" placeholder="${hrMax({ age: draft.age })} (estimated)"><small>Leave empty to estimate from age.</small></label>
           <label class="field"><span>Start date</span><input class="input" type="date" data-f="start" value="${esc(draft.startDate)}"></label>
         </div>
-        <div class="field"><span>Starting phase</span>${seg("phase", PHASES.map((p, i) => ({ id: i, name: `${p.name} (${p.weeks.toLowerCase()})` })), draft.startPhase)}<small>Suggested for your level; it moves on by itself as you complete sessions (skipped days don't count).</small></div>
         <div class="preview"><b>Your numbers</b><dl>
           <dt>Max heart rate</dt><dd>${hrMax(draft)} bpm</dd>
           <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
@@ -61,6 +73,15 @@ export function render(el, params) {
         </dl><small class="muted">Starting points only: in each phase, effort (reps left in the tank) decides the weight.</small></div>`;
     }
     if (step === 3) {
+      return `<p class="muted">Everything happens at home with a few small accessories, nothing that needs its own room. Tap one to see how it's used in an example exercise.</p>
+        <div class="gear-demo card"><div class="stage-host"></div><p class="gear-use">${gearUse(GEAR[gear])}</p></div>
+        <div class="gear-grid">${GEAR.map(
+          (x, i) => `<button type="button" class="choice gear" data-gear="${i}" aria-pressed="${i === gear}">${icon(x.icon)}<b>${esc(x.i)}</b></button>`
+        ).join("")}</div>
+        <p class="muted" style="font-size:0.88rem">Optional: ${esc(EQUIPMENT.optional.map((o) => o.i.toLowerCase()).join(" and "))}. Missing something? Every exercise has an easier version or a swap; see <i>The plan</i> page.</p>
+        <label class="field" style="max-width:320px"><span>Heaviest dumbbell you have (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(wShow(draft.maxDumbbellKg))}"><small>Suggested weights are capped at this.</small></label>`;
+    }
+    if (step === 4) {
       return `<p class="muted">Optional extras that show up after the main session, tracked the same way. You can change this any time in Settings.</p>
         ${ADDONS.map(
           (a) => `<label class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${esc(a.name)}</b><small class="muted">${esc(a.description)}</small></span><span class="switch"><input type="checkbox" data-addon="${esc(a.id)}" ${draft.addons && draft.addons[a.id] ? "checked" : ""} aria-label="${esc(a.name)}"><span></span></span></label>`
@@ -71,8 +92,8 @@ export function render(el, params) {
     return `<div class="preview"><dl>
         ${draft.name ? `<dt>Name</dt><dd>${esc(draft.name)}</dd>` : ""}
         <dt>Age, weight</dt><dd>${esc(draft.age)} · ${esc(wShow(draft.weightKg))} ${imperial() ? "lb" : "kg"}</dd>
-        <dt>Level</dt><dd>${esc(lvl ? lvl.name : "")}</dd>
-        <dt>Starts</dt><dd>${esc(draft.startDate)} · ${esc(PHASES[draft.startPhase].name)}</dd>
+        <dt>Level</dt><dd>${esc(lvl ? lvl.name : "")} · starts in ${esc(PHASES[draft.startPhase].name)}</dd>
+        <dt>Starts</dt><dd>${esc(draft.startDate)}</dd>
         <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
         <dt>Add-ons</dt><dd>${esc(ADDONS.filter((a) => draft.addons && draft.addons[a.id]).map((a) => a.name).join(", ") || "None")}</dd>
       </dl></div>
@@ -80,6 +101,8 @@ export function render(el, params) {
   }
 
   function draw() {
+    if (stage) stage.dispose();
+    stage = null;
     el.innerHTML = `<div class="setup"><div class="card setup-card">
       <div class="setup-head">
         <div class="steps">${STEPS.map((_, i) => `<i class="${i <= step ? "on" : ""}"></i>`).join("")}</div>
@@ -92,6 +115,11 @@ export function render(el, params) {
         <button type="button" class="btn primary" data-next>${step === STEPS.length - 1 ? `${icon("check")} ${redo ? "Save" : "Start training"}` : `Next ${icon("chevronR")}`}</button>
       </div>
     </div></div>`;
+    const host = el.querySelector(".gear-demo .stage-host");
+    if (host) {
+      stage = createStagePanel(host);
+      stage.load(GEAR[gear].ex);
+    }
   }
 
   function validate() {
@@ -141,7 +169,6 @@ export function render(el, params) {
       const v = b.dataset.value;
       if (name === "units") draft.units = v;
       else if (name === "sex") draft.sex = v;
-      else if (name === "phase") draft.startPhase = Number(v);
       draw();
       return;
     }
@@ -149,6 +176,13 @@ export function render(el, params) {
       draft.level = b.dataset.level;
       draft.startPhase = LEVELS.find((l) => l.id === draft.level).startPhase;
       draw();
+      return;
+    }
+    if (b.dataset.gear) {
+      gear = Number(b.dataset.gear);
+      el.querySelectorAll("[data-gear]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      el.querySelector(".gear-use").innerHTML = gearUse(GEAR[gear]);
+      if (stage) stage.load(GEAR[gear].ex);
       return;
     }
     if (b.hasAttribute("data-back")) {
@@ -165,6 +199,8 @@ export function render(el, params) {
         draw();
         return;
       }
+      // A changed level on "Run setup again" restarts the phase count from today.
+      if (redo && state.profile && state.profile.level !== draft.level) draft.levelSince = todayIso();
       draft.updatedAt = new Date().toISOString();
       setProfile(draft);
       location.hash = redo ? "#/settings" : "#/today";
@@ -172,4 +208,5 @@ export function render(el, params) {
   });
 
   draw();
+  return { destroy: () => stage && stage.dispose() };
 }
