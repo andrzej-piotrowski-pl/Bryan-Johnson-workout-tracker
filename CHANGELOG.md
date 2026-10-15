@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.4] - 2026-10-15
+
+### Changed
+- Made the README easier for beginners, with advanced and technical details collapsed by default.
+
 ## [1.11.3] - 2026-10-15
 
 ### Changed

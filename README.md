@@ -4,7 +4,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
-- **Animation styles**: fifteen ways to draw every exercise animation: six three.js looks (Athlete, the default, plus the mannequin, Anime, Low poly, Cartoon and Voxel) and nine drawn without three.js, from a ray-marched liquid-chrome shader and a blueprint that measures your joint angles to a doodle with opinions and a monster with googly eyes.
+- **Fifteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -36,6 +36,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 You need [Node.js](https://nodejs.org) 18 or newer.
 
+With [Git](https://git-scm.com) installed, open a terminal (PowerShell on Windows) and run:
+
 ```bash
 git clone https://github.com/liviux/Bryan-Johnson-workout-website.git
 cd Bryan-Johnson-workout-website
@@ -44,6 +46,11 @@ npm start
 ```
 
 Open **http://localhost:3030**. The first visit opens a short setup where you enter your details, pick your training level, see which accessories you need (each one shown in a 3D example exercise) and pick add-ons.
+
+Keep the terminal window open while you use the app. To stop it, press **Ctrl+C** in that window. Next time, open a terminal in the project folder and run `npm start` again.
+
+<details>
+<summary><b>Advanced settings: port, phone access, data location and automatic startup</b></summary>
 
 - Different port: `PORT=8080 npm start`
 - Use it from your phone on the same Wi-Fi: `HOST=0.0.0.0 npm start`, then open `http://<your-computer's-IP>:3030`. There is no login, so only do this on a network you trust.
@@ -70,11 +77,21 @@ Then open `https://<device>.<tailnet>.ts.net:10000` on a Tailscale device. This 
 
 `npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node.
 
-To update later: `git pull`, then `npm install` again. Your `data/` folder is left alone.
+</details>
+
+To update later: stop the app, run `git pull`, then `npm install` in the project folder, and start it again with `npm start`. Your saved workouts stay in place.
 
 ## Your data
 
-Everything stays on your computer, in the `data/` folder, which is **git-ignored** so it never ends up on GitHub:
+Your details and workouts save automatically on your computer. They are not uploaded to GitHub.
+
+- **Back up** in **Settings → Export backup**. Keep the downloaded file somewhere safe.
+- **Restore a backup** in **Settings → Import backup**. Choose merge to combine it with your existing logs, or replace to overwrite your current logs.
+
+<details>
+<summary><b>Advanced: data files and browser storage</b></summary>
+
+By default, files are stored in the `data/` folder. This folder is excluded from Git, so normal commits do not include your personal data:
 
 ```
 data/
@@ -82,26 +99,37 @@ data/
   days/2026-10-14.json  one file per day: sets, reps, notes, skip reason…
 ```
 
-- **Back up** by copying `data/`, or use *Settings → Export backup* (one JSON file). *Import backup* merges or replaces.
+- You can also back up by copying the entire `data/` folder. See **Advanced settings** under **Run it locally** to change its location.
 - If the app is opened without its server (for example through some other web server), it can't write files, so it keeps your data in the browser instead and says so in the sidebar and in Settings. Use `npm start` to get files, 3D and fonts.
+
+</details>
 
 ## Your details (what adjusts the plan)
 
-Enter them in the first-run setup; change them any time in **Settings** (or edit `data/profile.json` while the app is stopped).
+Enter your details during setup and change them any time in **Settings**. If you are new to exercise, choose **New to training**. You can switch levels whenever you need an easier or harder workout.
 
 | Setting | What it changes |
 |---|---|
-| Age, or a measured max heart rate | Heart-rate zones everywhere (max = 208 − 0.7 × age unless you enter your own) |
-| Weight, sex, age, training level | Starting dumbbell weights, scaled from the plan's reference (75 kg man, 38, returning to training) |
+| Age, or a measured max heart rate | Your suggested heart-rate ranges during cardio |
+| Weight, sex, age, training level | Suggested starting dumbbell weights |
 | Heaviest dumbbell | Suggested weights are capped at it |
 | Units | kg/cm or lb/in throughout |
-| Training level | The workouts: sets, reps, intervals, Zone 2 minutes and which exercises you do. Nothing changes on its own: switch level in Settings when you want harder or easier workouts (each level says when it's time to move up). Days you already logged keep the level they were done at. |
+| Training level | Which exercises you do, how many sets and reps, and how long the cardio lasts. Your level only changes when you choose it; past logs keep their original level. |
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
 | Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
 | Animation style | How the exercise animations are drawn (see [Animation styles](#animation-styles)); changes nothing in the plan |
 
-Suggested weights are starting points. The effort target of your level (how many good reps you leave in the tank) decides the real weight.
+Suggested weights are starting points. Use a weight that lets you finish with good form and still have the number of good reps left that your level recommends.
+
+<details>
+<summary><b>Advanced: how the suggestions are calculated</b></summary>
+
+- Maximum heart rate is estimated as `208 − 0.7 × age`, unless you enter a measured maximum.
+- Starting weights are scaled from the plan's reference: a 75 kg man, age 38, returning to training.
+- To edit your profile file directly, stop the app first, then edit `data/profile.json`.
+
+</details>
 
 ## The week
 
@@ -118,6 +146,11 @@ Suggested weights are starting points. The effort target of your level (how many
 About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
 
 ## Themes
+
+Choose one of seven themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
+
+<details>
+<summary><b>See the themes, screenshots and design details</b></summary>
 
 Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. To compare them on your own pages, use **Try themes live** there: a small switcher floats at the top of the screen with one letter per theme (hover for the name) while you move around the app; close it with ×. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
 
@@ -148,7 +181,16 @@ Each screenshot uses a different animation style: Chapters with **Anime**, Dark 
 
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
+</details>
+
 ## Animation styles
+
+Choose one of fifteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+
+The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
+
+<details>
+<summary><b>See all animation styles, screenshots and technical details</b></summary>
 
 Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
@@ -178,13 +220,23 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 
+</details>
+
 ## Add-ons
 
 Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
 
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
 
+<details>
+<summary><b>Advanced: make your own add-on</b></summary>
+
 **Make your own**: copy `public/js/data/addons/posture.js`, change the items (any exercise id from `public/js/data/exercises.js`), the schedule and the metrics, then add it to `ADDONS` in `public/js/data/addons/index.js`. Logging, auto-save, history and the setup screen pick it up automatically.
+
+</details>
+
+<details>
+<summary><b>For developers: changing the plan and project layout</b></summary>
 
 ## Changing the plan
 
@@ -218,10 +270,17 @@ docs/THEMES.md            how the themes work and how to add one
 data/                     your data (created on first run, git-ignored)
 ```
 
+</details>
+
 ## Credits
+
+<details>
+<summary><b>Sources, libraries and fonts</b></summary>
 
 - Exercise selection and doses follow Bryan Johnson's public material (his protocol pages, posture guide, bone-density protocol, videos and posts on X); every source is listed on *The plan* page. Videos belong to their creators and are embedded from YouTube.
 - 3D rendering with [three.js](https://threejs.org). Fonts: Inter, Barlow Condensed, JetBrains Mono (SIL Open Font License), via Fontsource.
+
+</details>
 
 ## License
 
