@@ -20,7 +20,8 @@ const PORT = Number(process.env.PORT) || 3030;
 const HOST = process.env.HOST || "127.0.0.1";
 const MAX_BODY = 2 * 1024 * 1024;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const APP_VERSION = "1.0.0";
+// Read from package.json so it never drifts from the release.
+const APP_VERSION = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8")).version;
 
 // URL prefixes served straight from installed packages, so the app works offline.
 const VENDOR = [

@@ -3,7 +3,7 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
-## [1.1.0] - 2026-10-15
+## [1.2.0] - 2026-10-15
 
 ### Added
 - Six new themes besides the original look, each with its own layout, type and colours: Chapters and Dark room (after the taste-skill design guide), Pulse and Lab (after ui-ux-pro-max), Olympia and Course (after impeccable).
@@ -14,7 +14,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
 ### Changed
 - Switching light/dark in Settings now also recolours an open 3D scene straight away.
-- The setup has one more step (Theme), so it now has six.
+- Setup has a new Theme step right after Welcome.
+
+### Fixed
+- The server reported version 1.0.0 (in `/api/info` and server exports) whatever the release; it now reads the version from `package.json`.
 
 ## [1.0.2] - 2026-10-15
 
