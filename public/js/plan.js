@@ -62,17 +62,20 @@ export function countsAsSession(log) {
   return total > 0 && done / total >= 0.5;
 }
 
-export function sessionsDone(beforeDate = null) {
+// Completed sessions before a date; `since` skips older ones (e.g. before a level change).
+export function sessionsDone(beforeDate = null, since = null) {
   let n = 0;
   for (const [date, log] of Object.entries(state.days)) {
     if (beforeDate && date >= beforeDate) continue;
+    if (since && date < since) continue;
     if (countsAsSession(log)) n += 1;
   }
   return n;
 }
 
 export function phaseFor(date) {
-  const st = phaseState(state.profile, sessionsDone(date));
+  const p = state.profile;
+  const st = phaseState(p, sessionsDone(date, p && p.levelSince));
   const log = state.days[date];
   if (log && log.phase != null && !st.locked) return { ...st, phase: log.phase, frozen: true };
   return st;

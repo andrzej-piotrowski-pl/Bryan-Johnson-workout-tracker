@@ -2,7 +2,7 @@
 
 A local web app that plans and tracks a six-day home workout built from **Bryan Johnson's public exercise protocol** (his October 2026 weekly template), rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands.
 
-- **What to do each day**, block by block, with doses that grow over three phases (Re-entry → Build → Blueprint).
+- **What to do each day**, block by block, with doses that grow over three phases (Re-entry → Build → Blueprint), starting from the one that fits your training level.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
@@ -22,6 +22,9 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 </p>
 <p>
 <img src="docs/screenshots/setup.png" width="49%" alt="First-run setup: choosing a theme">
+<img src="docs/screenshots/setup-accessories.png" width="49%" alt="First-run setup: the accessories you need, each shown in a 3D example exercise">
+</p>
+<p>
 <img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
 <img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
 </p>
@@ -39,7 +42,7 @@ npm install
 npm start
 ```
 
-Open **http://localhost:3030**. The first visit opens a short setup where you enter your details and pick add-ons.
+Open **http://localhost:3030**. The first visit opens a short setup where you enter your details, pick your training level, see which accessories you need (each one shown in a 3D example exercise) and pick add-ons.
 
 - Different port: `PORT=8080 npm start`
 - Use it from your phone on the same Wi-Fi: `HOST=0.0.0.0 npm start`, then open `http://<your-computer's-IP>:3030`. There is no login, so only do this on a network you trust.
@@ -73,7 +76,7 @@ Enter them in the first-run setup; change them any time in **Settings** (or edit
 | Weight, sex, age, training level | Starting dumbbell weights, scaled from the plan's reference (75 kg man, 38, returning to training) |
 | Heaviest dumbbell | Suggested weights are capped at it |
 | Units | kg/cm or lb/in throughout |
-| Training level + starting phase | Where you start; phases then advance after 12 and 24 completed sessions (18 and 24 for "new to training"). Skipped days don't count. You can lock a phase. |
+| Training level | Where you start: "New to training" and "Returning" start in Re-entry, "Active" in Build, "Well trained" in Blueprint. Phases then advance after 12 and 24 completed sessions (18 and 24 for "new to training"); skipped days don't count. Change your level in Settings any time you want harder or easier workouts: the weights rescale and the phase count restarts from that level. You can also lock a phase. |
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
 | Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
