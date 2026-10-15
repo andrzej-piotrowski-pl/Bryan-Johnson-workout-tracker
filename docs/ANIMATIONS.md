@@ -13,11 +13,13 @@ public/js/anim/
   props.js      wall, step, chair, slant board, mat, door frame + bar…
   stage.js      renderer, camera, clip player
   clips/*.js    the animations (one file per exercise category)
+  styles/       other ways to draw the figure (see Animation styles below)
 ```
 
 Preview your work at **`/dev/animations.html?ids=pushup,plank`** (or `?ids=all`).
 It renders every keyframe side by side. Add `&view=side` to force a camera
-angle and `&size=320` for bigger tiles.
+angle, `&size=320` for bigger tiles and `&style=voxel` to draw them in an
+animation style.
 
 ## Coordinates and units
 
@@ -180,3 +182,54 @@ optional `rotY` (degrees).
 - One-sided exercises use `alternate: true` so both sides are shown.
 - The camera shows the movement clearly: side view for forward/back motion,
   front view for side-to-side motion.
+
+## Animation styles
+
+The clips only describe poses; how the figure is drawn is up to its style. The
+mannequin is the default. The others are a test, listed in `public/js/anim-styles.js`
+(`ANIM_STYLES`) and applied only to the exercises in `STYLED_EXERCISES` there (for
+now `zone2`). The user picks one in Settings or from the floating switcher; the
+choice is `profile.settings.animStyle`, set on `<html data-anim>`, and every stage
+redraws when the `hp:anim` event fires.
+
+```
+public/js/anim/styles/
+  index.js      loads a style's module the first time it's used
+  kit.js        shared parts for three.js styles: rig, body, outlines, toon ramps, glow
+  flat.js       shared parts for the flat styles: body pieces on screen, prop faces, curves
+  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js     three.js figures
+  pictogram.js (SVG)  ink.js (2D canvas)  ascii.js (text)       flat figures
+```
+
+Each style module exports `createFigure()`. The stage still samples the clip and
+computes the joints (`rig.js`) every frame and passes them to `figure.update(J)`, so
+every style plays every clip exactly like the mannequin.
+
+**A three.js style** returns a `group` the stage adds to its scene, plus
+`setHighlight(groups)`, `setPulse(v)`, `setTheme(dark, colors)` and `dispose()`, and
+optionally:
+
+- `look` (or `look(dark)`): the lights around it, `{ hemi: [sky, ground, intensity],
+  key: [colour, intensity], rim: [colour, intensity], tone: "none", exposure,
+  floor: { color, grid, gridOpacity } }`. Anything left out keeps the mannequin's.
+- `dressProp(mesh)`: restyles each prop mesh (the cartoon's toon step with an outline,
+  the voxel's cobblestone).
+
+`kit.js` does most of the work. `createRig()` gives anchors that follow the body
+(`pelvis`, `chest`, `head`, `handL`, `footR`, the joints…) to hang rigid parts on, and
+`rig.seg(mesh, "thighL", { from, to })` for parts that stretch along a bone.
+`buildBody(rig, { geo, mat, … })` puts the mannequin's shapes on it with your own
+geometry and materials, as a smooth or a blob torso, with sleeves and shorts, and
+tags every part with its region so `createHighlighter()` can light up muscle groups
+(`GROUPS` in `mannequin.js`). Then add hair, faces or anything else to the anchors.
+
+**A flat style** draws without three.js. It returns a `dom` element instead of a
+group; the stage lays it over the 3D canvas (which stays underneath, see-through, so
+dragging still turns the camera) and calls `figure.draw(view)` each frame. `view`
+has the size, `project(point)` to CSS pixels (with depth), `scaleAt(point)` in
+pixels per metre and the clip's props, so the camera buttons and dragging work as
+usual. `flat.js` turns the joints into body pieces sorted far to near and props into
+faces. It also needs `snapshot()`, a data URL of the last frame, for thumbnails.
+
+To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
+`ANIM_STYLES` in `anim-styles.js`, and check it with `/dev/animations.html?ids=zone2&style=yours`.

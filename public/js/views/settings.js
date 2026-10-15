@@ -1,16 +1,20 @@
 // Settings: profile (drives zones and loads), training level, add-ons, workout options,
-// theme, and your data (export, import, reset). Everything saves as you type.
+// theme, animation style, and your data (export, import, reset). Everything saves as you type.
 
 import { ADDONS } from "../data/addons/index.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
 import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
-import { sessionsDone } from "../plan.js";
+import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone } from "../plan.js";
 import { levelPickerHtml } from "../components/level-picker.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
-import { SKINS, applyLook, currentSkin, skinById, skinPickerHtml } from "../themes.js";
+import { SKINS, applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
 import { openSkinBar } from "../components/skin-bar.js";
+import { ANIM_STYLES, STYLED_EXERCISES, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
+import { openAnimBar } from "../components/anim-bar.js";
+import { createStagePanel } from "../components/stage-panel.js";
+import { thumbnail } from "../components/thumbs.js";
 
 const LB = 2.20462;
 
@@ -20,7 +24,13 @@ export function render(el) {
   const w = (kg) => (kg == null ? "" : imperial() ? Math.round(kg * LB * 10) / 10 : kg);
   const hgt = (cm) => (cm == null ? "" : imperial() ? Math.round(cm / 2.54) : cm);
 
-  function draw() {
+  // The animation style preview: one 3D stage, kept across redraws of the page.
+  const previewEl = document.createElement("div");
+  previewEl.className = "anim-preview";
+  const preview = createStagePanel(previewEl);
+  preview.load(STYLED_EXERCISES[0]);
+
+  function drawPage() {
     const pr = p();
     const st = pr.settings || {};
     el.innerHTML = `<div class="page narrow">
@@ -75,6 +85,17 @@ export function render(el) {
         <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
+      <section class="card card-pad" style="display:grid;gap:14px">
+        <h3>Animation style <span class="badge-test">Test</span></h3>
+        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animation. For now they only apply to <b>Zone 2: easy step-ups or marching</b>, shown below; every other exercise keeps the mannequin. Styles 1–6 are three.js scenes; Pictogram, Ink brush and ASCII are drawn without three.js (SVG, a 2D canvas and text). The movement is the same in all of them.</p>
+        <div data-anim-preview></div>
+        ${animStylePickerHtml(st.animStyle)}
+        <div class="live-row">
+          <button type="button" class="btn" data-anim-live>${icon("eye")} Try styles live</button>
+          <small class="muted">Opens Zone 2 with a switcher at the top of the screen: ${esc(ANIM_STYLES.map((s, i) => `${i + 1} ${s.name}`).join(", "))}. Close it with ×.</small>
+        </div>
+      </section>
+
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Your data</h3>
         <p class="muted" style="font-size:0.88rem">${state.mode === "server" ? `Saved as JSON files in <code>${esc(state.dataDir)}/</code> on this computer (git-ignored). Back it up by copying that folder or exporting below.` : "No local server found: data lives in this browser only. Export regularly, or run <code>npm start</code> to save to files."}</p>
@@ -125,6 +146,7 @@ export function render(el) {
         const replace = await confirmDialog({ title: "Import backup", message: `The file has ${days} logged days${data.profile ? " and a profile" : ""}. Replace everything you have now? (Cancel merges instead: days in the file overwrite the same dates.)`, confirm: "Replace all", danger: true });
         await importAll(data, replace ? "replace" : "merge");
         applyLook(state.profile && state.profile.settings);
+        applyAnimStyle((state.profile && state.profile.settings) || {});
         toast(`Imported ${days} days`);
         draw();
       } catch (err) {
@@ -140,6 +162,19 @@ export function render(el) {
     if (b.hasAttribute("data-live")) {
       openSkinBar();
       location.hash = "#/today";
+      return;
+    }
+    if (b.hasAttribute("data-anim-live")) {
+      openAnimBar();
+      location.hash = styledToday() ? "#/today" : `#/library/${STYLED_EXERCISES[0]}`;
+      return;
+    }
+    if (b.dataset.animStyle) {
+      updateProfile((pr) => {
+        pr.settings = pr.settings || {};
+        pr.settings.animStyle = b.dataset.animStyle;
+      });
+      applyAnimStyle(p().settings);
       return;
     }
     if (b.dataset.level) {
@@ -183,19 +218,56 @@ export function render(el) {
     } else if (b.hasAttribute("data-reset")) {
       if (await confirmDialog({ title: "Reset everything?", message: "This deletes your profile and every logged day. Export a backup first if you might want them back.", confirm: "Delete everything", danger: true })) {
         await resetAll();
+        applyAnimStyle({});
         location.hash = "#/setup";
       }
     }
   });
 
-  // The floating switcher can change the theme while this page is open.
+  // The floating switchers can change the theme or the style while this page is open.
   function onLook() {
     const cur = currentSkin();
-    el.querySelectorAll(".skin-card").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.skin === cur.id)));
+    el.querySelectorAll(".skin-card[data-skin]").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.skin === cur.id)));
     if (!!el.querySelector('[data-seg="theme"]') !== cur.modes.length > 1) draw();
+    else fillAnimThumbs();
+  }
+  function onAnim() {
+    const cur = currentAnimStyle();
+    el.querySelectorAll("[data-anim-style]").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.animStyle === cur)));
   }
   window.addEventListener("hp:look", onLook);
+  window.addEventListener("hp:anim", onAnim);
+
+  // Is a styled exercise in today's session, where Today will show it beside the list?
+  function styledToday() {
+    const today = todayIso();
+    const def = dayDef(sessionKeyFor(today));
+    const wide = detailMode() !== "inline" && !window.matchMedia("(max-width: 1180px)").matches;
+    return wide && !!def && def.blocks.some((bl) => blockItems(bl, levelFor(today)).some((it) => hasAnimStyles(it.ex)));
+  }
+
+  // A still of the styled exercise on each style's card (in this theme's colours).
+  function fillAnimThumbs() {
+    el.querySelectorAll("img[data-anim-thumb]").forEach((img) => {
+      thumbnail(STYLED_EXERCISES[0], img.dataset.animThumb).then((url) => {
+        img.src = url;
+        img.hidden = false;
+      });
+    });
+  }
+
+  function draw() {
+    drawPage();
+    el.querySelector("[data-anim-preview]").replaceWith(previewEl);
+    fillAnimThumbs();
+  }
 
   draw();
-  return { destroy: () => window.removeEventListener("hp:look", onLook) };
+  return {
+    destroy() {
+      window.removeEventListener("hp:look", onLook);
+      window.removeEventListener("hp:anim", onAnim);
+      preview.dispose();
+    },
+  };
 }

@@ -12,6 +12,8 @@ import { LEVELS, fmtWeight, kgUnit, levelIndex, personalize } from "../personali
 import { addDays, daysBetween, esc, fmtDate, fmtShort, parseIso, todayIso, uid, weekdayKey } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
+import { animBarOpen } from "../components/anim-bar.js";
+import { hasAnimStyles } from "../anim-styles.js";
 import { getItemLog, editItem, summarizeLog } from "../components/logger.js";
 import { confirmDialog, openDialog, ring, toast } from "../components/ui.js";
 import { blockKind, detailMode, sessionKind } from "../themes.js";
@@ -256,7 +258,10 @@ export function render(el, params) {
 
   function autoselect(ctx) {
     if (detailMode() === "inline" || window.matchMedia("(max-width: 1180px)").matches) return;
-    const first = el.querySelector(".item:not(.info)");
+    const rows = [...el.querySelectorAll(".item:not(.info)")];
+    // While the animation style switcher is open, start on an exercise the styles apply to.
+    const styled = animBarOpen() && rows.find((li) => hasAnimStyles((findItem(li.dataset.scope, li.dataset.id) || { item: {} }).item.ex));
+    const first = styled || rows[0];
     if (first) select(first.dataset.scope, first.dataset.id, false);
   }
 

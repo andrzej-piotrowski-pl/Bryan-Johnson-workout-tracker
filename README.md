@@ -4,6 +4,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
+- **Animation styles (a test)**: nine ways to draw the animation, tried on Zone 2 for now: the mannequin, five more three.js looks (Athlete, Anime, Low poly, Cartoon, Voxel) and three drawn without three.js (Pictogram, Ink brush, ASCII).
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -80,6 +81,7 @@ Enter them in the first-run setup; change them any time in **Settings** (or edit
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
 | Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
+| Animation style | How the Zone 2 animation is drawn (see [Animation styles](#animation-styles-a-test)); changes nothing in the plan |
 
 Suggested weights are starting points. The effort target of your level (how many good reps you leave in the tank) decides the real weight.
 
@@ -126,6 +128,30 @@ The six new ones follow public design guides, two each: [taste-skill](https://gi
 
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
+## Animation styles (a test)
+
+Other ways to draw the exercise animation. For now they only apply to **Zone 2** ("Easy step-ups or marching" and the other Zone 2 step-ups); every other exercise keeps the mannequin. Pick one in **Settings → Animation style**, which has a live preview of Zone 2 and a still of each style, or use **Try styles live** there: it opens Zone 2 with a numbered switcher at the top of the screen (hover for the name), like the theme switcher. Both switchers can be open at once.
+
+Every style plays the same movement: the stage works out the skeleton once, and each style draws it its own way.
+
+| # | Style | Drawn with | Looks like |
+|---|---|---|---|
+| 1 | **Mannequin** | three.js | The original smooth grey figure. |
+| 2 | **Athlete** | three.js | Semi-realistic, like Mixamo characters: skin, muscle-shaped limbs, T-shirt, shorts, trainers, hair and a face, under warm studio light; the worked muscles glow. |
+| 3 | **Anime** | three.js | Cel shading after VRM avatars and their MToon shader: soft bands with violet shadows, a rim light, thin outlines, a big head with painted eyes and spiky pink hair. |
+| 4 | **Low poly** | three.js | Faceted, flat-coloured shapes like Quaternius' free game characters. |
+| 5 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
+| 6 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass with a cobblestone step. |
+| 7 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked limbs in orange, a heart on the chest. |
+| 8 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
+| 9 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
+
+![The nine animation styles of the Zone 2 step-up](docs/screenshots/anim-styles.png)
+
+![Today with the animation style switcher at the top, Zone 2 drawn in the Voxel style](docs/screenshots/anim-live.png)
+
+To try the styles on more exercises, add their ids to `STYLED_EXERCISES` in `public/js/anim-styles.js`. How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
+
 ## Add-ons
 
 Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
@@ -151,13 +177,15 @@ public/
   index.html, css/app.css  the app and the Original look
   css/themes.css          the other six themes
   js/themes.js            the theme list, switching, and the theme picker
+  js/anim-styles.js       the animation style list, which exercises take them, and the style picker
   js/main.js              routing and app shell
   js/store.js             state + auto-save (server, with a browser-storage fallback)
   js/plan.js              program logic: sessions, levels and doses, status, stats
   js/personalize.js       heart-rate zones, weight scaling, units, training levels
   js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
-  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme switcher
+  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme and style switchers
   js/anim/                three.js mannequin, inverse kinematics, props, exercise clips
+  js/anim/styles/         the animation styles (three.js, SVG, 2D canvas and text)
   js/data/                the plan, exercises, videos, add-ons
 docs/ANIMATIONS.md        guide to the animation system
 docs/THEMES.md            how the themes work and how to add one

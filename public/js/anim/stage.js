@@ -5,6 +5,12 @@
 //   stage.setView("side"); stage.setSpeed(0.5); stage.pause();
 //
 // Clips are defined in ./clips/*.js (see clips/README in the project README).
+// The figure is the mannequin, or for the exercises that take animation styles
+// (js/anim-styles.js) the chosen style's figure from ./styles/. A style can also
+// change the scene around it: lights, tone mapping, floor colours (its `look`).
+// Flat styles (SVG, 2D canvas, text) bring their own element instead of a 3D group:
+// the stage lays it over the canvas, keeps working out the pose and the camera, and
+// hands them the joints projected to the screen to draw (see styles/flat.js).
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -12,6 +18,8 @@ import { computeJoints, lerpPose, makePose, mirrorPose } from "./rig.js";
 import { createMannequin } from "./mannequin.js";
 import { applyPalette, createBand, createDumbbell, createMaterials, createProp } from "./props.js";
 import { getAnimation } from "./clips/index.js";
+import { loadFigure } from "./styles/index.js";
+import { animStyleFor } from "../anim-styles.js";
 
 const EASE = {
   lin: (t) => t,
@@ -45,6 +53,8 @@ function themeColor(name) {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   return /^#[0-9a-f]{6}$/i.test(v) ? v : null;
 }
+
+const themeColors = () => ({ body: themeColor("--stage-body"), hl: themeColor("--stage-hl") });
 
 function rgba(hex, a) {
   const n = parseInt(hex.slice(1), 16);
@@ -118,6 +128,7 @@ export class Stage {
     this.userMoved = false;
     this.visible = true;
     this.dark = isDark();
+    this.look = {};
 
     const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: this.opts.preserve });
     r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -138,7 +149,7 @@ export class Stage {
 
     this.hemi = new THREE.HemisphereLight(0xffffff, 0x445566, 1.15);
     scene.add(this.hemi);
-    const key = new THREE.DirectionalLight(0xffffff, 2.2);
+    const key = (this.keyLight = new THREE.DirectionalLight(0xffffff, 2.2));
     key.position.set(2.2, 4.2, 2.6);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -151,7 +162,7 @@ export class Stage {
     key.shadow.bias = -0.0004;
     key.shadow.radius = 4;
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x9fc8ff, 0.7);
+    const rim = (this.rimLight = new THREE.DirectionalLight(0x9fc8ff, 0.7));
     rim.position.set(-3, 2.5, -2.5);
     scene.add(rim);
 
@@ -159,8 +170,13 @@ export class Stage {
 
     this.M = createMaterials(this.dark);
     this.man = createMannequin();
-    this.man.setTheme(this.dark, { body: themeColor("--stage-body"), hl: themeColor("--stage-hl") });
+    this.man.setTheme(this.dark, themeColors());
     scene.add(this.man.group);
+    // The figure on stage: the mannequin or an animation style's (loaded on first use).
+    this.figure = this.man;
+    this.styleId = "mannequin";
+    this.figures = new Map([["mannequin", Promise.resolve(this.man)]]);
+    this.loadedFigures = new Set([this.man]);
 
     this.dumbbells = { L: createDumbbell(this.M), R: createDumbbell(this.M), goblet: createDumbbell(this.M, 1.15) };
     Object.values(this.dumbbells).forEach((d) => {
@@ -210,6 +226,8 @@ export class Stage {
     this.onScheme = () => this.setTheme(isDark());
     this.mq && this.mq.addEventListener && this.mq.addEventListener("change", this.onScheme);
     window.addEventListener("hp:look", this.onScheme);
+    this.onAnim = () => this.syncStyle();
+    window.addEventListener("hp:anim", this.onAnim);
 
     this.lastNow = performance.now();
     this.updateLoop();
@@ -254,6 +272,7 @@ export class Stage {
     shadow.position.y = 0.003;
     shadow.receiveShadow = true;
     this.floorTex = tex;
+    this.floorMeshes = [base, lines, shadow];
     this.scene.add(base, lines, shadow);
     this.paintFloor();
   }
@@ -263,7 +282,8 @@ export class Stage {
     const x = this.floorCanvas.getContext("2d");
     const s = this.floorCanvas.width;
     x.clearRect(0, 0, s, s);
-    const floor = themeColor("--stage-floor");
+    const look = this.look.floor || {};
+    const floor = look.color || themeColor("--stage-floor");
     const g = x.createRadialGradient(s / 2, s / 2, s * 0.05, s / 2, s / 2, s / 2);
     if (floor) {
       g.addColorStop(0, rgba(floor, 1));
@@ -279,7 +299,7 @@ export class Stage {
     this.floorTex.needsUpdate = true;
     const gx = this.gridCanvas.getContext("2d");
     gx.clearRect(0, 0, 128, 128);
-    const grid = themeColor("--stage-grid");
+    const grid = look.grid || themeColor("--stage-grid");
     gx.strokeStyle = grid ? rgba(grid, 0.4) : dark ? "rgba(160,190,220,0.35)" : "rgba(80,100,130,0.28)";
     gx.lineWidth = 2;
     gx.strokeRect(0, 0, 128, 128);
@@ -288,11 +308,89 @@ export class Stage {
 
   setTheme(dark) {
     this.dark = dark;
-    this.man.setTheme(dark, { body: themeColor("--stage-body"), hl: themeColor("--stage-hl") });
+    this.figure.setTheme(dark, themeColors());
     applyPalette(this.M, dark);
-    this.hemi.groundColor.set(dark ? 0x334455 : 0x8899aa);
-    this.paintFloor();
+    this.applyLook();
+    if (this.figure.dressProp) this.buildProps();
     this.render();
+  }
+
+  // ---------- animation styles ----------
+
+  // Forces a style whatever the exercise (previews and thumbnails); null follows the
+  // user's choice. Resolves once the figure is on stage.
+  setStyle(id) {
+    this.opts.style = id || null;
+    return this.syncStyle();
+  }
+
+  syncStyle() {
+    const want = this.opts.style || animStyleFor(this.id);
+    this.wantStyle = want;
+    if (want === this.styleId) {
+      showFigure(this.figure, true);
+      return Promise.resolve();
+    }
+    // Hide the old figure rather than show it while the new one loads.
+    showFigure(this.figure, false);
+    if (!this.figures.has(want)) {
+      this.figures.set(
+        want,
+        loadFigure(want).then(
+          (fig) => (this.disposed ? (fig.dispose(), null) : (this.loadedFigures.add(fig), fig)),
+          (err) => (console.error(err), null)
+        )
+      );
+    }
+    return this.figures.get(want).then((fig) => {
+      if (this.disposed || this.wantStyle !== want) return;
+      if (fig) this.useFigure(want, fig);
+      else showFigure(this.figure, true);
+    });
+  }
+
+  useFigure(id, fig) {
+    if (this.figure.dom) this.figure.dom.remove();
+    else this.scene.remove(this.figure.group);
+    this.figure = fig;
+    this.styleId = id;
+    showFigure(fig, true);
+    if (fig.dom) {
+      // Over the WebGL canvas, which stays (see-through) underneath to take the
+      // drags that turn the camera.
+      this.renderer.domElement.after(fig.dom);
+      this.renderer.domElement.style.opacity = "0";
+    } else {
+      this.scene.add(fig.group);
+      this.renderer.domElement.style.opacity = "";
+    }
+    fig.setTheme(this.dark, themeColors());
+    this.applyLook();
+    this.buildProps();
+    if (this.clip) fig.setHighlight(this.clip.highlight);
+    this.render();
+  }
+
+  // The figure's look: lights, tone mapping and floor colours (defaults: the mannequin's).
+  applyLook() {
+    const f = this.figure;
+    const L = (typeof f.look === "function" ? f.look(this.dark) : f.look) || {};
+    this.look = L;
+    const [sky, ground, hemi] = L.hemi || [0xffffff, this.dark ? 0x334455 : 0x8899aa, 1.15];
+    this.hemi.color.set(sky);
+    this.hemi.groundColor.set(ground);
+    this.hemi.intensity = hemi;
+    const [kc, ki] = L.key || [0xffffff, 2.2];
+    this.keyLight.color.set(kc);
+    this.keyLight.intensity = ki;
+    const [rc, ri] = L.rim || [0x9fc8ff, 0.7];
+    this.rimLight.color.set(rc);
+    this.rimLight.intensity = ri;
+    this.renderer.toneMapping = L.tone === "none" ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = L.exposure ?? 1.05;
+    const [, lines] = this.floorMeshes;
+    lines.material.opacity = (L.floor && L.floor.gridOpacity) ?? 0.5;
+    this.paintFloor();
   }
 
   // Reserves `px` CSS pixels at the bottom for an overlay (the cue bar): the
@@ -332,6 +430,7 @@ export class Stage {
     this.userMoved = false;
     this.forcedView = view || null;
     this.applyClip(true);
+    this.syncStyle();
     this.render();
     return !!anim;
   }
@@ -340,7 +439,8 @@ export class Stage {
     return this.clips[this.clipIndex];
   }
 
-  applyClip(snapCamera = false) {
+  // The clip's props, both sides, restyled by the figure if its style does that.
+  buildProps() {
     const clip = this.clip;
     this.propGroups.forEach((g) => g.clear());
     if (!clip) return;
@@ -348,8 +448,16 @@ export class Stage {
       this.propGroups[0].add(createProp(spec, this.M));
       this.propGroups[1].add(createProp(mirrorSpec(spec), this.M));
     }
+    const dress = this.figure.dressProp;
+    if (dress) this.propGroups.forEach((g) => g.traverse((o) => o.isMesh && dress(o)));
+  }
+
+  applyClip(snapCamera = false) {
+    const clip = this.clip;
+    this.buildProps();
+    if (!clip) return;
     this.propGroups[1].visible = false;
-    this.man.setHighlight(clip.highlight);
+    this.figure.setHighlight(clip.highlight);
     // Keep a camera angle the user chose by dragging; otherwise follow the clip's view.
     if (snapCamera || !this.userMoved) this.setView(this.forcedView || clip.camera.view || "three", snapCamera);
     this.onCue({ cue: "", rep: this.rep, title: clip.title, clipIndex: this.clipIndex, clipCount: this.clips.length });
@@ -437,14 +545,17 @@ export class Stage {
   render(time = null) {
     const clip = this.clip;
     if (clip) {
-      const s = sampleClip(clip, time == null ? this.time : time);
+      const t = time == null ? this.time : time;
+      const s = sampleClip(clip, t);
       const J = computeJoints(s.pose);
-      this.man.update(J);
+      // still: a single frame at a set time (thumbnails), not part of the playback.
+      this.figure.update(J, { t, still: time != null });
       this.propGroups[0].visible = !s.mirrored;
       this.propGroups[1].visible = s.mirrored;
       this.updateAttachments(clip, J, s.mirrored);
-      this.man.setPulse(0.5 + 0.5 * Math.sin(s.phase * Math.PI * 2));
+      this.figure.setPulse(0.5 + 0.5 * Math.sin(s.phase * Math.PI * 2));
       if (clip.floorScroll) this.gridTex.offset.y = ((time == null ? this.time : time) * clip.floorScroll) % 1;
+      this.mirrored = s.mirrored;
       if (s.cue !== this.lastCue || this.rep !== this.lastRep) {
         this.lastCue = s.cue;
         this.lastRep = this.rep;
@@ -465,7 +576,37 @@ export class Stage {
     } else {
       this.camera.lookAt(this.camTarget);
     }
-    this.renderer.render(this.scene, this.camera);
+    if (this.figure.draw) this.figure.draw(this.flatView());
+    else this.renderer.render(this.scene, this.camera);
+  }
+
+  // What a flat style needs to draw a frame: the size, a projection of world points
+  // to CSS pixels (x right, y down; z: depth, larger is further), and the props.
+  flatView() {
+    const cam = this.camera;
+    cam.updateMatrixWorld();
+    const w = Math.max(1, this.container.clientWidth);
+    const h = Math.max(1, this.container.clientHeight);
+    const v = new THREE.Vector3();
+    const right = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0);
+    const project = (p) => {
+      v.set(p.x, p.y, p.z).project(cam);
+      return { x: ((v.x + 1) / 2) * w, y: ((1 - v.y) / 2) * h, z: v.z };
+    };
+    const clip = this.clip;
+    return {
+      width: w,
+      height: h,
+      project,
+      // CSS pixels per metre at a world point.
+      scaleAt(p) {
+        const a = project(p);
+        const b = project({ x: p.x + right.x * 0.1, y: p.y + right.y * 0.1, z: p.z + right.z * 0.1 });
+        return Math.hypot(b.x - a.x, b.y - a.y) * 10;
+      },
+      props: clip ? (this.mirrored ? clip.props.map(mirrorSpec) : clip.props) : [],
+      dark: this.dark,
+    };
   }
 
   updateAttachments(clip, J, mirrored) {
@@ -533,7 +674,7 @@ export class Stage {
     const clip = this.clip;
     const time = t == null && clip ? thumbTime(clip) : t || 0;
     this.render(time);
-    return this.renderer.domElement.toDataURL("image/png");
+    return this.figure.snapshot ? this.figure.snapshot() : this.renderer.domElement.toDataURL("image/png");
   }
 
   dispose() {
@@ -542,8 +683,10 @@ export class Stage {
     this.io && this.io.disconnect();
     this.mq && this.mq.removeEventListener && this.mq.removeEventListener("change", this.onScheme);
     window.removeEventListener("hp:look", this.onScheme);
+    window.removeEventListener("hp:anim", this.onAnim);
+    this.disposed = true;
     this.controls && this.controls.dispose();
-    this.man.dispose();
+    this.loadedFigures.forEach((f) => f.dispose());
     this.scene.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
     });
@@ -571,6 +714,11 @@ function thumbTime(clip) {
     }
   }
   return best;
+}
+
+function showFigure(fig, on) {
+  if (fig.dom) fig.dom.style.visibility = on ? "" : "hidden";
+  else fig.group.visible = on;
 }
 
 function mirrorHold(h) {

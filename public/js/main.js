@@ -5,7 +5,9 @@ import * as store from "./store.js";
 import { icon } from "./components/icons.js";
 import { esc } from "./util.js";
 import { applyLook } from "./themes.js";
+import { applyAnimStyle } from "./anim-styles.js";
 import { restoreSkinBar } from "./components/skin-bar.js";
+import { restoreAnimBar } from "./components/anim-bar.js";
 
 const VIEWS = {
   today: () => import("./views/today.js"),
@@ -115,7 +117,9 @@ window.addEventListener("beforeunload", (e) => {
 await store.init();
 // The profile on disk decides the look (this browser may have an older copy in localStorage).
 if (store.state.profile) applyLook(store.state.profile.settings);
+if (store.state.profile) applyAnimStyle(store.state.profile.settings);
 restoreSkinBar();
+restoreAnimBar();
 store.onStatus(drawStatus);
 window.addEventListener("hashchange", route);
 route();

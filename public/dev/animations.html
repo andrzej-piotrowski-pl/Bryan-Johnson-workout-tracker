@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Animation keyframes</title>
 <!-- Contributor tool: renders every keyframe of each exercise animation side by side.
-     Open /dev/animations.html?ids=gobletsquat,pushup (or ?ids=all). Optional: &size=240&view=side -->
+     Open /dev/animations.html?ids=gobletsquat,pushup (or ?ids=all). Optional: &size=240&view=side
+     and &style=voxel to draw them in an animation style (see js/anim-styles.js). -->
 <script type="importmap">
 { "imports": { "three": "/vendor/three/build/three.module.js", "three/addons/": "/vendor/three/examples/jsm/" } }
 </script>
@@ -35,6 +36,7 @@ document.documentElement.style.setProperty("--w", size + "px");
 const box = document.getElementById("stage");
 box.style.width = box.style.height = size + "px";
 const stage = new Stage(box, { interactive: false, preserve: true, autoplay: false });
+if (q.get("style")) await stage.setStyle(q.get("style"));
 const out = document.getElementById("out");
 
 for (const id of ids) {

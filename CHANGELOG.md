@@ -3,6 +3,13 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.6.0] - 2026-10-15
+
+### Added
+- **Animation styles (a test)**: nine ways to draw the exercise animation, for now only on Zone 2 ("Easy step-ups or marching"); every other exercise keeps the mannequin. Mannequin, Athlete (semi-realistic), Anime (cel-shaded), Low poly, Cartoon (ink outlines) and Voxel are three.js scenes; Pictogram (SVG), Ink brush (2D canvas) and ASCII (text) are drawn without three.js. All of them play the same movement.
+- **Settings → Animation style**: a live preview of Zone 2, a card with a still of each style, and **Try styles live**, which opens Zone 2 with a numbered switcher at the top of the screen, like the theme switcher. Both switchers can be open at once.
+- `/dev/animations.html` takes `&style=` to draw the keyframes in an animation style.
+
 ## [1.5.0] - 2026-10-15
 
 ### Changed

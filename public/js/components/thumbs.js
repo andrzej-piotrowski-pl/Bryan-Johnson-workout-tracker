@@ -1,5 +1,8 @@
-// Still images of the 3D animations for the exercise library, rendered one at a
-// time by a single hidden stage and cached for the session.
+// Still images of the 3D animations for the exercise library (and the animation
+// style cards in Settings), rendered one at a time by a single hidden stage and
+// cached for the session.
+
+import { animStyleFor } from "../anim-styles.js";
 
 const cache = new Map();
 let stagePromise = null;
@@ -17,14 +20,16 @@ function getStage() {
   return stagePromise;
 }
 
-export function thumbnail(id) {
+// style: the animation style to draw it in; by default the one the exercise shows in.
+export function thumbnail(id, style = animStyleFor(id)) {
   const root = document.documentElement;
   const dark = root.dataset.scheme ? root.dataset.scheme === "dark" : root.dataset.theme === "dark" || (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
-  const key = `${id}:${root.dataset.skin || ""}:${dark ? "d" : "l"}`;
+  const key = `${id}:${root.dataset.skin || ""}:${dark ? "d" : "l"}:${style}`;
   if (cache.has(key)) return cache.get(key);
   const p = (queue = queue.then(async () => {
     const stage = await getStage();
     stage.setTheme(dark);
+    await stage.setStyle(style);
     return stage.snapshot(id);
   }));
   cache.set(key, p);
