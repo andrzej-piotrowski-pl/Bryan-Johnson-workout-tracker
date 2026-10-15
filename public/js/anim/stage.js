@@ -124,7 +124,7 @@ export class Stage {
     this.clips = [];
     this.clipIndex = 0;
     this.clipLoops = 0;
-    this.rep = 0;
+    this.autoAdvance = true;
     this.userMoved = false;
     this.visible = true;
     this.dark = isDark();
@@ -200,6 +200,7 @@ export class Stage {
       c.enableDamping = true;
       c.dampingFactor = 0.08;
       c.enablePan = false;
+      c.enableZoom = false;
       c.minDistance = 1.4;
       c.maxDistance = 9;
       c.maxPolarAngle = Math.PI * 0.495;
@@ -424,7 +425,6 @@ export class Stage {
     this.clips = anim ? anim.clips.map(prepareClip) : [];
     this.clipIndex = 0;
     this.time = 0;
-    this.rep = 0;
     this.clipLoops = 0;
     this.lastCue = null;
     this.userMoved = false;
@@ -460,7 +460,7 @@ export class Stage {
     this.figure.setHighlight(clip.highlight);
     // Keep a camera angle the user chose by dragging; otherwise follow the clip's view.
     if (snapCamera || !this.userMoved) this.setView(this.forcedView || clip.camera.view || "three", snapCamera);
-    this.onCue({ cue: "", rep: this.rep, title: clip.title, clipIndex: this.clipIndex, clipCount: this.clips.length });
+    this.onCue({ cue: "", title: clip.title, clipIndex: this.clipIndex, clipCount: this.clips.length });
   }
 
   setView(view, snap = false) {
@@ -489,6 +489,22 @@ export class Stage {
 
   setSpeed(s) {
     this.speed = s;
+  }
+  setAutoAdvance(enabled) {
+    this.autoAdvance = enabled;
+    this.clipLoops = 0;
+  }
+  zoom(factor) {
+    if (!this.controls) return;
+    const target = this.controls.target;
+    const offset = this.camera.position.clone().sub(target);
+    offset.setLength(THREE.MathUtils.clamp(offset.length() / factor, this.controls.minDistance, this.controls.maxDistance));
+    this.camera.position.copy(target).add(offset);
+    this.camTarget.copy(target);
+    this.camGoal = null;
+    this.userMoved = true;
+    this.controls.update();
+    this.render();
   }
   play() {
     this.playing = true;
@@ -526,11 +542,10 @@ export class Stage {
       const before = Math.floor(this.time / clip.duration);
       this.time += dt;
       const after = Math.floor(this.time / clip.duration);
-      if (after > before) {
-        this.rep += 1;
+      if (after > before && this.autoAdvance && this.clips.length > 1) {
         this.clipLoops += 1;
-        const limit = clip.loops ?? (this.clips.length > 1 ? 2 : Infinity);
-        if (this.clipLoops >= limit && this.clips.length > 1) {
+        const limit = clip.loops ?? 2;
+        if (this.clipLoops >= limit) {
           this.clipIndex = (this.clipIndex + 1) % this.clips.length;
           this.time = 0;
           this.clipLoops = 0;
@@ -549,17 +564,16 @@ export class Stage {
       const s = sampleClip(clip, t);
       const J = computeJoints(s.pose);
       // still: a single frame at a set time (thumbnails), not part of the playback.
-      this.figure.update(J, { t, still: time != null, rep: this.rep, id: this.id, title: clip.title });
+      this.figure.update(J, { t, still: time != null, id: this.id, title: clip.title });
       this.propGroups[0].visible = !s.mirrored;
       this.propGroups[1].visible = s.mirrored;
       this.updateAttachments(clip, J, s.mirrored);
       this.figure.setPulse(0.5 + 0.5 * Math.sin(s.phase * Math.PI * 2));
       if (clip.floorScroll) this.gridTex.offset.y = ((time == null ? this.time : time) * clip.floorScroll) % 1;
       this.mirrored = s.mirrored;
-      if (s.cue !== this.lastCue || this.rep !== this.lastRep) {
+      if (s.cue !== this.lastCue) {
         this.lastCue = s.cue;
-        this.lastRep = this.rep;
-        this.onCue({ cue: s.cue, rep: this.rep, title: clip.title, clipIndex: this.clipIndex, clipCount: this.clips.length });
+        this.onCue({ cue: s.cue, title: clip.title, clipIndex: this.clipIndex, clipCount: this.clips.length });
       }
     }
     if (this.camGoal) {

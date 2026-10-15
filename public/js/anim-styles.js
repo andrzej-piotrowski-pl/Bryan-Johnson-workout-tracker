@@ -25,7 +25,7 @@ export const ANIM_STYLES = [
   { id: "synthwave", name: "Synthwave", tech: "canvas", after: "1980s retro-futurism", blurb: "Neon tubes on a scrolling grid under a striped sunset, mirrored on a wet floor; the worked muscles in hot pink. Drawn on a 2D canvas." },
   { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing that measures you: live knee, hip and elbow angles, centre lines, hatched muscles, steps and boxes dimensioned and a title block naming the exercise. Drawn as SVG." },
   { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
-  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops, tally marks for reps and opinions about every exercise. Drawn as SVG." },
+  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about every exercise. Drawn as SVG." },
   { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
 ];
 

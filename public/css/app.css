@@ -382,9 +382,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .stage .cue {
   position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 8px 12px; border-radius: 10px;
   background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(8px); border: 1px solid var(--line);
-  font-weight: 600; font-size: 0.9rem; display: flex; gap: 10px; align-items: center; min-height: 40px; transition: opacity 0.2s;
+  font-weight: 600; font-size: 0.9rem; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: center; min-height: 40px; transition: opacity 0.2s;
 }
-.stage .cue .rep { margin-left: auto; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
 .stage .clip-title { position: absolute; left: 12px; top: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; max-width: calc(100% - 140px); }
 .stage .ctrls { position: absolute; right: 10px; top: 10px; display: flex; gap: 6px; }
 .stage .ctrls .btn { background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: blur(8px); }
@@ -613,7 +612,7 @@ td.cur, th.cur { background: var(--accent-soft); }
 .stage .cue { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
 .stage .cue .clip-nav { display: inline-flex; align-items: center; gap: 6px; }
 .stage .cue .clip-nav:empty { display: none; }
-.stage .cue .cue-text { display: grid; min-width: 0; }
+.stage .cue .cue-text { display: grid; grid-column: 2; min-width: 0; }
 .stage .cue .ttl { font-size: 0.7rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .stage .cue .ttl:empty { display: none; }
 .stage .views { top: 52px; bottom: auto; }

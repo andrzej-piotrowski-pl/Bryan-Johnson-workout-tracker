@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.0] - 2026-10-15
+
+### Added
+- Zoom controls and 2× speed for exercise animations, with a Fixed mode for multi-movement animations.
+
+### Changed
+- Removed the live rep counter from animations.
+- Restyled the session swap button to match the selected theme.
+
 ## [1.9.0] - 2026-10-15
 
 ### Added

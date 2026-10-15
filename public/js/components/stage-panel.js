@@ -16,7 +16,7 @@ function webglAvailable() {
   }
 }
 
-const SPEEDS = [0.5, 1, 1.5];
+const SPEEDS = [0.5, 1, 1.5, 2];
 // Height of the cue bar plus its margin, kept clear of the figure.
 const CUE_SPACE = 64;
 
@@ -26,15 +26,16 @@ export function createStagePanel(container) {
     <div class="ctrls">
       <button type="button" class="btn sm icon-only" data-a="play" aria-label="Pause animation">${icon("pause")}</button>
       <button type="button" class="btn sm mono" data-a="speed" aria-label="Animation speed">1×</button>
+      <button type="button" class="btn sm icon-only" data-a="zoom-in" aria-label="Zoom in">${icon("plus")}</button>
+      <button type="button" class="btn sm icon-only" data-a="zoom-out" aria-label="Zoom out">${icon("minus")}</button>
     </div>
     <div class="views" role="group" aria-label="Camera">
       <button type="button" class="btn sm" data-view="front">Front</button>
       <button type="button" class="btn sm" data-view="side">Side</button>
       <button type="button" class="btn sm" data-view="three">3/4</button>
     </div>
-    <div class="cue"><span class="clip-nav"></span><span class="cue-text"><span class="ttl"></span><span class="txt">Loading 3D…</span></span><span class="rep"></span></div>`;
+    <div class="cue"><span class="clip-nav"></span><span class="cue-text"><span class="ttl"></span><span class="txt">Loading 3D…</span></span></div>`;
   const cueEl = container.querySelector(".cue .txt");
-  const repEl = container.querySelector(".cue .rep");
   const titleEl = container.querySelector(".cue .ttl");
   const navEl = container.querySelector(".cue .clip-nav");
   const playBtn = container.querySelector('[data-a="play"]');
@@ -42,14 +43,14 @@ export function createStagePanel(container) {
   let stage = null;
   let wanted = null;
   let speed = 1;
+  let autoAdvance = true;
   let disposed = false;
 
-  function onCue({ cue, rep, title, clipIndex, clipCount }) {
+  function onCue({ cue, title, clipIndex, clipCount }) {
     cueEl.textContent = cue || title || "";
-    repEl.textContent = rep ? `rep ${rep}` : "";
     navEl.innerHTML =
       clipCount > 1
-        ? `<button type="button" class="btn sm icon-only" data-clip="-1" aria-label="Previous variation">${icon("chevronL", "sm")}</button><span class="mono">${clipIndex + 1}/${clipCount}</span><button type="button" class="btn sm icon-only" data-clip="1" aria-label="Next variation">${icon("chevronR", "sm")}</button>`
+        ? `<button type="button" class="btn sm icon-only" data-clip="-1" aria-label="Previous movement">${icon("chevronL", "sm")}</button><span class="mono" aria-label="Movement ${clipIndex + 1} of ${clipCount}">${clipIndex + 1}/${clipCount}</span><button type="button" class="btn sm icon-only" data-clip="1" aria-label="Next movement">${icon("chevronR", "sm")}</button><button type="button" class="btn sm" data-a="advance" aria-pressed="${autoAdvance}" title="${autoAdvance ? "Automatically switch movements" : "Keep this movement selected"}">${autoAdvance ? "Auto" : "Fixed"}</button>`
         : "";
     titleEl.textContent = title || "";
   }
@@ -109,6 +110,16 @@ export function createStagePanel(container) {
       speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
       stage.setSpeed(speed);
       b.textContent = `${speed}×`;
+    } else if (b.dataset.a === "zoom-in") {
+      stage.zoom(1.2);
+    } else if (b.dataset.a === "zoom-out") {
+      stage.zoom(1 / 1.2);
+    } else if (b.dataset.a === "advance") {
+      autoAdvance = !autoAdvance;
+      stage.setAutoAdvance(autoAdvance);
+      b.textContent = autoAdvance ? "Auto" : "Fixed";
+      b.setAttribute("aria-pressed", String(autoAdvance));
+      b.title = autoAdvance ? "Automatically switch movements" : "Keep this movement selected";
     } else if (b.dataset.view) {
       stage.userMoved = false;
       stage.setView(b.dataset.view);

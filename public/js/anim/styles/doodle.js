@@ -1,11 +1,10 @@
 // Doodle: a biro stick figure in the margin of a school notebook, having opinions.
 // The lines are redrawn with a fresh wobble eight times a second, like hand-drawn
 // animation. The worked muscles get yellow highlighter, the heart a red-pen doodle;
-// the face strains on the way up, sweat drops fly, motion lines trail the feet, the
-// reps pile up as tally marks in the margin and a speech bubble complains about it
-// all, with opinions to suit the kind of exercise. Props are doodled boxes with
-// hatched sides, dumbbells two scribbled circles on a stick, bands in red pen. Drawn
-// as SVG, without three.js.
+// the face strains on the way up, sweat drops fly, motion lines trail the feet, and
+// a speech bubble gives opinions to suit the kind of exercise. Props are doodled
+// boxes with hatched sides, dumbbells two scribbled circles on a stick, bands in red
+// pen. Drawn as SVG, without three.js.
 
 import { asLayer, dumbbellHeads, isLit, litRegions, sceneFaces } from "./flat.js";
 import { hash } from "./kit.js";
@@ -90,7 +89,6 @@ export function createFigure() {
   let lit = new Set();
   let still = false;
   let beat = 1;
-  let reps = 0;
   let exId = "";
   const trail = { L: [], R: [] }; // recent foot positions on screen, for motion lines
 
@@ -117,16 +115,6 @@ export function createFigure() {
       return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"/>` +
         `<path d="${curve(wobble(pts, sd + 500, amp))}" fill="none" stroke="${color}" stroke-width="${width * 0.5}" stroke-opacity="0.45" stroke-linecap="round"/>`;
     };
-
-    // Reps as tally marks in the margin, as the stage counts them.
-    const shown = still ? 7 : reps;
-    o += `<text x="52" y="38" fill="${INK}" font-size="13" ${HAND}>reps:</text>`;
-    for (let i = 0; i < Math.min(shown, 40); i++) {
-      const g = Math.floor(i / 5), k = i % 5, x0 = 92 + g * 30;
-      o += k < 4
-        ? pen([{ x: x0 + k * 5, y: 26 }, { x: x0 + k * 5 + 1, y: 40 }], 300 + i, 1.6)
-        : pen([{ x: x0 - 3, y: 38 }, { x: x0 + 19, y: 27 }], 300 + i, 1.6);
-    }
 
     // Ground: a wobbly line and a scribbled shadow.
     const g = view.project({ x: J.pelvis.x, y: 0, z: J.pelvis.z });
@@ -292,7 +280,6 @@ export function createFigure() {
     update(joints, info = {}) {
       J = joints;
       still = !!info.still;
-      reps = info.rep || 0;
       exId = info.id || "";
     },
     draw,

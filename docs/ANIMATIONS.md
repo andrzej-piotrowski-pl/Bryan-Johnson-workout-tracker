@@ -136,7 +136,8 @@ export default {
 - The clip loops. If the last key differs from the first, the engine adds a
   return key automatically (`close: false` to disable, `closeTime` for its length).
 - Several clips play in turn (twice each by default, `loops: n` to change). Use them
-  for multi-move drills or two variants of one exercise.
+  for multi-move drills or two variants of one exercise. In the viewer, choose
+  **Fixed** to stay on one movement or use the arrows to pick another.
 - A key's `cue` shows under the animation from that key until the next key that
   has a cue, so put it on the key where the movement **starts**. A cue on the
   last key only shows if the engine adds a return key. Keep cues short and
@@ -210,8 +211,8 @@ public/js/anim/styles/
 
 Each style module exports `createFigure()`. The stage still samples the clip and
 computes the joints (`rig.js`) every frame and passes them to
-`figure.update(J, { still, rep, id, title })` (a one-off frame for a thumbnail, the
-rep count, the exercise id and the clip's title), so every style plays every clip
+`figure.update(J, { still, id, title })` (a one-off frame for a thumbnail, the
+exercise id and the clip's title), so every style plays every clip
 exactly like the mannequin.
 
 **A three.js style** returns a `group` the stage adds to its scene, plus
@@ -238,7 +239,7 @@ group; the stage lays it over the 3D canvas (which stays underneath, see-through
 dragging still turns the camera) and calls `figure.draw(view)` each frame. `view`
 has the size, `project(point)` to CSS pixels (with depth), `scaleAt(point)` in
 pixels per metre, the clip's props, the `camera` (position, world matrix and
-inverse projection), so the camera buttons and dragging work as usual, `attachments`
+inverse projection), so the camera buttons, zoom controls and dragging work as usual, `attachments`
 (the held dumbbells as `{ c, axis, size }`, the bands and the string as
 `[end, end]`, as the 3D scene has them this frame) and `interactive` (whether the
 stage has view buttons in its top right). `flat.js` turns the joints into body

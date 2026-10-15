@@ -203,7 +203,7 @@ export function render(el, params) {
       <div class="btn-row">
         ${rest || (l && l.skip) ? "" : `<button type="button" class="btn primary" data-guided>${icon("play")} Start guided workout</button><button type="button" class="btn" data-all>${icon("check")} Mark all done</button>`}
         ${rest ? "" : l && l.skip ? "" : `<button type="button" class="btn ghost skip" data-skip>${icon("skip")} Skip day</button>`}
-        <label class="btn ghost" style="position:relative">${icon("swap")} <span>${rest ? "Train anyway" : "Swap session"}</span>
+        <label class="btn" style="position:relative">${icon("swap")} <span>${rest ? "Train anyway" : "Swap session"}</span>
           <select data-swap aria-label="Swap session" style="position:absolute;inset:0;opacity:0;cursor:pointer"><option value="">${rest ? "Choose a session…" : "Today's own session"}</option>${swapOptions}</select>
         </label>
       </div>

@@ -150,7 +150,7 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
-Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other nine don't use three.js to draw: they get the joints projected to the screen (or, for Liquid chrome, the camera itself) and draw with SVG, a 2D canvas, text or a shader of their own, so the camera buttons and dragging still work in all of them.
+Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other nine don't use three.js to draw: they get the joints projected to the screen (or, for Liquid chrome, the camera itself) and draw with SVG, a 2D canvas, text or a shader of their own, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
@@ -167,12 +167,12 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 | 11 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
 | 12 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
 | 13 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
-| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines, reps as tally marks in the margin and a speech bubble with opinions about each kind of exercise. |
+| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
 | 15 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
 
-![The fifteen animation styles, each on a different exercise](docs/screenshots/anim-styles.png)
+![The fifteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
 
-![Today with the animation style switcher at the top, plank shoulder taps drawn in the Synthwave style](docs/screenshots/anim-live.png)
+![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 
