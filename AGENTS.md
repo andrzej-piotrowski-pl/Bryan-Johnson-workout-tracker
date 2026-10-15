@@ -15,7 +15,7 @@ Pick the bump from the largest change in the release. The current version is the
 
 ## Every change that reaches `main`
 
-Each time a change is committed and pushed (or merged) to `main`:
+Each time a change is committed and pushed to `main`:
 
 1. **Bump the version** in `package.json` (and in `package-lock.json`, with `npm version <major|minor|patch> --no-git-tag-version`).
 2. **Update `CHANGELOG.md`** in the repo root. Create it if it doesn't exist. Add a section for the new version at the top, in this format:
@@ -40,11 +40,11 @@ Each time a change is committed and pushed (or merged) to `main`:
 
 Never reuse or move an existing tag. If a release was wrong, fix it in a new patch release.
 
-## Working on branches
+## Branches and pull requests
 
-- Work on a feature branch unless the user tells you to push to `main` directly.
-- On a branch, you may add the changelog entry early under `## [Unreleased]`. When the branch lands on `main`, rename that section to the new version and date, then tag and release as above.
-- Don't push to `main`, force-push, rewrite published history, or open a pull request unless the user asked for it.
+- **Never create a pull request.** When the user asks for a change, commit it and push it directly to `main`.
+- **Don't work in branches**, except for a **major** version: build that on a branch and push it to `main` when the user says it's ready. On that branch, keep the changelog entry under `## [Unreleased]`, and when it lands on `main` rename that section to the new version and date, then tag and release as above.
+- Never force-push or rewrite published history.
 
 ## The project
 
