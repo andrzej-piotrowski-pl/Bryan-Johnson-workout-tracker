@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.10.3] - 2026-10-15
+
+### Fixed
+- Keep the selected exercise animation visible when switching between Course and other themes.
+
 ## [1.10.2] - 2026-10-15
 
 ### Fixed

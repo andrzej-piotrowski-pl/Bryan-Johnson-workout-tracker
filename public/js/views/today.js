@@ -28,6 +28,7 @@ export function render(el, params) {
   let panel = null;
   let showSkipped = false;
   let lastStatus = state.days[date] ? state.days[date].status : null;
+  let panelMode = detailMode();
 
   const log = () => state.days[date] || null;
   const profile = () => state.profile;
@@ -217,7 +218,7 @@ export function render(el, params) {
     return `<div class="banner skip"><span>${icon(r.icon, "lg")}</span><div class="grow"><b>Skipped: ${esc(r.name)}</b>${l.skip.note ? `<span>${esc(l.skip.note)}</span>` : ""}</div><div class="btn-row"><button type="button" class="btn sm" data-skip-edit>${icon("note", "sm")} Edit</button><button type="button" class="btn sm" data-unskip>${icon("undo", "sm")} Undo skip</button></div></div>`;
   }
 
-  function draw() {
+  function draw(mobileSheet = false) {
     if (!profile()) return;
     const ctx = context();
     const l = log();
@@ -250,10 +251,18 @@ export function render(el, params) {
     </div>`;
     if (panel) panel.dispose();
     panel = null;
-    if (selected) showPanel(selected, false);
+    if (selected) showPanel(selected, mobileSheet);
     else autoselect(ctx);
     const r = el.querySelector("[data-ring] .ring-wrap");
     if (r) r.classList.add("intro");
+  }
+
+  function onLook() {
+    const mode = detailMode();
+    if (mode === panelMode) return;
+    const mobileSheet = panelMode === "inline" && window.matchMedia("(max-width: 1180px)").matches;
+    panelMode = mode;
+    draw(mobileSheet);
   }
 
   function autoselect(ctx) {
@@ -580,6 +589,7 @@ export function render(el, params) {
   const unsub = onChange((evt) => {
     if (evt.type === "all" || evt.type === "profile") draw();
   });
+  window.addEventListener("hp:look", onLook);
   draw();
 
   // The detail panel is sticky and can be taller than the window: let it scroll first, then the page.
@@ -599,6 +609,7 @@ export function render(el, params) {
   return {
     destroy() {
       unsub();
+      window.removeEventListener("hp:look", onLook);
       window.removeEventListener("wheel", onWheel);
       if (panel) panel.dispose();
       delete document.documentElement.dataset.venue;
