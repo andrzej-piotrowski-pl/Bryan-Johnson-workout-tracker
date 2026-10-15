@@ -3,7 +3,7 @@
 Rules for every AI agent working in this repository (Claude, Codex, Copilot, Cursor, and others).
 Read this file before making changes, and follow it for the whole session.
 
-## Versioning and releases
+## Versioning
 
 The project uses [Semantic Versioning](https://semver.org): `MAJOR.MINOR.PATCH`.
 
@@ -11,7 +11,7 @@ The project uses [Semantic Versioning](https://semver.org): `MAJOR.MINOR.PATCH`.
 - **MINOR**: a new feature or add-on that is backwards compatible, such as a new exercise, view, tracker field or setting.
 - **PATCH**: a bug fix, a copy or style tweak, a docs change or a dependency bump that changes no behaviour.
 
-Pick the bump from the largest change in the release. The current version is the `version` field in `package.json`.
+Pick the bump from the largest change in the push. The current version is the `version` field in `package.json`.
 
 ## Every change that reaches `main`
 
@@ -35,15 +35,13 @@ Each time a change is committed and pushed to `main`:
 
    Use only the headings you need (`Added`, `Changed`, `Fixed`, `Removed`). Keep each line short and say what changed for the user, not which files moved.
 3. **Commit** the version bump and the changelog together with the change (or as the last commit before the push).
-4. **Tag and release**: create the tag `vMAJOR.MINOR.PATCH` on that commit, push it (`git push origin vX.Y.Z`), and create a GitHub release with that tag as its name and that version's changelog section as its notes.
-   If your tools can't create a GitHub release, push the tag and tell the user that the release still has to be published from it.
 
-Never reuse or move an existing tag. If a release was wrong, fix it in a new patch release.
+Don't create git tags or GitHub releases; the user handles those. If a version shipped with a mistake, fix it in a new patch version.
 
 ## Branches and pull requests
 
 - **Never create a pull request.** When the user asks for a change, commit it and push it directly to `main`.
-- **Don't work in branches**, except for a **major** version: build that on a branch and push it to `main` when the user says it's ready. On that branch, keep the changelog entry under `## [Unreleased]`, and when it lands on `main` rename that section to the new version and date, then tag and release as above.
+- **Don't work in branches**, except for a **major** version: build that on a branch and push it to `main` when the user says it's ready. On that branch, keep the changelog entry under `## [Unreleased]`, and when it lands on `main` rename that section to the new version and date.
 - Never force-push or rewrite published history.
 
 ## The project

@@ -3,6 +3,11 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.0.2] - 2026-10-15
+
+### Changed
+- `AGENTS.md`: agents no longer create git tags or GitHub releases; they only bump the version and update this changelog.
+
 ## [1.0.1] - 2026-10-15
 
 ### Added
