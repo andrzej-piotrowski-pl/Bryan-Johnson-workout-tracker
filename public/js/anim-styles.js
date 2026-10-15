@@ -21,12 +21,12 @@ export const ANIM_STYLES = [
   { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sign figure on a blue tile: even bars for limbs, a floating round head, the worked muscles in orange. Drawn as SVG." },
   { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "Brush strokes on rice paper that leave fading ink trails, an ensō circle for the head and red washes on the worked muscles. Drawn on a 2D canvas." },
   { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "The figure typed out in characters on a glowing CRT, with a floor grid; the worked muscles in amber. Drawn as text." },
-  { id: "chrome", name: "Liquid chrome", tech: "shader", after: "Liquid-metal studio renders", blurb: "A mirror-finish body that flows like poured metal, reflecting the studio, the floor and itself; gold where the muscles work. Ray-marched in one WebGL shader." },
   { id: "synthwave", name: "Synthwave", tech: "canvas", after: "1980s retro-futurism", blurb: "Neon tubes on a scrolling grid under a striped sunset, mirrored on a wet floor; the worked muscles in hot pink. Drawn on a 2D canvas." },
   { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing that measures you: live knee, hip and elbow angles, centre lines, hatched muscles, steps and boxes dimensioned and a title block naming the exercise. Drawn as SVG." },
   { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
   { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about every exercise. Drawn as SVG." },
   { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
+  { id: "chrome", name: "Liquid chrome", tech: "shader", after: "Liquid-metal studio renders", blurb: "A mirror-finish body that flows like poured metal, reflecting the studio, the floor and itself; gold where the muscles work. Ray-marched in one WebGL shader." },
 ];
 
 // The style until you pick one.

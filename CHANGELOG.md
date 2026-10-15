@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.1] - 2026-10-15
+
+### Changed
+- Liquid chrome now appears last in the animation style pickers.
+
 ## [1.11.0] - 2026-10-15
 
 ### Added
