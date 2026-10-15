@@ -266,7 +266,8 @@ export function render(el, params) {
   }
 
   function autoselect(ctx) {
-    if (detailMode() === "inline" || window.matchMedia("(max-width: 1180px)").matches) return;
+    const inline = detailMode() === "inline";
+    if (!inline && window.matchMedia("(max-width: 1180px)").matches) return;
     const rows = [...el.querySelectorAll(".item:not(.info)")];
     // While the animation style switcher is open, start on an exercise the styles apply to.
     const styled = animBarOpen() && rows.find((li) => hasAnimStyles((findItem(li.dataset.scope, li.dataset.id) || { item: {} }).item.ex));

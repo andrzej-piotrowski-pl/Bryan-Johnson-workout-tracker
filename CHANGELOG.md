@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.2] - 2026-10-15
+
+### Fixed
+- Today now opens the first exercise automatically in the Course theme.
+
 ## [1.11.1] - 2026-10-15
 
 ### Changed
