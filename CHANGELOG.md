@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.5] - 2026-10-15
+
+### Changed
+- Theme and animation screenshots stay visible in the README while technical details remain collapsed.
+
 ## [1.11.4] - 2026-10-15
 
 ### Changed

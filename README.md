@@ -149,8 +149,21 @@ About 34–45 minutes a session at New to training, 41–50 at Returning, 53–6
 
 Choose one of seven themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
 
+<p>
+<img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme with Anime animation: top navigation, a black hero with huge type, blocks as colour fields">
+<img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme with Stardust animation: the figure on the left, the session in the middle, navigation on the right">
+<img src="docs/screenshots/theme-pulse.png" width="32%" alt="Pulse theme with Synthwave animation: icon rail, bento tiles and a big progress ring on black">
+</p>
+<p>
+<img src="docs/screenshots/theme-lab.png" width="32%" alt="Lab theme with Blueprint animation: a ruled Swiss layout in three columns">
+<img src="docs/screenshots/theme-olympia.png" width="32%" alt="Olympia theme with Pictogram animation: an orange header and hero on an intervals day, the list on the left">
+<img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme with Doodle animation: exercises as controls on a purple course line, one opened in place">
+</p>
+
+Each screenshot uses a different animation style: Chapters with **Anime**, Dark room with **Stardust**, Pulse with **Synthwave**, Lab with **Blueprint**, Olympia with **Pictogram**, and Course with **Doodle**. Themes and animation styles can be mixed freely.
+
 <details>
-<summary><b>See the themes, screenshots and design details</b></summary>
+<summary><b>Theme descriptions and design details</b></summary>
 
 Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. To compare them on your own pages, use **Try themes live** there: a small switcher floats at the top of the screen with one letter per theme (hover for the name) while you move around the app; close it with ×. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
 
@@ -166,19 +179,6 @@ The six new ones follow public design guides, two each: [taste-skill](https://gi
 | **Olympia** | impeccable | A colour for each kind of session, after the 1972 Munich Games signage: blue strength, orange intervals, green Zone 2, silver rest. The header, the hero and the 3D floor take the colour of the day you're looking at. The list leads on the left. |
 | **Course** | impeccable | The session drawn as an orienteering course: a start triangle, a purple control circle per exercise, a finish double circle. One column; an exercise opens in place under its row instead of in a side panel. |
 
-<p>
-<img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme with Anime animation: top navigation, a black hero with huge type, blocks as colour fields">
-<img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme with Stardust animation: the figure on the left, the session in the middle, navigation on the right">
-<img src="docs/screenshots/theme-pulse.png" width="32%" alt="Pulse theme with Synthwave animation: icon rail, bento tiles and a big progress ring on black">
-</p>
-<p>
-<img src="docs/screenshots/theme-lab.png" width="32%" alt="Lab theme with Blueprint animation: a ruled Swiss layout in three columns">
-<img src="docs/screenshots/theme-olympia.png" width="32%" alt="Olympia theme with Pictogram animation: an orange header and hero on an intervals day, the list on the left">
-<img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme with Doodle animation: exercises as controls on a purple course line, one opened in place">
-</p>
-
-Each screenshot uses a different animation style: Chapters with **Anime**, Dark room with **Stardust**, Pulse with **Synthwave**, Lab with **Blueprint**, Olympia with **Pictogram**, and Course with **Doodle**. Themes and animation styles can be mixed freely.
-
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
 </details>
@@ -189,8 +189,12 @@ Choose one of fifteen looks in **Settings → Animation style**. **Athlete** is 
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
+![The fifteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+
+![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
+
 <details>
-<summary><b>See all animation styles, screenshots and technical details</b></summary>
+<summary><b>Animation style descriptions and technical details</b></summary>
 
 Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
@@ -213,10 +217,6 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 | 13 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
 | 14 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
 | 15 | **Liquid chrome** | WebGL shader | A mirror-finish body that flows like poured metal, ray-marched per pixel in one fragment shader on plain WebGL: capsules melted together, reflections of the studio, the floor and itself, soft shadows, gold where the muscles work. It lowers its resolution by itself on slow devices. |
-
-![The fifteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
-
-![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 
