@@ -1,5 +1,5 @@
 # Your personal data (profile, daily logs). Never committed.
-data/
+/data/
 
 # Dependencies
 node_modules/
