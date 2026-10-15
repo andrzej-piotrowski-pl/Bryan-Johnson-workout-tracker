@@ -9,16 +9,9 @@ import { phaseFor, sessionsDone } from "../plan.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
+import { applyLook, skinById, skinPickerHtml } from "../themes.js";
 
 const LB = 2.20462;
-
-export function applyTheme(theme) {
-  if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
-  else delete document.documentElement.dataset.theme;
-  try {
-    localStorage.setItem("hp:theme", JSON.stringify(theme || "system"));
-  } catch {}
-}
 
 export function render(el) {
   const p = () => state.profile;
@@ -75,9 +68,11 @@ export function render(el) {
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
       </section>
 
-      <section class="card card-pad" style="display:grid;gap:12px">
+      <section class="card card-pad" style="display:grid;gap:14px">
         <h3>Appearance</h3>
-        ${seg("theme", [{ id: "system", name: "System" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system")}
+        <p class="muted" style="font-size:0.86rem">Each theme changes the layout, type and colours, not just the palette. Your data and settings stay the same.</p>
+        ${skinPickerHtml(st.skin)}
+        <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
@@ -130,6 +125,7 @@ export function render(el) {
         const days = Object.keys(data.days || {}).length;
         const replace = await confirmDialog({ title: "Import backup", message: `The file has ${days} logged days${data.profile ? " and a profile" : ""}. Replace everything you have now? (Cancel merges instead: days in the file overwrite the same dates.)`, confirm: "Replace all", danger: true });
         await importAll(data, replace ? "replace" : "merge");
+        applyLook(state.profile && state.profile.settings);
         toast(`Imported ${days} days`);
         draw();
       } catch (err) {
@@ -142,6 +138,16 @@ export function render(el) {
   el.addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.dataset.skin) {
+      updateProfile((pr) => {
+        pr.settings = pr.settings || {};
+        pr.settings.skin = b.dataset.skin;
+      });
+      applyLook(p().settings);
+      draw();
+      el.querySelector(`[data-skin="${b.dataset.skin}"]`).focus();
+      return;
+    }
     const sg = b.closest("[data-seg]");
     if (sg) {
       const name = sg.dataset.seg;
@@ -155,7 +161,7 @@ export function render(el) {
         else if (name === "rest") pr.settings.restSec = Number(v);
         else if (name === "theme") pr.settings.theme = v;
       });
-      if (name === "theme") applyTheme(v);
+      if (name === "theme") applyLook(p().settings);
       draw();
       return;
     }

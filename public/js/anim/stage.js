@@ -32,9 +32,23 @@ const VIEWS = {
 };
 
 function isDark() {
-  const forced = document.documentElement.dataset.theme;
+  const root = document.documentElement;
+  if (root.dataset.scheme) return root.dataset.scheme === "dark";
+  const forced = root.dataset.theme;
   if (forced) return forced === "dark";
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+// Themes may recolour the scene with CSS custom properties on <html> (hex colours):
+// --stage-floor, --stage-grid, --stage-hl (highlighted muscles) and --stage-body.
+function themeColor(name) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return /^#[0-9a-f]{6}$/i.test(v) ? v : null;
+}
+
+function rgba(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
 function mirrorSpec(spec) {
@@ -145,7 +159,7 @@ export class Stage {
 
     this.M = createMaterials(this.dark);
     this.man = createMannequin();
-    this.man.setTheme(this.dark);
+    this.man.setTheme(this.dark, { body: themeColor("--stage-body"), hl: themeColor("--stage-hl") });
     scene.add(this.man.group);
 
     this.dumbbells = { L: createDumbbell(this.M), R: createDumbbell(this.M), goblet: createDumbbell(this.M, 1.15) };
@@ -195,6 +209,7 @@ export class Stage {
     this.mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
     this.onScheme = () => this.setTheme(isDark());
     this.mq && this.mq.addEventListener && this.mq.addEventListener("change", this.onScheme);
+    window.addEventListener("hp:look", this.onScheme);
 
     this.lastNow = performance.now();
     this.updateLoop();
@@ -248,16 +263,24 @@ export class Stage {
     const x = this.floorCanvas.getContext("2d");
     const s = this.floorCanvas.width;
     x.clearRect(0, 0, s, s);
+    const floor = themeColor("--stage-floor");
     const g = x.createRadialGradient(s / 2, s / 2, s * 0.05, s / 2, s / 2, s / 2);
-    g.addColorStop(0, dark ? "rgba(70,86,108,0.95)" : "rgba(214,222,232,1)");
-    g.addColorStop(0.55, dark ? "rgba(40,52,68,0.75)" : "rgba(226,232,240,0.85)");
-    g.addColorStop(1, dark ? "rgba(20,28,38,0)" : "rgba(240,244,248,0)");
+    if (floor) {
+      g.addColorStop(0, rgba(floor, 1));
+      g.addColorStop(0.55, rgba(floor, 0.8));
+      g.addColorStop(1, rgba(floor, 0));
+    } else {
+      g.addColorStop(0, dark ? "rgba(70,86,108,0.95)" : "rgba(214,222,232,1)");
+      g.addColorStop(0.55, dark ? "rgba(40,52,68,0.75)" : "rgba(226,232,240,0.85)");
+      g.addColorStop(1, dark ? "rgba(20,28,38,0)" : "rgba(240,244,248,0)");
+    }
     x.fillStyle = g;
     x.fillRect(0, 0, s, s);
     this.floorTex.needsUpdate = true;
     const gx = this.gridCanvas.getContext("2d");
     gx.clearRect(0, 0, 128, 128);
-    gx.strokeStyle = dark ? "rgba(160,190,220,0.35)" : "rgba(80,100,130,0.28)";
+    const grid = themeColor("--stage-grid");
+    gx.strokeStyle = grid ? rgba(grid, 0.4) : dark ? "rgba(160,190,220,0.35)" : "rgba(80,100,130,0.28)";
     gx.lineWidth = 2;
     gx.strokeRect(0, 0, 128, 128);
     this.gridTex.needsUpdate = true;
@@ -265,7 +288,7 @@ export class Stage {
 
   setTheme(dark) {
     this.dark = dark;
-    this.man.setTheme(dark);
+    this.man.setTheme(dark, { body: themeColor("--stage-body"), hl: themeColor("--stage-hl") });
     applyPalette(this.M, dark);
     this.hemi.groundColor.set(dark ? 0x334455 : 0x8899aa);
     this.paintFloor();
@@ -518,6 +541,7 @@ export class Stage {
     this.ro && this.ro.disconnect();
     this.io && this.io.disconnect();
     this.mq && this.mq.removeEventListener && this.mq.removeEventListener("change", this.onScheme);
+    window.removeEventListener("hp:look", this.onScheme);
     this.controls && this.controls.dispose();
     this.man.dispose();
     this.scene.traverse((o) => {

@@ -4,6 +4,7 @@ import { state } from "../store.js";
 import { SKIP_REASONS, addonsForDate, dayDef, dayMins, isRestKey, phaseFor, sessionKeyFor, weekStats } from "../plan.js";
 import { addDays, esc, fmtDate, fmtShort, isoWeekNumber, parseIso, todayIso, weekStart } from "../util.js";
 import { icon } from "../components/icons.js";
+import { sessionKind } from "../themes.js";
 
 const STATUS = { done: "Done", partial: "In progress", skipped: "Skipped" };
 
@@ -27,7 +28,7 @@ export function render(el, params) {
     const future = date > today;
     const before = state.profile && state.profile.startDate && date < state.profile.startDate;
     const statusText = st ? STATUS[st] : rest ? "Rest" : before ? "Before your start" : future ? "Planned" : date === today ? "Today" : "Not logged";
-    return `<a class="card wday${date === today ? " today" : ""}${rest || before ? " rest" : ""}" href="#/day/${date}">
+    return `<a class="card wday${date === today ? " today" : ""}${rest || before ? " rest" : ""}" href="#/day/${date}" data-kind="${rest ? "rest" : sessionKind(key)}">
       <div class="d"><b>${esc(parseIso(date).toLocaleDateString(undefined, { weekday: "short" }))}</b><span class="muted mono">${esc(fmtShort(date))}</span></div>
       <span class="t">${esc(rest ? "Rest day" : def.title)}</span>
       ${rest ? "" : `<span class="muted mono" style="font-size:0.8rem">≈${dayMins(def, phase)} min</span>`}

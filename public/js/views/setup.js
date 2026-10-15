@@ -8,14 +8,24 @@ import { LEVELS, SEXES, bpmRange, defaultProfile, fmtLoad, hrMax } from "../pers
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { seg } from "../components/ui.js";
+import { applyLook, skinById, skinPickerHtml } from "../themes.js";
 
-const STEPS = ["Welcome", "About you", "Training", "Add-ons", "Ready"];
+const STEPS = ["Welcome", "Theme", "About you", "Training", "Add-ons", "Ready"];
 const LB = 2.20462;
 
 export function render(el, params) {
   const redo = params.includes("redo");
   const draft = redo && state.profile ? structuredClone(state.profile) : defaultProfile();
+  draft.settings = draft.settings || {};
+  if (!redo) {
+    // Keep whatever look this browser already shows (e.g. after "Reset everything").
+    draft.settings.skin = document.documentElement.dataset.skin || "original";
+    try {
+      draft.settings.theme = JSON.parse(localStorage.getItem("hp:theme")) || "system";
+    } catch {}
+  }
   let step = 0;
+  let saved = false;
   let error = "";
 
   const imperial = () => draft.units === "imperial";
@@ -32,6 +42,12 @@ export function render(el, params) {
         <label class="field"><span>Your name (optional)</span><input class="input" data-f="name" value="${esc(draft.name)}" placeholder="Shown on the today screen" autocomplete="given-name"></label>`;
     }
     if (step === 1) {
+      const sk = skinById(draft.settings.skin);
+      return `<p class="muted">Pick a theme. Each one changes the layout, type and colours, and you see it right away. You can switch any time in Settings.</p>
+        ${skinPickerHtml(sk.id)}
+        <div class="field"><span>Light or dark</span>${sk.modes.length > 1 ? seg("mode", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], draft.settings.theme || "system") : `<small>${esc(sk.name)} is always dark.</small>`}</div>`;
+    }
+    if (step === 2) {
       return `<p class="muted">Used to set your heart-rate zones and scale the starting weights. Nothing leaves this computer.</p>
         <div class="field"><span>Units</span>${seg("units", [{ id: "metric", name: "Metric (kg, cm)" }, { id: "imperial", name: "Imperial (lb, in)" }], draft.units, "accent")}</div>
         <div class="grid-form">
@@ -41,7 +57,7 @@ export function render(el, params) {
         </div>
         <div class="field"><span>Sex <small>(only used to scale starting weights)</small></span>${seg("sex", SEXES, draft.sex)}</div>`;
     }
-    if (step === 2) {
+    if (step === 3) {
       const lv = LEVELS.map((l) => `<button type="button" class="choice" data-level="${l.id}" aria-pressed="${draft.level === l.id}"><b>${esc(l.name)}</b><small>${esc(l.detail)}</small></button>`).join("");
       const ex = (lo, hi) => fmtLoad(draft, lo, hi);
       return `<div class="field"><span>Where are you starting from?</span><div class="choice-grid">${lv}</div></div>
@@ -60,7 +76,7 @@ export function render(el, params) {
           <dt>Overhead press, week 1</dt><dd>2 × ${ex(6, 8)}</dd>
         </dl><small class="muted">Starting points only: in each phase, effort (reps left in the tank) decides the weight.</small></div>`;
     }
-    if (step === 3) {
+    if (step === 4) {
       return `<p class="muted">Optional extras that show up after the main session, tracked the same way. You can change this any time in Settings.</p>
         ${ADDONS.map(
           (a) => `<label class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${esc(a.name)}</b><small class="muted">${esc(a.description)}</small></span><span class="switch"><input type="checkbox" data-addon="${esc(a.id)}" ${draft.addons && draft.addons[a.id] ? "checked" : ""} aria-label="${esc(a.name)}"><span></span></span></label>`
@@ -72,6 +88,7 @@ export function render(el, params) {
         ${draft.name ? `<dt>Name</dt><dd>${esc(draft.name)}</dd>` : ""}
         <dt>Age, weight</dt><dd>${esc(draft.age)} · ${esc(wShow(draft.weightKg))} ${imperial() ? "lb" : "kg"}</dd>
         <dt>Level</dt><dd>${esc(lvl ? lvl.name : "")}</dd>
+        <dt>Theme</dt><dd>${esc(skinById(draft.settings.skin).name)}</dd>
         <dt>Starts</dt><dd>${esc(draft.startDate)} · ${esc(PHASES[draft.startPhase].name)}</dd>
         <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
         <dt>Add-ons</dt><dd>${esc(ADDONS.filter((a) => draft.addons && draft.addons[a.id]).map((a) => a.name).join(", ") || "None")}</dd>
@@ -95,7 +112,7 @@ export function render(el, params) {
   }
 
   function validate() {
-    if (step === 1) {
+    if (step === 2) {
       const age = Number(draft.age);
       if (!(age >= 14 && age <= 99)) return "Please enter an age between 14 and 99.";
       if (!(draft.weightKg >= 30 && draft.weightKg <= 250)) return "Please enter your weight.";
@@ -115,7 +132,7 @@ export function render(el, params) {
     else if (f === "maxdb") draft.maxDumbbellKg = Number.isFinite(n) && v !== "" ? Math.round((imperial() ? n / LB : n) * 10) / 10 : null;
     else if (f === "hrmax") draft.hrMax = Number.isFinite(n) && n > 100 ? Math.round(n) : null;
     else if (f === "start") draft.startDate = v || todayIso();
-    if (step === 2 && f !== "start") {
+    if (step === 3 && f !== "start") {
       // Refresh the preview numbers without losing focus.
       const preview = el.querySelector(".preview");
       const tmp = document.createElement("div");
@@ -135,11 +152,21 @@ export function render(el, params) {
   el.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.dataset.skin) {
+      draft.settings.skin = b.dataset.skin;
+      applyLook(draft.settings);
+      draw();
+      el.querySelector(`[data-skin="${b.dataset.skin}"]`).focus();
+      return;
+    }
     const segEl = b.closest("[data-seg]");
     if (segEl) {
       const name = segEl.dataset.seg;
       const v = b.dataset.value;
-      if (name === "units") draft.units = v;
+      if (name === "mode") {
+        draft.settings.theme = v;
+        applyLook(draft.settings);
+      } else if (name === "units") draft.units = v;
       else if (name === "sex") draft.sex = v;
       else if (name === "phase") draft.startPhase = Number(v);
       draw();
@@ -166,10 +193,18 @@ export function render(el, params) {
         return;
       }
       draft.updatedAt = new Date().toISOString();
+      saved = true;
       setProfile(draft);
+      applyLook(draft.settings);
       location.hash = redo ? "#/settings" : "#/today";
     }
   });
 
   draw();
+  return {
+    // Leaving a re-run of setup without saving puts the saved look back.
+    destroy() {
+      if (redo && !saved && state.profile) applyLook(state.profile.settings);
+    },
+  };
 }

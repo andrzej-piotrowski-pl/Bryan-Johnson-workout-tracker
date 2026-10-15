@@ -38,7 +38,7 @@ export function defaultProfile() {
     startPhase: 0,
     phaseLock: null,
     addons: { posture: true },
-    settings: { theme: "system", restSec: 75, sound: true },
+    settings: { theme: "system", skin: "original", restSec: 75, sound: true },
     createdAt: new Date().toISOString(),
   };
 }

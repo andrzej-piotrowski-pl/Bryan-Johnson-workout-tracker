@@ -8,15 +8,27 @@
 <meta name="color-scheme" content="dark light">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/vendor/fonts/@fontsource-variable/inter/index.css">
+<!-- Extra weights for the themes; a font file only downloads when a theme uses it. -->
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/300.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/500.css">
 <link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/600.css">
 <link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/700.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/barlow-condensed/800.css">
+<link rel="stylesheet" href="/vendor/fonts/@fontsource/jetbrains-mono/400.css">
 <link rel="stylesheet" href="/vendor/fonts/@fontsource/jetbrains-mono/500.css">
 <link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/themes.css">
 <script>
-  // Apply the saved theme before first paint (no flash).
+  // Apply the saved theme and light/dark mode before first paint (no flash).
+  // Mirrors applyLook() in js/themes.js.
   try {
+    var root = document.documentElement;
+    var skin = JSON.parse(localStorage.getItem("hp:skin") || '"original"');
     var t = JSON.parse(localStorage.getItem("hp:theme") || '"system"');
-    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    root.dataset.skin = skin;
+    if (skin === "darkroom") t = "dark";
+    if (t === "light" || t === "dark") root.dataset.theme = t;
+    root.dataset.scheme = t === "light" || t === "dark" ? t : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   } catch (e) {}
 </script>
 <script type="importmap">

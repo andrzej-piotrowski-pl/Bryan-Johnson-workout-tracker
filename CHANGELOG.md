@@ -3,6 +3,19 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.1.0] - 2026-10-15
+
+### Added
+- Six new themes besides the original look, each with its own layout, type and colours: Chapters and Dark room (after the taste-skill design guide), Pulse and Lab (after ui-ux-pro-max), Olympia and Course (after impeccable).
+- A theme step in the first-run setup, and a theme picker in Settings → Appearance; the look changes as you click.
+- Olympia colours the header, hero and 3D floor by the kind of session you're viewing; Course opens an exercise in place under its row.
+- The 3D scenes and exercise thumbnails take the theme's colours.
+- `docs/THEMES.md`: how the themes work and how to add one.
+
+### Changed
+- Switching light/dark in Settings now also recolours an open 3D scene straight away.
+- The setup has one more step (Theme), so it now has six.
+
 ## [1.0.2] - 2026-10-15
 
 ### Changed

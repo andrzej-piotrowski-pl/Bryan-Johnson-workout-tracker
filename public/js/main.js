@@ -4,6 +4,7 @@
 import * as store from "./store.js";
 import { icon } from "./components/icons.js";
 import { esc } from "./util.js";
+import { applyLook } from "./themes.js";
 
 const VIEWS = {
   today: () => import("./views/today.js"),
@@ -73,6 +74,9 @@ async function route() {
   const mod = await VIEWS[name]();
   if (my !== token) return;
   if (current && current.destroy) current.destroy();
+  // Themes can style a page by its route; Today sets the session's "venue" itself.
+  document.documentElement.dataset.route = name;
+  delete document.documentElement.dataset.venue;
   drawNav(name);
   // A fresh container per view, so event listeners never outlive their view.
   viewEl.innerHTML = "";
@@ -108,6 +112,8 @@ window.addEventListener("beforeunload", (e) => {
 });
 
 await store.init();
+// The profile on disk decides the look (this browser may have an older copy in localStorage).
+if (store.state.profile) applyLook(store.state.profile.settings);
 store.onStatus(drawStatus);
 window.addEventListener("hashchange", route);
 route();

@@ -15,6 +15,7 @@ import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
 import { getItemLog, editItem, summarizeLog } from "../components/logger.js";
 import { confirmDialog, openDialog, ring, toast } from "../components/ui.js";
+import { blockKind, detailMode, sessionKind } from "../themes.js";
 
 const ENERGY = ["Very low", "Low", "OK", "Good", "Great"];
 const STATUS_TEXT = { done: "Done", partial: "In progress", skipped: "Skipped" };
@@ -64,7 +65,7 @@ export function render(el, params) {
       .map((b) => {
         const items = blockItems(b, phase);
         if (!items.length) return "";
-        return `<section class="card block">
+        return `<section class="card block" data-kind="${blockKind(b.name)}">
           <div class="block-head"><h3>${esc(b.name)}</h3><span class="eyebrow">≈${blockMins(b, phase)} min</span></div>
           ${b.note ? `<p class="block-note">${esc(personalize(b.note, profile()))}</p>` : ""}
           <ul class="items">${items.map((it) => itemRow(it, phase, "main")).join("")}</ul>
@@ -224,9 +225,11 @@ export function render(el, params) {
     const prev = addDays(date, -1);
     const next = addDays(date, 1);
     const showBlocks = !ctx.rest && (!(l && l.skip) || showSkipped);
+    // Themes colour or arrange the page by the kind of session (see themes.js).
+    document.documentElement.dataset.venue = ctx.rest ? "rest" : sessionKind(ctx.key);
     el.innerHTML = `<div class="page">
-      <div class="day-layout">
-        <div style="display:grid;gap:16px;min-width:0" data-left>
+      <div class="day-layout today-layout">
+        <div class="day-head">
           <div class="day-nav">
             <a class="btn sm icon-only" href="#/day/${prev}" aria-label="Previous day">${icon("chevronL")}</a>
             <a class="btn sm icon-only" href="#/day/${next}" aria-label="Next day">${icon("chevronR")}</a>
@@ -237,6 +240,8 @@ export function render(el, params) {
           ${skipBanner()}
           ${missedHint(ctx)}
           ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} the session anyway</button></div>` : ""}
+        </div>
+        <div class="day-list">
           ${showBlocks ? blocksHtml(ctx.def, ctx.phase) : ""}
           ${addonsForDate(date).map((a) => addonHtml(a, ctx.phase)).join("")}
           ${obsHtml()}
@@ -248,10 +253,12 @@ export function render(el, params) {
     panel = null;
     if (selected) showPanel(selected, false);
     else autoselect(ctx);
+    const r = el.querySelector("[data-ring] .ring-wrap");
+    if (r) r.classList.add("intro");
   }
 
   function autoselect(ctx) {
-    if (window.matchMedia("(max-width: 1180px)").matches) return;
+    if (detailMode() === "inline" || window.matchMedia("(max-width: 1180px)").matches) return;
     const first = el.querySelector(".item:not(.info)");
     if (first) select(first.dataset.scope, first.dataset.id, false);
   }
@@ -267,6 +274,13 @@ export function render(el, params) {
   }
 
   function select(scope, id, mobileSheet = true) {
+    // Opened in place: a second click on the open exercise folds it away.
+    if (detailMode() === "inline" && selected && selected.scope === scope && selected.id === id && el.querySelector(".inline-panel")) {
+      closeInline();
+      selected = null;
+      el.querySelectorAll(".item").forEach((li) => li.setAttribute("aria-selected", "false"));
+      return;
+    }
     selected = { scope, id };
     el.querySelectorAll(".item").forEach((li) => li.setAttribute("aria-selected", String(li.dataset.scope === scope && li.dataset.id === id)));
     showPanel(selected, mobileSheet);
@@ -276,9 +290,32 @@ export function render(el, params) {
     return { exId: found.item.ex, item: found.item, date, phase: found.phase, scope: selected.scope, scopeName: found.scopeName, onChange: refreshStatus };
   }
 
+  function closeInline() {
+    if (panel) panel.dispose();
+    panel = null;
+    const host = el.querySelector(".inline-panel");
+    if (host) host.remove();
+  }
+
+  // The exercise opens right under its row (the Course theme), at any width.
+  function showInline(sel, found) {
+    const li = el.querySelector(`.item[data-scope="${CSS.escape(sel.scope)}"][data-id="${CSS.escape(sel.id)}"]`);
+    if (!li) return;
+    let host = el.querySelector(".inline-panel");
+    if (!host || host.previousElementSibling !== li) {
+      closeInline();
+      host = document.createElement("li");
+      host.className = "inline-panel";
+      li.after(host);
+    }
+    if (!panel) panel = createExercisePanel(host);
+    panel.show(panelCtx(found));
+  }
+
   function showPanel(sel, mobileSheet) {
     const found = findItem(sel.scope, sel.id);
     if (!found) return;
+    if (detailMode() === "inline") return showInline(sel, found);
     const narrow = window.matchMedia("(max-width: 1180px)").matches;
     if (narrow) {
       if (!mobileSheet) return;
@@ -546,6 +583,7 @@ export function render(el, params) {
     destroy() {
       unsub();
       if (panel) panel.dispose();
+      delete document.documentElement.dataset.venue;
     },
   };
 }
