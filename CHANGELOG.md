@@ -3,6 +3,11 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.4.0] - 2026-10-15
+
+### Added
+- **Try themes live** in Settings → Appearance: opens Today with a small switcher floating at the top of the screen, one letter per theme (A Original to G Course). Hover a letter to see its name, keep using any page while you compare, and close it with × (or Escape). It stays open across pages and reloads until you close it.
+
 ## [1.3.0] - 2026-10-15
 
 ### Added

@@ -36,6 +36,7 @@
   --r: 12px;
   --r-lg: 18px;
   --sidebar-w: 248px;
+  --skinbar-space: 0px; /* room kept at the top while the live theme switcher is open */
   color-scheme: dark;
 }
 
@@ -363,7 +364,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 /* ---------- detail panel ---------- */
 
-.detail-col { position: sticky; top: 20px; }
+.detail-col { position: sticky; top: calc(20px + var(--skinbar-space)); }
 .detail { overflow: hidden; display: grid; }
 .detail-body { padding: 16px 18px 18px; display: grid; gap: 14px; }
 .detail h2 { font-family: var(--font-display); font-size: 1.7rem; text-transform: uppercase; line-height: 1; }
@@ -689,3 +690,47 @@ td.cur, th.cur { background: var(--accent-soft); }
 .skin-pv[data-layout="course"] .pv-list::before { content: ""; position: absolute; left: 5%; top: 6%; bottom: 6%; width: 2px; background: var(--pv-accent); }
 .skin-pv[data-layout="course"] .pv-list i { background: transparent; box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--pv-ink) 25%, transparent); border-radius: 0; position: relative; }
 .skin-pv[data-layout="course"] .pv-list i::before { content: ""; position: absolute; left: -24%; top: 50%; width: 9px; height: 9px; margin: -6px 0 0 -2px; border: 2px solid var(--pv-accent); border-radius: 50%; background: var(--pv-bg); }
+
+/* ---------- live theme switcher (components/skin-bar.js) ---------- */
+
+/* While it's open, a strip at the top of the screen is kept free for it, so it
+   never covers a top navigation bar; sticky and fixed things start below it. */
+:root.skinbar-on { --skinbar-space: 60px; }
+:root.skinbar-on body { padding-top: var(--skinbar-space); }
+:root.skinbar-on .app { min-height: calc(100vh - var(--skinbar-space)); }
+:root.skinbar-on .sidebar, :root.skinbar-on .topbar { top: var(--skinbar-space); }
+:where(:root.skinbar-on) .sidebar { height: calc(100vh - var(--skinbar-space)); }
+:root.skinbar-on .guided, :root.skinbar-on .overlay { top: var(--skinbar-space); }
+:root.skinbar-on .modal { max-height: calc(100vh - 32px - var(--skinbar-space)); }
+
+/* Drawn in the current theme's colours, inverted, so it stands out on every theme. */
+.skin-bar {
+  position: fixed; top: max(9px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 1000;
+  display: flex; align-items: center; gap: 3px; padding: 5px; border-radius: var(--r-sm);
+  background: var(--ink); color: var(--bg); box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-body); animation: skinbar-in 0.2s ease-out;
+}
+@keyframes skinbar-in { from { opacity: 0; transform: translate(-50%, -8px); } }
+.skin-bar button {
+  position: relative; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 0; cursor: pointer;
+  border-radius: calc(var(--r-sm) * 0.7); background: transparent; color: var(--bg); font: 700 0.95rem/1 var(--font-body);
+  transition: background 0.12s, color 0.12s;
+}
+.skin-bar button:hover { background: color-mix(in srgb, var(--bg) 18%, transparent); }
+.skin-bar button[aria-pressed="true"] { background: var(--bg); color: var(--ink); }
+.skin-bar button:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
+/* the close button is set apart and always round */
+.skin-bar .skin-bar-close { margin-left: 8px; border-radius: 50%; background: color-mix(in srgb, var(--bg) 16%, transparent); }
+.skin-bar .skin-bar-close::before { content: ""; position: absolute; left: -7px; top: 7px; bottom: 7px; width: 1px; background: color-mix(in srgb, var(--bg) 35%, transparent); }
+.skin-bar .skin-bar-close:hover { background: color-mix(in srgb, var(--bg) 30%, transparent); }
+/* the theme's name, under the button, on hover, keyboard focus, or just after a tap */
+.skin-bar button::after {
+  content: attr(data-name); position: absolute; top: calc(100% + 9px); left: 50%; transform: translate(-50%, -4px);
+  padding: 5px 10px; border-radius: 6px; background: var(--ink); color: var(--bg); white-space: nowrap; pointer-events: none;
+  font: 600 0.8rem/1.2 var(--font-body); letter-spacing: 0; text-transform: none; opacity: 0; transition: opacity 0.12s, transform 0.12s;
+  box-shadow: 0 8px 22px -8px rgba(0, 0, 0, 0.5);
+}
+.skin-bar button:hover::after, .skin-bar button:focus-visible::after, .skin-bar button.show-name::after { opacity: 1; transform: translate(-50%, 0); }
+.live-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.live-row small { flex: 1 1 260px; font-size: 0.8rem; line-height: 1.4; }
+@media (prefers-reduced-motion: reduce) { .skin-bar { animation: none; } }

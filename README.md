@@ -99,7 +99,7 @@ About 41–50 minutes a session in weeks 1–2, growing to 54–66 minutes from 
 
 ## Themes
 
-Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
+Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. To compare them on your own pages, use **Try themes live** there: a small switcher floats at the top of the screen with one letter per theme (hover for the name) while you move around the app; close it with ×. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
 
 The six new ones follow public design guides, two each: [taste-skill](https://github.com/Leonxlnx/taste-skill), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) and [impeccable](https://github.com/pbakaus/impeccable).
 
@@ -156,7 +156,7 @@ public/
   js/plan.js              program logic: sessions, phases, status, stats
   js/personalize.js       heart-rate zones, weight scaling, units, phases
   js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
-  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs
+  js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme switcher
   js/anim/                three.js mannequin, inverse kinematics, props, exercise clips
   js/data/                the plan, exercises, videos, add-ons
 docs/ANIMATIONS.md        guide to the animation system

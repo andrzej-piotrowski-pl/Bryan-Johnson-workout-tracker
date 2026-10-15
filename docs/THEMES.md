@@ -14,6 +14,7 @@ The app ships with seven looks: the Original one and six themes that each change
 - **Layout.** Above 900px each theme decides where the navigation goes (`.sidebar` becomes a top bar, a right-hand list, an icon rail…). Phones keep the top bar and bottom tab bar, restyled. Today is split into three regions, `.day-head`, `.day-list` and `.detail-col`, which a theme places with `grid-template-areas` on `.today-layout`. Course is the one theme that also changes behaviour: `detailMode()` in `themes.js` returns `inline`, and Today then opens an exercise under its row instead of in the side panel.
 - **Kinds.** Blocks on Today carry `data-kind` (`warm`, `power`, `strength`, `core`, `cardio`, `stretch`) and week cards carry the session kind, both from `themes.js`, so a theme can colour them by meaning.
 - **The 3D scene.** `anim/stage.js` reads four optional custom properties from `<html>`: `--stage-floor`, `--stage-grid`, `--stage-hl` (highlighted muscles) and `--stage-body` (the figure), as `#rrggbb` hex. Stages repaint when the theme or the system colour scheme changes. The exercise-library thumbnails are cached per theme and mode.
+- **Live switcher.** `components/skin-bar.js` is the floating bar opened by *Try themes live* in Settings. It lives outside the views, so it survives navigation, and remembers in `sessionStorage` that it is open. While open, `<html>` has the class `skinbar-on` and `--skinbar-space` reserves a strip at the top; sticky and fixed elements use it in their `top`, so give a new sticky offset `calc(… + var(--skinbar-space))`.
 - **Fonts.** Only the three bundled font packages are used (Inter, Barlow Condensed, JetBrains Mono), in more weights. Chapters uses Inter's optical-size axis for its display type. A font file is only downloaded when a theme actually uses it.
 
 ## The six themes and their guides
@@ -29,7 +30,7 @@ The app ships with seven looks: the Original one and six themes that each change
 
 ## Adding a theme
 
-1. Add an entry to `SKINS` in `public/js/themes.js`: an `id`, a `name`, a one-line `blurb`, `modes` (`["light", "dark"]`, or one of them if the theme only works in one) and a `preview` (the colours and arrangement of its card in the picker; see the existing entries and the `.skin-pv` styles at the end of `app.css`).
+1. Add an entry to `SKINS` in `public/js/themes.js` (its position decides its letter in the live switcher): an `id`, a `name`, a one-line `blurb`, `modes` (`["light", "dark"]`, or one of them if the theme only works in one) and a `preview` (the colours and arrangement of its card in the picker; see the existing entries and the `.skin-pv` styles at the end of `app.css`).
 2. If it only has one mode, add the forced mode to the inline script in `public/index.html` too (it mirrors `applyLook`, as it does for Dark room).
 3. Add a section to `public/css/themes.css`: tokens under `:root[data-skin="yours"]`, dark tokens under `:root[data-skin="yours"][data-scheme="dark"]`, then the shell (inside `@media (min-width: 901px)`), Today's arrangement and anything else you want to change. Prefix every rule with `[data-skin="yours"]` so it never leaks into other themes.
 4. Check every page in light and dark, on a wide screen and a phone, and keep text contrast at 4.5:1 or more.

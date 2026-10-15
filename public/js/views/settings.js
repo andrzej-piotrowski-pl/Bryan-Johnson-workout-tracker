@@ -9,7 +9,8 @@ import { phaseFor } from "../plan.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
-import { applyLook, skinById, skinPickerHtml } from "../themes.js";
+import { SKINS, applyLook, currentSkin, skinById, skinPickerHtml } from "../themes.js";
+import { openSkinBar } from "../components/skin-bar.js";
 
 const LB = 2.20462;
 
@@ -71,6 +72,10 @@ export function render(el) {
         <h3>Appearance</h3>
         <p class="muted" style="font-size:0.86rem">Each theme changes the layout, type and colours, not just the palette. Your data and settings stay the same.</p>
         ${skinPickerHtml(st.skin)}
+        <div class="live-row">
+          <button type="button" class="btn" data-live>${icon("eye")} Try themes live</button>
+          <small class="muted">Opens Today with a switcher at the top of the screen: ${esc(SKINS.map((s, i) => `${String.fromCharCode(65 + i)} ${s.name}`).join(", "))}. Hover a letter for its name, move between pages as you like, and close it with ×.</small>
+        </div>
         <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
@@ -140,6 +145,11 @@ export function render(el) {
   el.addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.hasAttribute("data-live")) {
+      openSkinBar();
+      location.hash = "#/today";
+      return;
+    }
     if (b.dataset.skin) {
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
@@ -182,5 +192,14 @@ export function render(el) {
     }
   });
 
+  // The floating switcher can change the theme while this page is open.
+  function onLook() {
+    const cur = currentSkin();
+    el.querySelectorAll(".skin-card").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.skin === cur.id)));
+    if (!!el.querySelector('[data-seg="theme"]') !== cur.modes.length > 1) draw();
+  }
+  window.addEventListener("hp:look", onLook);
+
   draw();
+  return { destroy: () => window.removeEventListener("hp:look", onLook) };
 }
