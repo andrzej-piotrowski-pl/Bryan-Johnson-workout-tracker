@@ -364,7 +364,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 /* ---------- detail panel ---------- */
 
-.detail-col { position: sticky; top: calc(20px + var(--skinbar-space)); }
+.detail-col { position: sticky; top: calc(20px + var(--skinbar-space)); max-height: calc(100vh - 40px - var(--skinbar-space)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .detail { overflow: hidden; display: grid; }
 .detail-body { padding: 16px 18px 18px; display: grid; gap: 14px; }
 .detail h2 { font-family: var(--font-display); font-size: 1.7rem; text-transform: uppercase; line-height: 1; }

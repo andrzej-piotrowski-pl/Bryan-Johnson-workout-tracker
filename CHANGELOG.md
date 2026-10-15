@@ -3,6 +3,11 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [1.7.1] - 2026-10-15
+
+### Fixed
+- On Today, scrolling down now scrolls the exercise panel on the right first, then the page.
+
 ## [1.7.0] - 2026-10-15
 
 ### Added

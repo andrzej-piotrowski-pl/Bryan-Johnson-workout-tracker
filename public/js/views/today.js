@@ -581,9 +581,25 @@ export function render(el, params) {
     if (evt.type === "all" || evt.type === "profile") draw();
   });
   draw();
+
+  // The detail panel is sticky and can be taller than the window: let it scroll first, then the page.
+  const onWheel = (e) => {
+    const col = el.querySelector(".detail-col");
+    if (!col || e.ctrlKey || e.deltaY === 0 || !col.offsetParent || col.getBoundingClientRect().top > window.innerHeight) return;
+    if (e.target.closest && e.target.closest(".modal, .sheet, .guided, textarea, select")) return;
+    const max = col.scrollHeight - col.clientHeight;
+    if (max <= 1) return;
+    const down = e.deltaY > 0;
+    if (down ? col.scrollTop < max - 1 : col.scrollTop > 0 && window.scrollY <= 0) {
+      e.preventDefault();
+      col.scrollTop += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    }
+  };
+  window.addEventListener("wheel", onWheel, { passive: false });
   return {
     destroy() {
       unsub();
+      window.removeEventListener("wheel", onWheel);
       if (panel) panel.dispose();
       delete document.documentElement.dataset.venue;
     },
