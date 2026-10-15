@@ -1,14 +1,15 @@
 // First-run setup: who you are (for heart-rate zones and starting loads),
-// your training level (which picks the starting phase), units, the accessories
+// your training level (which sets the workouts), units, the accessories
 // you need (with a 3D example of each), start date and optional add-ons.
 
 import { ADDONS } from "../data/addons/index.js";
-import { EQUIPMENT, PHASES } from "../data/program.js";
+import { EQUIPMENT } from "../data/program.js";
 import { EXERCISES } from "../data/exercises.js";
 import { setProfile, state } from "../store.js";
 import { LEVELS, SEXES, bpmRange, defaultProfile, fmtLoad, hrMax } from "../personalize.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
+import { levelPickerHtml } from "../components/level-picker.js";
 import { createStagePanel } from "../components/stage-panel.js";
 import { seg } from "../components/ui.js";
 import { applyLook, skinById, skinPickerHtml } from "../themes.js";
@@ -70,11 +71,8 @@ export function render(el, params) {
         <div class="field"><span>Sex <small>(only used to scale starting weights)</small></span>${seg("sex", SEXES, draft.sex)}</div>`;
     }
     if (step === 3) {
-      const lv = LEVELS.map((l) => `<button type="button" class="choice" data-level="${l.id}" aria-pressed="${draft.level === l.id}"><b>${esc(l.name)}</b><small>${esc(l.detail)}</small></button>`).join("");
-      const lvl = LEVELS.find((l) => l.id === draft.level) || LEVELS[0];
       const ex = (lo, hi) => fmtLoad(draft, lo, hi);
-      return `<div class="field"><span>Where are you starting from?</span><div class="choice-grid levels">${lv}</div></div>
-        <p class="level-note">${icon("info")}<span><b>${esc(lvl.name)}:</b> ${esc(lvl.plan)} ${esc(PHASES[lvl.startPhase].effort)} The workouts then grow with you as you complete sessions.<br><span class="muted">You can change your level any time in Settings, when you feel ready for harder exercises or want easier ones.</span></span></p>
+      return `<div class="field"><span>Where are you starting from?</span>${levelPickerHtml(draft.level)}</div>
         <div class="grid-form">
           <label class="field"><span>Measured max heart rate (optional)</span><input class="input" data-f="hrmax" inputmode="numeric" value="${esc(draft.hrMax ?? "")}" placeholder="${hrMax({ age: draft.age })} (estimated)"><small>Leave empty to estimate from age.</small></label>
           <label class="field"><span>Start date</span><input class="input" type="date" data-f="start" value="${esc(draft.startDate)}"></label>
@@ -83,10 +81,10 @@ export function render(el, params) {
           <dt>Max heart rate</dt><dd>${hrMax(draft)} bpm</dd>
           <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
           <dt>4×4 hard minutes</dt><dd>${bpmRange(draft, 85, 95)}</dd>
-          <dt>Goblet squat, week 1</dt><dd>${ex(10, 14)}</dd>
-          <dt>Dumbbell row, week 1</dt><dd>${ex(14, 16)}</dd>
-          <dt>Overhead press, week 1</dt><dd>2 × ${ex(6, 8)}</dd>
-        </dl><small class="muted">Starting points only: in each phase, effort (reps left in the tank) decides the weight.</small></div>`;
+          <dt>Goblet squat</dt><dd>${ex(10, 14)}</dd>
+          <dt>Dumbbell row</dt><dd>${ex(14, 16)}</dd>
+          <dt>Overhead press</dt><dd>2 × ${ex(6, 8)}</dd>
+        </dl><small class="muted">Starting weights, scaled to your level, weight, sex and age. The effort target of your level (reps left in the tank) decides the real weight.</small></div>`;
     }
     if (step === 4) {
       return `<p class="muted">Everything happens at home with a few small accessories, nothing that needs its own room. Tap one to see how it's used in an example exercise.</p>
@@ -108,7 +106,7 @@ export function render(el, params) {
     return `<div class="preview"><dl>
         ${draft.name ? `<dt>Name</dt><dd>${esc(draft.name)}</dd>` : ""}
         <dt>Age, weight</dt><dd>${esc(draft.age)} · ${esc(wShow(draft.weightKg))} ${imperial() ? "lb" : "kg"}</dd>
-        <dt>Level</dt><dd>${esc(lvl ? lvl.name : "")} · starts in ${esc(PHASES[draft.startPhase].name)}</dd>
+        <dt>Level</dt><dd>${esc(lvl ? lvl.name : "")}</dd>
         <dt>Theme</dt><dd>${esc(skinById(draft.settings.skin).name)}</dd>
         <dt>Starts</dt><dd>${esc(draft.startDate)}</dd>
         <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
@@ -201,7 +199,6 @@ export function render(el, params) {
     }
     if (b.dataset.level) {
       draft.level = b.dataset.level;
-      draft.startPhase = LEVELS.find((l) => l.id === draft.level).startPhase;
       draw();
       return;
     }
@@ -226,8 +223,6 @@ export function render(el, params) {
         draw();
         return;
       }
-      // A changed level on "Run setup again" restarts the phase count from today.
-      if (redo && state.profile && state.profile.level !== draft.level) draft.levelSince = todayIso();
       draft.updatedAt = new Date().toISOString();
       saved = true;
       setProfile(draft);

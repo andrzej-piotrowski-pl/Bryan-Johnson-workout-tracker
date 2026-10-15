@@ -2,11 +2,11 @@
 
 A local web app that plans and tracks a six-day home workout built from **Bryan Johnson's public exercise protocol** (his October 2026 weekly template), rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands.
 
-- **What to do each day**, block by block, with doses that grow over three phases (Re-entry → Build → Blueprint), starting from the one that fits your training level.
+- **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
-- **Skipped days are fine**: skip with a reason and a note, swap sessions around, and phases only advance with sessions you actually did.
+- **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
@@ -76,12 +76,12 @@ Enter them in the first-run setup; change them any time in **Settings** (or edit
 | Weight, sex, age, training level | Starting dumbbell weights, scaled from the plan's reference (75 kg man, 38, returning to training) |
 | Heaviest dumbbell | Suggested weights are capped at it |
 | Units | kg/cm or lb/in throughout |
-| Training level | Where you start: "New to training" and "Returning" start in Re-entry, "Active" in Build, "Well trained" in Blueprint. Phases then advance after 12 and 24 completed sessions (18 and 24 for "new to training"); skipped days don't count. Change your level in Settings any time you want harder or easier workouts: the weights rescale and the phase count restarts from that level. You can also lock a phase. |
+| Training level | The workouts: sets, reps, intervals, Zone 2 minutes and which exercises you do. Nothing changes on its own: switch level in Settings when you want harder or easier workouts (each level says when it's time to move up). Days you already logged keep the level they were done at. |
 | Start date | Day one of your program |
 | Add-ons | Which optional blocks appear after the main session |
 | Theme, light or dark | How the app looks (see [Themes](#themes)); changes nothing in the plan |
 
-Suggested weights are starting points. In every phase the effort target (how many good reps you leave in the tank) decides the real weight.
+Suggested weights are starting points. The effort target of your level (how many good reps you leave in the tank) decides the real weight.
 
 ## The week
 
@@ -95,7 +95,7 @@ Suggested weights are starting points. In every phase the effort target (how man
 | Sat | Zone 2 + long stretch (swap for a walk, hike or ride outside any time) |
 | Sun | Rest |
 
-About 41–50 minutes a session in weeks 1–2, growing to 54–66 minutes from week 7, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the phases, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
 
 ## Themes
 
@@ -136,7 +136,7 @@ Add-ons are optional blocks shown after the main session, picked on first run (a
 
 ## Changing the plan
 
-- `public/js/data/program.js` — the days, blocks and doses per phase, phases, rules, sources.
+- `public/js/data/program.js` — the days, blocks and doses per training level, what each level means, rules, sources.
 - `public/js/data/exercises.js` — every exercise: how-to steps, Bryan's notes, videos (with timestamps into his videos), equipment, what it's logged as.
 - `public/js/data/addons/` — optional blocks.
 - `public/js/anim/clips/` — the 3D animations. See [docs/ANIMATIONS.md](docs/ANIMATIONS.md) for how to write or tweak one, and open `/dev/animations.html?ids=pushup` to see every keyframe side by side.
@@ -153,8 +153,8 @@ public/
   js/themes.js            the theme list, switching, and the theme picker
   js/main.js              routing and app shell
   js/store.js             state + auto-save (server, with a browser-storage fallback)
-  js/plan.js              program logic: sessions, phases, status, stats
-  js/personalize.js       heart-rate zones, weight scaling, units, phases
+  js/plan.js              program logic: sessions, levels and doses, status, stats
+  js/personalize.js       heart-rate zones, weight scaling, units, training levels
   js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
   js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme switcher
   js/anim/                three.js mannequin, inverse kinematics, props, exercise clips

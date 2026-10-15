@@ -2,10 +2,9 @@
 // targets, strength progression per exercise, posture stiffness and body weight.
 
 import { EXERCISES } from "../data/exercises.js";
-import { PHASES } from "../data/program.js";
 import { state } from "../store.js";
-import { countsAsSession, liftHistory, phaseFor, weekStats } from "../plan.js";
-import { kgUnit } from "../personalize.js";
+import { countsAsSession, liftHistory, sessionsDone, weekStats } from "../plan.js";
+import { LEVELS, kgUnit, levelIndex } from "../personalize.js";
 import { addDays, esc, fmtShort, parseIso, todayIso, weekStart } from "../util.js";
 import { icon } from "../components/icons.js";
 import { mountChart, tableHtml } from "../components/charts.js";
@@ -97,14 +96,14 @@ export function render(el) {
     const avgSess = avg("sessions").toFixed(1);
     const avgZ2 = Math.round(avg("zone2"));
     const avgNote = full.length ? `last ${full.length === 1 ? "full week" : `${full.length} full weeks`}` : "this week so far";
-    const ph = phaseFor(todayIso());
+    const lvl = levelIndex(state.profile);
 
     el.innerHTML = `<div class="page">
       <div class="section-title"><h2>Progress</h2>
         <div class="seg" role="group" aria-label="Range">${[[8, "8 weeks"], [12, "12 weeks"], [26, "6 months"], [52, "1 year"]].map(([n, l]) => `<button type="button" data-range="${n}" aria-pressed="${range === n}">${l}</button>`).join("")}</div>
       </div>
       <div class="kpis">
-        <div class="card kpi"><span>Phase</span><b>${esc(PHASES[ph.phase].name)}</b><span>program week ${ph.week}</span></div>
+        <div class="card kpi"><span>Level</span><b>${esc(LEVELS[lvl].name)}</b><span>${sessionsDone(lvl)} sessions at this level</span></div>
         <div class="card kpi"><span>Sessions done</span><b>${total}</b><span>in total</span></div>
         <div class="card kpi"><span>Sessions a week</span><b>${avgSess}</b><span>${avgNote} · plan: 6</span></div>
         <div class="card kpi"><span>Zone 2 a week</span><b>${avgZ2} min</b><span>${avgNote} · Bryan: 150</span></div>

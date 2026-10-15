@@ -2,7 +2,7 @@
 // cardio minutes and heart rate, or interval rounds. Everything auto-saves.
 
 import { state } from "../store.js";
-import { editDay } from "../plan.js";
+import { editDay, rxFor, timerPresets } from "../plan.js";
 import { kgUnit, personalize, suggestedKg, bpmRange } from "../personalize.js";
 import { esc, fmtShort } from "../util.js";
 import { icon } from "./icons.js";
@@ -95,13 +95,13 @@ export function summarizeLog(l, logType) {
 }
 
 export function renderLogger(container, ctx) {
-  const { date, item, ex, phase, scope = "main" } = ctx;
+  const { date, item, ex, level, scope = "main" } = ctx;
   const p = state.profile;
-  const rxText = personalize(item.rx[phase], p);
+  const rxText = personalize(rxFor(item, level), p);
   const target = parseRx(rxText);
   const type = ex.log;
   const u = kgUnit(p);
-  const kgPh = suggestedKg(item.rx[phase], p);
+  const kgPh = suggestedKg(rxFor(item, level), p);
   const restSec = (p && p.settings && p.settings.restSec) || 75;
 
   function draw() {
@@ -152,7 +152,7 @@ export function renderLogger(container, ctx) {
         </div>
         <div class="btn-row">${doneBtn}${target.minutes ? `<button type="button" class="btn" data-l="countdown">${icon("timer")} ${target.minutes} min timer</button>` : ""}</div>`;
     } else if (type === "intervals") {
-      const presets = (item.timer && item.timer[phase]) || [];
+      const presets = timerPresets(item, level);
       const pi = Math.min(l.preset || 0, Math.max(0, presets.length - 1));
       body += `${presets.length > 1 ? `<div class="seg" role="group" aria-label="Preset">${presets.map((pr, i) => `<button type="button" data-preset="${i}" aria-pressed="${i === pi}">${esc(pr.label)}</button>`).join("")}</div>` : ""}
         <div class="btn-row"><button type="button" class="btn primary" data-l="intervals">${icon("timer")} Start interval timer</button>${doneBtn}</div>
@@ -280,7 +280,7 @@ export function renderLogger(container, ctx) {
         },
       });
     } else if (a === "intervals") {
-      const presets = (item.timer && item.timer[phase]) || [];
+      const presets = timerPresets(item, level);
       const l0 = getItemLog(date, scope, item.id) || {};
       const preset = presets[Math.min(l0.preset || 0, presets.length - 1)];
       if (!preset) return;

@@ -40,7 +40,7 @@ export const EXERCISES = {
       "Walk backward for 2 min along your longest clear line indoors (hallway or living room), turning around at the wall.",
       "Short steps; land on the ball of the foot and let the heel follow.",
       "Keep the knees bent so they travel forward over the toes, and push the floor away in front of you.",
-      "Phase 2+: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.",
+      "From Returning up: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.",
     ],
     tips: ["It should burn in the front of the thighs, never hurt inside the knee."],
     bryanVideos: [{ k: "w23", s: 96 }],
@@ -118,9 +118,9 @@ export const EXERCISES = {
     muscles: ["quads", "glutes", "calves"],
     bryan: "Since July 2026 Bryan trains to dunk at 49: heavy lifts with jumps between sets, aimed at the fast-twitch fibres and force development he says he lacks. He also flags Achilles risk from landing forces, so you learn to land before you jump high.",
     how: [
-      "Snap-down (Phase 1): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.",
-      "Squat jump (Phase 2): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.",
-      "Countermovement jump (Phase 3): quick dip with an arm swing, then a max-height jump; stick the landing.",
+      "Snap-down (Returning): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.",
+      "Squat jump (Active): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.",
+      "Countermovement jump (Well trained): quick dip with an arm swing, then a max-height jump; stick the landing.",
       "Knees track over the toes on landing and never cave in. Full rest; every rep at max intent.",
     ],
     tips: ["Shoes on, land on a mat. Loud landings mean the set is over."],
@@ -162,7 +162,7 @@ export const EXERCISES = {
       "Stick the landing for 1–2 s: hips back, knee over the toes.",
       "Bound back. Distance before speed.",
     ],
-    easier: "Phase 1 and quiet version: step sideways onto one leg and hold, no hop.",
+    easier: "Easier levels and quiet version: step sideways onto one leg and hold, no hop.",
     videos: [
       { t: "How to lateral bound", u: "https://www.youtube.com/watch?v=niEGdFUQ6sY" },
       { t: "Lateral bound (Heiden)", u: "https://www.youtube.com/watch?v=Hc9_FQgIeeg" },
@@ -181,7 +181,7 @@ export const EXERCISES = {
       "Turn from the hips and pivot the back foot; the arms only transmit the force.",
       "Fast on the way down, 2–3 s back up. Same reps on both sides.",
     ],
-    easier: "Phase 1: slow and controlled to learn the pattern.",
+    easier: "Easier levels: slow and controlled to learn the pattern.",
     videos: [
       { t: "Band woodchop", u: "https://www.youtube.com/watch?v=73Zyu5g3GQg" },
       { t: "Attaching a band to a door safely", u: "https://www.youtube.com/watch?v=fXncsqemFcQ" },
@@ -268,7 +268,7 @@ export const EXERCISES = {
       "Kneel on a folded mat and hook your heels under a heavy sofa or bed, or use a door Nordic strap.",
       "Body straight from knees to head, glutes squeezed.",
       "Lower forward as slowly as you can and catch yourself with your hands, like a push-up.",
-      "Push back up with your hands (Phase 1) or pull back with the hamstrings (later).",
+      "Push back up with your hands (Returning) or pull back with the hamstrings (later).",
     ],
     easier: "Lowering only, over a small range.",
     bryanVideos: [{ k: "w23", s: 904 }],
@@ -348,7 +348,7 @@ export const EXERCISES = {
       "Drive the hips forward to stand tall.",
     ],
     tips: [
-      "Phase 3 contrast: 20–30 s after each set, do 3 max countermovement jumps, the way Bryan pairs his heavy pulls with jumps.",
+      "Well trained contrast: 20–30 s after each set, do 3 max countermovement jumps, the way Bryan pairs his heavy pulls with jumps.",
     ],
     videos: [
       { t: "Dumbbell RDL technique for beginners", u: "https://www.youtube.com/watch?v=hQgFixeXdZo" },
@@ -592,7 +592,7 @@ export const EXERCISES = {
     bryan: "Bryan: leg raises 1 × 50 on a captain’s chair. Your pull-up bar replaces the station.",
     how: [
       "Hang from the bar with the shoulders pulled slightly down (active hang).",
-      "Raise the knees toward the chest (Phase 1), later straight legs to hip height or higher.",
+      "Raise the knees toward the chest (easier levels), later straight legs to hip height or higher.",
       "Curl the pelvis up at the top; no swinging.",
       "Lower slowly. Collect the reps in as few sets as you can.",
     ],
@@ -772,7 +772,7 @@ export const EXERCISES = {
     muscles: ["back", "hamstrings"],
     bryan: "Part of the flexibility set in Bryan’s 2025 session, next to the big-toe, couch and butterfly stretches.",
     how: [
-      "Stand on a step, legs straight, with a light weight (none in weeks 1–4).",
+      "Stand on a step, legs straight, with a light weight (none at New to training).",
       "Tuck your chin and roll down one vertebra at a time toward your toes.",
       "Hang 2–3 s, then roll up from the bottom, head last.",
       "Slow and light. Never chase load on this one.",
@@ -792,7 +792,7 @@ export const EXERCISES = {
     how: [
       "Pick one or two moves from “Indoor interval moves”.",
       "20 s hard, then easy marching for the rest time. Count rounds, not minutes.",
-      "Weeks 1–2: brisk, not all-out. From week 7: truly all-out.",
+      "New to training and Returning: brisk, not all-out. Active: hard. Well trained: truly all-out.",
     ],
     videos: [
       {

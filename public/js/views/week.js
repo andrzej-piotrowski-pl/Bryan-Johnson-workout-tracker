@@ -1,7 +1,7 @@
 // One week at a glance: seven day cards, weekly totals against Bryan's targets.
 
 import { state } from "../store.js";
-import { SKIP_REASONS, addonsForDate, dayDef, dayMins, isRestKey, phaseFor, sessionKeyFor, weekStats } from "../plan.js";
+import { SKIP_REASONS, addonsForDate, dayDef, dayMins, isRestKey, levelFor, sessionKeyFor, weekStats } from "../plan.js";
 import { addDays, esc, fmtDate, fmtShort, isoWeekNumber, parseIso, todayIso, weekStart } from "../util.js";
 import { icon } from "../components/icons.js";
 import { sessionKind } from "../themes.js";
@@ -21,7 +21,7 @@ export function render(el, params) {
     const def = dayDef(key);
     const log = state.days[date];
     const rest = isRestKey(key);
-    const { phase } = phaseFor(date);
+    const level = levelFor(date);
     const st = log && log.status;
     const skip = log && log.skip ? SKIP_REASONS.find((r) => r.id === log.skip.reason) : null;
     const addonDone = log && Object.values(log.addons || {}).some((a) => a && a.items && Object.values(a.items).some((x) => x.done));
@@ -31,7 +31,7 @@ export function render(el, params) {
     return `<a class="card wday${date === today ? " today" : ""}${rest || before ? " rest" : ""}" href="#/day/${date}" data-kind="${rest ? "rest" : sessionKind(key)}">
       <div class="d"><b>${esc(parseIso(date).toLocaleDateString(undefined, { weekday: "short" }))}</b><span class="muted mono">${esc(fmtShort(date))}</span></div>
       <span class="t">${esc(rest ? "Rest day" : def.title)}</span>
-      ${rest ? "" : `<span class="muted mono" style="font-size:0.8rem">≈${dayMins(def, phase)} min</span>`}
+      ${rest ? "" : `<span class="muted mono" style="font-size:0.8rem">≈${dayMins(def, level)} min</span>`}
       <span class="chips"><span class="status-dot ${st || ""}"></span><span style="font-size:0.85rem">${esc(statusText)}</span>${addonDone ? '<span class="status-dot addon" title="Add-on done"></span>' : ""}</span>
       ${skip ? `<span class="chip skip">${icon(skip.icon, "sm")} ${esc(skip.name)}</span>` : ""}
       ${log && log.notes ? `<span class="muted" style="font-size:0.82rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(log.notes)}</span>` : ""}

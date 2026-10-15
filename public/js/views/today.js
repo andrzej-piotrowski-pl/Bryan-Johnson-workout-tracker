@@ -6,10 +6,9 @@ import { EXERCISES } from "../data/exercises.js";
 import { onChange, state } from "../store.js";
 import {
   EXTRA_TYPES, SKIP_REASONS, addonProgress, addonsForDate, blockItems, blockMins, countable, dayDef, dayMins,
-  editDay, isRestKey, phaseFor, progressOf, sessionKeyFor,
+  editDay, isRestKey, levelFor, progressOf, rxFor, sessionKeyFor, visible,
 } from "../plan.js";
-import { PHASES } from "../data/program.js";
-import { fmtWeight, kgUnit, personalize } from "../personalize.js";
+import { LEVELS, fmtWeight, kgUnit, levelIndex, personalize } from "../personalize.js";
 import { addDays, daysBetween, esc, fmtDate, fmtShort, parseIso, todayIso, uid, weekdayKey } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
@@ -34,13 +33,12 @@ export function render(el, params) {
   function context() {
     const key = sessionKeyFor(date);
     const def = dayDef(key);
-    const ph = phaseFor(date);
-    return { key, def, ph, phase: ph.phase, rest: isRestKey(key), swapped: !!(log() && log().session && log().session !== weekdayKey(date)) };
+    return { key, def, level: levelFor(date), rest: isRestKey(key), swapped: !!(log() && log().session && log().session !== weekdayKey(date)) };
   }
 
   // ---------- rendering ----------
 
-  function itemRow(item, phase, scope) {
+  function itemRow(item, level, scope) {
     const ex = EXERCISES[item.ex];
     if (!ex) return "";
     const l = getItemLog(date, scope, item.id);
@@ -52,7 +50,7 @@ export function render(el, params) {
       ${info ? `<span aria-hidden="true" style="display:grid;place-items:center;color:var(--muted)">${icon("list")}</span>` : `<input type="checkbox" class="tick" data-tick ${l && l.done ? "checked" : ""} aria-label="Done: ${esc(name)}">`}
       <div class="item-main">
         <div class="item-name">${esc(name)}${ex.classic ? ' <span class="badge-classic">classic</span>' : ""}</div>
-        <div class="item-rx">${esc(personalize(item.rx[phase], profile()))}</div>
+        <div class="item-rx">${esc(personalize(rxFor(item, level), profile()))}</div>
         ${item.bryan ? `<div class="item-b">${esc(personalize(item.bryan, profile()))}</div>` : ""}
         <div class="item-log" data-summary>${esc(summary)}</div>
       </div>
@@ -60,25 +58,25 @@ export function render(el, params) {
     </li>`;
   }
 
-  function blocksHtml(def, phase) {
+  function blocksHtml(def, level) {
     return def.blocks
       .map((b) => {
-        const items = blockItems(b, phase);
+        const items = blockItems(b, level);
         if (!items.length) return "";
         return `<section class="card block" data-kind="${blockKind(b.name)}">
-          <div class="block-head"><h3>${esc(b.name)}</h3><span class="eyebrow">≈${blockMins(b, phase)} min</span></div>
+          <div class="block-head"><h3>${esc(b.name)}</h3><span class="eyebrow">≈${blockMins(b, level)} min</span></div>
           ${b.note ? `<p class="block-note">${esc(personalize(b.note, profile()))}</p>` : ""}
-          <ul class="items">${items.map((it) => itemRow(it, phase, "main")).join("")}</ul>
+          <ul class="items">${items.map((it) => itemRow(it, level, "main")).join("")}</ul>
         </section>`;
       })
       .join("");
   }
 
-  function addonHtml(entry, phase) {
+  function addonHtml(entry, level) {
     const { addon, variant, optional } = entry;
     const a = (log() && log().addons && log().addons[addon.id]) || {};
-    const prog = addonProgress(log(), entry, phase);
-    const items = variant.items.filter((it) => it.rx[phase] && it.rx[phase] !== "—");
+    const prog = addonProgress(log(), entry, level);
+    const items = variant.items.filter((it) => visible(it, level));
     const metrics = (addon.metrics || [])
       .map((m) => {
         const v = a.metrics ? a.metrics[m.id] : null;
@@ -100,7 +98,7 @@ export function render(el, params) {
       ${
         a.skipped
           ? `<div class="banner skip" style="margin:0 20px 16px"><div class="grow"><b>Skipped today</b>${a.skipReason ? `<span>${esc(a.skipReason)}</span>` : ""}</div><button type="button" class="btn sm" data-addon-unskip>${icon("undo", "sm")} Undo</button></div>`
-          : `<ul class="items">${items.map((it) => itemRow(it, phase, addon.id)).join("")}</ul>
+          : `<ul class="items">${items.map((it) => itemRow(it, level, addon.id)).join("")}</ul>
              <div style="padding:6px 20px 18px;display:grid;gap:14px">${metrics}${periodic}
                <div class="btn-row"><button type="button" class="btn sm" data-addon-all>${icon("check", "sm")} Mark all done</button><button type="button" class="btn sm ghost skip" data-addon-skip>${icon("skip", "sm")} Skip ${esc(addon.short || addon.name)} today</button></div>
              </div>`
@@ -173,28 +171,27 @@ export function render(el, params) {
   }
 
   function heroHtml(ctx) {
-    const { def, ph, phase, rest } = ctx;
+    const { def, level, rest } = ctx;
     const l = log();
     const st = l && l.status;
-    const prog = progressOf(l || { date, items: {}, phase, session: ctx.key });
+    const prog = progressOf(l || { date, items: {}, session: ctx.key });
     const addons = addonsForDate(date);
     const addonMins = addons.filter((a) => !a.optional).reduce((s, a) => s + (a.variant.mins || 0), 0);
-    const total = rest ? 0 : prog.total || def.blocks.flatMap((b) => blockItems(b, phase)).filter(countable).length;
+    const total = rest ? 0 : prog.total || def.blocks.flatMap((b) => blockItems(b, level)).filter(countable).length;
     const done = prog.done;
-    const phaseLine = ph.locked
-      ? `Phase: ${PHASES[phase].name} (locked)`
-      : `${PHASES[phase].name} · program week ${ph.week}${ph.needed ? ` · ${ph.needed - ph.done} sessions to ${PHASES[phase + 1].name}` : ""}`;
+    // A day already logged keeps the level it was done at.
+    const levelLine = level !== levelIndex(profile()) ? `Logged at ${LEVELS[level].name} level` : `${LEVELS[level].name} level`;
     const swapOptions = DAYS.filter((d) => d.blocks.length)
       .map((d) => `<option value="${d.key}" ${ctx.key === d.key ? "selected" : ""}>${esc(d.name)}: ${esc(d.title)}</option>`)
       .join("");
     return `<section class="card hero${rest ? " rest" : ""}">
       <div class="hero-top">
         <div style="display:grid;gap:10px;min-width:0">
-          <span class="eyebrow">${esc(phaseLine)}</span>
+          <span class="eyebrow">${esc(levelLine)}</span>
           <h1>${esc(rest ? "Rest day" : def.title)}</h1>
           <p class="focus">${esc(rest ? "No training today. Keep the posture habits; an easy walk is welcome. You can still log extra activity and notes below." : def.focus)}</p>
           <div class="chips">
-            ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, phase)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
+            ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, level)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
             ${ctx.swapped ? `<span class="chip bryan">${icon("swap", "sm")} Doing ${esc(def.name)}'s session</span>` : ""}
             ${st ? `<span class="chip ${st === "skipped" ? "skip" : "accent"}" data-status>${esc(STATUS_TEXT[st] || st)}</span>` : `<span class="chip" data-status>${date > todayIso() ? "Planned" : isToday ? "Not started" : profile().startDate && date < profile().startDate ? "Before your start" : "Not logged"}</span>`}
           </div>
@@ -242,8 +239,8 @@ export function render(el, params) {
           ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} the session anyway</button></div>` : ""}
         </div>
         <div class="day-list">
-          ${showBlocks ? blocksHtml(ctx.def, ctx.phase) : ""}
-          ${addonsForDate(date).map((a) => addonHtml(a, ctx.phase)).join("")}
+          ${showBlocks ? blocksHtml(ctx.def, ctx.level) : ""}
+          ${addonsForDate(date).map((a) => addonHtml(a, ctx.level)).join("")}
           ${obsHtml()}
         </div>
         <div class="detail-col"><div data-panel-host></div></div>
@@ -266,9 +263,9 @@ export function render(el, params) {
   function findItem(scope, id) {
     const ctx = context();
     if (scope === "main") {
-      for (const b of ctx.def ? ctx.def.blocks : []) for (const it of b.items) if (it.id === id) return { item: it, phase: ctx.phase };
+      for (const b of ctx.def ? ctx.def.blocks : []) for (const it of b.items) if (it.id === id) return { item: it, level: ctx.level };
     } else {
-      for (const a of addonsForDate(date)) if (a.addon.id === scope) for (const it of a.variant.items) if (it.id === id) return { item: it, phase: ctx.phase, scopeName: a.addon.name };
+      for (const a of addonsForDate(date)) if (a.addon.id === scope) for (const it of a.variant.items) if (it.id === id) return { item: it, level: ctx.level, scopeName: a.addon.name };
     }
     return null;
   }
@@ -287,7 +284,7 @@ export function render(el, params) {
   }
 
   function panelCtx(found) {
-    return { exId: found.item.ex, item: found.item, date, phase: found.phase, scope: selected.scope, scopeName: found.scopeName, onChange: refreshStatus };
+    return { exId: found.item.ex, item: found.item, date, level: found.level, scope: selected.scope, scopeName: found.scopeName, onChange: refreshStatus };
   }
 
   function closeInline() {
@@ -356,7 +353,7 @@ export function render(el, params) {
       if (s) s.textContent = summarizeLog(il, EXERCISES[found.item.ex].log);
     });
     if (!ctx.rest) {
-      const prog = progressOf(l || { date, items: {}, phase: ctx.phase, session: ctx.key });
+      const prog = progressOf(l || { date, items: {}, session: ctx.key });
       const r = el.querySelector("[data-ring]");
       if (r) r.innerHTML = ring(prog.done, prog.total, 76);
     }
@@ -367,7 +364,7 @@ export function render(el, params) {
     }
     for (const a of addonsForDate(date)) {
       const pEl = el.querySelector(`[data-addon="${a.addon.id}"] [data-addon-prog]`);
-      const pr = addonProgress(l, a, ctx.phase);
+      const pr = addonProgress(l, a, ctx.level);
       if (pEl) pEl.textContent = pr.skipped ? "skipped" : `${pr.done}/${pr.total} · ≈${a.variant.mins} min`;
     }
     if (l && l.status === "done" && lastStatus !== "done") toast("Session complete. Nice work!", { icon: "flame" });
@@ -382,7 +379,7 @@ export function render(el, params) {
     const content = document.createElement("div");
     content.style.display = "grid";
     content.style.gap = "14px";
-    content.innerHTML = `<p class="muted">Life happens. Logging why you skipped helps you spot patterns later; skipped days don't count toward your phase.</p>
+    content.innerHTML = `<p class="muted">Life happens. Logging why you skipped helps you spot patterns later; skipped days never count against you.</p>
       <div class="reason-grid">${SKIP_REASONS.map((r) => `<button type="button" data-reason="${r.id}" aria-pressed="${cur.reason === r.id}">${icon(r.icon)} ${esc(r.name)}</button>`).join("")}</div>
       <label class="field"><span>Note (optional)</span><textarea class="input" rows="3" data-skip-note placeholder="e.g. flight at 7 am, will do Tuesday's session tomorrow">${esc(cur.note || "")}</textarea></label>
       <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn" data-cancel>Cancel</button><button type="button" class="btn primary" data-confirm>${icon("skip")} Skip ${date === todayIso() ? "today" : "this day"}</button></div>`;
@@ -445,7 +442,7 @@ export function render(el, params) {
     } else if (b.hasAttribute("data-all")) {
       const ctx = context();
       editDay(date, (d) => {
-        for (const bl of ctx.def.blocks) for (const it of blockItems(bl, ctx.phase)) if (countable(it)) {
+        for (const bl of ctx.def.blocks) for (const it of blockItems(bl, ctx.level)) if (countable(it)) {
           d.items[it.id] = d.items[it.id] || { ex: it.ex };
           d.items[it.id].done = true;
         }
@@ -495,11 +492,11 @@ export function render(el, params) {
     } else if (b.hasAttribute("data-addon-all")) {
       const aid = b.closest("[data-addon]").dataset.addon;
       const entry = addonsForDate(date).find((a) => a.addon.id === aid);
-      const phase = context().phase;
+      const level = context().level;
       editDay(date, (d) => {
         d.addons[aid] = d.addons[aid] || { items: {} };
         d.addons[aid].items = d.addons[aid].items || {};
-        for (const it of entry.variant.items) if (it.rx[phase] && it.rx[phase] !== "—") d.addons[aid].items[it.id] = { ...(d.addons[aid].items[it.id] || {}), ex: it.ex, done: true };
+        for (const it of entry.variant.items) if (visible(it, level)) d.addons[aid].items[it.id] = { ...(d.addons[aid].items[it.id] || {}), ex: it.ex, done: true };
       });
       refreshStatus();
     } else if (b.hasAttribute("data-addon-skip")) {

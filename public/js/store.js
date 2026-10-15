@@ -7,6 +7,8 @@
 // If a save fails (server stopped, laptop asleep), the change is parked in
 // localStorage and retried until it gets through.
 
+import { migrateProfile } from "./personalize.js";
+
 const LS = { profile: "hp:profile", days: "hp:days", pending: "hp:pending", theme: "hp:theme" };
 const SAVE_DELAY = 600;
 
@@ -92,6 +94,7 @@ export async function init() {
     state.profile = lsGet(LS.profile, null);
     state.days = lsGet(LS.days, {});
   }
+  if (migrateProfile(state.profile, state.days)) schedule("profile", 0);
   state.ready = true;
   window.addEventListener("online", () => flushNow());
   document.addEventListener("visibilitychange", () => {
@@ -188,7 +191,7 @@ export function newDay(date) {
   return {
     date,
     session: null, // program day key actually done (null = the weekday's own session)
-    phase: null, // phase index frozen when you first log the day
+    level: null, // training level id frozen when you first log the day (older days have phase 0–2 instead)
     status: null, // "done" | "partial" | "skipped" | null
     skip: null, // { reason, note }
     items: {}, // item id → { done, sets: [{ reps, kg, sec }], cardio: { min, avg, max }, rounds, peak, note }
@@ -237,6 +240,7 @@ export async function importAll(payload, mode = "merge") {
   if (mode === "replace") state.days = {};
   if (payload.profile) state.profile = payload.profile;
   Object.assign(state.days, days);
+  if (migrateProfile(state.profile, state.days) && state.mode === "server") schedule("profile", 0);
   if (state.mode === "local") {
     lsSet(LS.profile, state.profile);
     lsSet(LS.days, state.days);

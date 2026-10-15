@@ -1,17 +1,17 @@
 # The plan (v2, October 2026) — readable snapshot
 
-> This is the plan the app is built on, as one document you can read on GitHub. The app is the live version: it personalises heart rates and weights for each user and tracks everything. Numbers here are for the profile the plan was first written for (male, 38, 188 cm, 75 kg, returning to training).
+> This is the plan the app is built on, as one document you can read on GitHub. The app is the live version: it personalises heart rates and weights for each user and tracks everything. Numbers here are for the profile the plan was first written for (male, 38, 188 cm, 75 kg); each level column shows the weights that level would suggest for him.
 
 A six-day indoor training plan laid out like Bryan Johnson’s newest weekly template (October 2026): strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday and easy Zone 2 Saturday. Rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands, with a daily posture block for tech neck and forward shoulders.
 
 Made for: male, 38, 188 cm, 75 kg, trained before, four years off, no injuries.
 
 - All sessions at home; Sunday rest
-- Monday–Saturday: 41–50 min per session in weeks 1–2, 53–60 min in weeks 3–6, 54–66 min from week 7
+- Monday–Saturday: 34–45 min per session at New to training, 41–50 min at Returning, 53–60 min at Active, 54–66 min at Well trained
 - Plus a posture block every day: ≈8 min, ≈10 min on Wednesday and Saturday
 - Estimated max heart rate 182 bpm (Zone 2 = 109–127 bpm)
 
-Each table lists the dose for each phase. A dash means the exercise is skipped in that phase. Click an exercise name for how-to steps, the minute where Bryan does it, and demo videos.
+Each table lists the dose for each training level. A dash means the exercise is skipped at that level. Click an exercise name for how-to steps, the minute where Bryan does it, and demo videos.
 
 ## What changed in version 2
 
@@ -24,26 +24,51 @@ After checking 13 other AI-generated plans against Bryan’s own material:
 - Posture block: added shoulder external rotation from his routine, his April 2026 squat-break tip, and chin tucks and a doorway stretch (your choice, marked as not Bryan’s).
 - 4×4 advice from the newsletter: hard but controlled, starting with 2–3 rounds.
 
-## Progression
+## Training levels
 
-### Re-entry (Weeks 1–2)
+Your training level alone decides the workouts; nothing moves on by itself. Change it in the app's Settings when you feel ready for harder exercises or want easier ones. Days you already logged keep the level they were done at.
+
+### New to training
+
+_Little or no strength training before._
+
+**Effort 4–5 out of 10: stop each set with 5 or more easy reps left.**
+
+- 1–2 sets, with supported or smaller-range versions (a hand on a chair or wall). Learn the positions first.
+- No jumps, swings, power skips or Nordics yet; hops stay tiny.
+- Tuesday: 4 brisk 20 s bursts. Thursday: 2 rounds of 2 min brisk, well below all-out.
+- Zone 2 15–20 min. Mild muscle soreness is normal; joint pain is not.
+
+_Move up to Returning after about 3 weeks (around 18 sessions) when every session feels comfortable and nothing hurts the next day._
+
+### Returning
+
+_Trained before, but out of practice for months or years._
 
 **Effort 5–6 out of 10: stop each set with about 4 good reps left.**
 
-- 2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Learn the positions.
+- 2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Relearn the positions.
 - Jumps are landing drills only (snap-downs). Nordics are slow lowers only.
-- Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds in week 1 and 3 in week 2, controlled.
-- Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. If you are still very sore after 48 hours, repeat the week.
+- Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds of 3 min, then 3, controlled.
+- Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. Still very sore after 48 hours? Repeat sessions before moving up.
 
-### Build (Weeks 3–6)
+_Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day._
+
+### Active
+
+_Training regularly over the last few months._
 
 **Effort about 7 out of 10: 2–3 reps left in each set.**
 
 - 3 sets on most strength work. Real jumps start; stick every landing.
-- Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4 rounds from week 5.
+- Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4.
 - Zone 2 25–35 min, plus short blocks on Monday.
 
-### Blueprint (Week 7 onward)
+_Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up._
+
+### Well trained
+
+_Lifting and doing hard cardio consistently for a year or more._
 
 **Effort 8 out of 10 on the main lifts (1–2 reps left); Bryan’s 1 × 25-style accessories go close to fatigue.**
 
@@ -51,28 +76,30 @@ After checking 13 other AI-generated plans against Bryan’s own material:
 - Tuesday: two blocks of 8 × 20 s all-out. Thursday: the full Norwegian 4×4 at 155–173 bpm.
 - Saturday Zone 2 grows to 40 min; a weighted vest is optional.
 
+_This is the full plan. Keep adding weight with the rules below; after illness, injury or a long break, step down a level for a while._
+
 ### Rules
 
 - Add weight only when you hit the top of the rep range on every set with clean form, two sessions in a row: about +1–2 kg per dumbbell for upper body, +2–4 kg for legs. Bryan’s protocol calls progressive overload the key, raised gradually.
 - Injury prevention is Bryan’s priority #1. Swap to the easier variant (open the exercise) whenever a joint complains.
 - The 4×4 is hard but controlled. If you can’t hold the pace in the last round, start slower next time.
-- Rough week (bad sleep, stress, sickness): repeat the previous week instead of pushing on.
+- Rough week (bad sleep, stress, sickness): repeat sessions or step down a level for a while instead of pushing on.
 - After four inactive years, get a basic check-up (blood pressure, resting ECG) before your first all-out intervals.
 
 ## The week
 
-| Day | Session | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Posture |
-|---|---|---|---|---|---|
-| Monday | Strength A · Squat, push, pull + knees | 43 min | 60 min | 65 min | Daily (≈8 min) |
-| Tuesday | Intervals 1 · 20-second bursts + Zone 2 + back & core | 45 min | 57 min | 66 min | Daily (≈8 min) |
-| Wednesday | Strength B · Pull, knees & mobility | 49 min | 53 min | 55 min | Strength (≈10 min) |
-| Thursday | Intervals 2 · Norwegian 4×4 + stability | 41 min | 53 min | 54 min | Daily (≈8 min) |
-| Friday | Strength C · Power, lunge, press + tendons | 48 min | 57 min | 63 min | Daily (≈8 min) |
-| Saturday | Zone 2 + long stretch | 50 min | 58 min | 65 min | Strength (≈10 min) |
-| Sunday | Rest | — | — | — | Optional |
-| **Total** | without posture | **4.6 h** | **5.6 h** | **6.1 h** | + ≈50 min |
+| Day | Session | New to training | Returning | Active | Well trained | Posture |
+|---|---|---|---|---|---|---|
+| Monday | Strength A · Squat, push, pull + knees | 34 min | 43 min | 60 min | 65 min | Daily (≈8 min) |
+| Tuesday | Intervals 1 · 20-second bursts + Zone 2 + back & core | 36 min | 45 min | 57 min | 66 min | Daily (≈8 min) |
+| Wednesday | Strength B · Pull, knees & mobility | 45 min | 49 min | 53 min | 55 min | Strength (≈10 min) |
+| Thursday | Intervals 2 · Norwegian 4×4 + stability | 36 min | 41 min | 53 min | 54 min | Daily (≈8 min) |
+| Friday | Strength C · Power, lunge, press + tendons | 43 min | 48 min | 57 min | 63 min | Daily (≈8 min) |
+| Saturday | Zone 2 + long stretch | 45 min | 50 min | 58 min | 65 min | Strength (≈10 min) |
+| Sunday | Rest | — | — | — | — | Optional |
+| **Total** | without posture | **4.0 h** | **4.6 h** | **5.6 h** | **6.1 h** | + ≈50 min |
 
-**Phase 3 against Bryan’s targets**
+**Well trained against Bryan’s targets**
 
 - Met: About 6.1 h of training a week; his protocol recommends about 6.
 - Met: Strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, easy Saturday, Sunday off: the layout of his newest template.
@@ -88,119 +115,119 @@ After checking 13 other AI-generated plans against Bryan’s own material:
 
 _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-Over-Toes step-up, tibialis and calf work, and a few jumps from his 2026 training._
 
-**Warm-up (≈9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
+**Warm-up (≈8 / 9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min, bodyweight | 2 min holding 2 × 8–10 kg | 2–3 min holding 2 × 12–16 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series | ≈4 min | ≈4 min |  |
-| [Pogo hops](#pogo-hops) | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
-| [Single-leg balance](#single-leg-balance) | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
+| [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
-**Jumps (≈3 / 4 / 4 min)** · Max intent, 45–60 s rest. Stop the set if landings get loud.
+**Jumps (≈– / 3 / 4 / 4 min)** · Max intent, 45–60 s rest. Stop the set if landings get loud.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Jumps](#jumps-snap-down--squat-jump--countermovement-jump) | Snap-downs 2 × 5 | Squat jumps 3 × 3, stick each landing | Countermovement jumps 3 × 3, stick each landing | Bryan 2026: jumps for fast-twitch power |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Jumps](#jumps-snap-down--squat-jump--countermovement-jump) | — | Snap-downs 2 × 5 | Squat jumps 3 × 3, stick each landing | Countermovement jumps 3 × 3, stick each landing | Bryan 2026: jumps for fast-twitch power |
 
-**Strength (≈22 / 28 / 30 min)** · Rest 60–90 s between sets. Pair push-ups with rows to save time.
+**Strength (≈18 / 22 / 28 / 30 min)** · Rest 60–90 s between sets. Pair push-ups with rows to save time.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Heels-elevated goblet squat (slant-board squat)](#heels-elevated-goblet-squat-slant-board-squat) | 2 × 10 @ 10–14 kg, 3 s down | 3 × 8–10 @ 14–20 kg | 3 × 6–8, heaviest dumbbell, 3 s down | Official 3 × 10–15; Bryan 2 × 5–8 |
-| [Push-ups](#push-ups) | 3 × 8–10, hands raised if needed | 3 × 10–12 | 3 × 12–15, 3 s down, or feet raised | Official: 3 × 8–12 |
-| [One-arm dumbbell row](#one-arm-dumbbell-row) | 2 × 10/side @ 14–16 kg | 3 × 10/side @ 18–20 kg | 3 × 8–10/side, heaviest dumbbell | Official: 3 × 10–12 |
-| [Poliquin step-up](#poliquin-step-up) | 2 × 10/leg, 10–15 cm step | 3 × 10/leg | 3 × 10/leg, 20 cm step or holding 2 × 6–8 kg | Bryan: 3 × 10/leg |
-| [Dumbbell swing](#dumbbell-swing) | 2 × 10 @ 12–16 kg | 3 × 12 @ 16–20 kg | 3 × 15 @ 20–24 kg | Official: 3 × 30 s |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Heels-elevated goblet squat (slant-board squat)](#heels-elevated-goblet-squat-slant-board-squat) | 2 × 8 @ 7–10 kg, down to a chair, 3 s down | 2 × 10 @ 10–14 kg, 3 s down | 3 × 8–10 @ 16–24 kg | 3 × 6–8, heaviest dumbbell, 3 s down | Official 3 × 10–15; Bryan 2 × 5–8 |
+| [Push-ups](#push-ups) | 2 × 6–8, hands on a table or a wall | 3 × 8–10, hands raised if needed | 3 × 10–12 | 3 × 12–15, 3 s down, or feet raised | Official: 3 × 8–12 |
+| [One-arm dumbbell row](#one-arm-dumbbell-row) | 2 × 10/side @ 10–11 kg | 2 × 10/side @ 14–16 kg | 3 × 10/side @ 20–24 kg | 3 × 8–10/side, heaviest dumbbell | Official: 3 × 10–12 |
+| [Poliquin step-up](#poliquin-step-up) | 1 × 8/leg, 10 cm step | 2 × 10/leg, 10–15 cm step | 3 × 10/leg | 3 × 10/leg, 20 cm step or holding 2 × 8–10 kg | Bryan: 3 × 10/leg |
+| [Dumbbell swing](#dumbbell-swing) | — | 2 × 10 @ 12–16 kg | 3 × 12 @ 18–24 kg | 3 × 15 @ 26–32 kg | Official: 3 × 30 s |
 
-**Core & knees (≈6 / 8 / 8 min)** · Back to back, minimal rest.
+**Core & knees (≈5 / 6 / 8 / 8 min)** · Back to back, minimal rest.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 15–20 | 1 × 25 | 1 × 25 + 1 × 10/leg single-leg | Bryan: 1 × 25 |
-| [Seated dumbbell calf raise](#calf-raises-seated--single-leg) | 1 × 15 @ 2 × 10 kg | 1 × 20 @ 2 × 14 kg | 1 × 25 @ 2 × 16–20 kg | Bryan: 1 × 25 |
-| [Plank](#plank) | 2 × 20–30 s | 3 × 30 s | 3 × 45 s | Official: 3 × 20–30 s |
-| [Hanging knee / leg raise](#hanging-knee--leg-raise) | 2 × 8 knee raises | 2 × 12 knee raises | Straight legs: 30–50 reps in as few sets as possible | Bryan: 1 × 50 |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 12–15 | 1 × 15–20 | 1 × 25 | 1 × 25 + 1 × 10/leg single-leg | Bryan: 1 × 25 |
+| [Seated dumbbell calf raise](#calf-raises-seated--single-leg) | 1 × 12 @ 2 × 7 kg | 1 × 15 @ 2 × 10 kg | 1 × 20 @ 2 × 16 kg | 1 × 25 @ 2 × 20–26 kg | Bryan: 1 × 25 |
+| [Plank](#plank) | 2 × 15–20 s, knees down is fine | 2 × 20–30 s | 3 × 30 s | 3 × 45 s | Official: 3 × 20–30 s |
+| [Hanging knee / leg raise](#hanging-knee--leg-raise) | 2 × 5 knee raises, small range | 2 × 8 knee raises | 2 × 12 knee raises | Straight legs: 30–50 reps in as few sets as possible | Bryan: 1 × 50 |
 
-**Zone 2 (≈– / 8 / 10 min)**
+**Zone 2 (≈– / – / 8 / 10 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Step-ups or marching at 109–127 bpm](#zone-2-cardio-indoors) | — | 8 min | 10 min | Official Day 1 adds 25 min |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Step-ups or marching at 109–127 bpm](#zone-2-cardio-indoors) | — | — | 8 min | 10 min | Official Day 1 adds 25 min |
 
 **Cool-down (≈3 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Couch stretch](#couch-stretch) | 30 s/side | 30 s/side | 45 s/side |  |
-| [Kneeling shin stretch](#kneeling-shin-stretch) | 30 s | 30 s | 30 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Couch stretch](#couch-stretch) | 30 s/side, gentle | 30 s/side | 30 s/side | 45 s/side |  |
+| [Kneeling shin stretch](#kneeling-shin-stretch) | 20–30 s | 30 s | 30 s | 30 s |  |
 
 **Posture block, daily version (≈8 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Tuesday: Intervals 1 · 20-second bursts + Zone 2 + back & core
 
 _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished with the back and oblique work from his list and the Pallof press from his Galpin session._
 
-**Warm-up (≈9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
+**Warm-up (≈8 / 9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min, bodyweight | 2 min holding 2 × 8–10 kg | 2–3 min holding 2 × 12–16 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series | ≈4 min | ≈4 min |  |
-| [Pogo hops](#pogo-hops) | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
-| [Single-leg balance](#single-leg-balance) | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
+| [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
-**Short intervals (≈7 / 9 / 14 min)** · Use the indoor interval moves. Quiet options exist for every move.
+**Short intervals (≈5 / 7 / 9 / 14 min)** · Use the indoor interval moves. Quiet options exist for every move.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Short intervals (20 s bursts)](#short-intervals-20-s-bursts) | 6 × (20 s brisk / 40 s easy) | 8 × (20 s hard / 40 s easy) | 2 × [8 × (20 s all-out / 20 s easy)], 3 min easy between | Newest template: 8 × 20 s |
-| [Moves: step-ups, high knees, climbers, jacks, burpees](#indoor-interval-moves) | Pick 1–2 | Pick 2 | Pick 2–3 |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Short intervals (20 s bursts)](#short-intervals-20-s-bursts) | 4 × (20 s brisk / 40 s easy) | 6 × (20 s brisk / 40 s easy) | 8 × (20 s hard / 40 s easy) | 2 × [8 × (20 s all-out / 20 s easy)], 3 min easy between | Newest template: 8 × 20 s |
+| [Moves: step-ups, high knees, climbers, jacks, burpees](#indoor-interval-moves) | Pick 1, the quiet version | Pick 1–2 | Pick 2 | Pick 2–3 |  |
 
-**Zone 2 (≈20 / 28 / 30 min)**
+**Zone 2 (≈15 / 20 / 28 / 30 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 20 min @ 109–127 bpm | 25–30 min | 30 min | Bryan: 150 min/week |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 15 min @ 109–127 bpm | 20 min @ 109–127 bpm | 25–30 min | 30 min | Bryan: 150 min/week |
 
-**Back & core (≈6 / 8 / 9 min)**
+**Back & core (≈5 / 6 / 8 / 9 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Floor back extension](#floor-back-extension) | 1 × 12, 2 s hold at top | 1 × 20 | 1 × 25, holding 5–10 kg when easy | Bryan: 1 × 25 + 20 kg plate |
-| [Dumbbell side bend](#dumbbell-side-bend) | 1 × 12/side @ 10–12 kg | 1 × 20/side | 1 × 25/side @ 16–20 kg | Bryan: 1 × 25 |
-| [Band Pallof press](#band-pallof-press) | 2 × 8/side, 2 s hold | 2 × 10/side | 2 × 12/side, 3 s hold | Bryan 2025 (Galpin) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Floor back extension](#floor-back-extension) | 1 × 10, 2 s hold at top | 1 × 12, 2 s hold at top | 1 × 20 | 1 × 25, holding 7–13 kg when easy | Bryan: 1 × 25 + 20 kg plate |
+| [Dumbbell side bend](#dumbbell-side-bend) | 1 × 10/side @ 7–8 kg | 1 × 12/side @ 10–12 kg | 1 × 20/side | 1 × 25/side @ 20–26 kg | Bryan: 1 × 25 |
+| [Band Pallof press](#band-pallof-press) | 2 × 6/side, 2 s hold | 2 × 8/side, 2 s hold | 2 × 10/side | 2 × 12/side, 3 s hold | Bryan 2025 (Galpin) |
 
 **Cool-down (≈3 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 30 s/side | 30 s/side | 45 s/side |  |
-| [Hamstring stretch](#hamstring-stretch) | 30 s/side | 30 s/side | 45 s/side |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side |  |
+| [Hamstring stretch](#hamstring-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side |  |
 
 **Posture block, daily version (≈8 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Wednesday: Strength B · Pull, knees & mobility
 
@@ -208,58 +235,58 @@ _Built exactly like Bryan’s mobility strength day (10 min dynamic, 30 min stre
 
 **Dynamic mobility (≈10 min)** · Bryan’s official list: arm circles, wall slides, thread the needle, hip CARs.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min | 2 min | 2 min |  |
-| [Arm circles + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min |  |
-| [Wall slides](#wall-slides) | 1 × 10 | 1 × 10 | 1 × 10 |  |
-| [Thread the needle](#thread-the-needle) | 5/side | 5/side | 5/side |  |
-| [Pogo hops](#pogo-hops) | 2 × 10 | 2 × 20 | 2 × 20 |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min | 2 min | 2 min | 2 min |  |
+| [Arm circles + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min | 2 min |  |
+| [Wall slides](#wall-slides) | 1 × 8 | 1 × 10 | 1 × 10 | 1 × 10 |  |
+| [Thread the needle](#thread-the-needle) | 5/side | 5/side | 5/side | 5/side |  |
+| [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10 | 2 × 20 | 2 × 20 |  |
 
-**Strength (≈24 / 28 / 30 min)** · Rest 60–90 s on the first three, 30–45 s on the rest.
+**Strength (≈20 / 24 / 28 / 30 min)** · Rest 60–90 s on the first three, 30–45 s on the rest.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Pull-ups (palms away)](#chin-ups-and-pull-ups) | 3 × 3–5 band-assisted or 5 s negatives | 3 × 5–6 | 3 × 6–8; add a loaded backpack at 3 × 8 | Bryan 2025: 2 × 5–8 |
-| [ATG split squat](#atg-split-squat) | 2 × 6/leg, hand on a chair | 3 × 8/leg, full depth | 3 × 8–10/leg holding 2 × 8–14 kg | Bryan: 3 × 10 |
-| [Nordic hamstring curl](#nordic-hamstring-curl) | 2 × 3–4 slow lowers | 2 × 4–6 | 2 × 5–8 | Bryan: 1 × 10 → 2 × 5–8 |
-| [Reverse Nordic](#reverse-nordic) | 1 × 6, small range | 1 × 8–10 | 1 × 10, full range | Bryan: 1 × 10 |
-| [Overhead dumbbell triceps extension](#overhead-dumbbell-triceps-extension) | 1 × 15 @ 4 kg | 1 × 20 @ 4.5 kg | 1 × 25 @ 4.5–6 kg, 1 s hold at top | Bryan: 1 × 25 @ 4.5 kg |
-| [Dumbbell biceps curl](#dumbbell-biceps-curl) | 1 × 12 @ 6–8 kg | 1 × 15 @ 8 kg | 1 × 15–20 @ 8–10 kg | On Bryan’s list |
-| [Band butterfly](#band-butterfly) | 1 × 15, light band | 1 × 15 | 1 × 15, 1 s squeeze | Bryan: 1 × 15 |
-| [Farmer’s carry](#farmers-carry) | 2 × 30 s @ 2 × 12–16 kg | 3 × 30 s @ 2 × 18–20 kg | 3 × 40 s, heaviest pair | Official: 3 × 30 s |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Pull-ups (palms away)](#chin-ups-and-pull-ups) | 3 × 10–20 s dead hang, or 2 × 3 band-assisted | 3 × 3–5 band-assisted or 5 s negatives | 3 × 5–6 | 3 × 6–8; add a loaded backpack at 3 × 8 | Bryan 2025: 2 × 5–8 |
+| [ATG split squat](#atg-split-squat) | 2 × 5/leg, part range, hand on a chair | 2 × 6/leg, hand on a chair | 3 × 8/leg, full depth | 3 × 8–10/leg holding 2 × 10–18 kg | Bryan: 3 × 10 |
+| [Nordic hamstring curl](#nordic-hamstring-curl) | — | 2 × 3–4 slow lowers | 2 × 4–6 | 2 × 5–8 | Bryan: 1 × 10 → 2 × 5–8 |
+| [Reverse Nordic](#reverse-nordic) | 1 × 5, small range | 1 × 6, small range | 1 × 8–10 | 1 × 10, full range | Bryan: 1 × 10 |
+| [Overhead dumbbell triceps extension](#overhead-dumbbell-triceps-extension) | 1 × 12 @ 3 kg | 1 × 15 @ 4 kg | 1 × 20 @ 5 kg | 1 × 25 @ 6–8 kg, 1 s hold at top | Bryan: 1 × 25 @ 4.5 kg |
+| [Dumbbell biceps curl](#dumbbell-biceps-curl) | 1 × 10 @ 4–5.5 kg | 1 × 12 @ 6–8 kg | 1 × 15 @ 9 kg | 1 × 15–20 @ 10–13 kg | On Bryan’s list |
+| [Band butterfly](#band-butterfly) | 1 × 12, light band | 1 × 15, light band | 1 × 15 | 1 × 15, 1 s squeeze | Bryan: 1 × 15 |
+| [Farmer’s carry](#farmers-carry) | 2 × 20 s @ 2 × 8–11 kg | 2 × 30 s @ 2 × 12–16 kg | 3 × 30 s @ 2 × 20–24 kg | 3 × 40 s, heaviest pair | Official: 3 × 30 s |
 
 **Beginner yoga & balance (≈10 min)** · Bryan’s official list: cat-cow, cobbler’s pose, tree pose, cobra. Stay longer when you have time (his version is 15 min).
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Cat-cow](#cat-cow) | 10 breaths | 10 breaths | 10 breaths |  |
-| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 60 s | 90 s | 90 s |  |
-| [Tree pose](#tree-pose) | 2 × 30 s/side | 2 × 30 s/side | 2 × 30 s/side, eyes closed |  |
-| [Single-leg balance](#single-leg-balance) | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
-| [Cobra](#cobra) | 3 × 15 s | 3 × 20 s | 3 × 20 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Cat-cow](#cat-cow) | 10 breaths | 10 breaths | 10 breaths | 10 breaths |  |
+| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 45 s | 60 s | 90 s | 90 s |  |
+| [Tree pose](#tree-pose) | 2 × 20 s/side, hand near a wall | 2 × 30 s/side | 2 × 30 s/side | 2 × 30 s/side, eyes closed |  |
+| [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
+| [Cobra](#cobra) | 3 × 10 s | 3 × 15 s | 3 × 20 s | 3 × 20 s |  |
 
 **Static stretching (≈5 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Couch stretch](#couch-stretch) | 45 s/side | 45 s/side | 45 s/side |  |
-| [Hamstring stretch](#hamstring-stretch) | 45 s/side | 45 s/side | 45 s/side |  |
-| [Big-toe stretch (toe sit)](#big-toe-stretch-toe-sit) | 30 s | 45 s | 45 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Couch stretch](#couch-stretch) | 30 s/side | 45 s/side | 45 s/side | 45 s/side |  |
+| [Hamstring stretch](#hamstring-stretch) | 30 s/side | 45 s/side | 45 s/side | 45 s/side |  |
+| [Big-toe stretch (toe sit)](#big-toe-stretch-toe-sit) | 20–30 s | 30 s | 45 s | 45 s |  |
 
 **Posture block, strength version (≈10 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
-| [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 5–6 kg | 1 set to fatigue @ 2 × 6–9 kg | Bryan: 1 set to fatigue, 2×/wk |
-| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 × 10 @ 2 × 2.5–3 kg, stop well before fatigue | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 6–7 kg | 1 set to fatigue @ 2 × 8–12 kg | Bryan: 1 set to fatigue, 2×/wk |
+| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
 
 ### Thursday: Intervals 2 · Norwegian 4×4 + stability
 
@@ -267,153 +294,151 @@ _Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his offi
 
 **Warm-up (≈10 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Easy step-ups or marching, building to ≈130 bpm](#zone-2-cardio-indoors) | 8 min | 8 min | 8 min |  |
-| [Leg swings + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Easy step-ups or marching, building to ≈129 bpm](#zone-2-cardio-indoors) | 8 min | 8 min | 8 min | 8 min |  |
+| [Leg swings + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min | 2 min |  |
 
-**Norwegian 4×4 (≈15 / 25 / 25 min)** · Hard but controlled. Rotate the indoor moves every minute.
+**Norwegian 4×4 (≈12 / 15 / 25 / 25 min)** · Hard but controlled. Rotate the indoor moves every minute.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Norwegian 4×4](#norwegian-44) | Week 1: 2 rounds, week 2: 3 rounds of (3 min @ 146–155 bpm / 3 min easy) | Weeks 3–4: 3 × (4 min / 3 min); weeks 5–6: 4 × (4 min / 3 min) @ 150–165 bpm | 4 × (4 min @ 155–173 bpm / 3 min @ 109–127 bpm) | Newest template: Thursday |
-| [Moves: step-ups → high knees → jacks → climbers](#indoor-interval-moves) | 1 min each, repeat | 1 min each, repeat | 1 min each, repeat |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Norwegian 4×4](#norwegian-44) | 2 × (2 min brisk @ 137–146 bpm / 3 min easy) | 2 rounds, then 3, of (3 min @ 146–155 bpm / 3 min easy) | 3 × (4 min / 3 min), then 4 × (4 min / 3 min) @ 149–166 bpm | 4 × (4 min @ 155–173 bpm / 3 min @ 109–127 bpm) | Newest template: Thursday |
+| [Moves: step-ups → high knees → jacks → climbers](#indoor-interval-moves) | 1 min each, the quiet versions | 1 min each, repeat | 1 min each, repeat | 1 min each, repeat |  |
 
 **Cool-down (≈5 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Easy marching](#zone-2-cardio-indoors) | 5 min | 5 min | 5 min |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Easy marching](#zone-2-cardio-indoors) | 5 min | 5 min | 5 min | 5 min |  |
 
-**Stability (≈11 / 13 / 14 min)** · Bryan’s official stability menu.
+**Stability (≈9 / 11 / 13 / 14 min)** · Bryan’s official stability menu.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Single-leg RDL / toe touch](#single-leg-rdl--toe-touch) | 2 × 6/leg, hand on a wall | 2 × 8/leg | 2 × 10/leg, slow |  |
-| [Bird dog](#bird-dog) | 2 × 6/side, 2 s hold | 2 × 8/side | 2 × 10/side |  |
-| [Dead bug](#dead-bug) | 2 × 6/side | 2 × 8/side | 2 × 10/side |  |
-| [Plank shoulder taps](#plank-shoulder-taps) | 2 × 8/side, wide feet | 2 × 10/side | 2 × 12/side |  |
-| [Kneeling shin stretch](#kneeling-shin-stretch) | 45 s | 45 s | 45 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Single-leg RDL / toe touch](#single-leg-rdl--toe-touch) | 2 × 5/leg, hand on a wall, small range | 2 × 6/leg, hand on a wall | 2 × 8/leg | 2 × 10/leg, slow |  |
+| [Bird dog](#bird-dog) | 2 × 5/side, 2 s hold | 2 × 6/side, 2 s hold | 2 × 8/side | 2 × 10/side |  |
+| [Dead bug](#dead-bug) | 2 × 5/side | 2 × 6/side | 2 × 8/side | 2 × 10/side |  |
+| [Plank shoulder taps](#plank-shoulder-taps) | 2 × 6/side, from the knees | 2 × 8/side, wide feet | 2 × 10/side | 2 × 12/side |  |
+| [Kneeling shin stretch](#kneeling-shin-stretch) | 30 s | 45 s | 45 s | 45 s |  |
 
 **Posture block, daily version (≈8 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Friday: Strength C · Power, lunge, press + tendons
 
 _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side plank), preceded by power work in the order Galpin uses and his 2026 heavy-hinge-then-jumps pairing._
 
-**Warm-up (≈9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
+**Warm-up (≈8 / 9 / 9 / 10 min)** · Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min, bodyweight | 2 min holding 2 × 8–10 kg | 2–3 min holding 2 × 12–16 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series | ≈4 min | ≈4 min |  |
-| [Pogo hops](#pogo-hops) | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
-| [Single-leg balance](#single-leg-balance) | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
+| [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
-**Speed & power (≈5 / 7 / 8 min)** · Max intent, 30–60 s rest. Quality over quantity.
+**Speed & power (≈4 / 5 / 7 / 8 min)** · Max intent, 30–60 s rest. Quality over quantity.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Stationary power skips](#stationary-power-skips) | — | 2 × 5/leg | 2 × 5/leg | Bryan 2025: 2 × 5 |
-| [Heidens (skater bounds)](#heidens-skater-bounds) | 2 × 5/side, step and stick, no hop | 2 × 4/side, stick | 2 × 5/side, stick | Bryan 2025: 2 × 5 |
-| [Rotational power: band woodchop](#rotational-power-band-woodchop) | 2 × 8/side, controlled | 2 × 5/side, fast | 3 × 5/side, max speed | Bryan 2025: rotational power |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Stationary power skips](#stationary-power-skips) | — | — | 2 × 5/leg | 2 × 5/leg | Bryan 2025: 2 × 5 |
+| [Heidens (skater bounds)](#heidens-skater-bounds) | 2 × 4/side, step and stick, no hop | 2 × 5/side, step and stick, no hop | 2 × 4/side, stick | 2 × 5/side, stick | Bryan 2025: 2 × 5 |
+| [Rotational power: band woodchop](#rotational-power-band-woodchop) | 2 × 6/side, slow | 2 × 8/side, controlled | 2 × 5/side, fast | 3 × 5/side, max speed | Bryan 2025: rotational power |
 
-**Strength (≈24 / 30 / 33 min)** · Pair floor press with chin-ups and the overhead press with step-ups; rest about 60 s after each pair.
+**Strength (≈22 / 24 / 30 / 33 min)** · Pair floor press with chin-ups and the overhead press with step-ups; rest about 60 s after each pair.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Dumbbell Romanian deadlift](#dumbbell-romanian-deadlift) | 2 × 10 @ 2 × 12–16 kg | 3 × 8 @ 2 × 18–22 kg | 3 × 6–8, heaviest pair; 20–30 s after each set, 3 countermovement jumps | Bryan 2026: heavy pull → jumps |
-| [Reverse lunge](#reverse-lunge) | 2 × 8/leg, bodyweight | 3 × 10/leg @ 2 × 8–10 kg | 3 × 10–12/leg @ 2 × 12–16 kg | Official: 3 × 10–12 |
-| [Dumbbell floor press](#dumbbell-floor-press) | 2 × 10 @ 2 × 10–12 kg | 3 × 10 @ 2 × 14–16 kg | 3 × 8–10, heaviest pair | Official: 3 × 10–12 |
-| [Chin-ups (palms facing you)](#chin-ups-and-pull-ups) | 2 × 3–5 band-assisted | 3 × 5 | 3 × 6–8 | Bryan does both grips |
-| [Standing dumbbell overhead press](#standing-dumbbell-overhead-press) | 2 × 10 @ 2 × 6–8 kg | 3 × 10 @ 2 × 8–12 kg | 3 × 8–10 @ 2 × 12–16 kg | Official: 3 × 10–12 |
-| [Step-up (knee-height, drive)](#step-up-knee-height-drive) | 2 × 6/leg, 30 cm | 2 × 8/leg, knee height | 3 × 8/leg holding 2 × 8–12 kg, fast up | Official: 3 × 10/leg |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Dumbbell Romanian deadlift](#dumbbell-romanian-deadlift) | 2 × 8 @ 2 × 8–11 kg | 2 × 10 @ 2 × 12–16 kg | 3 × 8 @ 2 × 20–26 kg | 3 × 6–8, heaviest pair; 20–30 s after each set, 3 countermovement jumps | Bryan 2026: heavy pull → jumps |
+| [Reverse lunge](#reverse-lunge) | 2 × 6/leg, hand on a chair | 2 × 8/leg, bodyweight | 3 × 10/leg @ 2 × 9–12 kg | 3 × 10–12/leg @ 2 × 16–20 kg | Official: 3 × 10–12 |
+| [Dumbbell floor press](#dumbbell-floor-press) | 2 × 8 @ 2 × 7–8 kg | 2 × 10 @ 2 × 10–12 kg | 3 × 10 @ 2 × 16–18 kg | 3 × 8–10, heaviest pair | Official: 3 × 10–12 |
+| [Chin-ups (palms facing you)](#chin-ups-and-pull-ups) | 2 × 10–20 s dead hang | 2 × 3–5 band-assisted | 3 × 5 | 3 × 6–8 | Bryan does both grips |
+| [Standing dumbbell overhead press](#standing-dumbbell-overhead-press) | 2 × 8 @ 2 × 4–5.5 kg | 2 × 10 @ 2 × 6–8 kg | 3 × 10 @ 2 × 9–14 kg | 3 × 8–10 @ 2 × 16–20 kg | Official: 3 × 10–12 |
+| [Step-up (knee-height, drive)](#step-up-knee-height-drive) | 2 × 6/leg, 20 cm step | 2 × 6/leg, 30 cm | 2 × 8/leg, knee height | 3 × 8/leg holding 2 × 10–16 kg, fast up | Official: 3 × 10/leg |
 
-**Side plank & tendons (≈7 / 8 / 9 min)**
+**Side plank & tendons (≈6 / 7 / 8 / 9 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Side plank](#side-plank) | 2 × 20 s/side, knees down is fine | 2 × 30 s/side | 2 × 45 s/side | Official: 20–30 s/side |
-| [Jefferson curl](#jefferson-curl) | 2 × 5, no weight, on the floor | 2 × 5 @ 2–4 kg on a step | 2 × 5 @ 4–10 kg on a step | Bryan 2025: flexibility set |
-| [Single-leg calf raise, slow](#calf-raises-seated--single-leg) | 1 × 10/leg | 1 × 12/leg | 1 × 15/leg |  |
-| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 15 | 1 × 20 | 1 × 25 |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Side plank](#side-plank) | 2 × 15 s/side, knees down | 2 × 20 s/side, knees down is fine | 2 × 30 s/side | 2 × 45 s/side | Official: 20–30 s/side |
+| [Jefferson curl](#jefferson-curl) | 2 × 5, no weight, on the floor, small range | 2 × 5, no weight, on the floor | 2 × 5 @ 2.5–4.5 kg on a step | 2 × 5 @ 5–13 kg on a step | Bryan 2025: flexibility set |
+| [Single-leg calf raise, slow](#calf-raises-seated--single-leg) | 1 × 8/leg, hand on a wall | 1 × 10/leg | 1 × 12/leg | 1 × 15/leg |  |
+| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 12 | 1 × 15 | 1 × 20 | 1 × 25 |  |
 
 **Cool-down (≈3 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 30 s/side | 30 s/side | 45 s/side |  |
-| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 30 s | 45 s | 45 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side |  |
+| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 30 s | 30 s | 45 s | 45 s |  |
 
 **Posture block, daily version (≈8 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Saturday: Zone 2 + long stretch
 
 _Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: a long Zone 2 block and 20 min of stretching. Second posture-strength day._
 
-> When you feel like going outside, swap the Zone 2 block for a brisk walk, hike or bike ride of the same length or longer.
-
 **Warm-up (≈5 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Marching, leg swings, hip CARs](#dynamic-series) | 5 min | 5 min | 5 min |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Marching, leg swings, hip CARs](#dynamic-series) | 5 min | 5 min | 5 min | 5 min |  |
 
-**Zone 2 (≈25 / 33 / 40 min)**
+**Zone 2 (≈20 / 25 / 33 / 40 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 25 min @ 109–127 bpm | 30–35 min | 40 min; weighted vest optional | Bryan: 150 min/week |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 20 min @ 109–127 bpm | 25 min @ 109–127 bpm | 30–35 min | 40 min; weighted vest optional | Bryan: 150 min/week |
 
 **Long stretch (≈20 min)** · Bryan’s official light day: 20–30 min of gentle yoga or stretching.
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [Cat-cow](#cat-cow) | 10 breaths | 10 breaths | 10 breaths |  |
-| [Thread the needle](#thread-the-needle) | 5/side | 5/side | 5/side |  |
-| [Couch stretch](#couch-stretch) | 60 s/side | 60 s/side | 60 s/side |  |
-| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 45 s/side | 45 s/side | 45 s/side |  |
-| [Hamstring stretch](#hamstring-stretch) | 45 s/side | 45 s/side | 45 s/side |  |
-| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 60 s | 60 s | 60 s |  |
-| [Kneeling shin stretch](#kneeling-shin-stretch) | 45 s | 45 s | 45 s |  |
-| [Big-toe stretch (toe sit)](#big-toe-stretch-toe-sit) | 30 s | 45 s | 45 s |  |
-| [Cobra](#cobra) | 3 × 20 s | 3 × 20 s | 3 × 20 s |  |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Cat-cow](#cat-cow) | 10 breaths | 10 breaths | 10 breaths | 10 breaths |  |
+| [Thread the needle](#thread-the-needle) | 5/side | 5/side | 5/side | 5/side |  |
+| [Couch stretch](#couch-stretch) | 45 s/side | 60 s/side | 60 s/side | 60 s/side |  |
+| [Half-kneeling hip flexor stretch](#half-kneeling-hip-flexor-stretch) | 30 s/side | 45 s/side | 45 s/side | 45 s/side |  |
+| [Hamstring stretch](#hamstring-stretch) | 30 s/side | 45 s/side | 45 s/side | 45 s/side |  |
+| [Butterfly stretch (cobbler’s pose)](#butterfly-stretch-cobblers-pose) | 45 s | 60 s | 60 s | 60 s |  |
+| [Kneeling shin stretch](#kneeling-shin-stretch) | 30 s | 45 s | 45 s | 45 s |  |
+| [Big-toe stretch (toe sit)](#big-toe-stretch-toe-sit) | 20–30 s | 30 s | 45 s | 45 s |  |
+| [Cobra](#cobra) | 3 × 10 s | 3 × 20 s | 3 × 20 s | 3 × 20 s |  |
 
 **Posture block, strength version (≈10 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
-| [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 5–6 kg | 1 set to fatigue @ 2 × 6–9 kg | Bryan: 1 set to fatigue, 2×/wk |
-| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 × 10 @ 2 × 2.5–3 kg, stop well before fatigue | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 6–7 kg | 1 set to fatigue @ 2 × 8–12 kg | Bryan: 1 set to fatigue, 2×/wk |
+| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
 
 ### Sunday: Rest
 
@@ -421,16 +446,16 @@ _No training. Keep the posture habits; the daily posture block and an easy walk 
 
 **Posture block (optional, ≈8 min)**
 
-| Exercise | Weeks 1–2 | Weeks 3–6 | Week 7 onward | Bryan |
-|---|---|---|---|---|
-| [String reset](#string-reset) | 30 s | 30 s | 30 s |  |
-| [Chin tucks](#chin-tucks) | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
-| [Wall slides](#wall-slides) | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
-| [Band pull-apart](#band-pull-apart) | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
-| [Band face pull](#band-face-pull) | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2–3 kg | 1 × 15/arm @ 3–4 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
-| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [String reset](#string-reset) | 30 s | 30 s | 30 s | 30 s |  |
+| [Chin tucks](#chin-tucks) | 1 × 6, 3 s hold | 1 × 8, 3 s hold | 2 × 8, 3 s hold | 2 × 10, 3 s hold | Classic (not Bryan) |
+| [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
+| [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
+| [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
+| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ## Posture program
 
@@ -463,7 +488,7 @@ Estimated max 182 bpm (220 − 38; Tanaka gives 181). If your device has a measu
 | Zone 3 | 70–80% | 127–146 | Short phrases only |
 | Zone 4 | 80–90% | 146–164 | Hard; a few words |
 | Zone 5 | 90–100% | 164–182 | Can’t talk: end of the 20 s bursts and of each 4×4 round |
-| 4×4 work | 85–95% | 155–173 | Hard minutes of Thursday’s 4×4 from week 7 (weeks 1–6 start lower) |
+| 4×4 work | 85–95% | 155–173 | Hard minutes of Thursday’s 4×4 at Well trained (the other levels aim lower) |
 | 4×4 recovery | 60–70% | 109–127 | Easy minutes between rounds |
 
 ## Equipment and home swaps
@@ -484,7 +509,7 @@ Estimated max 182 bpm (220 − 38; Tanaka gives 181). If your device has a measu
 **Optional**
 
 - **Jump rope.** Only if your ceiling and neighbours allow it.
-- **Weighted vest.** For Zone 2 from Phase 3 (Bryan’s bone protocol).
+- **Weighted vest.** For Zone 2 at Well trained (Bryan’s bone protocol).
 
 | Bryan (gym) | You (home) |
 |---|---|
@@ -553,7 +578,7 @@ His videos use gym machines; each exercise below gives the home version and a de
 1. Walk backward for 2 min along your longest clear line indoors (hallway or living room), turning around at the wall.
 2. Short steps; land on the ball of the foot and let the heel follow.
 3. Keep the knees bent so they travel forward over the toes, and push the floor away in front of you.
-4. Phase 2+: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.
+4. From Returning up: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.
 
 - Tip: It should burn in the front of the thighs, never hurt inside the knee.
 
@@ -601,9 +626,9 @@ Watch: [Eyes-closed single-leg balance](https://www.youtube.com/watch?v=cDnTke5l
 
 > **From Bryan:** Since July 2026 Bryan trains to dunk at 49: heavy lifts with jumps between sets, aimed at the fast-twitch fibres and force development he says he lacks. He also flags Achilles risk from landing forces, so you learn to land before you jump high.
 
-1. Snap-down (Phase 1): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.
-2. Squat jump (Phase 2): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.
-3. Countermovement jump (Phase 3): quick dip with an arm swing, then a max-height jump; stick the landing.
+1. Snap-down (Returning): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.
+2. Squat jump (Active): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.
+3. Countermovement jump (Well trained): quick dip with an arm swing, then a max-height jump; stick the landing.
 4. Knees track over the toes on landing and never cave in. Full rest; every rep at max intent.
 
 - Tip: Shoes on, land on a mat. Loud landings mean the set is over.
@@ -633,7 +658,7 @@ Watch: [Alternating stationary power skips](https://www.youtube.com/watch?v=_J-H
 3. Stick the landing for 1–2 s: hips back, knee over the toes.
 4. Bound back. Distance before speed.
 
-Easier version: Phase 1 and quiet version: step sideways onto one leg and hold, no hop.
+Easier version: Easier levels and quiet version: step sideways onto one leg and hold, no hop.
 
 Watch: [How to lateral bound](https://www.youtube.com/watch?v=niEGdFUQ6sY) · [Lateral bound (Heiden)](https://www.youtube.com/watch?v=Hc9_FQgIeeg)
 
@@ -646,7 +671,7 @@ Watch: [How to lateral bound](https://www.youtube.com/watch?v=niEGdFUQ6sY) · [L
 3. Turn from the hips and pivot the back foot; the arms only transmit the force.
 4. Fast on the way down, 2–3 s back up. Same reps on both sides.
 
-Easier version: Phase 1: slow and controlled to learn the pattern.
+Easier version: Easier levels: slow and controlled to learn the pattern.
 
 Watch: [Band woodchop](https://www.youtube.com/watch?v=73Zyu5g3GQg) · [Attaching a band to a door safely](https://www.youtube.com/watch?v=fXncsqemFcQ)
 
@@ -695,7 +720,7 @@ Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈14:4
 1. Kneel on a folded mat and hook your heels under a heavy sofa or bed, or use a door Nordic strap.
 2. Body straight from knees to head, glutes squeezed.
 3. Lower forward as slowly as you can and catch yourself with your hands, like a push-up.
-4. Push back up with your hands (Phase 1) or pull back with the hamstrings (later).
+4. Push back up with your hands (Returning) or pull back with the hamstrings (later).
 
 Easier version: Lowering only, over a small range.
 
@@ -741,7 +766,7 @@ Watch: [Seated dumbbell calf raise](https://www.youtube.com/watch?v=4-slnRXcGDc)
 3. Stop at a strong hamstring stretch, around mid-shin.
 4. Drive the hips forward to stand tall.
 
-- Tip: Phase 3 contrast: 20–30 s after each set, do 3 max countermovement jumps, the way Bryan pairs his heavy pulls with jumps.
+- Tip: Well trained contrast: 20–30 s after each set, do 3 max countermovement jumps, the way Bryan pairs his heavy pulls with jumps.
 
 Watch: [Dumbbell RDL technique for beginners](https://www.youtube.com/watch?v=hQgFixeXdZo) · [Dumbbell RDL at home](https://www.youtube.com/watch?v=dNQucsVf90I)
 
@@ -884,7 +909,7 @@ Watch: [Dumbbell farmer’s walk: form and mistakes](https://www.youtube.com/wat
 > **From Bryan:** Bryan: leg raises 1 × 50 on a captain’s chair. Your pull-up bar replaces the station.
 
 1. Hang from the bar with the shoulders pulled slightly down (active hang).
-2. Raise the knees toward the chest (Phase 1), later straight legs to hip height or higher.
+2. Raise the knees toward the chest (easier levels), later straight legs to hip height or higher.
 3. Curl the pelvis up at the top; no swinging.
 4. Lower slowly. Collect the reps in as few sets as you can.
 
@@ -990,7 +1015,7 @@ Watch: [Plank shoulder taps: core stability and control](https://www.youtube.com
 
 > **From Bryan:** Part of the flexibility set in Bryan’s 2025 session, next to the big-toe, couch and butterfly stretches.
 
-1. Stand on a step, legs straight, with a light weight (none in weeks 1–4).
+1. Stand on a step, legs straight, with a light weight (none at New to training).
 2. Tuck your chin and roll down one vertebra at a time toward your toes.
 3. Hang 2–3 s, then roll up from the bottom, head last.
 4. Slow and light. Never chase load on this one.
@@ -1005,7 +1030,7 @@ Watch: [Jefferson curl progressions](https://www.youtube.com/watch?v=CscPML4QWfU
 
 1. Pick one or two moves from “Indoor interval moves”.
 2. 20 s hard, then easy marching for the rest time. Count rounds, not minutes.
-3. Weeks 1–2: brisk, not all-out. From week 7: truly all-out.
+3. New to training and Returning: brisk, not all-out. Active: hard. Well trained: truly all-out.
 
 Watch: [No-jumping HIIT, apartment friendly (move ideas)](https://www.youtube.com/watch?v=u_CscwYKo5U)
 

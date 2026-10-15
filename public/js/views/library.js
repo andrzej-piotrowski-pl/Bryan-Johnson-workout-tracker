@@ -6,10 +6,9 @@ import { DAYS } from "../data/program.js";
 import { ADDONS } from "../data/addons/index.js";
 import { BRYAN_VIDEOS, WATCH } from "../data/videos.js";
 import { state } from "../store.js";
-import { phaseFor } from "../plan.js";
-import { PHASES } from "../data/program.js";
-import { personalize } from "../personalize.js";
-import { esc, todayIso } from "../util.js";
+import { rxFor } from "../plan.js";
+import { LEVELS, levelIndex, personalize } from "../personalize.js";
+import { esc } from "../util.js";
 import { icon } from "../components/icons.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
 import { renderVideos, youtubeId } from "../components/video.js";
@@ -104,7 +103,7 @@ export function render(el, params) {
 function detail(el, id) {
   const ex = EXERCISES[id];
   const p = state.profile;
-  const { phase } = phaseFor(todayIso());
+  const cur = levelIndex(p);
   const uses = usages(id);
   el.innerHTML = `<div class="page">
     <div class="btn-row"><a class="btn sm" href="#/library">${icon("chevronL", "sm")} All exercises</a></div>
@@ -117,8 +116,8 @@ function detail(el, id) {
           <h3>In your plan</h3>
           ${
             uses.length
-              ? `<div class="table-wrap"><table><thead><tr><th>Where</th>${PHASES.map((ph, i) => `<th class="${i === phase ? "cur" : ""}">${esc(ph.name)}</th>`).join("")}</tr></thead><tbody>${uses
-                  .map((u) => `<tr><td>${esc(u.where)}</td>${u.item.rx.map((r, i) => `<td class="${i === phase ? "cur" : ""}">${esc(personalize(r, p))}</td>`).join("")}</tr>`)
+              ? `<div class="table-wrap"><table><thead><tr><th>Where</th>${LEVELS.map((l, i) => `<th class="${i === cur ? "cur" : ""}">${esc(l.name)}</th>`).join("")}</tr></thead><tbody>${uses
+                  .map((u) => `<tr><td>${esc(u.where)}</td>${LEVELS.map((_, i) => `<td class="${i === cur ? "cur" : ""}">${esc(personalize(rxFor(u.item, i), { ...p, level: LEVELS[i].id }))}</td>`).join("")}</tr>`)
                   .join("")}</tbody></table></div>`
               : `<p class="muted">Not scheduled in the current plan.</p>`
           }

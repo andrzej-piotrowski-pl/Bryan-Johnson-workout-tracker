@@ -1,5 +1,6 @@
-// The weekly program: phases, the six training days and their doses.
-// rx arrays are [Phase 1, Phase 2, Phase 3]; "—" means skip it in that phase.
+// The weekly program: the six training days and their doses per training level.
+// rx and mins arrays are [New to training, Returning, Active, Well trained] (the
+// order of LEVELS in personalize.js); "—" means skip it at that level.
 // Item ids are stable keys for your logs; change them only with care.
 
 export const PROGRAM = {
@@ -8,37 +9,50 @@ export const PROGRAM = {
   summary: "Strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday, easy Zone 2 Saturday, rest Sunday. Built from Bryan Johnson's public protocol and rebuilt for a home with bodyweight, adjustable dumbbells, a pull-up bar and bands.",
 };
 
-export const PHASES = [
+// What each training level means for the workouts, in the same order as LEVELS in
+// personalize.js. Your level alone decides the doses; change it in Settings.
+export const LEVEL_PLANS = [
   {
-    name: "Re-entry",
-    weeks: "Weeks 1–2",
-    effort: "Effort 5–6 out of 10: stop each set with about 4 good reps left.",
+    id: "new",
+    effort: "Effort 4–5 out of 10: stop each set with 5 or more easy reps left.",
     points: [
-      "2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Learn the positions.",
-      "Jumps are landing drills only (snap-downs). Nordics are slow lowers only.",
-      "Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds in week 1 and 3 in week 2, controlled.",
-      "Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. If you are still very sore after 48 hours, repeat the week.",
+      "1–2 sets, with supported or smaller-range versions (a hand on a chair or wall). Learn the positions first.",
+      "No jumps, swings, power skips or Nordics yet; hops stay tiny.",
+      "Tuesday: 4 brisk 20 s bursts. Thursday: 2 rounds of 2 min brisk, well below all-out.",
+      "Zone 2 15–20 min. Mild muscle soreness is normal; joint pain is not.",
     ],
+    moveUp: "Move up to Returning after about 3 weeks (around 18 sessions) when every session feels comfortable and nothing hurts the next day.",
   },
   {
-    name: "Build",
-    weeks: "Weeks 3–6",
+    id: "returning",
+    effort: "Effort 5–6 out of 10: stop each set with about 4 good reps left.",
+    points: [
+      "2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Relearn the positions.",
+      "Jumps are landing drills only (snap-downs). Nordics are slow lowers only.",
+      "Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds of 3 min, then 3, controlled.",
+      "Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. Still very sore after 48 hours? Repeat sessions before moving up.",
+    ],
+    moveUp: "Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day.",
+  },
+  {
+    id: "active",
     effort: "Effort about 7 out of 10: 2–3 reps left in each set.",
     points: [
       "3 sets on most strength work. Real jumps start; stick every landing.",
-      "Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4 rounds from week 5.",
+      "Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4.",
       "Zone 2 25–35 min, plus short blocks on Monday.",
     ],
+    moveUp: "Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up.",
   },
   {
-    name: "Blueprint",
-    weeks: "Week 7 onward",
+    id: "trained",
     effort: "Effort 8 out of 10 on the main lifts (1–2 reps left); Bryan’s 1 × 25-style accessories go close to fatigue.",
     points: [
       "Galpin-style heavy work on the big lifts, with jump contrast after Friday’s RDL.",
       "Tuesday: two blocks of 8 × 20 s all-out. Thursday: the full Norwegian 4×4 at {hr:85-95}.",
       "Saturday Zone 2 grows to 40 min; a weighted vest is optional.",
     ],
+    moveUp: "This is the full plan. Keep adding weight with the rules below; after illness, injury or a long break, step down a level for a while.",
   },
 ];
 
@@ -46,7 +60,7 @@ export const RULES = [
   "Add weight only when you hit the top of the rep range on every set with clean form, two sessions in a row: about +{kg:1-2} per dumbbell for upper body, +{kg:2-4} for legs. Bryan’s protocol calls progressive overload the key, raised gradually.",
   "Injury prevention is Bryan’s priority #1. Swap to the easier variant (open the exercise) whenever a joint complains.",
   "The 4×4 is hard but controlled. If you can’t hold the pace in the last round, start slower next time.",
-  "Rough week (bad sleep, stress, sickness): repeat the previous week instead of pushing on.",
+  "Rough week (bad sleep, stress, sickness): repeat sessions or step down a level for a while instead of pushing on.",
   "If you have been inactive for a while, are over 50 or have any heart condition, get a basic check-up (blood pressure, resting ECG) before your first all-out intervals.",
 ];
 
@@ -74,30 +88,32 @@ export const DAYS = [
     blocks: [
       {
         name: "Warm-up",
-        mins: [9, 9, 10],
+        mins: [8, 9, 9, 10],
         note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
         items: [
           {
             id: "mon-warm-up-backwalk",
             ex: "backwalk",
             rx: [
+              "1–2 min, bodyweight, slow",
               "2 min, bodyweight",
               "2 min holding 2 × {kg:8-10}",
               "2–3 min holding 2 × {kg:12-16} or band-resisted",
             ],
             bryan: "Bryan: backward sled ≈2 min",
           },
-          { id: "mon-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series", "≈4 min", "≈4 min"] },
+          { id: "mon-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series, slow", "≈4 min, full series", "≈4 min", "≈4 min"] },
           {
             id: "mon-warm-up-pogo",
             ex: "pogo",
-            rx: ["2 × 10, low", "2 × 20", "3 × 20"],
+            rx: ["1 × 10, very low", "2 × 10, low", "2 × 20", "3 × 20"],
             bryan: "Bone protocol: hops 4–7×/wk",
           },
           {
             id: "mon-warm-up-balance",
             ex: "balance",
             rx: [
+              "2 × 20 s/leg, hand near a wall",
               "2 × 30 s/leg, eyes open",
               "2 × 30 s/leg, eyes closed",
               "2 × 30 s/leg, eyes closed on a folded mat",
@@ -107,7 +123,7 @@ export const DAYS = [
       },
       {
         name: "Jumps",
-        mins: [3, 4, 4],
+        mins: [0, 3, 4, 4],
         note: "Max intent, 45–60 s rest. Stop the set if landings get loud.",
         items: [
           {
@@ -115,6 +131,7 @@ export const DAYS = [
             ex: "jumps",
             label: "Jumps",
             rx: [
+              "—",
               "Snap-downs 2 × 5",
               "Squat jumps 3 × 3, stick each landing",
               "Countermovement jumps 3 × 3, stick each landing",
@@ -125,13 +142,14 @@ export const DAYS = [
       },
       {
         name: "Strength",
-        mins: [22, 28, 30],
+        mins: [18, 22, 28, 30],
         note: "Rest 60–90 s between sets. Pair push-ups with rows to save time.",
         items: [
           {
             id: "mon-strength-gobletsquat",
             ex: "gobletsquat",
             rx: [
+              "2 × 8 @ {kg:10-14}, down to a chair, 3 s down",
               "2 × 10 @ {kg:10-14}, 3 s down",
               "3 × 8–10 @ {kg:14-20}",
               "3 × 6–8, heaviest dumbbell, 3 s down",
@@ -141,19 +159,20 @@ export const DAYS = [
           {
             id: "mon-strength-pushup",
             ex: "pushup",
-            rx: ["3 × 8–10, hands raised if needed", "3 × 10–12", "3 × 12–15, 3 s down, or feet raised"],
+            rx: ["2 × 6–8, hands on a table or a wall", "3 × 8–10, hands raised if needed", "3 × 10–12", "3 × 12–15, 3 s down, or feet raised"],
             bryan: "Official: 3 × 8–12",
           },
           {
             id: "mon-strength-row",
             ex: "row",
-            rx: ["2 × 10/side @ {kg:14-16}", "3 × 10/side @ {kg:18-20}", "3 × 8–10/side, heaviest dumbbell"],
+            rx: ["2 × 10/side @ {kg:14-16}", "2 × 10/side @ {kg:14-16}", "3 × 10/side @ {kg:18-20}", "3 × 8–10/side, heaviest dumbbell"],
             bryan: "Official: 3 × 10–12",
           },
           {
             id: "mon-strength-poliquin",
             ex: "poliquin",
             rx: [
+              "1 × 8/leg, {cm:10} step",
               "2 × 10/leg, {cm:10-15} step",
               "3 × 10/leg",
               "3 × 10/leg, {cm:20} step or holding 2 × {kg:6-8}",
@@ -163,39 +182,40 @@ export const DAYS = [
           {
             id: "mon-strength-swing",
             ex: "swing",
-            rx: ["2 × 10 @ {kg:12-16}", "3 × 12 @ {kg:16-20}", "3 × 15 @ {kg:20-24}"],
+            rx: ["—", "2 × 10 @ {kg:12-16}", "3 × 12 @ {kg:16-20}", "3 × 15 @ {kg:20-24}"],
             bryan: "Official: 3 × 30 s",
           },
         ],
       },
       {
         name: "Core & knees",
-        mins: [6, 8, 8],
+        mins: [5, 6, 8, 8],
         note: "Back to back, minimal rest.",
         items: [
           {
             id: "mon-core-knees-tibraise",
             ex: "tibraise",
-            rx: ["1 × 15–20", "1 × 25", "1 × 25 + 1 × 10/leg single-leg"],
+            rx: ["1 × 12–15", "1 × 15–20", "1 × 25", "1 × 25 + 1 × 10/leg single-leg"],
             bryan: "Bryan: 1 × 25",
           },
           {
             id: "mon-core-knees-calf",
             ex: "calf",
             label: "Seated dumbbell calf raise",
-            rx: ["1 × 15 @ 2 × {kg:10}", "1 × 20 @ 2 × {kg:14}", "1 × 25 @ 2 × {kg:16-20}"],
+            rx: ["1 × 12 @ 2 × {kg:10}", "1 × 15 @ 2 × {kg:10}", "1 × 20 @ 2 × {kg:14}", "1 × 25 @ 2 × {kg:16-20}"],
             bryan: "Bryan: 1 × 25",
           },
           {
             id: "mon-core-knees-plank",
             ex: "plank",
-            rx: ["2 × 20–30 s", "3 × 30 s", "3 × 45 s"],
+            rx: ["2 × 15–20 s, knees down is fine", "2 × 20–30 s", "3 × 30 s", "3 × 45 s"],
             bryan: "Official: 3 × 20–30 s",
           },
           {
             id: "mon-core-knees-legraise",
             ex: "legraise",
             rx: [
+              "2 × 5 knee raises, small range",
               "2 × 8 knee raises",
               "2 × 12 knee raises",
               "Straight legs: 30–50 reps in as few sets as possible",
@@ -206,13 +226,13 @@ export const DAYS = [
       },
       {
         name: "Zone 2",
-        mins: [0, 8, 10],
+        mins: [0, 0, 8, 10],
         items: [
           {
             id: "mon-zone-2-zone2",
             ex: "zone2",
             label: "Step-ups or marching at {hr:60-70}",
-            rx: ["—", "8 min", "10 min"],
+            rx: ["—", "—", "8 min", "10 min"],
             bryan: "Official Day 1 adds 25 min",
           },
         ],
@@ -221,8 +241,8 @@ export const DAYS = [
         name: "Cool-down",
         mins: 3,
         items: [
-          { id: "mon-cool-down-couch", ex: "couch", rx: ["30 s/side", "30 s/side", "45 s/side"] },
-          { id: "mon-cool-down-shin", ex: "shin", rx: ["30 s", "30 s", "30 s"] },
+          { id: "mon-cool-down-couch", ex: "couch", rx: ["30 s/side, gentle", "30 s/side", "30 s/side", "45 s/side"] },
+          { id: "mon-cool-down-shin", ex: "shin", rx: ["20–30 s", "30 s", "30 s", "30 s"] },
         ],
       },
     ],
@@ -237,30 +257,32 @@ export const DAYS = [
     blocks: [
       {
         name: "Warm-up",
-        mins: [9, 9, 10],
+        mins: [8, 9, 9, 10],
         note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
         items: [
           {
             id: "tue-warm-up-backwalk",
             ex: "backwalk",
             rx: [
+              "1–2 min, bodyweight, slow",
               "2 min, bodyweight",
               "2 min holding 2 × {kg:8-10}",
               "2–3 min holding 2 × {kg:12-16} or band-resisted",
             ],
             bryan: "Bryan: backward sled ≈2 min",
           },
-          { id: "tue-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series", "≈4 min", "≈4 min"] },
+          { id: "tue-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series, slow", "≈4 min, full series", "≈4 min", "≈4 min"] },
           {
             id: "tue-warm-up-pogo",
             ex: "pogo",
-            rx: ["2 × 10, low", "2 × 20", "3 × 20"],
+            rx: ["1 × 10, very low", "2 × 10, low", "2 × 20", "3 × 20"],
             bryan: "Bone protocol: hops 4–7×/wk",
           },
           {
             id: "tue-warm-up-balance",
             ex: "balance",
             rx: [
+              "2 × 20 s/leg, hand near a wall",
               "2 × 30 s/leg, eyes open",
               "2 × 30 s/leg, eyes closed",
               "2 × 30 s/leg, eyes closed on a folded mat",
@@ -270,19 +292,21 @@ export const DAYS = [
       },
       {
         name: "Short intervals",
-        mins: [7, 9, 14],
+        mins: [5, 7, 9, 14],
         note: "Use the indoor interval moves. Quiet options exist for every move.",
         items: [
           {
             id: "tue-short-intervals-shortint",
             ex: "shortint",
             rx: [
+              "4 × (20 s brisk / 40 s easy)",
               "6 × (20 s brisk / 40 s easy)",
               "8 × (20 s hard / 40 s easy)",
               "2 × [8 × (20 s all-out / 20 s easy)], 3 min easy between",
             ],
             bryan: "Newest template: 8 × 20 s",
             timer: [
+              [{ label: "4 rounds", rounds: 4, work: 20, rest: 40 }],
               [{ label: "6 rounds", rounds: 6, work: 20, rest: 40 }],
               [{ label: "8 rounds", rounds: 8, work: 20, rest: 40 }],
               [{ label: "2 blocks of 8", blocks: 2, rounds: 8, work: 20, rest: 20, blockRest: 180 }],
@@ -292,42 +316,42 @@ export const DAYS = [
             id: "tue-short-intervals-indoorhiit",
             ex: "indoorhiit",
             label: "Moves: step-ups, high knees, climbers, jacks, burpees",
-            rx: ["Pick 1–2", "Pick 2", "Pick 2–3"],
+            rx: ["Pick 1, the quiet version", "Pick 1–2", "Pick 2", "Pick 2–3"],
           },
         ],
       },
       {
         name: "Zone 2",
-        mins: [20, 28, 30],
+        mins: [15, 20, 28, 30],
         items: [
           {
             id: "tue-zone-2-zone2",
             ex: "zone2",
-            rx: ["20 min @ {hr:60-70}", "25–30 min", "30 min"],
+            rx: ["15 min @ {hr:60-70}", "20 min @ {hr:60-70}", "25–30 min", "30 min"],
             bryan: "Bryan: 150 min/week",
           },
         ],
       },
       {
         name: "Back & core",
-        mins: [6, 8, 9],
+        mins: [5, 6, 8, 9],
         items: [
           {
             id: "tue-back-core-backext",
             ex: "backext",
-            rx: ["1 × 12, 2 s hold at top", "1 × 20", "1 × 25, holding {kg:5-10} when easy"],
+            rx: ["1 × 10, 2 s hold at top", "1 × 12, 2 s hold at top", "1 × 20", "1 × 25, holding {kg:5-10} when easy"],
             bryan: "Bryan: 1 × 25 + 20 kg plate",
           },
           {
             id: "tue-back-core-sidebend",
             ex: "sidebend",
-            rx: ["1 × 12/side @ {kg:10-12}", "1 × 20/side", "1 × 25/side @ {kg:16-20}"],
+            rx: ["1 × 10/side @ {kg:10-12}", "1 × 12/side @ {kg:10-12}", "1 × 20/side", "1 × 25/side @ {kg:16-20}"],
             bryan: "Bryan: 1 × 25",
           },
           {
             id: "tue-back-core-pallof",
             ex: "pallof",
-            rx: ["2 × 8/side, 2 s hold", "2 × 10/side", "2 × 12/side, 3 s hold"],
+            rx: ["2 × 6/side, 2 s hold", "2 × 8/side, 2 s hold", "2 × 10/side", "2 × 12/side, 3 s hold"],
             bryan: "Bryan 2025 (Galpin)",
           },
         ],
@@ -336,8 +360,8 @@ export const DAYS = [
         name: "Cool-down",
         mins: 3,
         items: [
-          { id: "tue-cool-down-hipflexor", ex: "hipflexor", rx: ["30 s/side", "30 s/side", "45 s/side"] },
-          { id: "tue-cool-down-hamstring", ex: "hamstring", rx: ["30 s/side", "30 s/side", "45 s/side"] },
+          { id: "tue-cool-down-hipflexor", ex: "hipflexor", rx: ["30 s/side", "30 s/side", "30 s/side", "45 s/side"] },
+          { id: "tue-cool-down-hamstring", ex: "hamstring", rx: ["30 s/side", "30 s/side", "30 s/side", "45 s/side"] },
         ],
       },
     ],
@@ -355,70 +379,70 @@ export const DAYS = [
         mins: 10,
         note: "Bryan’s official list: arm circles, wall slides, thread the needle, hip CARs.",
         items: [
-          { id: "wed-dynamic-mobility-backwalk", ex: "backwalk", rx: ["2 min", "2 min", "2 min"] },
+          { id: "wed-dynamic-mobility-backwalk", ex: "backwalk", rx: ["2 min", "2 min", "2 min", "2 min"] },
           {
             id: "wed-dynamic-mobility-dynamic",
             ex: "dynamic",
             label: "Arm circles + hip CARs",
-            rx: ["2 min", "2 min", "2 min"],
+            rx: ["2 min", "2 min", "2 min", "2 min"],
           },
-          { id: "wed-dynamic-mobility-wallslide", ex: "wallslide", rx: ["1 × 10", "1 × 10", "1 × 10"] },
-          { id: "wed-dynamic-mobility-thread", ex: "thread", rx: ["5/side", "5/side", "5/side"] },
-          { id: "wed-dynamic-mobility-pogo", ex: "pogo", rx: ["2 × 10", "2 × 20", "2 × 20"] },
+          { id: "wed-dynamic-mobility-wallslide", ex: "wallslide", rx: ["1 × 8", "1 × 10", "1 × 10", "1 × 10"] },
+          { id: "wed-dynamic-mobility-thread", ex: "thread", rx: ["5/side", "5/side", "5/side", "5/side"] },
+          { id: "wed-dynamic-mobility-pogo", ex: "pogo", rx: ["1 × 10, very low", "2 × 10", "2 × 20", "2 × 20"] },
         ],
       },
       {
         name: "Strength",
-        mins: [24, 28, 30],
+        mins: [20, 24, 28, 30],
         note: "Rest 60–90 s on the first three, 30–45 s on the rest.",
         items: [
           {
             id: "wed-strength-chinup",
             ex: "chinup",
             label: "Pull-ups (palms away)",
-            rx: ["3 × 3–5 band-assisted or 5 s negatives", "3 × 5–6", "3 × 6–8; add a loaded backpack at 3 × 8"],
+            rx: ["3 × 10–20 s dead hang, or 2 × 3 band-assisted", "3 × 3–5 band-assisted or 5 s negatives", "3 × 5–6", "3 × 6–8; add a loaded backpack at 3 × 8"],
             bryan: "Bryan 2025: 2 × 5–8",
           },
           {
             id: "wed-strength-atg",
             ex: "atg",
-            rx: ["2 × 6/leg, hand on a chair", "3 × 8/leg, full depth", "3 × 8–10/leg holding 2 × {kg:8-14}"],
+            rx: ["2 × 5/leg, part range, hand on a chair", "2 × 6/leg, hand on a chair", "3 × 8/leg, full depth", "3 × 8–10/leg holding 2 × {kg:8-14}"],
             bryan: "Bryan: 3 × 10",
           },
           {
             id: "wed-strength-nordic",
             ex: "nordic",
-            rx: ["2 × 3–4 slow lowers", "2 × 4–6", "2 × 5–8"],
+            rx: ["—", "2 × 3–4 slow lowers", "2 × 4–6", "2 × 5–8"],
             bryan: "Bryan: 1 × 10 → 2 × 5–8",
           },
           {
             id: "wed-strength-revnordic",
             ex: "revnordic",
-            rx: ["1 × 6, small range", "1 × 8–10", "1 × 10, full range"],
+            rx: ["1 × 5, small range", "1 × 6, small range", "1 × 8–10", "1 × 10, full range"],
             bryan: "Bryan: 1 × 10",
           },
           {
             id: "wed-strength-triceps",
             ex: "triceps",
-            rx: ["1 × 15 @ {kg:4}", "1 × 20 @ {kg:4.5}", "1 × 25 @ {kg:4.5-6}, 1 s hold at top"],
+            rx: ["1 × 12 @ {kg:4}", "1 × 15 @ {kg:4}", "1 × 20 @ {kg:4.5}", "1 × 25 @ {kg:4.5-6}, 1 s hold at top"],
             bryan: "Bryan: 1 × 25 @ 4.5 kg",
           },
           {
             id: "wed-strength-curl",
             ex: "curl",
-            rx: ["1 × 12 @ {kg:6-8}", "1 × 15 @ {kg:8}", "1 × 15–20 @ {kg:8-10}"],
+            rx: ["1 × 10 @ {kg:6-8}", "1 × 12 @ {kg:6-8}", "1 × 15 @ {kg:8}", "1 × 15–20 @ {kg:8-10}"],
             bryan: "On Bryan’s list",
           },
           {
             id: "wed-strength-fly",
             ex: "fly",
-            rx: ["1 × 15, light band", "1 × 15", "1 × 15, 1 s squeeze"],
+            rx: ["1 × 12, light band", "1 × 15, light band", "1 × 15", "1 × 15, 1 s squeeze"],
             bryan: "Bryan: 1 × 15",
           },
           {
             id: "wed-strength-farmer",
             ex: "farmer",
-            rx: ["2 × 30 s @ 2 × {kg:12-16}", "3 × 30 s @ 2 × {kg:18-20}", "3 × 40 s, heaviest pair"],
+            rx: ["2 × 20 s @ 2 × {kg:12-16}", "2 × 30 s @ 2 × {kg:12-16}", "3 × 30 s @ 2 × {kg:18-20}", "3 × 40 s, heaviest pair"],
             bryan: "Official: 3 × 30 s",
           },
         ],
@@ -431,37 +455,38 @@ export const DAYS = [
           {
             id: "wed-beginner-yoga-balance-catcow",
             ex: "catcow",
-            rx: ["10 breaths", "10 breaths", "10 breaths"],
+            rx: ["10 breaths", "10 breaths", "10 breaths", "10 breaths"],
           },
-          { id: "wed-beginner-yoga-balance-butterfly", ex: "butterfly", rx: ["60 s", "90 s", "90 s"] },
+          { id: "wed-beginner-yoga-balance-butterfly", ex: "butterfly", rx: ["45 s", "60 s", "90 s", "90 s"] },
           {
             id: "wed-beginner-yoga-balance-tree",
             ex: "tree",
-            rx: ["2 × 30 s/side", "2 × 30 s/side", "2 × 30 s/side, eyes closed"],
+            rx: ["2 × 20 s/side, hand near a wall", "2 × 30 s/side", "2 × 30 s/side", "2 × 30 s/side, eyes closed"],
           },
           {
             id: "wed-beginner-yoga-balance-balance",
             ex: "balance",
             rx: [
+              "2 × 20 s/leg, hand near a wall",
               "2 × 30 s/leg, eyes open",
               "2 × 30 s/leg, eyes closed",
               "2 × 30 s/leg, eyes closed on a folded mat",
             ],
           },
-          { id: "wed-beginner-yoga-balance-cobra", ex: "cobra", rx: ["3 × 15 s", "3 × 20 s", "3 × 20 s"] },
+          { id: "wed-beginner-yoga-balance-cobra", ex: "cobra", rx: ["3 × 10 s", "3 × 15 s", "3 × 20 s", "3 × 20 s"] },
         ],
       },
       {
         name: "Static stretching",
         mins: 5,
         items: [
-          { id: "wed-static-stretching-couch", ex: "couch", rx: ["45 s/side", "45 s/side", "45 s/side"] },
+          { id: "wed-static-stretching-couch", ex: "couch", rx: ["30 s/side", "45 s/side", "45 s/side", "45 s/side"] },
           {
             id: "wed-static-stretching-hamstring",
             ex: "hamstring",
-            rx: ["45 s/side", "45 s/side", "45 s/side"],
+            rx: ["30 s/side", "45 s/side", "45 s/side", "45 s/side"],
           },
-          { id: "wed-static-stretching-bigtoe", ex: "bigtoe", rx: ["30 s", "45 s", "45 s"] },
+          { id: "wed-static-stretching-bigtoe", ex: "bigtoe", rx: ["20–30 s", "30 s", "45 s", "45 s"] },
         ],
       },
     ],
@@ -482,34 +507,36 @@ export const DAYS = [
             id: "thu-warm-up-zone2",
             ex: "zone2",
             label: "Easy step-ups or marching, building to {hr:~71}",
-            rx: ["8 min", "8 min", "8 min"],
+            rx: ["8 min", "8 min", "8 min", "8 min"],
           },
           {
             id: "thu-warm-up-dynamic",
             ex: "dynamic",
             label: "Leg swings + hip CARs",
-            rx: ["2 min", "2 min", "2 min"],
+            rx: ["2 min", "2 min", "2 min", "2 min"],
           },
         ],
       },
       {
         name: "Norwegian 4×4",
-        mins: [15, 25, 25],
+        mins: [12, 15, 25, 25],
         note: "Hard but controlled. Rotate the indoor moves every minute.",
         items: [
           {
             id: "thu-norwegian-4-4-norwegian",
             ex: "norwegian",
             rx: [
-              "Week 1: 2 rounds, week 2: 3 rounds of (3 min @ {hr:80-85} / 3 min easy)",
-              "Weeks 3–4: 3 × (4 min / 3 min); weeks 5–6: 4 × (4 min / 3 min) @ {hr:82-91}",
+              "2 × (2 min brisk @ {hr:75-80} / 3 min easy)",
+              "2 rounds, then 3, of (3 min @ {hr:80-85} / 3 min easy)",
+              "3 × (4 min / 3 min), then 4 × (4 min / 3 min) @ {hr:82-91}",
               "4 × (4 min @ {hr:85-95} / 3 min @ {hr:60-70})",
             ],
             bryan: "Newest template: Thursday",
             timer: [
+              [{ label: "2 rounds", rounds: 2, work: 120, rest: 180, workHr: [75, 80], restHr: [60, 70] }],
               [
                 {
-                  label: "Week 1: 2 rounds",
+                  label: "2 rounds",
                   rounds: 2,
                   work: 180,
                   rest: 180,
@@ -517,7 +544,7 @@ export const DAYS = [
                   restHr: [60, 70],
                 },
                 {
-                  label: "Week 2: 3 rounds",
+                  label: "3 rounds",
                   rounds: 3,
                   work: 180,
                   rest: 180,
@@ -527,7 +554,7 @@ export const DAYS = [
               ],
               [
                 {
-                  label: "Weeks 3–4: 3 rounds",
+                  label: "3 rounds",
                   rounds: 3,
                   work: 240,
                   rest: 180,
@@ -535,7 +562,7 @@ export const DAYS = [
                   restHr: [60, 70],
                 },
                 {
-                  label: "Weeks 5–6: 4 rounds",
+                  label: "4 rounds",
                   rounds: 4,
                   work: 240,
                   rest: 180,
@@ -550,7 +577,7 @@ export const DAYS = [
             id: "thu-norwegian-4-4-indoorhiit",
             ex: "indoorhiit",
             label: "Moves: step-ups → high knees → jacks → climbers",
-            rx: ["1 min each, repeat", "1 min each, repeat", "1 min each, repeat"],
+            rx: ["1 min each, the quiet versions", "1 min each, repeat", "1 min each, repeat", "1 min each, repeat"],
           },
         ],
       },
@@ -562,32 +589,32 @@ export const DAYS = [
             id: "thu-cool-down-zone2",
             ex: "zone2",
             label: "Easy marching",
-            rx: ["5 min", "5 min", "5 min"],
+            rx: ["5 min", "5 min", "5 min", "5 min"],
           },
         ],
       },
       {
         name: "Stability",
-        mins: [11, 13, 14],
+        mins: [9, 11, 13, 14],
         note: "Bryan’s official stability menu.",
         items: [
           {
             id: "thu-stability-slrdl",
             ex: "slrdl",
-            rx: ["2 × 6/leg, hand on a wall", "2 × 8/leg", "2 × 10/leg, slow"],
+            rx: ["2 × 5/leg, hand on a wall, small range", "2 × 6/leg, hand on a wall", "2 × 8/leg", "2 × 10/leg, slow"],
           },
           {
             id: "thu-stability-birddog",
             ex: "birddog",
-            rx: ["2 × 6/side, 2 s hold", "2 × 8/side", "2 × 10/side"],
+            rx: ["2 × 5/side, 2 s hold", "2 × 6/side, 2 s hold", "2 × 8/side", "2 × 10/side"],
           },
-          { id: "thu-stability-deadbug", ex: "deadbug", rx: ["2 × 6/side", "2 × 8/side", "2 × 10/side"] },
+          { id: "thu-stability-deadbug", ex: "deadbug", rx: ["2 × 5/side", "2 × 6/side", "2 × 8/side", "2 × 10/side"] },
           {
             id: "thu-stability-shouldertap",
             ex: "shouldertap",
-            rx: ["2 × 8/side, wide feet", "2 × 10/side", "2 × 12/side"],
+            rx: ["2 × 6/side, from the knees", "2 × 8/side, wide feet", "2 × 10/side", "2 × 12/side"],
           },
-          { id: "thu-stability-shin", ex: "shin", rx: ["45 s", "45 s", "45 s"] },
+          { id: "thu-stability-shin", ex: "shin", rx: ["30 s", "45 s", "45 s", "45 s"] },
         ],
       },
     ],
@@ -602,30 +629,32 @@ export const DAYS = [
     blocks: [
       {
         name: "Warm-up",
-        mins: [9, 9, 10],
+        mins: [8, 9, 9, 10],
         note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
         items: [
           {
             id: "fri-warm-up-backwalk",
             ex: "backwalk",
             rx: [
+              "1–2 min, bodyweight, slow",
               "2 min, bodyweight",
               "2 min holding 2 × {kg:8-10}",
               "2–3 min holding 2 × {kg:12-16} or band-resisted",
             ],
             bryan: "Bryan: backward sled ≈2 min",
           },
-          { id: "fri-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series", "≈4 min", "≈4 min"] },
+          { id: "fri-warm-up-dynamic", ex: "dynamic", rx: ["≈4 min, full series, slow", "≈4 min, full series", "≈4 min", "≈4 min"] },
           {
             id: "fri-warm-up-pogo",
             ex: "pogo",
-            rx: ["2 × 10, low", "2 × 20", "3 × 20"],
+            rx: ["1 × 10, very low", "2 × 10, low", "2 × 20", "3 × 20"],
             bryan: "Bone protocol: hops 4–7×/wk",
           },
           {
             id: "fri-warm-up-balance",
             ex: "balance",
             rx: [
+              "2 × 20 s/leg, hand near a wall",
               "2 × 30 s/leg, eyes open",
               "2 × 30 s/leg, eyes closed",
               "2 × 30 s/leg, eyes closed on a folded mat",
@@ -635,38 +664,39 @@ export const DAYS = [
       },
       {
         name: "Speed & power",
-        mins: [5, 7, 8],
+        mins: [4, 5, 7, 8],
         note: "Max intent, 30–60 s rest. Quality over quantity.",
         items: [
           {
             id: "fri-speed-power-powerskip",
             ex: "powerskip",
-            rx: ["—", "2 × 5/leg", "2 × 5/leg"],
+            rx: ["—", "—", "2 × 5/leg", "2 × 5/leg"],
             bryan: "Bryan 2025: 2 × 5",
           },
           {
             id: "fri-speed-power-heidens",
             ex: "heidens",
-            rx: ["2 × 5/side, step and stick, no hop", "2 × 4/side, stick", "2 × 5/side, stick"],
+            rx: ["2 × 4/side, step and stick, no hop", "2 × 5/side, step and stick, no hop", "2 × 4/side, stick", "2 × 5/side, stick"],
             bryan: "Bryan 2025: 2 × 5",
           },
           {
             id: "fri-speed-power-woodchop",
             ex: "woodchop",
-            rx: ["2 × 8/side, controlled", "2 × 5/side, fast", "3 × 5/side, max speed"],
+            rx: ["2 × 6/side, slow", "2 × 8/side, controlled", "2 × 5/side, fast", "3 × 5/side, max speed"],
             bryan: "Bryan 2025: rotational power",
           },
         ],
       },
       {
         name: "Strength",
-        mins: [24, 30, 33],
+        mins: [22, 24, 30, 33],
         note: "Pair floor press with chin-ups and the overhead press with step-ups; rest about 60 s after each pair.",
         items: [
           {
             id: "fri-strength-rdl",
             ex: "rdl",
             rx: [
+              "2 × 8 @ 2 × {kg:12-16}",
               "2 × 10 @ 2 × {kg:12-16}",
               "3 × 8 @ 2 × {kg:18-22}",
               "3 × 6–8, heaviest pair; 20–30 s after each set, 3 countermovement jumps",
@@ -676,67 +706,67 @@ export const DAYS = [
           {
             id: "fri-strength-lunge",
             ex: "lunge",
-            rx: ["2 × 8/leg, bodyweight", "3 × 10/leg @ 2 × {kg:8-10}", "3 × 10–12/leg @ 2 × {kg:12-16}"],
+            rx: ["2 × 6/leg, hand on a chair", "2 × 8/leg, bodyweight", "3 × 10/leg @ 2 × {kg:8-10}", "3 × 10–12/leg @ 2 × {kg:12-16}"],
             bryan: "Official: 3 × 10–12",
           },
           {
             id: "fri-strength-floorpress",
             ex: "floorpress",
-            rx: ["2 × 10 @ 2 × {kg:10-12}", "3 × 10 @ 2 × {kg:14-16}", "3 × 8–10, heaviest pair"],
+            rx: ["2 × 8 @ 2 × {kg:10-12}", "2 × 10 @ 2 × {kg:10-12}", "3 × 10 @ 2 × {kg:14-16}", "3 × 8–10, heaviest pair"],
             bryan: "Official: 3 × 10–12",
           },
           {
             id: "fri-strength-chinup",
             ex: "chinup",
             label: "Chin-ups (palms facing you)",
-            rx: ["2 × 3–5 band-assisted", "3 × 5", "3 × 6–8"],
+            rx: ["2 × 10–20 s dead hang", "2 × 3–5 band-assisted", "3 × 5", "3 × 6–8"],
             bryan: "Bryan does both grips",
           },
           {
             id: "fri-strength-ohpress",
             ex: "ohpress",
-            rx: ["2 × 10 @ 2 × {kg:6-8}", "3 × 10 @ 2 × {kg:8-12}", "3 × 8–10 @ 2 × {kg:12-16}"],
+            rx: ["2 × 8 @ 2 × {kg:6-8}", "2 × 10 @ 2 × {kg:6-8}", "3 × 10 @ 2 × {kg:8-12}", "3 × 8–10 @ 2 × {kg:12-16}"],
             bryan: "Official: 3 × 10–12",
           },
           {
             id: "fri-strength-stepup",
             ex: "stepup",
-            rx: ["2 × 6/leg, {cm:30}", "2 × 8/leg, knee height", "3 × 8/leg holding 2 × {kg:8-12}, fast up"],
+            rx: ["2 × 6/leg, {cm:20} step", "2 × 6/leg, {cm:30}", "2 × 8/leg, knee height", "3 × 8/leg holding 2 × {kg:8-12}, fast up"],
             bryan: "Official: 3 × 10/leg",
           },
         ],
       },
       {
         name: "Side plank & tendons",
-        mins: [7, 8, 9],
+        mins: [6, 7, 8, 9],
         items: [
           {
             id: "fri-side-plank-tendons-sideplank",
             ex: "sideplank",
-            rx: ["2 × 20 s/side, knees down is fine", "2 × 30 s/side", "2 × 45 s/side"],
+            rx: ["2 × 15 s/side, knees down", "2 × 20 s/side, knees down is fine", "2 × 30 s/side", "2 × 45 s/side"],
             bryan: "Official: 20–30 s/side",
           },
           {
             id: "fri-side-plank-tendons-jefferson",
             ex: "jefferson",
-            rx: ["2 × 5, no weight, on the floor", "2 × 5 @ {kg:2-4} on a step", "2 × 5 @ {kg:4-10} on a step"],
+            rx: ["2 × 5, no weight, on the floor, small range", "2 × 5, no weight, on the floor", "2 × 5 @ {kg:2-4} on a step", "2 × 5 @ {kg:4-10} on a step"],
             bryan: "Bryan 2025: flexibility set",
           },
           {
             id: "fri-side-plank-tendons-calf",
             ex: "calf",
             label: "Single-leg calf raise, slow",
-            rx: ["1 × 10/leg", "1 × 12/leg", "1 × 15/leg"],
+            rx: ["1 × 8/leg, hand on a wall", "1 × 10/leg", "1 × 12/leg", "1 × 15/leg"],
           },
-          { id: "fri-side-plank-tendons-tibraise", ex: "tibraise", rx: ["1 × 15", "1 × 20", "1 × 25"] },
+          { id: "fri-side-plank-tendons-tibraise", ex: "tibraise", rx: ["1 × 12", "1 × 15", "1 × 20", "1 × 25"] },
         ],
       },
       {
         name: "Cool-down",
         mins: 3,
         items: [
-          { id: "fri-cool-down-hipflexor", ex: "hipflexor", rx: ["30 s/side", "30 s/side", "45 s/side"] },
-          { id: "fri-cool-down-butterfly", ex: "butterfly", rx: ["30 s", "45 s", "45 s"] },
+          { id: "fri-cool-down-hipflexor", ex: "hipflexor", rx: ["30 s/side", "30 s/side", "30 s/side", "45 s/side"] },
+          { id: "fri-cool-down-butterfly", ex: "butterfly", rx: ["30 s", "30 s", "45 s", "45 s"] },
         ],
       },
     ],
@@ -758,18 +788,18 @@ export const DAYS = [
             id: "sat-warm-up-dynamic",
             ex: "dynamic",
             label: "Marching, leg swings, hip CARs",
-            rx: ["5 min", "5 min", "5 min"],
+            rx: ["5 min", "5 min", "5 min", "5 min"],
           },
         ],
       },
       {
         name: "Zone 2",
-        mins: [25, 33, 40],
+        mins: [20, 25, 33, 40],
         items: [
           {
             id: "sat-zone-2-zone2",
             ex: "zone2",
-            rx: ["25 min @ {hr:60-70}", "30–35 min", "40 min; weighted vest optional"],
+            rx: ["20 min @ {hr:60-70}", "25 min @ {hr:60-70}", "30–35 min", "40 min; weighted vest optional"],
             bryan: "Bryan: 150 min/week",
           },
         ],
@@ -779,23 +809,23 @@ export const DAYS = [
         mins: 20,
         note: "Bryan’s official light day: 20–30 min of gentle yoga or stretching.",
         items: [
-          { id: "sat-long-stretch-catcow", ex: "catcow", rx: ["10 breaths", "10 breaths", "10 breaths"] },
-          { id: "sat-long-stretch-thread", ex: "thread", rx: ["5/side", "5/side", "5/side"] },
-          { id: "sat-long-stretch-couch", ex: "couch", rx: ["60 s/side", "60 s/side", "60 s/side"] },
+          { id: "sat-long-stretch-catcow", ex: "catcow", rx: ["10 breaths", "10 breaths", "10 breaths", "10 breaths"] },
+          { id: "sat-long-stretch-thread", ex: "thread", rx: ["5/side", "5/side", "5/side", "5/side"] },
+          { id: "sat-long-stretch-couch", ex: "couch", rx: ["45 s/side", "60 s/side", "60 s/side", "60 s/side"] },
           {
             id: "sat-long-stretch-hipflexor",
             ex: "hipflexor",
-            rx: ["45 s/side", "45 s/side", "45 s/side"],
+            rx: ["30 s/side", "45 s/side", "45 s/side", "45 s/side"],
           },
           {
             id: "sat-long-stretch-hamstring",
             ex: "hamstring",
-            rx: ["45 s/side", "45 s/side", "45 s/side"],
+            rx: ["30 s/side", "45 s/side", "45 s/side", "45 s/side"],
           },
-          { id: "sat-long-stretch-butterfly", ex: "butterfly", rx: ["60 s", "60 s", "60 s"] },
-          { id: "sat-long-stretch-shin", ex: "shin", rx: ["45 s", "45 s", "45 s"] },
-          { id: "sat-long-stretch-bigtoe", ex: "bigtoe", rx: ["30 s", "45 s", "45 s"] },
-          { id: "sat-long-stretch-cobra", ex: "cobra", rx: ["3 × 20 s", "3 × 20 s", "3 × 20 s"] },
+          { id: "sat-long-stretch-butterfly", ex: "butterfly", rx: ["45 s", "60 s", "60 s", "60 s"] },
+          { id: "sat-long-stretch-shin", ex: "shin", rx: ["30 s", "45 s", "45 s", "45 s"] },
+          { id: "sat-long-stretch-bigtoe", ex: "bigtoe", rx: ["20–30 s", "30 s", "45 s", "45 s"] },
+          { id: "sat-long-stretch-cobra", ex: "cobra", rx: ["3 × 10 s", "3 × 20 s", "3 × 20 s", "3 × 20 s"] },
         ],
       },
     ],
@@ -894,7 +924,7 @@ export const EQUIPMENT = {
   ],
   optional: [
     { i: "Jump rope", d: "Only if your ceiling and neighbours allow it." },
-    { i: "Weighted vest", d: "For Zone 2 from Phase 3 (Bryan’s bone protocol).", icon: "vest" },
+    { i: "Weighted vest", d: "For Zone 2 at Well trained (Bryan’s bone protocol).", icon: "vest" },
   ],
 };
 

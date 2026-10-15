@@ -1,34 +1,47 @@
 // Turns the generic plan into numbers for one person:
 // - heart-rate ranges from age (Tanaka: 208 − 0.7 × age) or a measured max,
 // - starting loads scaled by body weight, sex, age and training level,
-// - units (kg/cm or lb/in),
-// - which phase you are in: your training level picks the starting phase, then it
-//   advances with sessions actually completed (skipped days don't count).
+// - units (kg/cm or lb/in).
+// Your training level alone decides the workouts (the doses in data/program.js);
+// it only changes when you change it.
 //
 // The plan's loads were set for a 75 kg man of 38 returning to training ("returning");
 // everyone else gets the same loads scaled. They are starting points: the effort
-// targets in each phase (reps left in the tank) always win.
+// target of your level (reps left in the tank) always wins.
 
 import { iso } from "./util.js";
 
-// Each level sets how heavy the starting weights are and which phase you start in.
-// Changing level later (Settings) restarts the phase count from that level's phase.
+// Each level has its own workouts (index into the dose arrays of data/program.js)
+// and scales the starting weights. Weight, sex and age scale the weights too.
 export const LEVELS = [
-  { id: "new", name: "New to training", detail: "Little or no strength training before.", load: 0.7, startPhase: 0, plan: "Lightest weights and a longer, gentler first phase." },
-  { id: "returning", name: "Returning", detail: "Trained before, but out of practice for months or years.", load: 1.0, startPhase: 0, plan: "Easy first weeks to relearn the moves, then it builds." },
-  { id: "active", name: "Active", detail: "Training regularly over the last few months.", load: 1.15, startPhase: 1, plan: "Skips the easy weeks: 3 sets and real jumps from day one." },
-  { id: "trained", name: "Well trained", detail: "Lifting and doing hard cardio consistently for a year or more.", load: 1.3, startPhase: 2, plan: "The full plan from day one, with the heaviest weights." },
+  { id: "new", name: "New to training", detail: "Little or no strength training before.", load: 0.7, plan: "The gentlest workouts: supported moves, 1–2 sets, no jumps, the lightest weights." },
+  { id: "returning", name: "Returning", detail: "Trained before, but out of practice for months or years.", load: 1.0, plan: "Relearn the moves: 2 sets, landing drills instead of jumps, short controlled intervals." },
+  { id: "active", name: "Active", detail: "Training regularly over the last few months.", load: 1.15, plan: "3 sets, real jumps and longer intervals and Zone 2." },
+  { id: "trained", name: "Well trained", detail: "Lifting and doing hard cardio consistently for a year or more.", load: 1.3, plan: "The full plan: heavy main lifts, all-out intervals, the full Norwegian 4×4." },
 ];
 
-// Switch training level: rescales loads and restarts the phase count from today
-// at the new level's starting phase. Logged days keep the phase they were done in.
-export function setLevel(p, id, since = iso(new Date())) {
-  const lvl = LEVELS.find((l) => l.id === id);
-  if (!lvl || p.level === id) return p;
-  p.level = id;
-  p.startPhase = lvl.startPhase;
-  p.levelSince = since;
-  return p;
+export function levelIndex(p) {
+  const i = LEVELS.findIndex((l) => l.id === (p && p.level));
+  return i < 0 ? 1 : i;
+}
+
+// Profiles saved before levels replaced phases (v1.x) carry startPhase/phaseLock.
+// Keep their current difficulty: a lock, or else the phase of the latest logged
+// day, maps Re-entry → their level (at most Returning), Build → Active,
+// Blueprint → Well trained, and drops the old fields. Returns true if it changed p.
+export function migrateProfile(p, days = {}) {
+  if (!p || !("startPhase" in p || "phaseLock" in p || "levelSince" in p)) return false;
+  let phase = p.phaseLock != null && p.phaseLock !== "" ? Number(p.phaseLock) : null;
+  if (phase == null) {
+    const logged = Object.values(days).filter((d) => d && d.phase != null).sort((a, b) => (a.date < b.date ? 1 : -1));
+    phase = logged.length ? Number(logged[0].phase) : Number(p.startPhase) || 0;
+  }
+  const idx = phase === 0 ? Math.min(levelIndex(p), 1) : Math.min(3, phase + 1);
+  p.level = LEVELS[idx].id;
+  delete p.startPhase;
+  delete p.phaseLock;
+  delete p.levelSince;
+  return true;
 }
 
 export const SEXES = [
@@ -49,8 +62,6 @@ export function defaultProfile() {
     maxDumbbellKg: 20,
     hrMax: null,
     startDate: iso(new Date()),
-    startPhase: 0,
-    phaseLock: null,
     addons: { posture: true },
     settings: { theme: "system", skin: "original", restSec: 75, sound: true },
     createdAt: new Date().toISOString(),
@@ -165,28 +176,4 @@ export function suggestedKg(text, p) {
   const max = Number(p && p.maxDumbbellKg) || null;
   if (max && v > max) v = max;
   return v;
-}
-
-// ---------- phases ----------
-
-const PHASE_START_WEEK = [1, 3, 7];
-
-export function phaseLengths(p) {
-  // Sessions needed to finish phase 1 and phase 2 (6 sessions ≈ one week).
-  return p && p.level === "new" ? [18, 24] : [12, 24];
-}
-
-export function phaseState(p, sessionsDone) {
-  const lens = phaseLengths(p);
-  if (p && p.phaseLock != null && p.phaseLock !== "") {
-    const phase = Number(p.phaseLock);
-    return { phase, locked: true, done: null, needed: null, week: PHASE_START_WEEK[phase] };
-  }
-  let phase = Number(p && p.startPhase) || 0;
-  let n = sessionsDone;
-  while (phase < 2 && n >= lens[phase]) {
-    n -= lens[phase];
-    phase += 1;
-  }
-  return { phase, locked: false, done: n, needed: phase < 2 ? lens[phase] : null, week: PHASE_START_WEEK[phase] + Math.floor(n / 6) };
 }

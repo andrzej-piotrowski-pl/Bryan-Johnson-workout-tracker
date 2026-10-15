@@ -3,7 +3,7 @@
 
 import { EXERCISES } from "../data/exercises.js";
 import { state } from "../store.js";
-import { addonsForDate, blockItems, countable, dayDef, phaseFor, sessionKeyFor, visible } from "../plan.js";
+import { addonsForDate, blockItems, countable, dayDef, levelFor, rxFor, sessionKeyFor, visible } from "../plan.js";
 import { personalize } from "../personalize.js";
 import { esc, h } from "../util.js";
 import { icon } from "../components/icons.js";
@@ -14,14 +14,14 @@ import { renderVideos, videosFor } from "../components/video.js";
 import { stopRest } from "../components/timer.js";
 
 function buildSteps(date) {
-  const { phase } = phaseFor(date);
+  const level = levelFor(date);
   const log = state.days[date];
   const steps = [];
   const def = dayDef(sessionKeyFor(date));
-  if (def) for (const b of def.blocks) for (const it of blockItems(b, phase)) if (countable(it)) steps.push({ scope: "main", block: b.name, item: it, phase });
+  if (def) for (const b of def.blocks) for (const it of blockItems(b, level)) if (countable(it)) steps.push({ scope: "main", block: b.name, item: it, level });
   for (const a of addonsForDate(date)) {
     if (log && log.addons && log.addons[a.addon.id] && log.addons[a.addon.id].skipped) continue;
-    for (const it of a.variant.items) if (visible(it, phase) && countable(it)) steps.push({ scope: a.addon.id, block: a.addon.name, item: it, phase });
+    for (const it of a.variant.items) if (visible(it, level) && countable(it)) steps.push({ scope: a.addon.id, block: a.addon.name, item: it, level });
   }
   return steps;
 }
@@ -74,12 +74,12 @@ export function startGuided(date, onExit) {
     side.innerHTML = `
       <span class="eyebrow">${esc(s.block)}</span>
       <h2 class="display" style="font-size:2.1rem;line-height:1">${esc(s.item.label ? personalize(s.item.label, p) : ex.name)}</h2>
-      <div class="rx" style="font-family:var(--font-mono);padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)">${esc(personalize(s.item.rx[s.phase], p))}</div>
+      <div class="rx" style="font-family:var(--font-mono);padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)">${esc(personalize(rxFor(s.item, s.level), p))}</div>
       ${s.item.bryan ? `<span class="chip bryan" style="justify-self:start">${esc(personalize(s.item.bryan, p))}</span>` : ""}
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
-    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, phase: s.phase, scope: s.scope });
+    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope });
     renderVideos(side.querySelector('[data-g="videos"]'), videosFor(ex));
     wrap.querySelector('[data-g="prev"]').disabled = i === 0;
   }

@@ -1,11 +1,11 @@
-// Program logic: which session belongs to a date, which phase you're in,
-// completion status, add-ons for the day, and the numbers behind the stats pages.
+// Program logic: which session belongs to a date, which training level's doses a
+// day uses, completion status, add-ons for the day, and the numbers behind the stats pages.
 
 import { DAYS } from "./data/program.js";
 import { EXERCISES } from "./data/exercises.js";
 import { ADDONS } from "./data/addons/index.js";
 import { state, updateDay } from "./store.js";
-import { phaseState } from "./personalize.js";
+import { LEVELS, levelIndex } from "./personalize.js";
 import { addDays, todayIso, weekdayKey } from "./util.js";
 
 export const dayDef = (key) => DAYS.find((d) => d.key === key) || null;
@@ -13,22 +13,34 @@ export const isRestKey = (key) => {
   const d = dayDef(key);
   return !d || d.blocks.length === 0;
 };
-export const visible = (item, phase) => !!item.rx[phase] && item.rx[phase] !== "—";
+// Doses (rx, mins, timer) are arrays per training level: [new, returning, active,
+// trained]. Arrays with three entries (custom add-ons written for the old phases)
+// start at Returning, so New to training gets their first entry.
+export function dose(arr, lvl) {
+  if (!Array.isArray(arr)) return arr;
+  return arr.length >= LEVELS.length ? arr[lvl] : arr[Math.max(0, lvl - 1)];
+}
+export const rxFor = (item, lvl) => dose(item.rx, lvl);
+export const visible = (item, lvl) => {
+  const rx = rxFor(item, lvl);
+  return !!rx && rx !== "—";
+};
 export const countable = (item) => (EXERCISES[item.ex] || {}).log !== "none";
-export const blockMins = (b, phase) => (Array.isArray(b.mins) ? b.mins[phase] : b.mins) || 0;
+export const blockMins = (b, lvl) => dose(b.mins, lvl) || 0;
+export const timerPresets = (item, lvl) => (item.timer && dose(item.timer, lvl)) || [];
 
-export function blockItems(block, phase) {
-  return block.items.filter((it) => visible(it, phase));
+export function blockItems(block, lvl) {
+  return block.items.filter((it) => visible(it, lvl));
 }
 
-export function dayMins(def, phase) {
+export function dayMins(def, lvl) {
   if (!def) return 0;
-  return def.blocks.reduce((a, b) => a + (blockItems(b, phase).length ? blockMins(b, phase) : 0), 0);
+  return def.blocks.reduce((a, b) => a + (blockItems(b, lvl).length ? blockMins(b, lvl) : 0), 0);
 }
 
-export function sessionItems(def, phase) {
+export function sessionItems(def, lvl) {
   if (!def) return [];
-  return def.blocks.flatMap((b) => blockItems(b, phase)).filter(countable);
+  return def.blocks.flatMap((b) => blockItems(b, lvl)).filter(countable);
 }
 
 export function sessionKeyFor(date) {
@@ -36,12 +48,29 @@ export function sessionKeyFor(date) {
   return (log && log.session) || weekdayKey(date);
 }
 
-// ---------- progress and phase ----------
+// ---------- level and progress ----------
+
+// The level a logged day was done at: frozen as a level id when first logged;
+// days from before levels replaced phases store phase 0–2 (= Returning…Well trained).
+export function logLevel(log) {
+  if (!log) return null;
+  if (log.level != null) {
+    const i = LEVELS.findIndex((l) => l.id === log.level);
+    if (i >= 0) return i;
+  }
+  if (log.phase != null) return Math.min(LEVELS.length - 1, Number(log.phase) + 1);
+  return null;
+}
+
+// Doses for a date: the level it was logged at, otherwise your current level.
+export function levelFor(date) {
+  return logLevel(state.days[date]) ?? levelIndex(state.profile);
+}
 
 export function progressOf(log) {
   if (!log) return { done: 0, total: 0 };
   const def = dayDef(log.session || weekdayKey(log.date));
-  const items = sessionItems(def, log.phase ?? 0);
+  const items = sessionItems(def, logLevel(log) ?? levelIndex(state.profile));
   return { done: items.filter((it) => log.items[it.id] && log.items[it.id].done).length, total: items.length };
 }
 
@@ -62,32 +91,23 @@ export function countsAsSession(log) {
   return total > 0 && done / total >= 0.5;
 }
 
-// Completed sessions before a date; `since` skips older ones (e.g. before a level change).
-export function sessionsDone(beforeDate = null, since = null) {
+// Completed sessions, all of them or only those done at one level.
+export function sessionsDone(lvl = null) {
   let n = 0;
-  for (const [date, log] of Object.entries(state.days)) {
-    if (beforeDate && date >= beforeDate) continue;
-    if (since && date < since) continue;
+  for (const log of Object.values(state.days)) {
+    if (lvl != null && logLevel(log) !== lvl) continue;
     if (countsAsSession(log)) n += 1;
   }
   return n;
 }
 
-export function phaseFor(date) {
-  const p = state.profile;
-  const st = phaseState(p, sessionsDone(date, p && p.levelSince));
-  const log = state.days[date];
-  if (log && log.phase != null && !st.locked) return { ...st, phase: log.phase, frozen: true };
-  return st;
-}
-
-// Every edit to a day goes through here: freezes the phase on first touch and
+// Every edit to a day goes through here: freezes the level on first touch and
 // keeps the status in sync.
 export function editDay(date, fn, opts) {
   return updateDay(
     date,
     (d) => {
-      if (d.phase == null) d.phase = phaseFor(date).phase;
+      if (logLevel(d) == null) d.level = LEVELS[levelIndex(state.profile)].id;
       fn(d);
       d.status = computeStatus(d);
     },
@@ -112,8 +132,8 @@ export function addonsForDate(date) {
     .filter(Boolean);
 }
 
-export function addonProgress(log, entry, phase) {
-  const items = entry.variant.items.filter((it) => visible(it, phase)).filter(countable);
+export function addonProgress(log, entry, lvl) {
+  const items = entry.variant.items.filter((it) => visible(it, lvl)).filter(countable);
   const a = (log && log.addons && log.addons[entry.addon.id]) || {};
   const done = items.filter((it) => a.items && a.items[it.id] && a.items[it.id].done).length;
   return { done, total: items.length, skipped: !!a.skipped };
@@ -131,17 +151,18 @@ export function dayLoad(log) {
   const out = { zone2: 0, hard: 0, extra: 0 };
   if (!log || log.skip) return out;
   const def = dayDef(log.session || weekdayKey(log.date));
-  const phase = log.phase ?? 0;
+  const lvl = logLevel(log) ?? levelIndex(state.profile);
   if (def) {
     for (const b of def.blocks) {
-      for (const it of blockItems(b, phase)) {
+      for (const it of blockItems(b, lvl)) {
         const l = log.items[it.id];
         if (!l) continue;
         if (it.ex === "zone2") {
           const min = l.cardio && Number(l.cardio.min);
-          out.zone2 += min || (l.done ? firstNumber(it.rx[phase]) : 0);
+          out.zone2 += min || (l.done ? firstNumber(rxFor(it, lvl)) : 0);
         } else if (it.timer) {
-          const preset = it.timer[phase][l.preset || 0] || it.timer[phase][0];
+          const presets = timerPresets(it, lvl);
+          const preset = presets[l.preset || 0] || presets[0];
           const rounds = Number(l.rounds) || (l.done ? preset.rounds * (preset.blocks || 1) : 0);
           out.hard += (rounds * preset.work) / 60;
           if (it.ex === "norwegian" && (l.done || rounds)) out.zone2 += (Math.max(0, rounds - 1) * preset.rest) / 60;

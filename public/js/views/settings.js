@@ -1,11 +1,11 @@
-// Settings: profile (drives zones and loads), phase, add-ons, workout options,
+// Settings: profile (drives zones and loads), training level, add-ons, workout options,
 // theme, and your data (export, import, reset). Everything saves as you type.
 
 import { ADDONS } from "../data/addons/index.js";
-import { PHASES } from "../data/program.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
-import { LEVELS, SEXES, bpmRange, hrMax, phaseLengths, setLevel } from "../personalize.js";
-import { phaseFor } from "../plan.js";
+import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
+import { sessionsDone } from "../plan.js";
+import { levelPickerHtml } from "../components/level-picker.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
@@ -23,8 +23,6 @@ export function render(el) {
   function draw() {
     const pr = p();
     const st = pr.settings || {};
-    const ph = phaseFor(todayIso());
-    const lens = phaseLengths(pr);
     el.innerHTML = `<div class="page narrow">
       <div class="section-title"><h2>Settings</h2><span class="muted">Changes save automatically</span></div>
 
@@ -40,7 +38,6 @@ export function render(el) {
           <label class="field"><span>Height (${imperial() ? "in" : "cm"})</span><input class="input" data-f="height" inputmode="decimal" value="${esc(hgt(pr.heightCm))}"></label>
         </div>
         <div class="field"><span>Sex (scales starting weights)</span>${seg("sex", SEXES, pr.sex)}</div>
-        <label class="field"><span>Training level</span><select class="input" data-f="level">${LEVELS.map((l) => `<option value="${l.id}" ${pr.level === l.id ? "selected" : ""}>${esc(l.name)} — ${esc(l.detail)}</option>`).join("")}</select><small>Feeling more comfortable, or need it easier? Change your level any time: the starting weights rescale and your phase restarts at that level's starting point (${LEVELS.map((l) => `${esc(l.name)}: ${esc(PHASES[l.startPhase].name)}`).join(", ")}).</small></label>
         <div class="field"><span>Units</span>${seg("units", [{ id: "metric", name: "Metric (kg, cm)" }, { id: "imperial", name: "Imperial (lb, in)" }], pr.units, "accent")}</div>
         <div class="grid-form">
           <label class="field"><span>Heaviest dumbbell (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(w(pr.maxDumbbellKg))}"></label>
@@ -50,10 +47,9 @@ export function render(el) {
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
-        <h3>Phase</h3>
-        <p class="muted" style="font-size:0.86rem">You're in <b>${esc(PHASES[ph.phase].name)}</b>${ph.needed ? `, ${ph.done} of ${ph.needed} sessions done towards ${esc(PHASES[ph.phase + 1].name)}` : ""}. Your training level sets the starting phase; phases advance after ${lens[0]} and then ${lens[1]} completed sessions; skipped days don't count. Lock a phase to stay in it.</p>
-        ${seg("phaseLock", [{ id: "auto", name: "Automatic" }, ...PHASES.map((x, i) => ({ id: String(i), name: x.name }))], pr.phaseLock == null || pr.phaseLock === "" ? "auto" : String(pr.phaseLock))}
-        <div class="field"><span>Starting phase (for automatic mode)</span>${seg("startPhase", PHASES.map((x, i) => ({ id: String(i), name: x.name })), String(pr.startPhase || 0))}</div>
+        <h3>Training level</h3>
+        <p class="muted" style="font-size:0.86rem">Your level alone decides the workouts: sets, reps, intervals and which exercises you do. Your weight, sex and age (above) scale the suggested weights.</p>
+        ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
@@ -113,11 +109,7 @@ export function render(el) {
 
   el.addEventListener("change", async (e) => {
     const t = e.target;
-    if (t.dataset.f === "level") {
-      updateProfile((pr) => setLevel(pr, t.value));
-      draw();
-    }
-    else if (t.dataset.switch) {
+    if (t.dataset.switch) {
       const name = t.dataset.switch;
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
@@ -150,6 +142,12 @@ export function render(el) {
       location.hash = "#/today";
       return;
     }
+    if (b.dataset.level) {
+      updateProfile((pr) => (pr.level = b.dataset.level));
+      draw();
+      el.querySelector(`[data-level="${b.dataset.level}"]`).focus();
+      return;
+    }
     if (b.dataset.skin) {
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
@@ -168,8 +166,6 @@ export function render(el) {
         pr.settings = pr.settings || {};
         if (name === "sex") pr.sex = v;
         else if (name === "units") pr.units = v;
-        else if (name === "phaseLock") pr.phaseLock = v === "auto" ? null : Number(v);
-        else if (name === "startPhase") pr.startPhase = Number(v);
         else if (name === "rest") pr.settings.restSec = Number(v);
         else if (name === "theme") pr.settings.theme = v;
       });

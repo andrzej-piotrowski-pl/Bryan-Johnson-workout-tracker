@@ -3,6 +3,21 @@
 All notable changes to this project are listed here, newest first.
 Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
+## [Unreleased]
+
+### Changed
+- **Your training level alone now sets the workouts.** Each of the four levels (New to training, Returning, Active, Well trained) has its own sets, reps, intervals and Zone 2 minutes; nothing moves on by itself. Your weight, sex and age still scale the suggested weights.
+- Choosing the level in Settings now uses the same chips as setup, with what the level means and when to move up or step down.
+- Today, This week, the guided workout, Progress, the exercise pages and The plan show your level instead of a phase; The plan and each exercise compare all four levels.
+- Days you already logged keep the level they were done at.
+- Your data keeps working: if you were past Re-entry, your level is set to match what you were doing (Build → Active, Blueprint → Well trained), and older logged days show the matching level.
+
+### Added
+- A new, gentler set of workouts for New to training: supported or smaller-range moves, 1–2 sets, no jumps, swings or Nordics, shorter intervals and Zone 2.
+
+### Removed
+- Phases (Re-entry, Build, Blueprint), their automatic advance after 12 and 24 sessions, the phase lock and the starting-phase setting.
+
 ## [1.4.0] - 2026-10-15
 
 ### Added

@@ -4,6 +4,7 @@
 import { EXERCISES } from "../data/exercises.js";
 import { state } from "../store.js";
 import { personalize } from "../personalize.js";
+import { rxFor } from "../plan.js";
 import { esc } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "./icons.js";
 import { renderLogger } from "./logger.js";
@@ -54,7 +55,7 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
     const p = state.profile;
     if (!sameExercise) stage.load(ctx.exId);
     const item = ctx.item;
-    const rx = item ? personalize(item.rx[ctx.phase], p) : "";
+    const rx = item ? personalize(rxFor(item, ctx.level), p) : "";
     const vids = videosFor(ex);
     const bryanCount = vids.filter((v) => v.kind === "bryan").length;
     body.innerHTML = `
@@ -75,7 +76,7 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
       </div>
       <div class="tab-body" role="tabpanel"></div>`;
     const lh = body.querySelector(".logger-host");
-    if (lh) renderLogger(lh, { date: ctx.date, item, ex, phase: ctx.phase, scope: ctx.scope || "main", onChange: ctx.onChange });
+    if (lh) renderLogger(lh, { date: ctx.date, item, ex, level: ctx.level, scope: ctx.scope || "main", onChange: ctx.onChange });
     drawTab();
   }
 
