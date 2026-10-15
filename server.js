@@ -134,6 +134,10 @@ async function handleApi(req, res, pathname) {
     return send(res, 200, { app: "bryan-johnson-workout-website", version: APP_VERSION, storage: "server", dataDir: path.relative(ROOT, DATA_DIR) || "." });
   }
 
+  if (pathname === "/api/changelog" && method === "GET") {
+    return send(res, 200, await readFile(path.join(ROOT, "CHANGELOG.md"), "utf8"), "text/markdown; charset=utf-8");
+  }
+
   if (pathname === "/api/profile") {
     if (method === "GET") {
       const profile = await readJson(PROFILE_FILE);

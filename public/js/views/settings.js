@@ -9,7 +9,7 @@ import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone } from "../pl
 import { levelPickerHtml } from "../components/level-picker.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
-import { confirmDialog, seg, switchHtml, toast } from "../components/ui.js";
+import { confirmDialog, openDialog, seg, switchHtml, toast } from "../components/ui.js";
 import { SKINS, applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
 import { openSkinBar } from "../components/skin-bar.js";
 import { ANIM_STYLES, PREVIEW_EXERCISE, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
@@ -123,6 +123,7 @@ export function render(el) {
       </section>
 
       <p class="muted" style="font-size:0.82rem">Home Protocol · open source · unofficial, not affiliated with Bryan Johnson or Blueprint · not medical advice.</p>
+      <button type="button" class="btn ghost sm" data-changelog>Version ${esc(state.version || "unavailable")} · Latest changes</button>
     </div>`;
   }
 
@@ -181,6 +182,30 @@ export function render(el) {
   el.addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if (b.hasAttribute("data-changelog")) {
+      try {
+        const res = await fetch("/api/changelog", { cache: "no-store" });
+        if (!res.ok) throw new Error("Changelog unavailable");
+        const releases = (await res.text()).split(/(?=^## \[)/m).filter((section) => section.startsWith("## [")).slice(0, 5);
+        if (!releases.length) throw new Error("Changelog is empty");
+        const content = `<div class="release-list">${releases.map((release) => {
+          const [heading, ...lines] = release.trim().split("\n");
+          const [, version, date] = heading.match(/^## \[(.+?)\] - (.+)$/) || [];
+          const changes = lines.map((line) => {
+            const category = line.match(/^### (.+)$/);
+            const item = line.match(/^(\s*)- (.+)$/);
+            if (category) return `<h4>${esc(category[1])}</h4>`;
+            if (item) return `<p class="release-bullet${item[1] ? " nested" : ""}">${esc(item[2])}</p>`;
+            return "";
+          }).join("");
+          return `<section class="release-entry"><h3>v${esc(version || "?")}<small>${esc(date || "")}</small></h3>${changes}</section>`;
+        }).join("")}<p><a href="/api/changelog" target="_blank" rel="noopener">Read the full changelog</a></p></div>`;
+        openDialog({ title: "Latest changes", content, wide: true });
+      } catch {
+        toast("Couldn't load the changelog", { icon: "info" });
+      }
+      return;
+    }
     if (b.hasAttribute("data-live")) {
       openSkinBar();
       location.hash = "#/today";

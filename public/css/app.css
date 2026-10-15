@@ -422,6 +422,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px 6px; }
 .modal-head h2 { font-family: var(--font-display); font-size: 1.6rem; text-transform: uppercase; }
 .modal-body { padding: 10px 20px 20px; display: grid; gap: 14px; }
+.release-list, .release-entry { display: grid; gap: 8px; }
+.release-entry + .release-entry { border-top: 1px solid var(--line); padding-top: 16px; }
+.release-entry h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 1.05rem; }
+.release-entry h3 small { color: var(--muted); font: 0.75rem var(--font-mono); }
+.release-entry h4 { margin: 4px 0 0; color: var(--muted); font: 600 0.76rem var(--font-mono); text-transform: uppercase; }
+.release-bullet { margin: 0; font-size: 0.88rem; line-height: 1.5; }
+.release-bullet.nested { margin-left: 18px; }
 .sheet-overlay { place-items: end center; padding: 0; }
 .sheet { width: min(720px, 100%); max-height: 92vh; overflow: auto; background: var(--surface); border-radius: 22px 22px 0 0; border: 1px solid var(--line); border-bottom: 0; box-shadow: var(--shadow-pop); animation: up 0.22s ease; padding-bottom: env(safe-area-inset-bottom); }
 .sheet .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line-strong); margin: 8px auto 0; }

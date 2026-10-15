@@ -16,6 +16,7 @@ export const state = {
   ready: false,
   mode: "server", // "server" | "local"
   dataDir: "data",
+  version: null,
   profile: null,
   days: {},
   saveStatus: "idle", // idle | pending | saving | saved | offline
@@ -73,6 +74,7 @@ export async function init() {
     if (!info || info.storage !== "server") throw new Error("no server");
     state.mode = "server";
     state.dataDir = info.dataDir;
+    state.version = info.version;
     const [p, d] = await Promise.all([fetch("/api/profile", { cache: "no-store" }), fetch("/api/days", { cache: "no-store" })]);
     state.profile = p.ok ? await p.json() : null;
     state.days = d.ok ? await d.json() : {};

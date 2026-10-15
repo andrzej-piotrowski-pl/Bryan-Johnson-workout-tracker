@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.0] - 2026-10-15
+
+### Added
+- Settings shows the app version and opens the five latest release notes.
+
 ## [1.10.3] - 2026-10-15
 
 ### Fixed
