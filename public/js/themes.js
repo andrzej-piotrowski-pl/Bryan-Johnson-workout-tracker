@@ -100,7 +100,7 @@ export function currentSkin() {
 
 // How Today shows the selected exercise: beside the list, or opened in place.
 export function detailMode() {
-  return ["course", "journal"].includes(currentSkin().id) ? "inline" : "side";
+  return window.matchMedia("(max-width: 1180px)").matches || ["course", "journal"].includes(currentSkin().id) ? "inline" : "side";
 }
 
 const darkQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;

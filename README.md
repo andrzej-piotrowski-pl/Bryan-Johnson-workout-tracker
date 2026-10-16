@@ -4,6 +4,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
+- **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
+- **Mobile navigation** keeps all seven pages in the bottom bar, including Plan, Progress and Settings.
 - **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
@@ -31,6 +33,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 <img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
 <img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
 </p>
+
+![Mobile bottom navigation with all seven pages](docs/screenshots/mobile-navigation.png)
 
 > Unofficial and not affiliated with or endorsed by Bryan Johnson or Blueprint. It's a training plan, not medical advice. If you have been inactive for a while, are over 50 or have a heart condition, check with a doctor before hard intervals.
 

@@ -34,8 +34,10 @@ const TABS = [
   ["today", "Today", "today"],
   ["week", "Week", "week"],
   ["history", "History", "history"],
+  ["progress", "Progress", "progress"],
   ["library", "Exercises", "library"],
-  ["settings", "More", "dots"],
+  ["plan", "Plan", "plan"],
+  ["settings", "Settings", "settings"],
 ];
 
 const viewEl = document.getElementById("view");
@@ -47,9 +49,8 @@ function drawNav(route) {
   document.getElementById("nav").innerHTML = NAV.map(
     ([id, label, ic]) => `<a href="#/${id}" ${active === id ? 'aria-current="page"' : ""}>${icon(ic)}<span>${esc(label)}</span></a>`
   ).join("");
-  const moreActive = ["settings", "plan", "progress"].includes(active);
   document.getElementById("tabbar").innerHTML = TABS.map(
-    ([id, label, ic]) => `<a href="#/${id}" ${active === id || (id === "settings" && moreActive) ? 'aria-current="page"' : ""}>${icon(ic)}<span>${esc(label)}</span></a>`
+    ([id, label, ic]) => `<a href="#/${id}" ${active === id ? 'aria-current="page"' : ""}>${icon(ic)}<span>${esc(label)}</span></a>`
   ).join("");
   const setup = route === "setup";
   document.querySelector(".sidebar").hidden = setup;

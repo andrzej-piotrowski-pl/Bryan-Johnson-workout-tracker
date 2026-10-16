@@ -28,6 +28,7 @@ export function render(el, params) {
   let panel = null;
   let showSkipped = false;
   let lastStatus = state.days[date] ? state.days[date].status : null;
+  const narrowView = window.matchMedia("(max-width: 1180px)");
   let panelMode = detailMode();
 
   const log = () => state.days[date] || null;
@@ -218,7 +219,7 @@ export function render(el, params) {
     return `<div class="banner skip"><span>${icon(r.icon, "lg")}</span><div class="grow"><b>Skipped: ${esc(r.name)}</b>${l.skip.note ? `<span>${esc(l.skip.note)}</span>` : ""}</div><div class="btn-row"><button type="button" class="btn sm" data-skip-edit>${icon("note", "sm")} Edit</button><button type="button" class="btn sm" data-unskip>${icon("undo", "sm")} Undo skip</button></div></div>`;
   }
 
-  function draw(mobileSheet = false) {
+  function draw() {
     if (!profile()) return;
     const ctx = context();
     const l = log();
@@ -251,8 +252,8 @@ export function render(el, params) {
     </div>`;
     if (panel) panel.dispose();
     panel = null;
-    if (selected) showPanel(selected, mobileSheet);
-    else autoselect(ctx);
+    if (selected) showPanel(selected);
+    else autoselect();
     const r = el.querySelector("[data-ring] .ring-wrap");
     if (r) r.classList.add("intro");
   }
@@ -260,19 +261,16 @@ export function render(el, params) {
   function onLook() {
     const mode = detailMode();
     if (mode === panelMode) return;
-    const mobileSheet = panelMode === "inline" && window.matchMedia("(max-width: 1180px)").matches;
     panelMode = mode;
-    draw(mobileSheet);
+    draw();
   }
 
-  function autoselect(ctx) {
-    const inline = detailMode() === "inline";
-    if (!inline && window.matchMedia("(max-width: 1180px)").matches) return;
+  function autoselect() {
     const rows = [...el.querySelectorAll(".item:not(.info)")];
     // While the animation style switcher is open, start on an exercise the styles apply to.
     const styled = animBarOpen() && rows.find((li) => hasAnimStyles((findItem(li.dataset.scope, li.dataset.id) || { item: {} }).item.ex));
     const first = styled || rows[0];
-    if (first) select(first.dataset.scope, first.dataset.id, false);
+    if (first) select(first.dataset.scope, first.dataset.id);
   }
 
   function findItem(scope, id) {
@@ -285,7 +283,7 @@ export function render(el, params) {
     return null;
   }
 
-  function select(scope, id, mobileSheet = true) {
+  function select(scope, id) {
     // Opened in place: a second click on the open exercise folds it away.
     if (detailMode() === "inline" && selected && selected.scope === scope && selected.id === id && el.querySelector(".inline-panel")) {
       closeInline();
@@ -295,7 +293,7 @@ export function render(el, params) {
     }
     selected = { scope, id };
     el.querySelectorAll(".item").forEach((li) => li.setAttribute("aria-selected", String(li.dataset.scope === scope && li.dataset.id === id)));
-    showPanel(selected, mobileSheet);
+    showPanel(selected);
   }
 
   function panelCtx(found) {
@@ -309,7 +307,7 @@ export function render(el, params) {
     if (host) host.remove();
   }
 
-  // The exercise opens right under its row (the Course theme), at any width.
+  // On narrow screens and in inline themes, the exercise opens under its row.
   function showInline(sel, found) {
     const li = el.querySelector(`.item[data-scope="${CSS.escape(sel.scope)}"][data-id="${CSS.escape(sel.id)}"]`);
     if (!li) return;
@@ -324,29 +322,10 @@ export function render(el, params) {
     panel.show(panelCtx(found));
   }
 
-  function showPanel(sel, mobileSheet) {
+  function showPanel(sel) {
     const found = findItem(sel.scope, sel.id);
     if (!found) return;
     if (detailMode() === "inline") return showInline(sel, found);
-    const narrow = window.matchMedia("(max-width: 1180px)").matches;
-    if (narrow) {
-      if (!mobileSheet) return;
-      const host = document.createElement("div");
-      let sheetPanel;
-      openDialog({
-        title: EXERCISES[found.item.ex].name,
-        content: host,
-        sheet: true,
-        hideTitle: true,
-        onClose: () => {
-          sheetPanel && sheetPanel.dispose();
-          refreshStatus();
-        },
-      });
-      sheetPanel = createExercisePanel(host);
-      sheetPanel.show(panelCtx(found));
-      return;
-    }
     const host = el.querySelector("[data-panel-host]");
     if (!host) return;
     if (!panel) panel = createExercisePanel(host);
@@ -429,7 +408,7 @@ export function render(el, params) {
       const found = findItem(li.dataset.scope, li.dataset.id);
       if (found) editItem(date, li.dataset.scope, found.item, (l) => (l.done = tick.checked));
       refreshStatus();
-      if (panel && selected && selected.id === li.dataset.id) showPanel(selected, false);
+      if (panel && selected && selected.id === li.dataset.id) showPanel(selected);
       return;
     }
     const periodic = t.closest("[data-periodic]");
@@ -444,7 +423,7 @@ export function render(el, params) {
     }
     const li = t.closest(".item");
     if (li && !li.classList.contains("info") && !t.closest("input")) {
-      select(li.dataset.scope, li.dataset.id, true);
+      select(li.dataset.scope, li.dataset.id);
       return;
     }
     const b = t.closest("button");
@@ -463,7 +442,7 @@ export function render(el, params) {
         }
       });
       refreshStatus();
-      if (panel && selected) showPanel(selected, false);
+      if (panel && selected) showPanel(selected);
     } else if (b.hasAttribute("data-skip") || b.hasAttribute("data-skip-edit")) openSkip();
     else if (b.hasAttribute("data-unskip")) {
       editDay(date, (d) => {
@@ -548,7 +527,7 @@ export function render(el, params) {
   el.addEventListener("keydown", (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target.matches(".item[tabindex]")) {
       e.preventDefault();
-      select(e.target.dataset.scope, e.target.dataset.id, true);
+      select(e.target.dataset.scope, e.target.dataset.id);
     }
   });
 
@@ -591,6 +570,7 @@ export function render(el, params) {
     if (evt.type === "all" || evt.type === "profile") draw();
   });
   window.addEventListener("hp:look", onLook);
+  narrowView.addEventListener("change", onLook);
   draw();
 
   // The detail panel is sticky and can be taller than the window: let it scroll first, then the page.
@@ -611,6 +591,7 @@ export function render(el, params) {
     destroy() {
       unsub();
       window.removeEventListener("hp:look", onLook);
+      narrowView.removeEventListener("change", onLook);
       window.removeEventListener("wheel", onWheel);
       if (panel) panel.dispose();
       delete document.documentElement.dataset.venue;

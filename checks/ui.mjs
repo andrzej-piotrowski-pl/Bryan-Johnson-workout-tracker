@@ -71,4 +71,17 @@ for (const id of animationIds()) {
   }
 }
 robot.dispose();
+let narrow = false;
+globalThis.window = { matchMedia: (query) => ({ matches: query === "(max-width: 1180px)" && narrow, addEventListener() {} }) };
+globalThis.document = { documentElement: { dataset: {} } };
+const { SKINS, detailMode } = await import("../public/js/themes.js");
+for (const skin of SKINS) {
+  document.documentElement.dataset.skin = skin.id;
+  narrow = true;
+  assert.equal(detailMode(), "inline", `${skin.name} must show animations inline on phones and tablets`);
+  narrow = false;
+  assert.equal(detailMode(), ["course", "journal"].includes(skin.id) ? "inline" : "side");
+}
+delete globalThis.window;
+delete globalThis.document;
 console.log("Weekly totals, source dates and links, exercise filters, new choices and asynchronous snapshots passed.");

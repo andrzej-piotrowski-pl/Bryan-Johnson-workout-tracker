@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1] - 2026-10-16
+
+### Fixed
+- Today automatically shows the first exercise animation inline on phones and tablets in every theme.
+- The selected animation stays visible when resizing between desktop and mobile layouts.
+- Mobile bottom navigation includes all seven pages, with direct Plan and Settings links.
+
 ## [1.13.0] - 2026-10-16
 
 ### Added
