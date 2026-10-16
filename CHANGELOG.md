@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.14.0] - 2026-10-16
+
+### Added
+- Activity groups This week, History and Progress into one navigation item with three tabs.
+- Grouped progress intervals include This week, Last week, This month, Last month and Since beginning.
+
+### Changed
+- Desktop and mobile navigation now have five destinations; existing page bookmarks still work.
+- Progress shows exact interval dates and applies them to all charts, tables and summary totals.
+- Weekly averages follow the selected interval, and long-term chart labels stay readable.
+
 ## [1.13.1] - 2026-10-16
 
 ### Fixed

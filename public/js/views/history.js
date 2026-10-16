@@ -109,7 +109,7 @@ export function render(el, params) {
     const next = iso(new Date(y, m, 1)).slice(0, 7);
     const title = new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" });
     el.innerHTML = `<div class="page">
-      <div class="section-title"><h2>History</h2><a class="btn sm" href="#/progress">${icon("progress", "sm")} Progress charts</a></div>
+      <div class="section-title"><h2>History</h2></div>
       <div class="kpis">
         <div class="card kpi">${icon("flame")}<b>${streak(today)}</b><span>day streak (rest days don't break it)</span></div>
         <div class="card kpi">${icon("check")}<b>${s.adherence == null ? "–" : s.adherence + "%"}</b><span>of training days done, last 4 weeks</span></div>

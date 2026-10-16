@@ -3,47 +3,46 @@
 
 import { EXERCISES } from "../data/exercises.js";
 import { state } from "../store.js";
-import { countsAsSession, liftHistory, sessionsDone, weekStats } from "../plan.js";
+import { countsAsSession, liftHistory, logLevel, weekStats } from "../plan.js";
 import { LEVELS, kgUnit, levelIndex } from "../personalize.js";
-import { addDays, esc, fmtShort, parseIso, todayIso, weekStart } from "../util.js";
+import { addDays, esc, fmtDate, fmtShort, parseIso, weekStart } from "../util.js";
+import { PROGRESS_RANGES, inProgressRange, progressBeginning, progressRange } from "../progress-ranges.js";
 import { icon } from "../components/icons.js";
 import { mountChart, tableHtml } from "../components/charts.js";
 
 export function render(el) {
-  let range = 12;
+  let range = "12w";
   let lift = null;
   const charts = [];
   const tables = new Set();
 
   const u = () => kgUnit(state.profile);
+  const dated = (date) => fmtDate(date, { day: "numeric", month: "short", year: "numeric" });
   const toUnit = (kg) => (u() === "lb" ? Math.round(kg * 2.20462) : kg);
 
-  function weeks(n, clip = true) {
+  function weeks(selected) {
     const out = [];
-    let start = weekStart(todayIso());
-    const first = clip && state.profile && state.profile.startDate ? weekStart(state.profile.startDate) : null;
-    for (let i = 0; i < n; i++) {
-      if (first && start < first && out.length) break;
-      out.unshift({ start, s: weekStats(start) });
-      start = addDays(start, -7);
+    for (let start = weekStart(selected.start); start <= selected.end; start = addDays(start, 7)) {
+      out.push({ start, s: weekStats(start, { from: selected.start, to: selected.end }) });
     }
     return out;
   }
 
-  function lifts() {
+  function lifts(selected) {
     return Object.entries(EXERCISES)
       .filter(([, e]) => e.log === "load" || e.log === "reps")
-      .map(([id, e]) => ({ id, name: e.name, hist: liftHistory(id) }))
+      .map(([id, e]) => ({ id, name: e.name, hist: liftHistory(id).filter((h) => inProgressRange(h.date, selected)) }))
       .filter((x) => x.hist.length);
   }
 
-  function addonSeries(addonId, metricId) {
+  function addonSeries(addonId, metricId, selected) {
     return Object.keys(state.days)
+      .filter((d) => inProgressRange(d, selected))
       .sort()
       .map((d) => {
         const a = state.days[d].addons && state.days[d].addons[addonId];
         const v = a && a.metrics ? a.metrics[metricId] : null;
-        return v == null ? null : { x: parseIso(d), value: v, label: fmtShort(d), short: fmtShort(d) };
+        return v == null ? null : { x: parseIso(d), value: v, label: dated(d), short: fmtShort(d) };
       })
       .filter(Boolean);
   }
@@ -58,12 +57,13 @@ export function render(el) {
 
   function draw() {
     charts.splice(0).forEach((c) => c.destroy());
-    const W = weeks(range);
-    const sessions = { type: "columns", integer: true, title: "Sessions per week", target: 6, targetLabel: "6 a week", fmt: (v) => `${v} sessions`, data: W.map((w) => ({ label: `Week of ${fmtShort(w.start)}`, short: fmtShort(w.start), value: w.s.sessions, sub: w.s.skipped ? `${w.s.skipped} skipped` : "" })) };
-    const zone2 = { type: "columns", title: "Zone 2 minutes per week", target: 150, targetLabel: "Bryan: 150", fmt: (v) => `${v} min`, data: W.map((w) => ({ label: `Week of ${fmtShort(w.start)}`, short: fmtShort(w.start), value: w.s.zone2 })) };
-    const hard = { type: "columns", title: "Hard-cardio minutes per week", target: 75, targetLabel: "Bryan: 75", fmt: (v) => `${v} min`, data: W.map((w) => ({ label: `Week of ${fmtShort(w.start)}`, short: fmtShort(w.start), value: w.s.hard })) };
+    const selected = progressRange(range, state.profile, state.days);
+    const W = weeks(selected);
+    const sessions = { type: "columns", integer: true, title: "Sessions per week", target: 6, targetLabel: "6 a week", fmt: (v) => `${v} sessions`, data: W.map((w) => ({ label: `Week of ${dated(w.start)}`, short: fmtShort(w.start), value: w.s.sessions, sub: w.s.skipped ? `${w.s.skipped} skipped` : "" })) };
+    const zone2 = { type: "columns", title: "Zone 2 minutes per week", target: 150, targetLabel: "Bryan: 150", fmt: (v) => `${v} min`, data: W.map((w) => ({ label: `Week of ${dated(w.start)}`, short: fmtShort(w.start), value: w.s.zone2 })) };
+    const hard = { type: "columns", title: "Hard-cardio minutes per week", target: 75, targetLabel: "Bryan: 75", fmt: (v) => `${v} min`, data: W.map((w) => ({ label: `Week of ${dated(w.start)}`, short: fmtShort(w.start), value: w.s.hard })) };
 
-    const L = lifts();
+    const L = lifts(selected);
     if (!lift || !L.find((x) => x.id === lift)) lift = L.length ? L.sort((a, b) => b.hist.length - a.hist.length)[0].id : null;
     const cur = L.find((x) => x.id === lift);
     const useKg = cur && cur.hist.some((h) => h.kg > 0);
@@ -72,39 +72,38 @@ export function render(el) {
           type: "line",
           title: cur.name,
           fmt: (v) => (useKg ? `${v} ${u()}` : `${v} reps`),
-          data: cur.hist.map((h) => ({ x: parseIso(h.date), value: useKg ? toUnit(h.kg) : h.reps, label: fmtShort(h.date), short: fmtShort(h.date), sub: useKg ? `${h.reps} reps` : "" })),
+          data: cur.hist.map((h) => ({ x: parseIso(h.date), value: useKg ? toUnit(h.kg) : h.reps, label: dated(h.date), short: fmtShort(h.date), sub: useKg ? `${h.reps} reps` : "" })),
         }
       : null;
-    const stiffness = state.profile && state.profile.addons && state.profile.addons.posture ? addonSeries("posture", "stiffness") : [];
+    const stiffness = state.profile && state.profile.addons && state.profile.addons.posture ? addonSeries("posture", "stiffness", selected) : [];
     const stiffSpec = { type: "line", title: "Neck & upper-back stiffness", yMin: 0, fmt: (v) => `${v} / 10`, data: stiffness };
     const bw = Object.keys(state.days)
       .sort()
-      .filter((d) => state.days[d].bodyWeightKg != null)
-      .map((d) => ({ x: parseIso(d), value: toUnit(state.days[d].bodyWeightKg), label: fmtShort(d), short: fmtShort(d) }));
+      .filter((d) => inProgressRange(d, selected) && state.days[d].bodyWeightKg != null)
+      .map((d) => ({ x: parseIso(d), value: toUnit(state.days[d].bodyWeightKg), label: dated(d), short: fmtShort(d) }));
     const bwSpec = { type: "line", title: "Body weight", fmt: (v) => `${v} ${u()}`, data: bw };
 
-    const total = Object.values(state.days).filter(countsAsSession).length;
-    // Weekly averages use full weeks only: not the current one, and not a first
-    // week you joined half way through. Before that, this week so far.
-    const thisWeek = weekStart(todayIso());
-    const startDate = state.profile && state.profile.startDate;
-    let firstFull = startDate ? weekStart(startDate) : null;
-    if (firstFull && startDate > firstFull) firstFull = addDays(firstFull, 7);
-    const full = weeks(9, false).filter((w) => w.start < thisWeek && (!firstFull || w.start >= firstFull)).slice(-8);
-    const basis = full.length ? full : weeks(1, false);
+    const logged = Object.entries(state.days).filter(([date, d]) => inProgressRange(date, selected) && countsAsSession(d)).map(([, d]) => d);
+    const total = logged.length;
+    const beginning = progressBeginning(state.profile, state.days);
+    const full = W.filter((w) => w.start >= selected.start && w.start >= beginning && addDays(w.start, 6) <= selected.end);
+    const basis = full.length ? full : W;
     const avg = (k) => basis.reduce((a, w) => a + w.s[k], 0) / basis.length;
     const avgSess = avg("sessions").toFixed(1);
     const avgZ2 = Math.round(avg("zone2"));
-    const avgNote = full.length ? `last ${full.length === 1 ? "full week" : `${full.length} full weeks`}` : "this week so far";
+    const avgNote = full.length ? `${full.length} full ${full.length === 1 ? "week" : "weeks"} in range` : "selected period";
     const lvl = levelIndex(state.profile);
 
     el.innerHTML = `<div class="page">
-      <div class="section-title"><h2>Progress</h2>
-        <div class="seg" role="group" aria-label="Range">${[[8, "8 weeks"], [12, "12 weeks"], [26, "6 months"], [52, "1 year"]].map(([n, l]) => `<button type="button" data-range="${n}" aria-pressed="${range === n}">${l}</button>`).join("")}</div>
-      </div>
+      <div class="section-title"><h2>Progress</h2></div>
+      <section class="card card-pad progress-range" aria-label="Progress time interval">
+        <div class="section-title"><h3>Time interval</h3><span class="range-dates" data-range-dates>${esc(dated(selected.start))} – ${esc(dated(selected.end))}</span></div>
+        <div class="range-groups">${["Recent", "Longer"].map((group) => `<div class="range-group"><span class="label">${group}</span><div class="range-options${group === "Longer" ? " longer" : ""}" role="group" aria-label="${group} intervals">${PROGRESS_RANGES.filter((r) => r.group === group).map((r) => `<button type="button" data-range="${r.id}" aria-pressed="${range === r.id}">${r.name}</button>`).join("")}</div></div>`).join("")}</div>
+        <p class="muted range-note">Last week and last month mean the previous calendar period. All charts and totals use these dates; edge weeks may be partial.</p>
+      </section>
       <div class="kpis">
-        <div class="card kpi"><span>Level</span><b>${esc(LEVELS[lvl].name)}</b><span>${sessionsDone(lvl)} sessions at this level</span></div>
-        <div class="card kpi"><span>Sessions done</span><b>${total}</b><span>in total</span></div>
+        <div class="card kpi"><span>Current level</span><b>${esc(LEVELS[lvl].name)}</b><span>${logged.filter((d) => logLevel(d) === lvl).length} sessions at this level in range</span></div>
+        <div class="card kpi"><span>Sessions done</span><b>${total}</b><span>in selected interval</span></div>
         <div class="card kpi"><span>Sessions a week</span><b>${avgSess}</b><span>${avgNote} · plan: 6</span></div>
         <div class="card kpi"><span>Zone 2 a week</span><b>${avgZ2} min</b><span>${avgNote} · Bryan: 150</span></div>
       </div>
@@ -116,7 +115,7 @@ export function render(el) {
       <div class="section-title"><h2 style="font-size:1.25rem">Strength</h2>
         ${L.length ? `<select class="input" data-lift style="max-width:320px" aria-label="Exercise">${L.map((x) => `<option value="${x.id}" ${x.id === lift ? "selected" : ""}>${esc(x.name)} (${x.hist.length})</option>`).join("")}</select>` : ""}
       </div>
-      ${liftSpec ? `<div class="charts">${card("lift", liftSpec.title, useKg ? `Heaviest set each session (${u()}); the tooltip shows the reps.` : "Most reps in a set each session.", liftSpec, ["Date", useKg ? u() : "Reps"])}</div>` : `<div class="card empty">Log sets with weight or reps and your progression shows up here.</div>`}
+      ${liftSpec ? `<div class="charts">${card("lift", liftSpec.title, useKg ? `Heaviest set each session (${u()}); the tooltip shows the reps.` : "Most reps in a set each session.", liftSpec, ["Date", useKg ? u() : "Reps"])}</div>` : `<div class="card empty">No strength sets in this interval. Choose a longer interval or log sets to see your progression.</div>`}
       ${stiffness.length || bw.length ? `<div class="charts">${stiffness.length ? card("stiff", "Neck & upper-back stiffness", "From the posture add-on, 0 = none, 10 = very stiff. Lower is better.", stiffSpec, ["Date", "Stiffness"]) : ""}${bw.length ? card("bw", "Body weight", "From the notes card on each day.", bwSpec, ["Date", u()]) : ""}</div>` : ""}
     </div>`;
 
@@ -132,8 +131,9 @@ export function render(el) {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.range) {
-      range = Number(b.dataset.range);
+      range = b.dataset.range;
       draw();
+      el.querySelector(`[data-range="${range}"]`).focus({ preventScroll: true });
     } else if (b.dataset.table) {
       tables.has(b.dataset.table) ? tables.delete(b.dataset.table) : tables.add(b.dataset.table);
       draw();

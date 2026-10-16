@@ -5,7 +5,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
-- **Mobile navigation** keeps all seven pages in the bottom bar, including Plan, Progress and Settings.
+- **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History and Progress into three tabs.
 - **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
@@ -15,7 +15,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
 - **Nine themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
-- Week view, history calendar with skip reasons, progress charts, an exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
+- **Activity**: a weekly schedule, history calendar with skip reasons and progress charts with clear time intervals, including Last week, Last month and Since beginning.
+- An exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
 - Custom rest timer values, compact effort and energy ratings, and more than 30 extra activities to log.
 
 ![The Today screen: the day's blocks on the left, the selected exercise with its 3D animation and set logger on the right](docs/screenshots/today.png)
@@ -34,7 +35,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 <img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
 </p>
 
-![Mobile bottom navigation with all seven pages](docs/screenshots/mobile-navigation.png)
+![Mobile bottom navigation: Today, Activity, Exercises, Plan and Settings](docs/screenshots/mobile-navigation.png)
 
 > Unofficial and not affiliated with or endorsed by Bryan Johnson or Blueprint. It's a training plan, not medical advice. If you have been inactive for a while, are over 50 or have a heart condition, check with a doctor before hard intervals.
 
@@ -137,6 +138,22 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 - To edit your profile file directly, stop the app first, then edit `data/profile.json`.
 
 </details>
+
+## Activity and progress
+
+Open **Activity** for three views: **This week**, **History** and **Progress**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
+
+In Progress, choose a time interval from two groups:
+
+- **Recent**: This week, Last week, This month, Last month.
+- **Longer**: 8 weeks, 12 weeks, 6 months, 1 year, Since beginning.
+
+Last week means the previous Monday–Sunday; Last month means the previous calendar month. The exact dates are shown above the choices. All charts, tables and totals use the same interval, including strength, body weight and posture. Weekly averages use full weeks when available. Since beginning includes older imported logs, even if they predate your current program start.
+
+<p>
+<img src="docs/screenshots/activity.png" width="65%" alt="Activity with This week, History and Progress tabs">
+<img src="docs/screenshots/mobile-progress.png" width="24%" alt="Progress on a phone with grouped time intervals and exact dates">
+</p>
 
 ## The week
 

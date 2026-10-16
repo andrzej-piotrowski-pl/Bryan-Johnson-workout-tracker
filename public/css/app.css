@@ -188,12 +188,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
     border-bottom: 1px solid var(--line);
   }
   .tabbar {
-    display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
     padding: 6px 6px max(8px, env(safe-area-inset-bottom));
     background: color-mix(in srgb, var(--sidebar) 92%, transparent); backdrop-filter: blur(12px); border-top: 1px solid var(--line);
   }
   .tabbar a { display: grid; min-width: 0; justify-items: center; gap: 2px; padding: 6px 2px; color: var(--muted); text-decoration: none; font-size: 0.7rem; font-weight: 600; border-radius: 10px; }
-  :root[data-skin] .tabbar a { font-size: clamp(0.6rem, 2.7vw, 0.7rem); }
+  :root[data-skin] .tabbar a { font-size: 0.7rem; }
   .tabbar a .icon { max-width: 100%; }
   .tabbar a > span { white-space: nowrap; }
   .tabbar a[aria-current="page"] { color: var(--accent); }
@@ -839,3 +839,28 @@ td.cur, th.cur { background: var(--accent-soft); }
 .lib-filters .input { min-width: 0; width: 100%; }
 .library-count { font-size: 0.82rem; }
 .ex-card .meta small { font-size: 0.76rem; line-height: 1.4; }
+
+/* Activity keeps the three views together without crowding the main navigation. */
+.activity-head { display: grid; gap: 14px; }
+.activity-head h1 { font: 700 2.2rem/1.1 var(--font-display); }
+.activity-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 500px; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
+.activity-tabs a { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 8px; border-radius: var(--r-sm); text-decoration: none; color: var(--ink-2); font-size: 0.87rem; font-weight: 600; }
+.activity-tabs a[aria-current="page"] { background: var(--surface); color: var(--accent); box-shadow: var(--shadow); }
+.activity-page > [data-activity-view] { min-width: 0; }
+.progress-range { display: grid; gap: 16px; }
+.progress-range .section-title { flex-wrap: wrap; gap: 8px; }
+.range-dates { font: 0.8rem var(--font-mono); color: var(--ink-2); }
+.range-groups { display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px; }
+.range-group { display: grid; gap: 8px; align-content: start; }
+.range-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.range-options.longer { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.range-options button { min-height: 42px; padding: 9px 8px; border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--surface-2); color: var(--ink-2); font: 600 0.85rem var(--font-body); cursor: pointer; }
+.range-options button[data-range="all"] { grid-column: span 2; }
+.range-options button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.range-note { font-size: 0.78rem; }
+@media (max-width: 640px) {
+  .range-groups { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .activity-page .section-title { flex-wrap: wrap; }
+  .activity-tabs { max-width: none; }
+  .activity-tabs a { gap: 5px; padding-inline: 5px; font-size: 0.82rem; }
+}

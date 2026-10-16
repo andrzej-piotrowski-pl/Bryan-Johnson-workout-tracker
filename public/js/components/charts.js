@@ -56,7 +56,7 @@ export function mountChart(host, spec) {
     if (spec.type === "columns") {
       const band = iw / Math.max(1, data.length);
       const bw = Math.min(24, band * 0.62);
-      const every = data.length > 16 ? 3 : data.length > 9 ? 2 : 1;
+      const every = Math.max(1, Math.ceil(data.length / Math.max(1, Math.floor(iw / 70))));
       host._bars = [];
       data.forEach((d, i) => {
         const x = PAD.left + i * band + (band - bw) / 2;

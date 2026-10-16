@@ -12,9 +12,7 @@ import { restoreAnimBar } from "./components/anim-bar.js";
 const VIEWS = {
   today: () => import("./views/today.js"),
   day: () => import("./views/today.js"),
-  week: () => import("./views/week.js"),
-  history: () => import("./views/history.js"),
-  progress: () => import("./views/progress.js"),
+  activity: () => import("./views/activity.js"),
   library: () => import("./views/library.js"),
   plan: () => import("./views/plan.js"),
   settings: () => import("./views/settings.js"),
@@ -23,18 +21,14 @@ const VIEWS = {
 
 const NAV = [
   ["today", "Today", "today"],
-  ["week", "This week", "week"],
-  ["history", "History", "history"],
-  ["progress", "Progress", "progress"],
+  ["activity", "Activity", "progress"],
   ["library", "Exercises", "library"],
   ["plan", "The plan", "plan"],
   ["settings", "Settings", "settings"],
 ];
 const TABS = [
   ["today", "Today", "today"],
-  ["week", "Week", "week"],
-  ["history", "History", "history"],
-  ["progress", "Progress", "progress"],
+  ["activity", "Activity", "progress"],
   ["library", "Exercises", "library"],
   ["plan", "Plan", "plan"],
   ["settings", "Settings", "settings"],
@@ -61,6 +55,10 @@ function drawNav(route) {
 
 function parseHash() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
+  if (["week", "history", "progress"].includes(parts[0])) {
+    history.replaceState(null, "", "#/activity/" + parts.map(encodeURIComponent).join("/"));
+    return { route: "activity", params: parts };
+  }
   return { route: VIEWS[parts[0]] ? parts[0] : "today", params: parts.slice(1) };
 }
 

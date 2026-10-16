@@ -55,7 +55,7 @@ export function render(el) {
     el.innerHTML = `<div class="page narrow">
       <div class="section-title"><h2>Settings</h2><span class="muted">Changes save automatically</span></div>
 
-      <div class="btn-row"><a class="btn" href="#/plan">${icon("plan")} The plan</a><a class="btn" href="#/progress">${icon("progress")} Progress</a><a class="btn" href="#/history">${icon("history")} History</a></div>
+      <div class="btn-row"><a class="btn" href="#/plan">${icon("plan")} The plan</a><a class="btn" href="#/activity">${icon("progress")} Activity</a></div>
 
       <section class="card card-pad" style="display:grid;gap:16px">
         <h3>You</h3>

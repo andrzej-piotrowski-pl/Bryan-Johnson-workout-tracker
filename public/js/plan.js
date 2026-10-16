@@ -181,10 +181,11 @@ export function dayLoad(log) {
   return out;
 }
 
-export function weekStats(start) {
+export function weekStats(start, { from, to } = {}) {
   const s = { sessions: 0, skipped: 0, partial: 0, zone2: 0, hard: 0, extra: 0, planned: 6, addonDays: 0 };
   for (let i = 0; i < 7; i++) {
     const date = addDays(start, i);
+    if ((from && date < from) || (to && date > to)) continue;
     const log = state.days[date];
     if (!log) continue;
     if (countsAsSession(log)) s.sessions += 1;

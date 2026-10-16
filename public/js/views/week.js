@@ -43,9 +43,9 @@ export function render(el, params) {
     <div class="section-title">
       <div style="display:grid;gap:4px"><span class="eyebrow">Week ${isoWeekNumber(start)}</span><h2>${esc(fmtShort(start))} – ${esc(fmtShort(end))}</h2></div>
       <div class="btn-row">
-        <a class="btn sm icon-only" href="#/week/${addDays(start, -7)}" aria-label="Previous week">${icon("chevronL")}</a>
-        ${isThisWeek ? "" : `<a class="btn sm" href="#/week">This week</a>`}
-        <a class="btn sm icon-only" href="#/week/${addDays(start, 7)}" aria-label="Next week">${icon("chevronR")}</a>
+        <a class="btn sm icon-only" href="#/activity/week/${addDays(start, -7)}" aria-label="Previous week">${icon("chevronL")}</a>
+        ${isThisWeek ? "" : `<a class="btn sm" href="#/activity/week">This week</a>`}
+        <a class="btn sm icon-only" href="#/activity/week/${addDays(start, 7)}" aria-label="Next week">${icon("chevronR")}</a>
       </div>
     </div>
     <div class="kpis">
