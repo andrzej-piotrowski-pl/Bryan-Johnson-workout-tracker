@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.15.0] - 2026-10-16
+
+### Added
+- Scheduled Zone 2 and controlled vigorous cardio scale by level toward Bryan’s 150/75-minute weekly targets.
+- Vigorous cardio has its own instructions, animation, minute logger and timer.
+
+### Changed
+- Well trained includes all target cardio without extra walks; keeping the strength work makes sessions 72–93 minutes.
+- The plan, weekly durations and readable guide explain the added cardio and gradual lower-level doses.
+
+### Fixed
+- Cardio totals exclude easy warm-ups, cool-downs and brisk beginner intervals from hard work.
+- Logging zero cardio minutes no longer substitutes the planned duration.
+
 ## [1.14.0] - 2026-10-16
 
 ### Added

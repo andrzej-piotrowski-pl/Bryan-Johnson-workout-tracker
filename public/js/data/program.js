@@ -2,11 +2,12 @@
 // rx and mins arrays are [New to training, Returning, Active, Well trained] (the
 // order of LEVELS in personalize.js); "—" means skip it at that level.
 // Item ids are stable keys for your logs; change them only with care.
+// Separate Zone 2 top-ups preserve the implied durations of older logs.
 
 export const PROGRAM = {
   name: "Bryan Johnson–inspired home program",
   version: "v2 · October 2026",
-  summary: "Strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday, easy Zone 2 Saturday, rest Sunday. Built from Bryan Johnson's public protocol and rebuilt for a home with bodyweight, adjustable dumbbells, a pull-up bar and bands.",
+  summary: "Strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday, mixed cardio Saturday, rest Sunday. Scheduled Zone 2 and controlled vigorous blocks build toward his weekly cardio targets. Built from Bryan Johnson's public protocol and rebuilt for a home with bodyweight, adjustable dumbbells, a pull-up bar and bands.",
 };
 
 // What each training level means for the workouts, in the same order as LEVELS in
@@ -19,7 +20,7 @@ export const LEVEL_PLANS = [
       "1–2 sets, with supported or smaller-range versions (a hand on a chair or wall). Learn the positions first.",
       "No jumps, swings, power skips or Nordics yet; hops stay tiny.",
       "Tuesday: 4 brisk 20 s bursts. Thursday: 2 rounds of 2 min brisk, well below all-out.",
-      "Zone 2 15–20 min. Mild muscle soreness is normal; joint pain is not.",
+      "60 min of scheduled Zone 2 a week across five days. Intervals stay brisk, below vigorous effort. Mild muscle soreness is normal; joint pain is not.",
     ],
     moveUp: "Move up to Returning after about 3 weeks (around 18 sessions) when every session feels comfortable and nothing hurts the next day.",
   },
@@ -30,7 +31,7 @@ export const LEVEL_PLANS = [
       "2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Relearn the positions.",
       "Jumps are landing drills only (snap-downs). Nordics are slow lowers only.",
       "Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds of 3 min, then 3, controlled.",
-      "Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. Still very sore after 48 hours? Repeat sessions before moving up.",
+      "90 min of scheduled Zone 2 and about 26 min of vigorous work a week. Some muscle soreness is expected; joint pain is not. Still sore after 48 hours? Repeat sessions before moving up.",
     ],
     moveUp: "Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day.",
   },
@@ -40,7 +41,7 @@ export const LEVEL_PLANS = [
     points: [
       "3 sets on most strength work. Real jumps start; stick every landing.",
       "Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4.",
-      "Zone 2 25–35 min, plus short blocks on Monday.",
+      "At least 120 min of scheduled Zone 2 and about 51 min of hard cardio a week; controlled vigorous blocks on Tue/Thu/Sat.",
     ],
     moveUp: "Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up.",
   },
@@ -50,7 +51,7 @@ export const LEVEL_PLANS = [
     points: [
       "Galpin-style heavy work on the big lifts, with jump contrast after Friday’s RDL.",
       "Tuesday: two blocks of 8 × 20 s all-out. Thursday: the full Norwegian 4×4 at {hr:85-95}.",
-      "Saturday Zone 2 grows to 40 min; a weighted vest is optional.",
+      "150 min of scheduled Zone 2 and about 75 min of hard cardio a week, including 18 controlled vigorous minutes on Tue/Thu/Sat. A weighted vest is optional for Zone 2.",
     ],
     moveUp: "This is the full plan. Keep adding weight with the rules below; after illness, injury or a long break, step down a level for a while.",
   },
@@ -226,7 +227,7 @@ export const DAYS = [
       },
       {
         name: "Zone 2",
-        mins: [0, 0, 8, 10],
+        mins: [5, 10, 15, 25],
         items: [
           {
             id: "mon-zone-2-zone2",
@@ -234,6 +235,12 @@ export const DAYS = [
             label: "Step-ups or marching at {hr:60-70}",
             rx: ["—", "—", "8 min", "10 min"],
             bryan: "Official Day 1 adds 25 min",
+          },
+          {
+            id: "mon-zone-2-topup",
+            ex: "zone2",
+            label: "Scheduled Zone 2 · additional minutes",
+            rx: ["5 min @ {hr:60-70}", "10 min @ {hr:60-70}", "7 min @ {hr:60-70}", "15 min @ {hr:60-70}"],
           },
         ],
       },
@@ -306,7 +313,7 @@ export const DAYS = [
             ],
             bryan: "Newest template: 8 × 20 s",
             timer: [
-              [{ label: "4 rounds", rounds: 4, work: 20, rest: 40 }],
+              [{ label: "4 rounds", rounds: 4, work: 20, rest: 40, workHr: [70, 80] }],
               [{ label: "6 rounds", rounds: 6, work: 20, rest: 40 }],
               [{ label: "8 rounds", rounds: 8, work: 20, rest: 40 }],
               [{ label: "2 blocks of 8", blocks: 2, rounds: 8, work: 20, rest: 20, blockRest: 180 }],
@@ -321,8 +328,20 @@ export const DAYS = [
         ],
       },
       {
+        name: "Controlled vigorous cardio",
+        mins: [0, 6, 12, 18],
+        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        items: [
+          {
+            id: "tue-vigorous-cardio",
+            ex: "vigorous",
+            rx: ["—", "6 min @ {hr:80-85}", "12 min @ {hr:80-90}", "18 min @ {hr:80-90}"],
+          },
+        ],
+      },
+      {
         name: "Zone 2",
-        mins: [15, 20, 28, 30],
+        mins: [15, 20, 25, 30],
         items: [
           {
             id: "tue-zone-2-zone2",
@@ -372,7 +391,7 @@ export const DAYS = [
     short: "Wed",
     tag: "Lift B",
     title: "Strength B · Pull, knees & mobility",
-    focus: "Built exactly like Bryan’s mobility strength day (10 min dynamic, 30 min strength, 15 min yoga and balance, 5 min stretching), with his pulling, Knees-Over-Toes and high-rep arm work. First posture-strength day.",
+    focus: "Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes and high-rep arm work, plus scheduled Zone 2 toward his weekly target. First posture-strength day.",
     blocks: [
       {
         name: "Dynamic mobility",
@@ -477,6 +496,12 @@ export const DAYS = [
         ],
       },
       {
+        name: "Zone 2",
+        mins: [5, 10, 15, 25],
+        note: "Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.",
+        items: [{ id: "wed-zone-2-zone2", ex: "zone2", rx: ["5 min @ {hr:60-70}", "10 min @ {hr:60-70}", "15 min @ {hr:60-70}", "25 min @ {hr:60-70}"] }],
+      },
+      {
         name: "Static stretching",
         mins: 5,
         items: [
@@ -507,6 +532,7 @@ export const DAYS = [
             id: "thu-warm-up-zone2",
             ex: "zone2",
             label: "Easy step-ups or marching, building to {hr:~71}",
+            intensity: "light",
             rx: ["8 min", "8 min", "8 min", "8 min"],
           },
           {
@@ -582,6 +608,18 @@ export const DAYS = [
         ],
       },
       {
+        name: "Controlled vigorous cardio",
+        mins: [0, 6, 12, 18],
+        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        items: [
+          {
+            id: "thu-vigorous-cardio",
+            ex: "vigorous",
+            rx: ["—", "6 min @ {hr:80-85}", "12 min @ {hr:80-90}", "18 min @ {hr:80-90}"],
+          },
+        ],
+      },
+      {
         name: "Cool-down",
         mins: 5,
         items: [
@@ -589,6 +627,7 @@ export const DAYS = [
             id: "thu-cool-down-zone2",
             ex: "zone2",
             label: "Easy marching",
+            intensity: "light",
             rx: ["5 min", "5 min", "5 min", "5 min"],
           },
         ],
@@ -762,6 +801,12 @@ export const DAYS = [
         ],
       },
       {
+        name: "Zone 2",
+        mins: [5, 10, 20, 30],
+        note: "Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.",
+        items: [{ id: "fri-zone-2-zone2", ex: "zone2", rx: ["5 min @ {hr:60-70}", "10 min @ {hr:60-70}", "20 min @ {hr:60-70}", "30 min @ {hr:60-70}"] }],
+      },
+      {
         name: "Cool-down",
         mins: 3,
         items: [
@@ -776,8 +821,8 @@ export const DAYS = [
     name: "Saturday",
     short: "Sat",
     tag: "Zone 2",
-    title: "Zone 2 + long stretch",
-    focus: "Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: a long Zone 2 block and 20 min of stretching. Second posture-strength day.",
+    title: "Cardio + long stretch",
+    focus: "Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: level-scaled controlled vigorous cardio, a long Zone 2 block and 20 min of stretching. Second posture-strength day.",
     note: "When you feel like going outside, swap the Zone 2 block for a brisk walk, hike or bike ride of the same length or longer.",
     blocks: [
       {
@@ -793,14 +838,32 @@ export const DAYS = [
         ],
       },
       {
+        name: "Controlled vigorous cardio",
+        mins: [0, 6, 12, 18],
+        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        items: [
+          {
+            id: "sat-vigorous-cardio",
+            ex: "vigorous",
+            rx: ["—", "6 min @ {hr:80-85}", "12 min @ {hr:80-90}", "18 min @ {hr:80-90}"],
+          },
+        ],
+      },
+      {
         name: "Zone 2",
-        mins: [20, 25, 33, 40],
+        mins: [30, 40, 45, 40],
         items: [
           {
             id: "sat-zone-2-zone2",
             ex: "zone2",
             rx: ["20 min @ {hr:60-70}", "25 min @ {hr:60-70}", "30–35 min", "40 min; weighted vest optional"],
             bryan: "Bryan: 150 min/week",
+          },
+          {
+            id: "sat-zone-2-topup",
+            ex: "zone2",
+            label: "Scheduled Zone 2 · additional minutes",
+            rx: ["10 min @ {hr:60-70}", "15 min @ {hr:60-70}", "15 min @ {hr:60-70}", "—"],
           },
         ],
       },
@@ -842,28 +905,12 @@ export const DAYS = [
 ];
 
 export const TARGETS = [
-  ["ok", "About 6.1 h of training a week; his protocol recommends about 6."],
-  [
-    "ok",
-    "Strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, easy Saturday, Sunday off: the layout of his newest template.",
-  ],
-  [
-    "ok",
-    "About 10 min near max a week (Tuesday’s 20 s bursts plus the end of each 4-min round), his stated target.",
-  ],
+  ["ok", "150 min of scheduled Zone 2 a week at {hr:60-70}, without relying on extra walks or outdoor activity. The easy 4×4 recoveries can add another 9 min when kept in Zone 2."],
+  ["ok", "About 75 min of hard cardio: 54 min of controlled vigorous work on Tue/Thu/Sat, 16 work minutes in Thursday’s 4×4 and 5 min 20 s of Tuesday’s bursts. Easy recoveries, warm-ups, jumps and strength sets are not credited as hard cardio."],
+  ["ok", "Only about 10 of the hard minutes are intended near max: Tuesday’s bursts and the ends of the 4×4 rounds. The added vigorous blocks stay controlled."],
+  ["ok", "Strength Mon/Wed/Fri, short intervals Tue and Norwegian 4×4 Thu follow Bryan’s template. Saturday adds controlled vigorous work to the indoor Zone 2 session to meet his weekly totals."],
   ["ok", "Hops in 4 warm-ups and power work twice a week (bone protocol: 4–7 and 2)."],
-  [
-    "ok",
-    "Balance or stability on 5 days, stretching every day, posture every day with his two physical-therapist exercises to fatigue twice a week.",
-  ],
-  [
-    "part",
-    "Zone 2: about 100 min inside the plan against his 150. Add about 50 min a week of brisk walking at {hr:60-70} (log it as extra activity; a desk treadmill counts), or count outdoor walks, hikes and rides.",
-  ],
-  [
-    "part",
-    "Hard cardio: about 30 min of intervals against his 75. The intervals in his own sample week add up to about the same; jumps, dense strength work and outdoor activity cover part of the rest. Leave the gap while you rebuild.",
-  ],
+  ["ok", "Balance or stability on 5 days, stretching every day, posture every day with his two physical-therapist exercises to fatigue twice a week."],
 ];
 
 // icon, ex (an exercise whose animation shows the item) and use (how it's used in
@@ -952,7 +999,7 @@ export const SWAPS = [
   ],
   [
     "Weekend hike, bike or pickleball",
-    "Indoor Zone 2 + long stretch on Saturday; go outside when you can",
+    "Indoor controlled vigorous cardio + Zone 2 + long stretch on Saturday; outdoor swaps are optional",
   ],
 ];
 
@@ -1137,7 +1184,7 @@ export const TIMELINE = [
 ];
 
 export const TAKEAWAYS = [
-  "The week follows Bryan’s newest template: strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, easy Zone 2 Sat, rest Sun. Everything is indoors.",
+  "The week follows Bryan’s newest template: strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, mixed cardio Sat, rest Sun. Everything is indoors; scheduled cardio scales by level toward 150 min Zone 2 and 75 min hard work, without relying on extras.",
   "Strength days take the template’s basics (squat, push-up, row, swing, lunge, presses, step-up, carry, planks) and add his signature Knees-Over-Toes and high-rep posture work.",
   "From his 2026 training: hops in every warm-up, a few jumps, a heavy hinge followed by jumps, and ankle and Achilles work, because he named those as his own weak points.",
   "His official stability menu and balance work run through the week, and flexibility closes every session.",

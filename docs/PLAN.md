@@ -2,12 +2,12 @@
 
 > This is the plan the app is built on, as one document you can read on GitHub. The app is the live version: it personalises heart rates and weights for each user and tracks everything. Numbers here are for the profile the plan was first written for (male, 38, 188 cm, 75 kg); each level column shows the weights that level would suggest for him.
 
-A six-day indoor training plan laid out like Bryan Johnson’s newest weekly template (October 2026): strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday and easy Zone 2 Saturday. Rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands, with a daily posture block for tech neck and forward shoulders.
+A six-day indoor training plan laid out like Bryan Johnson’s newest weekly template (October 2026): strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday and controlled vigorous cardio + Zone 2 Saturday. Rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands, with a daily posture block for tech neck and forward shoulders.
 
 Made for: male, 38, 188 cm, 75 kg, trained before, four years off, no injuries.
 
 - All sessions at home; Sunday rest
-- Monday–Saturday: 34–45 min per session at New to training, 41–50 min at Returning, 53–60 min at Active, 54–66 min at Well trained
+- Monday–Saturday: 36–55 min per session at New to training, 47–71 min at Returning, 65–82 min at Active, 72–93 min at Well trained
 - Plus a posture block every day: ≈8 min, ≈10 min on Wednesday and Saturday
 - Estimated max heart rate 182 bpm (Zone 2 = 109–127 bpm)
 
@@ -39,7 +39,7 @@ _Little or no strength training before._
 - 1–2 sets, with supported or smaller-range versions (a hand on a chair or wall). Learn the positions first.
 - No jumps, swings, power skips or Nordics yet; hops stay tiny.
 - Tuesday: 4 brisk 20 s bursts. Thursday: 2 rounds of 2 min brisk, well below all-out.
-- Zone 2 15–20 min. Mild muscle soreness is normal; joint pain is not.
+- 60 min of scheduled Zone 2 a week across five days. Intervals stay brisk, below vigorous effort. Mild muscle soreness is normal; joint pain is not.
 
 _Move up to Returning after about 3 weeks (around 18 sessions) when every session feels comfortable and nothing hurts the next day._
 
@@ -52,7 +52,7 @@ _Trained before, but out of practice for months or years._
 - 2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Relearn the positions.
 - Jumps are landing drills only (snap-downs). Nordics are slow lowers only.
 - Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds of 3 min, then 3, controlled.
-- Zone 2 20–25 min. Some muscle soreness is expected; joint pain is not. Still very sore after 48 hours? Repeat sessions before moving up.
+- 90 min of scheduled Zone 2 and about 26 min of vigorous work a week. Some muscle soreness is expected; joint pain is not. Still sore after 48 hours? Repeat sessions before moving up.
 
 _Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day._
 
@@ -64,7 +64,7 @@ _Training regularly over the last few months._
 
 - 3 sets on most strength work. Real jumps start; stick every landing.
 - Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4.
-- Zone 2 25–35 min, plus short blocks on Monday.
+- At least 120 min of scheduled Zone 2 and about 51 min of hard cardio a week; controlled vigorous blocks on Tue/Thu/Sat.
 
 _Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up._
 
@@ -76,7 +76,7 @@ _Lifting and doing hard cardio consistently for a year or more._
 
 - Galpin-style heavy work on the big lifts, with jump contrast after Friday’s RDL.
 - Tuesday: two blocks of 8 × 20 s all-out. Thursday: the full Norwegian 4×4 at 155–173 bpm.
-- Saturday Zone 2 grows to 40 min; a weighted vest is optional.
+- 150 min of scheduled Zone 2 and about 75 min of hard cardio a week, including 18 controlled vigorous minutes on Tue/Thu/Sat. A weighted vest is optional for Zone 2.
 
 _This is the full plan. Keep adding weight with the rules below; after illness, injury or a long break, step down a level for a while._
 
@@ -92,24 +92,32 @@ _This is the full plan. Keep adding weight with the rules below; after illness, 
 
 | Day | Session | New to training | Returning | Active | Well trained | Posture |
 |---|---|---|---|---|---|---|
-| Monday | Strength A · Squat, push, pull + knees | 34 min | 43 min | 60 min | 65 min | Daily (≈8 min) |
-| Tuesday | Intervals 1 · 20-second bursts + Zone 2 + back & core | 36 min | 45 min | 57 min | 66 min | Daily (≈8 min) |
-| Wednesday | Strength B · Pull, knees & mobility | 45 min | 49 min | 53 min | 55 min | Strength (≈10 min) |
-| Thursday | Intervals 2 · Norwegian 4×4 + stability | 36 min | 41 min | 53 min | 54 min | Daily (≈8 min) |
-| Friday | Strength C · Power, lunge, press + tendons | 43 min | 48 min | 57 min | 63 min | Daily (≈8 min) |
-| Saturday | Zone 2 + long stretch | 45 min | 50 min | 58 min | 65 min | Strength (≈10 min) |
+| Monday | Strength A · Squat, push, pull + knees | 39 min | 53 min | 67 min | 80 min | Daily (≈8 min) |
+| Tuesday | Intervals 1 · 20-second bursts + Zone 2 + back & core | 36 min | 51 min | 66 min | 84 min | Daily (≈8 min) |
+| Wednesday | Strength B · Pull, knees & mobility | 50 min | 59 min | 68 min | 80 min | Strength (≈10 min) |
+| Thursday | Intervals 2 · Norwegian 4×4 + stability | 36 min | 47 min | 65 min | 72 min | Daily (≈8 min) |
+| Friday | Strength C · Power, lunge, press + tendons | 48 min | 58 min | 77 min | 93 min | Daily (≈8 min) |
+| Saturday | Cardio + long stretch | 55 min | 71 min | 82 min | 83 min | Strength (≈10 min) |
 | Sunday | Rest | — | — | — | — | Optional |
-| **Total** | without posture | **4.0 h** | **4.6 h** | **5.6 h** | **6.1 h** | + ≈50 min |
+| **Total** | without posture | **4.4 h** | **5.7 h** | **7.1 h** | **8.2 h** | + ≈50 min |
+
+| Scheduled cardio | New to training | Returning | Active | Well trained |
+|---|---|---|---|---|
+| Dedicated Zone 2 | 60 min | 90 min | At least 120 min | 150 min |
+| Hard work | 0 min (brisk intervals only) | ≈26 min | ≈51 min | ≈75 min |
+
+Cardio is included in the sessions; outdoor activity and desk-treadmill walks are optional extras. The easy recoveries between Norwegian rounds can add Zone 2 time. Warm-ups and cool-downs are excluded. Returning and Active totals use the first interval preset; the longer preset adds hard minutes.
+
+Keeping all strength and mobility work makes Well trained sessions 72–93 min (about 8.2 h/week), before posture or extra recovery breaks. This exceeds the original 60–70-minute session budget. The added cardio is a home-plan adaptation of [Bryan’s published weekly targets](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity), not a verbatim copy of his sample week.
 
 **Well trained against Bryan’s targets**
 
-- Met: About 6.1 h of training a week; his protocol recommends about 6.
-- Met: Strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, easy Saturday, Sunday off: the layout of his newest template.
-- Met: About 10 min near max a week (Tuesday’s 20 s bursts plus the end of each 4-min round), his stated target.
+- Met: 150 min of scheduled Zone 2 a week at 109–127 bpm, without relying on extra walks or outdoor activity. The easy 4×4 recoveries can add another 9 min when kept in Zone 2.
+- Met: About 75 min of hard cardio: 54 min of controlled vigorous work on Tue/Thu/Sat, 16 work minutes in Thursday’s 4×4 and 5 min 20 s of Tuesday’s bursts. Easy recoveries, warm-ups, jumps and strength sets are not credited as hard cardio.
+- Met: Only about 10 of the hard minutes are intended near max: Tuesday’s bursts and the ends of the 4×4 rounds. The added vigorous blocks stay controlled.
+- Met: Strength Mon/Wed/Fri, short intervals Tue and Norwegian 4×4 Thu follow Bryan’s template. Saturday adds controlled vigorous work to the indoor Zone 2 session to meet his weekly totals.
 - Met: Hops in 4 warm-ups and power work twice a week (bone protocol: 4–7 and 2).
 - Met: Balance or stability on 5 days, stretching every day, posture every day with his two physical-therapist exercises to fatigue twice a week.
-- Partly: Zone 2: about 100 min inside the plan against his 150. Add about 50 min a week of brisk desk-treadmill walking that keeps you at 109–127 bpm, or count your outdoor walks, hikes and rides.
-- Partly: Hard cardio: about 30 min of intervals against his 75. The intervals in his own sample week add up to about the same; jumps, dense strength work and outdoor activity cover part of the rest. Leave the gap while you rebuild.
 
 ## Day by day
 
@@ -151,11 +159,12 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 | [Plank](#plank) | 2 × 15–20 s, knees down is fine | 2 × 20–30 s | 3 × 30 s | 3 × 45 s | Official: 3 × 20–30 s |
 | [Hanging knee / leg raise](#hanging-knee--leg-raise) | 2 × 5 knee raises, small range | 2 × 8 knee raises | 2 × 12 knee raises | Straight legs: 30–50 reps in as few sets as possible | Bryan: 1 × 50 |
 
-**Zone 2 (≈– / – / 8 / 10 min)**
+**Zone 2 (≈5 / 10 / 15 / 25 min)**
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
 | [Step-ups or marching at 109–127 bpm](#zone-2-cardio-indoors) | — | — | 8 min | 10 min | Official Day 1 adds 25 min |
+| [Scheduled Zone 2 · additional minutes](#zone-2-cardio-indoors) | 5 min @ 109–127 bpm | 10 min @ 109–127 bpm | 7 min @ 109–127 bpm | 15 min @ 109–127 bpm |  |
 
 **Cool-down (≈3 min)**
 
@@ -197,7 +206,13 @@ _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished 
 | [Short intervals (20 s bursts)](#short-intervals-20-s-bursts) | 4 × (20 s brisk / 40 s easy) | 6 × (20 s brisk / 40 s easy) | 8 × (20 s hard / 40 s easy) | 2 × [8 × (20 s all-out / 20 s easy)], 3 min easy between | Newest template: 8 × 20 s |
 | [Moves: step-ups, high knees, climbers, jacks, burpees](#indoor-interval-moves) | Pick 1, the quiet version | Pick 1–2 | Pick 2 | Pick 2–3 |  |
 
-**Zone 2 (≈15 / 20 / 28 / 30 min)**
+**Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
+
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Controlled vigorous cardio (indoors)](#controlled-vigorous-cardio-indoors) | — | 6 min @ 146–155 bpm | 12 min @ 146–164 bpm | 18 min @ 146–164 bpm |  |
+
+**Zone 2 (≈15 / 20 / 25 / 30 min)**
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
@@ -233,7 +248,7 @@ _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished 
 
 ### Wednesday: Strength B · Pull, knees & mobility
 
-_Built exactly like Bryan’s mobility strength day (10 min dynamic, 30 min strength, 15 min yoga and balance, 5 min stretching), with his pulling, Knees-Over-Toes and high-rep arm work. First posture-strength day._
+_Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes and high-rep arm work, plus scheduled Zone 2 toward his weekly target. First posture-strength day._
 
 **Dynamic mobility (≈10 min)** · Bryan’s official list: arm circles, wall slides, thread the needle, hip CARs.
 
@@ -267,6 +282,12 @@ _Built exactly like Bryan’s mobility strength day (10 min dynamic, 30 min stre
 | [Tree pose](#tree-pose) | 2 × 20 s/side, hand near a wall | 2 × 30 s/side | 2 × 30 s/side | 2 × 30 s/side, eyes closed |  |
 | [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 | [Cobra](#cobra) | 3 × 10 s | 3 × 15 s | 3 × 20 s | 3 × 20 s |  |
+
+**Zone 2 (≈5 / 10 / 15 / 25 min)** · Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.
+
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 5 min @ 109–127 bpm | 10 min @ 109–127 bpm | 15 min @ 109–127 bpm | 25 min @ 109–127 bpm |  |
 
 **Static stretching (≈5 min)**
 
@@ -307,6 +328,12 @@ _Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his offi
 |---|---|---|---|---|---|
 | [Norwegian 4×4](#norwegian-44) | 2 × (2 min brisk @ 137–146 bpm / 3 min easy) | 2 rounds, then 3, of (3 min @ 146–155 bpm / 3 min easy) | 3 × (4 min / 3 min), then 4 × (4 min / 3 min) @ 149–166 bpm | 4 × (4 min @ 155–173 bpm / 3 min @ 109–127 bpm) | Newest template: Thursday |
 | [Moves: step-ups → high knees → jacks → climbers](#indoor-interval-moves) | 1 min each, the quiet versions | 1 min each, repeat | 1 min each, repeat | 1 min each, repeat |  |
+
+**Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
+
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Controlled vigorous cardio (indoors)](#controlled-vigorous-cardio-indoors) | — | 6 min @ 146–155 bpm | 12 min @ 146–164 bpm | 18 min @ 146–164 bpm |  |
 
 **Cool-down (≈5 min)**
 
@@ -378,6 +405,12 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 | [Single-leg calf raise, slow](#calf-raises-seated--single-leg) | 1 × 8/leg, hand on a wall | 1 × 10/leg | 1 × 12/leg | 1 × 15/leg |  |
 | [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 12 | 1 × 15 | 1 × 20 | 1 × 25 |  |
 
+**Zone 2 (≈5 / 10 / 20 / 30 min)** · Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.
+
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 5 min @ 109–127 bpm | 10 min @ 109–127 bpm | 20 min @ 109–127 bpm | 30 min @ 109–127 bpm |  |
+
 **Cool-down (≈3 min)**
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
@@ -398,9 +431,11 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 | [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
-### Saturday: Zone 2 + long stretch
+### Saturday: Cardio + long stretch
 
-_Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: a long Zone 2 block and 20 min of stretching. Second posture-strength day._
+_Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: level-scaled controlled vigorous cardio, a long Zone 2 block and 20 min of stretching. Second posture-strength day._
+
+> When you feel like going outside, swap the Zone 2 block for a brisk walk, hike or bike ride of the same length or longer.
 
 **Warm-up (≈5 min)**
 
@@ -408,11 +443,18 @@ _Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, pla
 |---|---|---|---|---|---|
 | [Marching, leg swings, hip CARs](#dynamic-series) | 5 min | 5 min | 5 min | 5 min |  |
 
-**Zone 2 (≈20 / 25 / 33 / 40 min)**
+**Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
+
+| Exercise | New to training | Returning | Active | Well trained | Bryan |
+|---|---|---|---|---|---|
+| [Controlled vigorous cardio (indoors)](#controlled-vigorous-cardio-indoors) | — | 6 min @ 146–155 bpm | 12 min @ 146–164 bpm | 18 min @ 146–164 bpm |  |
+
+**Zone 2 (≈30 / 40 / 45 / 40 min)**
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
 | [Zone 2 cardio (indoors)](#zone-2-cardio-indoors) | 20 min @ 109–127 bpm | 25 min @ 109–127 bpm | 30–35 min | 40 min; weighted vest optional | Bryan: 150 min/week |
+| [Scheduled Zone 2 · additional minutes](#zone-2-cardio-indoors) | 10 min @ 109–127 bpm | 15 min @ 109–127 bpm | 15 min @ 109–127 bpm | — |  |
 
 **Long stretch (≈20 min)** · Bryan’s official light day: 20–30 min of gentle yoga or stretching.
 
@@ -538,7 +580,7 @@ The list below is a recommendation, not an assumption about what a user owns. Pu
 | Kettlebell swing | Dumbbell swing |
 | Medicine-ball rotational throws | Fast band woodchop |
 | Bike, elliptical or running intervals | Step-ups, high knees, jacks, mountain climbers, burpees without push-up |
-| Weekend hike, bike or pickleball | Indoor Zone 2 + long stretch on Saturday; go outside when you can |
+| Weekend hike, bike or pickleball | Indoor controlled vigorous cardio + Zone 2 + long stretch on Saturday; outdoor swaps are optional |
 
 ## What Bryan does now
 
@@ -1070,6 +1112,19 @@ Watch: [4×4 HIIT with no equipment](https://www.youtube.com/watch?v=ZOU0eUMYB8o
 - Tip: For the 4×4, rotate step-ups → high knees → jacks → climbers, one minute each.
 
 Watch: [Mountain climbers: 3 steps to proper form](https://www.youtube.com/watch?v=gW-q50V6Z_0) · [No-push-up burpee](https://www.youtube.com/watch?v=CqJ947Bj2Zg) · [Silent HIIT cardio (quiet move ideas)](https://www.youtube.com/watch?v=gi7pZ8CYzvk)
+
+#### Controlled vigorous cardio (indoors)
+
+> **From Bryan:** Bryan targets at least 75 min of high-intensity cardio a week, with only about 10 min near maximum effort. This home block supplies controlled vigorous minutes alongside his Tuesday bursts and Thursday 4×4; its duration is a home-plan adaptation, not a session copied from his sample week.
+
+1. Warm up first. Use continuous low-step step-ups, fast marching, high knees or step jacks, changing the move before local muscle fatigue spoils your form.
+2. Follow your level’s heart-rate target, roughly 146–164 bpm at the higher levels. Breathing is hard and you can manage only a few words; keep an even pace rather than sprinting.
+3. Log only the minutes at the prescribed effort. Pause or slow down when needed; easy recovery does not count as vigorous time.
+4. Finish with the scheduled Zone 2 or cool-down. Use the quiet versions of the indoor interval moves when needed.
+
+- Tip: This is controlled conditioning. Save near-max efforts for the short bursts and the ends of the 4×4 rounds.
+
+Watch: [Low-impact indoor cardio moves](https://www.youtube.com/watch?v=gi7pZ8CYzvk)
 
 #### Zone 2 cardio (indoors)
 

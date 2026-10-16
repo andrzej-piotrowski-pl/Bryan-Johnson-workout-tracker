@@ -149,7 +149,7 @@ const BLOCK_KINDS = [
   [/jump|speed|power|interval|4×4|4x4/i, "power"],
   [/strength/i, "strength"],
   [/core|plank|tendon|stabil|balance|knee|back/i, "core"],
-  [/zone/i, "cardio"],
+  [/zone|cardio/i, "cardio"],
   [/stretch|cool|yoga|mobil/i, "stretch"],
 ];
 

@@ -114,7 +114,7 @@ export function render(el, params) {
         <dt>Zone 2</dt><dd>${bpmRange(draft, 60, 70)}</dd>
         <dt>Add-ons</dt><dd>${esc(ADDONS.filter((a) => draft.addons && draft.addons[a.id]).map((a) => a.name).join(", ") || "None")}</dd>
       </dl></div>
-      <p>Your week: <b>Mon</b> strength, <b>Tue</b> short intervals + Zone 2, <b>Wed</b> strength + mobility, <b>Thu</b> Norwegian 4×4 + stability, <b>Fri</b> power + strength, <b>Sat</b> Zone 2 + long stretch, <b>Sun</b> rest. Tap any exercise to see a 3D animation, Bryan's own video at the right minute and demos.</p>`;
+      <p>Your week: <b>Mon</b> strength, <b>Tue</b> short intervals + Zone 2, <b>Wed</b> strength + mobility, <b>Thu</b> Norwegian 4×4 + stability, <b>Fri</b> power + strength, <b>Sat</b> controlled vigorous cardio + Zone 2 + long stretch, <b>Sun</b> rest. Tap any exercise to see a 3D animation, Bryan's own video at the right minute and demos.</p>`;
   }
 
   function draw() {

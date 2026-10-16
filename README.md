@@ -3,7 +3,7 @@
 A local web app that plans and tracks a six-day home workout built from **Bryan Johnson's public exercise protocol** (his October 2026 weekly template), rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands.
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
-- **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
+- **A 3D animation for every exercise** (63 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
 - **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History and Progress into three tabs.
 - **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
@@ -164,10 +164,14 @@ Last week means the previous Monday–Sunday; Last month means the previous cale
 | Wed | Strength B: pull, knees & mobility |
 | Thu | Intervals 2: Norwegian 4×4 + stability |
 | Fri | Strength C: power, lunge, press + tendons |
-| Sat | Zone 2 + long stretch (swap for a walk, hike or ride outside any time) |
+| Sat | Controlled vigorous cardio + Zone 2 + long stretch (outdoor swaps optional) |
 | Sun | Rest |
 
-About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. The week fits within the page, with numeric totals for every level. Timeline entries and sources link to the supporting material, newest first where dates are known; unknown dates stay labelled **Undated**.
+About 36–55 minutes a session at New to training, 47–71 at Returning, 65–82 at Active and 72–93 at Well trained, plus 8–10 minutes for the posture add-on.
+
+All cardio is scheduled inside the workouts: 60 / 90 / at least 120 / 150 minutes of dedicated Zone 2 per week, and about 0 / 26 / 51 / 75 minutes of hard cardio. New to training keeps intervals below vigorous effort. The 4×4 recoveries can add Zone 2 minutes; warm-ups and cool-downs are excluded. These home-plan additions meet [Bryan’s published weekly targets](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity) at Well trained without relying on extra walks. Keeping all strength and mobility work takes about 8.2 hours a week at that level, beyond the original 60–70-minute session budget; recovery breaks may add time.
+
+*The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. The week fits within the page, with numeric totals for every level. Timeline entries and sources link to the supporting material, newest first where dates are known; unknown dates stay labelled **Undated**.
 
 A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
 
@@ -262,7 +266,7 @@ The speed button goes up to **2×**. For demonstrations with several movements, 
 <details>
 <summary><b>Animation style descriptions and technical details</b></summary>
 
-Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
+Other ways to draw the exercise animations, on all 63 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
 Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Seven are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 

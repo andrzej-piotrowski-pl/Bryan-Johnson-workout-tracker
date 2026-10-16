@@ -110,7 +110,7 @@ export function render(el) {
       <div class="charts">
         ${card("sessions", "Sessions per week", "Completed (or at least half-done) sessions; target 6.", sessions, ["Week", "Sessions"])}
         ${card("zone2", "Zone 2 minutes per week", "Zone 2 blocks, the easy minutes of the 4×4 and easy extra activity.", zone2, ["Week", "Minutes"])}
-        ${card("hard", "Hard-cardio minutes per week", "Work intervals plus hard extra activity.", hard, ["Week", "Minutes"])}
+        ${card("hard", "Hard-cardio minutes per week", "Controlled vigorous blocks, hard work intervals and hard extra activity; brisk beginner intervals are excluded.", hard, ["Week", "Minutes"])}
       </div>
       <div class="section-title"><h2 style="font-size:1.25rem">Strength</h2>
         ${L.length ? `<select class="input" data-lift style="max-width:320px" aria-label="Exercise">${L.map((x) => `<option value="${x.id}" ${x.id === lift ? "selected" : ""}>${esc(x.name)} (${x.hist.length})</option>`).join("")}</select>` : ""}

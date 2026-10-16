@@ -103,6 +103,8 @@ export function renderLogger(container, ctx) {
   const u = kgUnit(p);
   const kgPh = suggestedKg(rxFor(item, level), p);
   const restSec = (p && p.settings && p.settings.restSec) || 75;
+  const cardioRange = item.intensity === "light" ? [50, 60] : ex.intensity === "hard" ? [80, level === 1 ? 85 : 90] : [60, 70];
+  const cardioLabel = item.intensity === "light" ? "Easy pace" : ex.intensity === "hard" ? "Vigorous" : "Zone 2";
 
   function draw() {
     const l = getItemLog(date, scope, item.id) || {};
@@ -147,7 +149,7 @@ export function renderLogger(container, ctx) {
       const c = l.cardio || {};
       body += `<div class="grid-form" style="grid-template-columns:repeat(3,minmax(0,1fr))">
           <label class="field"><span>Minutes</span><input class="input num" inputmode="decimal" data-c="min" value="${esc(c.min ?? "")}" placeholder="${esc(target.minutes || "")}"></label>
-          <label class="field"><span>Avg bpm</span><input class="input num" inputmode="numeric" data-c="avg" value="${esc(c.avg ?? "")}" placeholder="${esc(bpmRange(p, 60, 70).replace(" bpm", ""))}"></label>
+          <label class="field"><span>Avg bpm</span><input class="input num" inputmode="numeric" data-c="avg" value="${esc(c.avg ?? "")}" placeholder="${esc(bpmRange(p, ...cardioRange).replace(" bpm", ""))}"></label>
           <label class="field"><span>Max bpm</span><input class="input num" inputmode="numeric" data-c="max" value="${esc(c.max ?? "")}"></label>
         </div>
         <div class="btn-row">${doneBtn}${target.minutes ? `<button type="button" class="btn" data-l="countdown">${icon("timer")} ${target.minutes} min timer</button>` : ""}</div>`;
@@ -269,7 +271,7 @@ export function renderLogger(container, ctx) {
       startCountdown({
         title: ex.name,
         minutes: target.minutes,
-        sub: `Zone 2: ${bpmRange(p, 60, 70)}`,
+        sub: `${cardioLabel}: ${bpmRange(p, ...cardioRange)}`,
         onFinish: () => {
           save((l) => {
             l.cardio = l.cardio || {};

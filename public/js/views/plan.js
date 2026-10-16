@@ -41,6 +41,7 @@ export function render(el) {
       <tbody>${DAYS.map((d) => `<tr><td><b>${esc(d.short)}</b></td><td><a href="#/library">${esc(d.title)}</a></td>${LEVELS.map((_, i) => `<td class="num ${i === cur ? "cur" : ""}">${d.blocks.length ? dayMins(d, i) + " min" : "—"}</td>`).join("")}</tr>`).join("")}
       <tr><td colspan="2"><b>Total</b> (without add-ons)</td>${totals.map((t, i) => `<td class="num ${i === cur ? "cur" : ""}"><b>${t} h</b></td>`).join("")}</tr></tbody>
     </table></div>
+    <p class="muted">Cardio is scheduled inside the workouts; extra activity is optional. Lower levels build toward Bryan’s full targets. Keeping all strength and mobility work makes Well trained sessions about 72–93 min (8.2 h/week), before add-ons or extra recovery breaks. The added vigorous blocks and Zone 2 minutes are a home-plan adaptation of his weekly targets.</p>
     <section class="card card-pad" style="display:grid;gap:10px"><h3>Well trained against Bryan's targets</h3>
       <ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px">${TARGETS.map(([s, t]) => `<li style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start"><span class="status ${s === "ok" ? "ok" : "part"}">${s === "ok" ? "Met" : "Partly"}</span><span>${P(t)}</span></li>`).join("")}</ul>
     </section>

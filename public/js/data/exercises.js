@@ -844,6 +844,23 @@ export const EXERCISES = {
       { t: "Silent HIIT cardio (quiet move ideas)", u: "https://www.youtube.com/watch?v=gi7pZ8CYzvk" },
     ],
   },
+  vigorous: {
+    name: "Controlled vigorous cardio (indoors)",
+    cat: "Cardio (indoor)",
+    log: "cardio",
+    intensity: "hard",
+    equipment: ["step"],
+    muscles: ["heart", "quads"],
+    bryan: "Bryan targets at least 75 min of high-intensity cardio a week, with only about 10 min near maximum effort. This home block supplies controlled vigorous minutes alongside his Tuesday bursts and Thursday 4×4; its duration is a home-plan adaptation, not a session copied from his sample week.",
+    how: [
+      "Warm up first. Use continuous low-step step-ups, fast marching, high knees or step jacks, changing the move before local muscle fatigue spoils your form.",
+      "Follow your level’s heart-rate target, roughly {hr:80-90} at the higher levels. Breathing is hard and you can manage only a few words; keep an even pace rather than sprinting.",
+      "Log only the minutes at the prescribed effort. Pause or slow down when needed; easy recovery does not count as vigorous time.",
+      "Finish with the scheduled Zone 2 or cool-down. Use the quiet versions of the indoor interval moves when needed.",
+    ],
+    tips: ["This is controlled conditioning. Save near-max efforts for the short bursts and the ends of the 4×4 rounds."],
+    videos: [{ t: "Low-impact indoor cardio moves", u: "https://www.youtube.com/watch?v=gi7pZ8CYzvk" }],
+  },
   zone2: {
     name: "Zone 2 cardio (indoors)",
     cat: "Cardio (indoor)",

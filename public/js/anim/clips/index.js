@@ -10,6 +10,7 @@ import mobility from "./mobility.js";
 import posture from "./posture.js";
 
 const ALL = { ...warmup, ...power, ...legs, ...upper, ...core, ...stability, ...cardio, ...mobility, ...posture };
+ALL.vigorous = cardio.zone2;
 
 export function getAnimation(id) {
   return ALL[id] || null;

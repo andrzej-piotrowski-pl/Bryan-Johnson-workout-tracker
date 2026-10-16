@@ -260,3 +260,5 @@ Robot uses ordinary standard materials and the shared three.js rig. Paper cutout
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with
 `/dev/animations.html?ids=all&style=yours`.
+
+Controlled vigorous cardio (`vigorous`) reuses the `zone2` step-up animation; its exercise instructions prescribe the harder pace.

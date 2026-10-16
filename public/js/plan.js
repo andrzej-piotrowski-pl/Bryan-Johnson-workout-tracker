@@ -157,14 +157,14 @@ export function dayLoad(log) {
       for (const it of blockItems(b, lvl)) {
         const l = log.items[it.id];
         if (!l) continue;
-        if (it.ex === "zone2") {
-          const min = l.cardio && Number(l.cardio.min);
-          out.zone2 += min || (l.done ? firstNumber(rxFor(it, lvl)) : 0);
+        if (EXERCISES[it.ex]?.log === "cardio" && it.intensity !== "light") {
+          const min = l.cardio?.min;
+          out[EXERCISES[it.ex].intensity || "zone2"] += min != null ? Number(min) : (l.done ? firstNumber(rxFor(it, lvl)) : 0);
         } else if (it.timer) {
           const presets = timerPresets(it, lvl);
           const preset = presets[l.preset || 0] || presets[0];
           const rounds = Number(l.rounds) || (l.done ? preset.rounds * (preset.blocks || 1) : 0);
-          out.hard += (rounds * preset.work) / 60;
+          if (!preset.workHr || preset.workHr[0] >= 80) out.hard += (rounds * preset.work) / 60;
           if (it.ex === "norwegian" && (l.done || rounds)) out.zone2 += (Math.max(0, rounds - 1) * preset.rest) / 60;
         }
       }
