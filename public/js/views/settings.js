@@ -19,12 +19,15 @@ import { createStagePanel } from "../components/stage-panel.js";
 import { thumbnail } from "../components/thumbs.js";
 
 const LB = 2.20462;
+const REST_PRESETS = [45, 60, 75, 90, 120];
+const REPO = "https://github.com/liviux/Bryan-Johnson-workout-website";
 
 export function render(el) {
   const p = () => state.profile;
   const imperial = () => p().units === "imperial";
   const w = (kg) => (kg == null ? "" : imperial() ? Math.round(kg * LB * 10) / 10 : kg);
   const hgt = (cm) => (cm == null ? "" : imperial() ? Math.round(cm / 2.54) : cm);
+  let customRest = !REST_PRESETS.includes(p().settings?.restSec || 75);
 
   // The animation style preview: one 3D stage, kept across redraws of the page, on the
   // exercise picked under it (remembered for this tab).
@@ -72,10 +75,10 @@ export function render(el) {
         </div>
       </section>
 
-      <section class="card card-pad" style="display:grid;gap:12px" id="equipment">
-        <h3>Your equipment</h3>
+      <details class="card card-pad equipment-settings" id="equipment">
+        <summary>Your equipment <small class="muted">Optional inventory</small></summary>
         <div data-equipment-editor></div>
-      </section>
+      </details>
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Training level</h3>
@@ -90,7 +93,8 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:14px">
         <h3>During workouts</h3>
-        <div class="field"><span>Rest timer after a set</span>${seg("rest", [45, 60, 75, 90, 120].map((s) => ({ id: String(s), name: `${s} s` })), String(st.restSec || 75))}</div>
+        <div class="field"><span>Rest timer after a set</span>${seg("rest", [...REST_PRESETS.map((s) => ({ id: String(s), name: `${s} s` })), { id: "custom", name: "Custom" }], customRest ? "custom" : String(st.restSec || 75))}</div>
+        <label class="field rest-custom" ${customRest ? "" : "hidden"}><span>Custom rest (seconds)</span><input class="input" type="number" data-f="restCustom" min="1" max="3600" step="1" required value="${esc(st.restSec || 75)}"><small>1–3,600 seconds. Saves automatically.</small></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("autoRest", st.autoRest !== false, "Start the rest timer automatically")}<span>Start the rest timer automatically when you log a set</span></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
       </section>
@@ -108,7 +112,7 @@ export function render(el) {
 
       <section class="card card-pad" data-anim-settings style="display:grid;gap:14px">
         <h3>Animation style</h3>
-        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animations, on every exercise. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, or as text. The movement is the same in all of them.</p>
+        <p class="muted" style="font-size:0.86rem">Choose a 3D scene, an SVG illustration, a 2D canvas or a text style. Each one shows the same exercise movement.</p>
         <div data-anim-preview></div>
         <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
         ${animStylePickerHtml(st.animStyle)}
@@ -130,7 +134,7 @@ export function render(el) {
       </section>
 
       <p class="muted" style="font-size:0.82rem">Home Protocol · open source · unofficial, not affiliated with Bryan Johnson or Blueprint · not medical advice.</p>
-      <button type="button" class="btn ghost sm" data-changelog>Version ${esc(state.version || "unavailable")} · Latest changes</button>
+      <div class="settings-footer"><button type="button" class="btn ghost sm" data-changelog>Version ${esc(state.version || "unavailable")} · Latest changes</button><a href="${REPO}" target="_blank" rel="noopener noreferrer">GitHub repository ${icon("external", "sm")}</a></div>
     </div>`;
   }
 
@@ -140,6 +144,11 @@ export function render(el) {
     const v = e.target.value;
     const n = Number(String(v).replace(",", "."));
     const ok = v !== "" && Number.isFinite(n);
+    if (f === "restCustom") {
+      const valid = ok && Number.isInteger(n) && n >= 1 && n <= 3600;
+      e.target.setCustomValidity(valid ? "" : "Enter a whole number from 1 to 3,600 seconds.");
+      if (!valid) return;
+    }
     updateProfile((pr) => {
       if (f === "name") pr.name = v;
       else if (f === "age" && ok && n >= 10 && n <= 110) pr.age = Math.round(n);
@@ -148,6 +157,10 @@ export function render(el) {
       else if (f === "maxdb") pr.maxDumbbellKg = ok ? Math.round((imperial() ? n / LB : n) * 10) / 10 : null;
       else if (f === "hrmax") pr.hrMax = ok && n > 100 ? Math.round(n) : null;
       else if (f === "start" && v) pr.startDate = v;
+      else if (f === "restCustom") {
+        pr.settings = pr.settings || {};
+        pr.settings.restSec = n;
+      }
     });
   });
 
@@ -175,6 +188,7 @@ export function render(el) {
         const days = Object.keys(data.days || {}).length;
         const replace = await confirmDialog({ title: "Import backup", message: `The file has ${days} logged days${data.profile ? " and a profile" : ""}. Replace everything you have now? (Cancel merges instead: days in the file overwrite the same dates.)`, confirm: "Replace all", danger: true });
         await importAll(data, replace ? "replace" : "merge");
+        customRest = !REST_PRESETS.includes(p().settings?.restSec || 75);
         applyLook(state.profile && state.profile.settings);
         applyAnimStyle((state.profile && state.profile.settings) || {});
         toast(`Imported ${days} days`);
@@ -206,7 +220,7 @@ export function render(el) {
             return "";
           }).join("");
           return `<section class="release-entry"><h3>v${esc(version || "?")}<small>${esc(date || "")}</small></h3>${changes}</section>`;
-        }).join("")}<p><a href="/api/changelog" target="_blank" rel="noopener">Read the full changelog</a></p></div>`;
+        }).join("")}<p><a href="${REPO}/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Read the full changelog</a></p></div>`;
         openDialog({ title: "Latest changes", content, wide: true });
       } catch {
         toast("Couldn't load the changelog", { icon: "info" });
@@ -251,6 +265,14 @@ export function render(el) {
     if (sg) {
       const name = sg.dataset.seg;
       const v = b.dataset.value;
+      if (name === "rest") {
+        customRest = v === "custom";
+        if (customRest) {
+          draw();
+          el.querySelector('[data-f="restCustom"]').focus();
+          return;
+        }
+      }
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
         if (name === "sex") pr.sex = v;

@@ -132,20 +132,20 @@ export function render(el, params) {
         (x) => `<div class="extra-row" data-extra="${esc(x.id)}">
           <select class="input" data-x="type" aria-label="Activity">${EXTRA_TYPES.map((t) => `<option value="${t.id}" ${x.type === t.id ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select>
           <input class="input num" data-x="min" inputmode="numeric" placeholder="min" value="${esc(x.min ?? "")}" aria-label="Minutes">
-          <input class="input num hide-sm" data-x="avg" inputmode="numeric" placeholder="avg bpm" value="${esc(x.avg ?? "")}" aria-label="Average heart rate">
-          <select class="input hide-sm" data-x="intensity" aria-label="Intensity"><option value="zone2" ${x.intensity !== "hard" && x.intensity !== "light" ? "selected" : ""}>Easy / Zone 2</option><option value="hard" ${x.intensity === "hard" ? "selected" : ""}>Hard</option><option value="light" ${x.intensity === "light" ? "selected" : ""}>Light</option></select>
+          <input class="input num" data-x="avg" inputmode="numeric" placeholder="bpm" value="${esc(x.avg ?? "")}" aria-label="Average heart rate">
+          <select class="input" data-x="intensity" aria-label="Intensity"><option value="zone2" ${x.intensity !== "hard" && x.intensity !== "light" ? "selected" : ""}>Easy / Zone 2</option><option value="hard" ${x.intensity === "hard" ? "selected" : ""}>Hard</option><option value="light" ${x.intensity === "light" ? "selected" : ""}>Light</option></select>
           <button type="button" class="btn sm icon-only ghost" data-x-del aria-label="Remove activity">${icon("trash", "sm")}</button>
         </div>`
       )
       .join("");
     return `<section class="card card-pad obs">
       <div class="section-title"><h2>Notes & observations</h2><span class="eyebrow">saved automatically</span></div>
-      <div class="two-col">
-        <div class="field"><span>Session effort (1 = very easy, 10 = max)</span><div class="scale">${rpe}</div></div>
-        <div class="field"><span>Energy today</span><div class="seg">${energy}</div></div>
+      <div class="obs-ratings">
+        <div class="rating-line"><span class="label" title="1 = very easy, 10 = maximum">Session effort <small>(1–10)</small></span><div class="scale" role="group" aria-label="Session effort, 1 very easy to 10 maximum">${rpe}</div></div>
+        <div class="rating-line"><span class="label">Energy today</span><div class="seg" role="group" aria-label="Energy today">${energy}</div></div>
       </div>
       <label class="field"><span>Notes</span><textarea class="input" data-notes rows="3" placeholder="How did it go? Anything sore, any wins, what to change next time…">${esc(l.notes || "")}</textarea></label>
-      <div class="field"><span>Extra activity (desk treadmill, walks, hikes, rides…) — counts toward your weekly minutes</span>
+      <div class="field"><span>Extra activity <small>· counts toward your weekly minutes</small></span>
         <div class="extras">${extras}</div>
         <div><button type="button" class="btn sm" data-x-add>${icon("plus", "sm")} Add activity</button></div>
       </div>

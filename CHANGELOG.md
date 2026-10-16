@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.13.0] - 2026-10-16
+
+### Added
+- Studio and Journal themes with new desktop and mobile layouts.
+- Robot, Paper cutouts and Halftone animation styles for every exercise.
+- Equipment, muscle and source filters, more sorting options and search in the exercise library.
+- Custom rest timer values and more than 30 extra activities.
+
+### Changed
+- Compact effort, energy and extra activity controls on Today.
+- Training levels in pairs, a fitted weekly table and clearer heart-rate estimates.
+- Dated sources and linked training updates, ordered newest first where dates are known.
+- Equipment is collapsed by default in Settings and the README.
+- Settings links to the GitHub repository and the full changelog on GitHub.
+
+### Fixed
+- Weekly totals show hours instead of function source that stretched the page.
+- Developer keyframe previews wait for the animation figure before taking snapshots.
+
 ## [1.12.0] - 2026-10-16
 
 ### Added

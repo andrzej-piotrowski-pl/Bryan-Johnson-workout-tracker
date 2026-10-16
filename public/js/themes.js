@@ -1,4 +1,4 @@
-// Themes: the original look plus six others, each with its own layout, type and
+// Themes: each look has its own layout, type and
 // colours (css/themes.css), on top of the light/dark mode setting.
 //
 // The chosen theme is profile.settings.skin; the mode is profile.settings.theme
@@ -68,6 +68,22 @@ export const SKINS = [
     modes: ["light", "dark"],
     preview: { bg: "#ffffff", surface: "#ffffff", ink: "#1a1a1a", accent: "#b0279a", rail: "#fcd36f", nav: "left", layout: "course", r: 3 },
   },
+  {
+    id: "studio",
+    name: "Studio",
+    source: null,
+    blurb: "A spacious training studio: the exercise takes centre stage on the left, the session sits beside it, and a compact navigation column stays close by.",
+    modes: ["light", "dark"],
+    preview: { bg: "#edf0fa", surface: "#ffffff", ink: "#202a46", accent: "#3c56cc", nav: "left", layout: "mirror", r: 7 },
+  },
+  {
+    id: "journal",
+    name: "Journal",
+    source: null,
+    blurb: "An editorial training journal: navigation across the masthead, a generous serif headline, exercises in paired rows and a demonstration that opens on the page.",
+    modes: ["light", "dark"],
+    preview: { bg: "#f7f2e8", surface: "#ebe4d6", ink: "#292f29", accent: "#38654e", nav: "top", layout: "journal", r: 0, ruled: true },
+  },
 ];
 
 export const DEFAULT_SKIN = "original";
@@ -84,7 +100,7 @@ export function currentSkin() {
 
 // How Today shows the selected exercise: beside the list, or opened in place.
 export function detailMode() {
-  return currentSkin().id === "course" ? "inline" : "side";
+  return ["course", "journal"].includes(currentSkin().id) ? "inline" : "side";
 }
 
 const darkQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;

@@ -18,6 +18,7 @@ export const ANIM_STYLES = [
   { id: "lowpoly", name: "Low poly", tech: "3d", after: "Quaternius' free game characters", blurb: "Faceted shapes and flat colours. Light to draw and very clear to read." },
   { id: "cartoon", name: "Cartoon", tech: "3d", after: "Classic cel shading with ink outlines", blurb: "Two hard tones, thick black outlines and bold colours; the worked muscles get a yellow outline." },
   { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "Built from blocks with pixel-art faces and clothes, on grass, with pixel-textured props." },
+  { id: "robot", name: "Robot", tech: "3d", after: "Friendly service robots", blurb: "Ceramic armour, exposed mechanical joints and a glowing visor. Amber shells mark the muscles being worked, with the same exercise movement." },
   { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sign figure on a blue tile: even bars for limbs, a floating round head, the worked muscles in orange. Drawn as SVG." },
   { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "Brush strokes on rice paper that leave fading ink trails, an ensō circle for the head and red washes on the worked muscles. Drawn on a 2D canvas." },
   { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "The figure typed out in characters on a glowing CRT, with a floor grid; the worked muscles in amber. Drawn as text." },
@@ -26,6 +27,8 @@ export const ANIM_STYLES = [
   { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
   { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about every exercise. Drawn as SVG." },
   { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
+  { id: "paper", name: "Paper cutouts", tech: "svg", after: "Folded paper collage", blurb: "Cut polygon limbs, visible folds and soft offset shadows on warm paper. Coral pieces mark the worked muscles. Drawn as SVG." },
+  { id: "halftone", name: "Halftone", tech: "canvas", after: "Two-colour printed comics", blurb: "Newsprint dots, bold ink outlines and vermilion muscle highlights. A moving comic panel, drawn on a 2D canvas." },
 ];
 
 // The style until you pick one.

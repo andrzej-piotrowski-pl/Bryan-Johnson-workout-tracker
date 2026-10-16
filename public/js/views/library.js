@@ -9,7 +9,9 @@ import { state } from "../store.js";
 import { rxFor } from "../plan.js";
 import { LEVELS, levelIndex, personalize } from "../personalize.js";
 import { esc } from "../util.js";
-import { icon } from "../components/icons.js";
+import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
+import { filterExercises } from "../components/exercise-filters.js";
+import { sourceListHtml } from "../components/sources.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
 import { renderVideos, youtubeId } from "../components/video.js";
 import { thumbnail } from "../components/thumbs.js";
@@ -23,19 +25,21 @@ function usages(exId) {
 
 export function render(el, params) {
   if (params[0] && EXERCISES[params[0]]) return detail(el, params[0]);
-  let q = "";
-  let cat = "all";
+  const filters = { query: "", category: "all", equipment: "all", muscle: "all", origin: "all", sort: "original" };
   let io = null;
+  const equipment = [...new Set(Object.values(EXERCISES).flatMap((ex) => ex.equipment || []))].sort((a, b) => (EQUIPMENT_NAMES[a] || a).localeCompare(EQUIPMENT_NAMES[b] || b));
+  const muscles = [...new Set(Object.values(EXERCISES).flatMap((ex) => ex.muscles || []))].sort();
+  const muscleName = (name) => name.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (c) => c.toUpperCase());
 
   function cards() {
-    const needle = q.trim().toLowerCase();
-    const list = Object.entries(EXERCISES).filter(([id, e]) => (cat === "all" || e.cat === cat) && (!needle || e.name.toLowerCase().includes(needle) || id.includes(needle) || (e.muscles || []).some((m) => m.toLowerCase().includes(needle))));
-    if (!list.length) return `<div class="card empty">No exercise matches “${esc(q)}”.</div>`;
+    const list = filterExercises(filters);
+    if (!list.length) return '<div class="card empty">No exercises match these filters. Try clearing a filter or using a shorter search.</div>';
     return `<div class="lib-grid">${list
       .map(
         ([id, e]) => `<a class="card ex-card" href="#/library/${id}">
           <div class="thumb" data-thumb="${id}"><span class="muted">${icon("rotate")}</span></div>
           <div class="meta"><span class="eyebrow">${esc(e.cat)}</span><b>${esc(e.name)}</b>
+          <small class="muted">${esc((e.equipment || []).map((g) => EQUIPMENT_NAMES[g] || g).join(" · ") || "No equipment")}</small>
           <span class="chips">${e.classic ? '<span class="badge-classic">classic</span>' : ""}${(e.bryanVideos || []).some((b) => typeof b.s === "number") ? `<span class="chip bryan">${icon("video", "sm")} Bryan</span>` : ""}</span></div>
         </a>`
       )
@@ -48,14 +52,22 @@ export function render(el, params) {
       <details class="card card-pad">
         <summary style="cursor:pointer;font-weight:650;display:flex;gap:8px;align-items:center">${icon("video")} Watch Bryan first</summary>
         <div style="display:grid;gap:12px;margin-top:12px">
-          <ul class="list">${WATCH.map(([k, d]) => `<li><a href="${esc(BRYAN_VIDEOS[k].u)}" target="_blank" rel="noopener">${esc(BRYAN_VIDEOS[k].t.replace(/^Bryan( on X)?: /, ""))}</a> <span class="muted">${esc(d)}</span></li>`).join("")}</ul>
+          ${sourceListHtml(WATCH.map(([k, note]) => ({ ...BRYAN_VIDEOS[k], t: BRYAN_VIDEOS[k].t.replace(/^Bryan( on X)?: /, ""), note })))}
           <div data-watch></div>
         </div>
       </details>
       <div class="lib-tools">
-        <input class="input" type="search" data-q placeholder="Search: squat, neck, band, glutes…" value="${esc(q)}" aria-label="Search exercises">
-        <div class="seg" role="group" aria-label="Category">${["all", ...CATEGORIES].map((c) => `<button type="button" data-cat="${esc(c)}" aria-pressed="${cat === c}">${esc(c === "all" ? "All" : c)}</button>`).join("")}</div>
+        <input class="input" type="search" data-filter="query" placeholder="Search names, equipment or muscles…" aria-label="Search exercises">
+        <button type="button" class="btn ghost sm" data-clear-filters>Clear filters</button>
       </div>
+      <div class="lib-filters">${[
+        ["category", "Category", [["all", "All categories"], ...CATEGORIES.map((c) => [c, c])]],
+        ["equipment", "Equipment", [["all", "All equipment"], ["none", "No equipment"], ...equipment.map((g) => [g, EQUIPMENT_NAMES[g] || g])]],
+        ["muscle", "Muscle", [["all", "All muscles"], ...muscles.map((m) => [m, muscleName(m)])]],
+        ["origin", "Source", [["all", "All sources"], ["bryan", "Bryan’s protocol / home swaps"], ["classic", "Classic additions"], ["video", "Bryan video at a timestamp"]]],
+        ["sort", "Sort", [["original", "Original order"], ["name", "Name: A–Z"], ["reverse", "Name: Z–A"], ["category", "Category, then name"]]],
+      ].map(([key, title, options]) => `<label class="field"><span>${title}</span><select class="input" data-filter="${key}">${options.map(([id, name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join("")}</select></label>`).join("")}</div>
+      <p class="muted library-count" data-library-count role="status">${filterExercises(filters).length} of ${Object.keys(EXERCISES).length} exercises</p>
       <div data-cards>${cards()}</div>
     </div>`;
     const vids = WATCH.map(([k]) => ({ kind: "bryan", title: BRYAN_VIDEOS[k].t.replace(/^Bryan( on X)?: /, ""), url: BRYAN_VIDEOS[k].u, id: youtubeId(BRYAN_VIDEOS[k].u), start: null })).filter((v) => v.id);
@@ -80,20 +92,27 @@ export function render(el, params) {
     el.querySelectorAll("[data-thumb]").forEach((t) => io.observe(t));
   }
 
+  function refresh() {
+    el.querySelector("[data-cards]").innerHTML = cards();
+    el.querySelector("[data-library-count]").textContent = `${filterExercises(filters).length} of ${Object.keys(EXERCISES).length} exercises`;
+    observeThumbs();
+  }
   el.addEventListener("input", (e) => {
-    if (e.target.matches("[data-q]")) {
-      q = e.target.value;
-      el.querySelector("[data-cards]").innerHTML = cards();
-      observeThumbs();
-    }
+    if (e.target.dataset.filter !== "query") return;
+    filters.query = e.target.value;
+    refresh();
+  });
+  el.addEventListener("change", (e) => {
+    if (!e.target.dataset.filter) return;
+    filters[e.target.dataset.filter] = e.target.value;
+    refresh();
   });
   el.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-cat]");
-    if (b) {
-      cat = b.dataset.cat;
-      el.querySelectorAll("[data-cat]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-      el.querySelector("[data-cards]").innerHTML = cards();
-      observeThumbs();
+    if (e.target.closest("[data-clear-filters]")) {
+      Object.assign(filters, { query: "", category: "all", equipment: "all", muscle: "all", origin: "all", sort: "original" });
+      el.querySelectorAll("[data-filter]").forEach((input) => { input.value = filters[input.dataset.filter]; });
+      refresh();
+      el.querySelector('[data-filter="query"]').focus();
     }
   });
   draw();

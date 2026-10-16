@@ -49,13 +49,13 @@ for (const id of ids) {
     h.textContent += " (no animation)";
     continue;
   }
-  anim.clips.forEach((raw, ci) => {
+  for (const [ci, raw] of anim.clips.entries()) {
     const clip = prepareClip(raw);
     const row = document.createElement("div");
     row.className = "row";
     const times = clip.keys.slice(0, -1).map((k) => k.t);
     for (const t of times) {
-      const url = stage.snapshot(id, ci, t + 0.001, view);
+      const url = await stage.snapshot(id, ci, t + 0.001, view);
       const key = clip.keys.find((k) => k.t === t);
       const fig = document.createElement("figure");
       fig.innerHTML = `<img width="${size}" height="${size}"><figcaption>${ci}: ${clip.title} · t=${t.toFixed(1)}<br>${key && key.cue ? key.cue : ""}</figcaption>`;
@@ -63,7 +63,7 @@ for (const id of ids) {
       row.appendChild(fig);
     }
     out.appendChild(row);
-  });
+  }
 }
 window.__done = true;
 </script>

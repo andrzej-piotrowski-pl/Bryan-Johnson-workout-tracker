@@ -701,8 +701,9 @@ export class Stage {
   }
 
   // Renders a still image of clip `clipIndex` at time `t`; used by the library thumbnails.
-  snapshot(id, clipIndex = 0, t = null, view = null) {
+  async snapshot(id, clipIndex = 0, t = null, view = null) {
     if (this.id !== id) this.load(id, { view });
+    await this.syncStyle();
     if (this.clipIndex !== clipIndex && this.clips[clipIndex]) {
       this.clipIndex = clipIndex;
       this.applyClip(true);

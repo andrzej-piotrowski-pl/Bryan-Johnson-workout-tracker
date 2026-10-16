@@ -204,9 +204,9 @@ public/js/anim/styles/
   flat.js       shared parts for the flat styles: body pieces on screen, prop faces,
                 dumbbell heads, lit regions, curves, depth, segments clipped at the
                 camera, the horizon
-  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js             three.js figures
-  pictogram.js  blueprint.js  doodle.js                              SVG
-  ink.js  synthwave.js  stardust.js  googly.js                       2D canvas
+  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js  robot.js   three.js figures
+  pictogram.js  blueprint.js  doodle.js  paper.js                    SVG
+  ink.js  synthwave.js  stardust.js  googly.js  halftone.js          2D canvas
   ascii.js                                                           text
 ```
 
@@ -252,6 +252,10 @@ behind the camera, for floor grids) and `horizonY`. `still` tells a style when a
 frame is a one-off (a thumbnail) rather than playback, so trails, physics and
 wobble start clean. It also needs `snapshot()`, a data URL of the last frame, for
 thumbnails.
+
+`Stage.snapshot()` is asynchronous: await it so the selected figure has finished loading before rendering the still. The developer keyframe page and thumbnail queue use this same path.
+
+Robot uses ordinary standard materials and the shared three.js rig. Paper cutouts uses SVG polygons with folds and small offset shadows. Halftone uses a cached canvas dot pattern and bold outlines. All three reuse the existing joints, props and held-equipment helpers.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with

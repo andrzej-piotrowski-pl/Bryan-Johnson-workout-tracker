@@ -958,60 +958,182 @@ export const SWAPS = [
 
 export const TIMELINE = [
   {
-    d: "14 Oct 2026 · checked 16 Oct",
+    d: "14 Oct 2026",
     t: "Bryan’s Workout Protocol: direct published update",
     s: "The official workout page confirms strength Monday/Wednesday/Friday, short intervals Tuesday and Norwegian 4×4 Thursday, plus weekend activity and recovery. This home plan keeps its level-scaled doses and substitutes compact equipment; owning extra gear does not add exercise volume.",
+    date: "2026-10-14",
+    links: [
+      {
+        t: "Workout protocol",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity"
+      }
+    ]
   },
   {
     d: "Jul 2023",
     t: "Daily workout protocol",
     s: "About 25 exercises in 45–60 min: backward sled, posture work, Knees-Over-Toes leg work, high-rep accessories (1 × 25), 10-min HIIT three times a week.",
+    date: "2023-07",
+    links: [
+      {
+        t: "Full workout video",
+        u: "https://www.youtube.com/watch?v=sYyVi-H-ozI"
+      },
+      {
+        t: "Daily workout post",
+        u: "https://x.com/bryan_johnson/status/1683855033425866755"
+      }
+    ]
   },
   {
     d: "Oct 2024",
     t: "Posture thread",
     s: "He said an MRI showed his posture was restricting blood flow out of his brain. Five habits plus two physical-therapist exercises, done to fatigue twice a week.",
+    date: "2024-10-10",
+    links: [
+      {
+        t: "Five posture habits",
+        u: "https://x.com/bryan_johnson/status/1844454193572216969"
+      },
+      {
+        t: "PT exercise clips",
+        u: "https://x.com/bryan_johnson/status/1844454212333076616"
+      }
+    ]
   },
   {
     d: "Dec 2024",
     t: "Official exercise protocol + 4×4",
     s: "A 7-day longevity plan (strength days, interval days, a mobility day, Norwegian 4×4, a light day). On X: 4 min all-out, 4 min rest, four times.",
+    date: "2024-12-23",
+    links: [
+      {
+        t: "His 4×4 intervals",
+        u: "https://x.com/bryan_johnson/status/1871278967984185599"
+      }
+    ]
   },
   {
     d: "2025",
     t: "Session rebuilt with Dr. Andy Galpin",
     s: "Warm-up → speed & power (2 × 5) → strength (2 × 5–8) → posture → conditioning → flexibility (5 × 30 s). Feb 2025: VO2 max personal best 64.29.",
+    date: "2025-02-19",
+    links: [
+      {
+        t: "Session with Andy Galpin",
+        u: "https://www.youtube.com/watch?v=QhL4VBHRBJY"
+      },
+      {
+        t: "VO₂ max result",
+        u: "https://x.com/bryan_johnson/status/1892287231521673528"
+      }
+    ]
   },
   {
     d: "Jan 2026",
     t: "Updated protocol",
     s: "6 h a week: 3 strength + 3 cardio sessions, 150 min Zone 2, 75 min vigorous, plus flexibility, balance and mobility. At minimum, 20 min a day.",
+    date: "2026-01-23",
+    links: [
+      {
+        t: "Official protocol",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol"
+      }
+    ]
   },
   {
     d: "Mar–Apr 2026",
     t: "Posture guide, morning routine, bone density, squat breaks",
     s: "Posture guide updated. His day: 90 min of cardio, strength, balance and stretching, HIIT twice a week, active weekends. Bone protocol: jumping in warm-ups 4–7×/week, power training 2×/week. 9 Apr: 10 squats every 45 min of sitting.",
+    date: "2026-04-22",
+    links: [
+      {
+        t: "Posture guide",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture"
+      },
+      {
+        t: "Morning routine",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/morning-routine"
+      },
+      {
+        t: "Bone protocol",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol"
+      },
+      {
+        t: "Squat breaks",
+        u: "https://x.com/bryan_johnson/status/2042049389880045815"
+      }
+    ]
   },
   {
     d: "May 2026",
     t: "“Everyone Is Wrong About Exercise”",
     s: "His five pillars: strength, Zone 2, high-intensity cardio, mobility & flexibility, balance.",
+    date: "2026-05-26",
+    links: [
+      {
+        t: "Five pillars video",
+        u: "https://www.youtube.com/watch?v=JNuORofHhrk"
+      }
+    ]
   },
   {
     d: "Jul–Sep 2026",
     t: "Training to dunk at 49",
     s: "Front squat 245 lb (1 Sep) and deadlift 385 lb (4 Sep) PRs, with jumps between sets, coached in the Knees-Over-Toes style. His own weak points: little fast-twitch muscle, slow force development, stiff tendons, limited ankle dorsiflexion, Achilles risk.",
+    date: "2026-09-11",
+    links: [
+      {
+        t: "Dunk training targets",
+        u: "https://x.com/bryan_johnson/status/2081071661466689637"
+      },
+      {
+        t: "Front squat",
+        u: "https://x.com/bryan_johnson/status/2094836868747759751"
+      },
+      {
+        t: "Jumps between sets",
+        u: "https://x.com/bryan_johnson/status/2096020664268583215"
+      },
+      {
+        t: "Training with Ben Patrick",
+        u: "https://x.com/bryan_johnson/status/2098458369208332556"
+      }
+    ]
   },
   {
     d: "Sep 2026",
     t: "4 protocols after 40",
-    s: "Strength, cardio, balance and flexibility; move 5–10 min after meals; stand up every 30 min at the desk.",
+    s: "Blueprint’s guidance after 40: strength train 2–3 times a week, cover the major muscle groups with compound movements and gradually increase reps or load. Start with bodyweight if new.",
+    date: "2026-09-23",
+    links: [
+      {
+        t: "4 Protocols to Follow After 40",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/4-protocols-to-follow-after-40",
+        date: "2026-09-23"
+      },
+      {
+        t: "Official exercise guidance",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol"
+      }
+    ]
   },
   {
     d: "4 Oct 2026",
     t: "Newest weekly template (exercise newsletter)",
     s: "Strength Mon/Wed/Fri with progressive overload, short intervals Tue, Norwegian 4×4 Thu (start with 2–3 rounds, hard but controlled), easy outdoor or social activity Sat, recovery Sun. At least 150 min Zone 2 and 75 min hard cardio, about 10 of them near max.",
-  },
+    date: "2026-10-04",
+    links: [
+      {
+        t: "Archived exercise newsletter",
+        u: "https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK"
+      },
+      {
+        t: "Published weekly routine",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity"
+      }
+    ]
+  }
 ];
 
 export const TAKEAWAYS = [
@@ -1036,158 +1158,191 @@ export const SOURCES = [
     g: "Bryan Johnson: official pages",
     items: [
       {
-        t: "Bryan Johnson’s Workout Protocol (updated 14 Oct 2026; checked 16 Oct): direct source for the weekly routine",
+        t: "Bryan Johnson’s Workout Protocol",
         u: "https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity",
+        date: "2026-10-14"
       },
       {
-        t: "My Exercise Protocol, exercise newsletter (4 Oct 2026), archived copy. Cited by two of the other reports; I couldn’t open it from here",
+        t: "My Exercise Protocol · archived newsletter",
         u: "https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK",
+        date: "2026-10-04"
       },
       {
-        t: "Bryan Johnson’s Protocol (updated 23 Jan 2026)",
+        t: "Bryan Johnson’s Protocol",
         u: "https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol",
+        date: "2026-01-23"
       },
-      { t: "Don’t Die protocol site", u: "https://protocol.bryanjohnson.com/" },
       {
-        t: "My Morning Routine (2026), 22 Apr 2026",
+        t: "Don’t Die protocol site",
+        u: "https://protocol.bryanjohnson.com/"
+      },
+      {
+        t: "My Morning Routine",
         u: "https://blueprint.bryanjohnson.com/blogs/news/morning-routine",
+        date: "2026-04-22"
       },
       {
-        t: "Bone Density for Longevity (13 Apr 2026)",
+        t: "Bone Density for Longevity",
         u: "https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol",
+        date: "2026-04-13"
       },
       {
-        t: "How to Fix Your Posture: 5 Habits (updated Mar 2026)",
+        t: "How to Fix Your Posture: 5 Habits",
         u: "https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture",
+        date: "2026-03-01"
       },
       {
         t: "Is Sitting Really That Bad for You?",
         u: "https://blueprint.bryanjohnson.com/blogs/news/is-sitting-really-that-bad-for-you",
+        date: "2026-04-27"
       },
       {
         t: "Test Your Biological Age for $0 (balance test)",
         u: "https://blueprint.bryanjohnson.com/blogs/news/test-your-biological-age-for-0",
+        date: "2025-10-27"
       },
       {
-        t: "Blueprint fitness articles, incl. “4 Protocols to Follow After 40” (23 Sep 2026)",
-        u: "https://blueprint.bryanjohnson.com/blogs/news/tagged/fitness",
-      },
-    ],
+        t: "4 Protocols to Follow After 40",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/4-protocols-to-follow-after-40",
+        date: "2026-09-23"
+      }
+    ]
   },
   {
     g: "Bryan Johnson: videos",
     items: [
       {
-        t: "Everyone Is Wrong About Exercise (26 May 2026)",
+        t: "Everyone Is Wrong About Exercise",
         u: "https://www.youtube.com/watch?v=JNuORofHhrk",
+        date: "2026-05-26"
       },
       {
-        t: "Exercise Scientist Dismantles My Longevity Workout, with Dr. Andy Galpin (2025)",
-        u: "https://www.youtube.com/watch?v=QhL4VBHRBJY",
+        t: "Exercise Scientist Dismantles My Longevity Workout, with Dr. Andy Galpin",
+        u: "https://www.youtube.com/watch?v=QhL4VBHRBJY"
       },
       {
-        t: "My Complete Anti-Aging Workout (Jul 2023)",
+        t: "My Complete Anti-Aging Workout",
         u: "https://www.youtube.com/watch?v=sYyVi-H-ozI",
+        date: "2023-07"
       },
       {
-        t: "How I Fixed My Terrible Posture – 5 Habits (Jun 2023)",
+        t: "How I Fixed My Terrible Posture – 5 Habits",
         u: "https://www.youtube.com/watch?v=in9ubCilsT8",
+        date: "2023-06"
       },
       {
         t: "A 20-Minute Call with My Posture Coach",
-        u: "https://www.youtube.com/watch?v=cYGlj8Ryij8",
+        u: "https://www.youtube.com/watch?v=cYGlj8Ryij8"
       },
       {
         t: "My posture nearly killed me. Here’s why…",
-        u: "https://www.youtube.com/watch?v=k5nexY_nHI8",
-      },
-    ],
+        u: "https://www.youtube.com/watch?v=k5nexY_nHI8"
+      }
+    ]
   },
   {
     g: "Bryan Johnson: posts on X",
     items: [
       {
-        t: "My daily workout protocol (25 Jul 2023)",
+        t: "My daily workout protocol",
         u: "https://x.com/bryan_johnson/status/1683855033425866755",
+        date: "2023-07-25"
       },
       {
-        t: "Posture thread: five habits (10 Oct 2024)",
+        t: "Posture thread: five habits",
         u: "https://x.com/bryan_johnson/status/1844454193572216969",
+        date: "2024-10-10"
       },
       {
-        t: "Posture thread: the two PT exercises (10 Oct 2024)",
+        t: "Posture thread: the two PT exercises",
         u: "https://x.com/bryan_johnson/status/1844454212333076616",
+        date: "2024-10-10"
       },
-      { t: "4×4 HIIT (23 Dec 2024)", u: "https://x.com/bryan_johnson/status/1871278967984185599" },
       {
-        t: "VO2 max 64.29 (19 Feb 2025)",
+        t: "4×4 HIIT",
+        u: "https://x.com/bryan_johnson/status/1871278967984185599",
+        date: "2024-12-23"
+      },
+      {
+        t: "VO2 max 64.29",
         u: "https://x.com/bryan_johnson/status/1892287231521673528",
+        date: "2025-02-19"
       },
       {
-        t: "Rotating sitting and standing (30 Jun 2025)",
+        t: "Rotating sitting and standing",
         u: "https://x.com/bryan_johnson/status/1939806415649935751",
+        date: "2025-06-30"
       },
       {
-        t: "Grip strength predicts longevity (9 Sep 2025)",
+        t: "Grip strength predicts longevity",
         u: "https://x.com/bryan_johnson/status/1965204330145087854",
+        date: "2025-09-09"
       },
       {
-        t: "10 squats every 45 minutes of sitting (9 Apr 2026)",
+        t: "10 squats every 45 minutes of sitting",
         u: "https://x.com/bryan_johnson/status/2042049389880045815",
+        date: "2026-04-09"
       },
       {
-        t: "Training to dunk: the targets (25 Jul 2026)",
+        t: "Training to dunk: the targets",
         u: "https://x.com/bryan_johnson/status/2081071661466689637",
+        date: "2026-07-25"
       },
       {
-        t: "Training to dunk: what’s good, what’s bad (31 Jul 2026)",
+        t: "Training to dunk: what’s good, what’s bad",
         u: "https://x.com/bryan_johnson/status/2083240664209474046",
+        date: "2026-07-31"
       },
       {
-        t: "365 lb for 2 reps (28 Aug 2026)",
+        t: "365 lb for 2 reps",
         u: "https://x.com/bryan_johnson/status/2093391998229402099",
+        date: "2026-08-28"
       },
       {
-        t: "Front squat PR (1 Sep 2026)",
+        t: "Front squat PR",
         u: "https://x.com/bryan_johnson/status/2094836868747759751",
+        date: "2026-09-01"
       },
       {
-        t: "A jump in between sets (4 Sep 2026)",
+        t: "A jump in between sets",
         u: "https://x.com/bryan_johnson/status/2096020664268583215",
+        date: "2026-09-04"
       },
       {
-        t: "Jefferson, Ben Patrick and the dunk (11 Sep 2026)",
+        t: "Jefferson, Ben Patrick and the dunk",
         u: "https://x.com/bryan_johnson/status/2098458369208332556",
-      },
-    ],
+        date: "2026-09-11"
+      }
+    ]
   },
   {
     g: "People who studied his training",
     items: [
       {
         t: "Dr. Andy Galpin on the 2025 session (Biomolecular Athlete)",
-        u: "https://www.biomolecularathlete.com/content/bryan-johnson-exercise-scientist-dismantles-my-longevity-workout",
+        u: "https://www.biomolecularathlete.com/content/bryan-johnson-exercise-scientist-dismantles-my-longevity-workout"
       },
       {
         t: "Nucleus: breakdown of his session (warm-up, power, strength, posture, conditioning, flexibility)",
-        u: "https://mynucleus.com/blog/bryan-johnson-workout-routine",
+        u: "https://mynucleus.com/blog/bryan-johnson-workout-routine"
       },
       {
         t: "Generation Iron: the 2023 routine with sets and reps",
-        u: "https://generationiron.com/bryan-johnson-workout/",
+        u: "https://generationiron.com/bryan-johnson-workout/"
       },
       {
         t: "NAD: Bryan Johnson’s guide to fixing terrible posture",
-        u: "https://www.nad.com/news/bryan-johnsons-free-guide-to-fixing-terrible-posture",
+        u: "https://www.nad.com/news/bryan-johnsons-free-guide-to-fixing-terrible-posture"
       },
       {
         t: "BodyBuildingBros: Bryan’s five pillars of exercise",
-        u: "https://www.bodybuildingbros.com/news/bryan-johnson-reveals-the-five-pillars-of-exercise-for-longevity/",
+        u: "https://www.bodybuildingbros.com/news/bryan-johnson-reveals-the-five-pillars-of-exercise-for-longevity/"
       },
       {
-        t: "Will Wayland: How I’d train Bryan Johnson to vertical jump (Sep 2026)",
+        t: "Will Wayland: How I’d train Bryan Johnson to vertical jump",
         u: "https://x.com/WSWayland/article/2100144371341443159",
-      },
-    ],
-  },
+        date: "2026-09"
+      }
+    ]
+  }
 ];

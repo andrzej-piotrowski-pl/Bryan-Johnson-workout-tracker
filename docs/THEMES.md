@@ -1,21 +1,21 @@
 # Themes
 
-The app ships with seven looks: the Original one and six themes that each change the layout, type and colours. This page explains how they work and how to add one.
+The app ships with nine looks: the Original one and eight themes that each change the layout, type and colours. This page explains how they work and how to add one.
 
 ## How it works
 
-- **Where the choice lives.** `profile.settings.skin` holds the theme id (`original`, `chapters`, `darkroom`, `pulse`, `lab`, `olympia`, `course`); `profile.settings.theme` holds the mode (`system`, `light`, `dark`). Profiles saved before themes existed have no `skin` and get the Original look. Both values are also copied to `localStorage` (`hp:skin`, `hp:theme`) so the page paints in the right look before the app has loaded.
+- **Where the choice lives.** `profile.settings.skin` holds the theme id (`original`, `chapters`, `darkroom`, `pulse`, `lab`, `olympia`, `course`, `studio`, `journal`); `profile.settings.theme` holds the mode (`system`, `light`, `dark`). Profiles saved before themes existed have no `skin` and get the Original look. Both values are also copied to `localStorage` (`hp:skin`, `hp:theme`) so the page paints in the right look before the app has loaded.
 - **What the page carries.** `js/themes.js` (`applyLook`) sets three attributes on `<html>`:
   - `data-skin`: the theme id;
   - `data-theme`: a forced mode, if any (the user's light/dark choice, or `dark` for Dark room, which is always dark);
   - `data-scheme`: the resolved `light` or `dark`, following the system when the mode is `system`.
   Today also sets `data-venue` (`strength`, `intervals`, `endurance` or `rest`) for the day on screen, and the shell sets `data-route` to the current page.
 - **Where the looks are.** `css/app.css` is the Original look and the shared structure. `css/themes.css` has one section per theme, each starting with a comment that says which design guide it follows and how. A theme section sets the design tokens (`--bg`, `--surface`, `--ink`, `--accent`, fonts, radii…) for light, and again under `[data-scheme="dark"]`, then restyles the shell and the pages.
-- **Layout.** Above 900px each theme decides where the navigation goes (`.sidebar` becomes a top bar, a right-hand list, an icon rail…). Phones keep the top bar and bottom tab bar, restyled. Today is split into three regions, `.day-head`, `.day-list` and `.detail-col`, which a theme places with `grid-template-areas` on `.today-layout`. Course is the one theme that also changes behaviour: `detailMode()` in `themes.js` returns `inline`, and Today then opens an exercise under its row instead of in the side panel.
+- **Layout.** Above 900px each theme decides where the navigation goes (`.sidebar` becomes a top bar, a right-hand list, an icon rail…). Phones keep the top bar and bottom tab bar, restyled. Today is split into three regions, `.day-head`, `.day-list` and `.detail-col`, which a theme places with `grid-template-areas` on `.today-layout`. Course and Journal also change behaviour: `detailMode()` in `themes.js` returns `inline`, and Today then opens an exercise under its row instead of in the side panel.
 - **Kinds.** Blocks on Today carry `data-kind` (`warm`, `power`, `strength`, `core`, `cardio`, `stretch`) and week cards carry the session kind, both from `themes.js`, so a theme can colour them by meaning.
 - **The 3D scene.** `anim/stage.js` reads four optional custom properties from `<html>`: `--stage-floor`, `--stage-grid`, `--stage-hl` (highlighted muscles) and `--stage-body` (the figure), as `#rrggbb` hex. Stages repaint when the theme or the system colour scheme changes. The exercise-library thumbnails are cached per theme and mode.
 - **Live switcher.** `components/skin-bar.js` is the floating bar opened by *Try themes live* in Settings. It lives outside the views, so it survives navigation, and remembers in `sessionStorage` that it is open. While open, `<html>` has the class `skinbar-on` and `--skinbar-space` reserves a strip at the top; sticky and fixed elements use it in their `top`, so give a new sticky offset `calc(… + var(--skinbar-space))`.
-- **Fonts.** Only the three bundled font packages are used (Inter, Barlow Condensed, JetBrains Mono), in more weights. Chapters uses Inter's optical-size axis for its display type. A font file is only downloaded when a theme actually uses it.
+- **Fonts.** The three bundled font packages are used (Inter, Barlow Condensed, JetBrains Mono), in more weights. Chapters uses Inter's optical-size axis for its display type. Journal adds the system Georgia serif, without downloading another font. A font file is only downloaded when a theme actually uses it.
 
 ## The six themes and their guides
 
@@ -27,6 +27,11 @@ The app ships with seven looks: the Original one and six themes that each change
 | Lab | ui-ux-pro-max | Product type "Biohacking / Longevity App": "Minimalism & Swiss Style", data-dense, DNA blue + cellular red on white, the "Dashboard Data" pairing (a sans for words, mono for figures), 0px radius, no shadows. |
 | Olympia | [impeccable](https://github.com/pbakaus/impeccable) | Operate mode (the world lends type, palette, density and one signature move; controls stay standard). World: Otl Aicher's 1972 Munich identity. "Full palette" colour strategy by session kind; the signature move is the venue colour following the day. No eyebrows, no side stripes, borders instead of shadows. |
 | Course | impeccable | Operate mode with a different world and organisation: an orienteering map (open-land yellow rail, contour brown, water blue, purple overprint). The signature move is the course line through the session; exercises open in place rather than in a panel. |
+
+## Studio and Journal
+
+- **Studio** puts a large, square demonstration to the left of the session above 1180px, with a compact navigation column. On smaller screens the session leads. Its indigo gallery cards work in light and dark modes.
+- **Journal** puts navigation in a masthead above 900px and exercises in paired rows. The selected exercise opens inline across both columns, with the demonstration beside its instructions and logger. Phones use a single column. Georgia headlines and warm paper or dark forest colours distinguish it from the other themes.
 
 ## Adding a theme
 

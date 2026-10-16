@@ -4,7 +4,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
-- **Fourteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
+- **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -12,8 +12,9 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Your equipment**: record what you own, with names and product links, during setup or any time in Settings. Add equivalent or extra equipment, including a separate Massage category. Exercise instructions keep generic equipment names.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
-- **Seven themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
-- Week view, history calendar with skip reasons, progress charts, an exercise library and the full plan with sources.
+- **Nine themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
+- Week view, history calendar with skip reasons, progress charts, an exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
+- Custom rest timer values, compact effort and energy ratings, and more than 30 extra activities to log.
 
 ![The Today screen: the day's blocks on the left, the selected exercise with its 3D animation and set logger on the right](docs/screenshots/today.png)
 
@@ -145,9 +146,28 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 | Sat | Zone 2 + long stretch (swap for a walk, hike or ride outside any time) |
 | Sun | Rest |
 
-About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. The week fits within the page, with numeric totals for every level. Timeline entries and sources link to the supporting material, newest first where dates are known; unknown dates stay labelled **Undated**.
 
-## Equipment
+A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+
+<details>
+<summary><b>Plan, sources and exercise filters</b></summary>
+
+<p>
+<img src="docs/screenshots/plan.png" width="49%" alt="The plan with training levels arranged in pairs">
+<img src="docs/screenshots/library.png" width="49%" alt="The exercise library filtered by equipment, with muscle, source and sorting options">
+</p>
+
+![The week with readable duration columns and numeric totals](docs/screenshots/plan-week.png)
+
+![Compact effort, energy and extra activity controls](docs/screenshots/observations.png)
+
+![Sources aligned from the top, with separate dates and links](docs/screenshots/sources.png)
+
+</details>
+
+<details>
+<summary><b>Equipment: optional inventory and home accessories</b></summary>
 
 Equipment entry is optional: choose **Skip for now** during setup to continue without adding anything. Manage your inventory later in **Settings → Your equipment**, or return directly to the Equipment step from **The plan → Set up your equipment**. Setup saves when you finish it; Settings saves edits automatically. Tick what you own and enter a name and optional http/https product link. Use **Add equipment** for extras or equivalents, choosing a category and entering a name and link.
 
@@ -155,11 +175,15 @@ The home recommendations cover adjustable dumbbells, a doorway bar, bands and a 
 
 A rope, push-up handles and a gripper can be kept in the inventory without adding exercises or sets. Massage devices have their own optional category; they are outside Bryan's workout prescription. A chest strap can help you read heart rate in its compatible app and enter it here; there is no automatic Bluetooth or ANT+ connection.
 
+The inventory is collapsed by default in Settings. Open **Your equipment** when you want to edit it.
+
 ![Equipment names and links in Settings](docs/screenshots/equipment.png)
+
+</details>
 
 ## Themes
 
-Choose one of seven themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
+Choose one of nine themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
 
 <p>
 <img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme with Anime animation: top navigation, a black hero with huge type, blocks as colour fields">
@@ -172,14 +196,19 @@ Choose one of seven themes during setup or in **Settings → Appearance**. Use *
 <img src="docs/screenshots/theme-course.png" width="32%" alt="Course theme with Doodle animation: exercises as controls on a purple course line, one opened in place">
 </p>
 
-Each screenshot uses a different animation style: Chapters with **Anime**, Dark room with **Stardust**, Pulse with **Synthwave**, Lab with **Blueprint**, Olympia with **Pictogram**, and Course with **Doodle**. Themes and animation styles can be mixed freely.
+<p>
+<img src="docs/screenshots/theme-studio.png" width="49%" alt="Studio theme: large Robot demonstration on the left and a compact session column on the right">
+<img src="docs/screenshots/theme-journal.png" width="49%" alt="Journal theme: a serif masthead, paired exercise rows and a Paper cutouts demonstration opened inline">
+</p>
+
+Each screenshot uses a different animation style: Chapters with **Anime**, Dark room with **Stardust**, Pulse with **Synthwave**, Lab with **Blueprint**, Olympia with **Pictogram**, Course with **Doodle**, Studio with **Robot**, and Journal with **Paper cutouts**. Themes and animation styles can be mixed freely.
 
 <details>
 <summary><b>Theme descriptions and design details</b></summary>
 
 Pick a theme in the first-run setup (it changes as you click) or later in **Settings → Appearance**. To compare them on your own pages, use **Try themes live** there: a small switcher floats at the top of the screen with one letter per theme (hover for the name) while you move around the app; close it with ×. Each one moves things around as well as recolouring them: where the navigation sits, how Today is laid out, the type, the shapes, even the colours of the 3D scene. Your data and settings stay the same whichever you use. Every theme except Dark room also follows your light/dark choice.
 
-The six new ones follow public design guides, two each: [taste-skill](https://github.com/Leonxlnx/taste-skill), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) and [impeccable](https://github.com/pbakaus/impeccable).
+Six themes follow public design guides, two each: [taste-skill](https://github.com/Leonxlnx/taste-skill), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) and [impeccable](https://github.com/pbakaus/impeccable).
 
 | Theme | Guide | What's different |
 |---|---|---|
@@ -190,6 +219,8 @@ The six new ones follow public design guides, two each: [taste-skill](https://gi
 | **Lab** | ui-ux-pro-max | Its longevity-app recipe: a Swiss grid with ruled lines and no rounded corners, figures in mono, a tabbed masthead, and three columns on wide screens (session, list, exercise). |
 | **Olympia** | impeccable | A colour for each kind of session, after the 1972 Munich Games signage: blue strength, orange intervals, green Zone 2, silver rest. The header, the hero and the 3D floor take the colour of the day you're looking at. The list leads on the left. |
 | **Course** | impeccable | The session drawn as an orienteering course: a start triangle, a purple control circle per exercise, a finish double circle. One column; an exercise opens in place under its row instead of in a side panel. |
+| **Studio** | — | A compact navigation column, a large exercise demonstration on the left and the session on the right. Rounded gallery cards, indigo accents, light and dark modes. |
+| **Journal** | — | A masthead with top navigation, serif headlines and exercises in paired rows. The selected demonstration opens across the page under its row. Warm paper or dark forest colours. |
 
 How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.md).
 
@@ -197,13 +228,13 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 ## Animation styles
 
-Choose one of fourteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+Choose one of seventeen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
 
 Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
-![The fourteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+![The seventeen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
 
 ![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
 
@@ -212,7 +243,7 @@ The speed button goes up to **2×**. For demonstrations with several movements, 
 
 Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
-Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other eight don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
+Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Seven are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
@@ -222,14 +253,17 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 | 4 | **Low poly** | three.js | Faceted, flat-coloured shapes like Quaternius' free game characters. |
 | 5 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
 | 6 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass; the props get a pixel texture in their own colour. |
-| 7 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
-| 8 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
-| 9 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
-| 10 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
-| 11 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
-| 12 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
-| 13 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
-| 14 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
+| 7 | **Robot** | three.js | Ceramic armour, exposed mechanical joints, a glowing visor and amber highlights on the muscles being worked. |
+| 8 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
+| 9 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
+| 10 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
+| 11 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
+| 12 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
+| 13 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
+| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
+| 15 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
+| 16 | **Paper cutouts** | SVG | Folded polygon limbs, crease lines and offset paper shadows; worked muscles turn coral. |
+| 17 | **Halftone** | 2D canvas | Printed dots, bold comic outlines and vermilion muscle highlights. |
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 

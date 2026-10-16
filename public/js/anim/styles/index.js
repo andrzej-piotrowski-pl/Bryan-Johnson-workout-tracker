@@ -9,6 +9,7 @@ const MODULES = {
   lowpoly: () => import("./lowpoly.js"),
   cartoon: () => import("./cartoon.js"),
   voxel: () => import("./voxel.js"),
+  robot: () => import("./robot.js"),
   pictogram: () => import("./pictogram.js"),
   ink: () => import("./ink.js"),
   ascii: () => import("./ascii.js"),
@@ -17,6 +18,8 @@ const MODULES = {
   stardust: () => import("./stardust.js"),
   doodle: () => import("./doodle.js"),
   googly: () => import("./googly.js"),
+  paper: () => import("./paper.js"),
+  halftone: () => import("./halftone.js"),
 };
 
 export async function loadFigure(id) {

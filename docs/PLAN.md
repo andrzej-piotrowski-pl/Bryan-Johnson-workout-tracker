@@ -13,6 +13,8 @@ Made for: male, 38, 188 cm, 75 kg, trained before, four years off, no injuries.
 
 Each table lists the dose for each training level. A dash means the exercise is skipped at that level. Click an exercise name for how-to steps, the minute where Bryan does it, and demo videos.
 
+The app’s source timeline and source lists show supporting links with separate dates, newest first where known. This presentation does not change the training doses below.
+
 ## What changed in version 2
 
 After checking 13 other AI-generated plans against Bryan’s own material:
@@ -543,16 +545,17 @@ The list below is a recommendation, not an assumption about what a user owns. Pu
 Checked against Bryan's direct [Workout Protocol, updated 14 October 2026](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity), on 16 October 2026. The published week still supports the existing structure; only the necessary compact equipment substitutions have changed. Level-scaled sets, reps and cardio doses are retained.
 
 
-- **Jul 2023: Daily workout protocol.** About 25 exercises in 45–60 min: backward sled, posture work, Knees-Over-Toes leg work, high-rep accessories (1 × 25), 10-min HIIT three times a week.
-- **Oct 2024: Posture thread.** He said an MRI showed his posture was restricting blood flow out of his brain. Five habits plus two physical-therapist exercises, done to fatigue twice a week.
-- **Dec 2024: Official exercise protocol + 4×4.** A 7-day longevity plan (strength days, interval days, a mobility day, Norwegian 4×4, a light day). On X: 4 min all-out, 4 min rest, four times.
-- **2025: Session rebuilt with Dr. Andy Galpin.** Warm-up → speed & power (2 × 5) → strength (2 × 5–8) → posture → conditioning → flexibility (5 × 30 s). Feb 2025: VO2 max personal best 64.29.
-- **Jan 2026: Updated protocol.** 6 h a week: 3 strength + 3 cardio sessions, 150 min Zone 2, 75 min vigorous, plus flexibility, balance and mobility. At minimum, 20 min a day.
-- **Mar–Apr 2026: Posture guide, morning routine, bone density, squat breaks.** Posture guide updated. His day: 90 min of cardio, strength, balance and stretching, HIIT twice a week, active weekends. Bone protocol: jumping in warm-ups 4–7×/week, power training 2×/week. 9 Apr: 10 squats every 45 min of sitting.
-- **May 2026: “Everyone Is Wrong About Exercise”.** His five pillars: strength, Zone 2, high-intensity cardio, mobility & flexibility, balance.
-- **Jul–Sep 2026: Training to dunk at 49.** Front squat 245 lb (1 Sep) and deadlift 385 lb (4 Sep) PRs, with jumps between sets, coached in the Knees-Over-Toes style. His own weak points: little fast-twitch muscle, slow force development, stiff tendons, limited ankle dorsiflexion, Achilles risk.
-- **Sep 2026: 4 protocols after 40.** Strength, cardio, balance and flexibility; move 5–10 min after meals; stand up every 30 min at the desk.
-- **4 Oct 2026: Newest weekly template (exercise newsletter).** Strength Mon/Wed/Fri with progressive overload, short intervals Tue, Norwegian 4×4 Thu (start with 2–3 rounds, hard but controlled), easy outdoor or social activity Sat, recovery Sun. At least 150 min Zone 2 and 75 min hard cardio, about 10 of them near max.
+- **14 Oct 2026: Bryan’s Workout Protocol: direct published update.** The official workout page confirms strength Monday/Wednesday/Friday, short intervals Tuesday and Norwegian 4×4 Thursday, plus weekend activity and recovery. This home plan keeps its level-scaled doses and substitutes compact equipment; owning extra gear does not add exercise volume. [Workout protocol](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
+- **4 Oct 2026: Newest weekly template (exercise newsletter).** Strength Mon/Wed/Fri with progressive overload, short intervals Tue, Norwegian 4×4 Thu (start with 2–3 rounds, hard but controlled), easy outdoor or social activity Sat, recovery Sun. At least 150 min Zone 2 and 75 min hard cardio, about 10 of them near max. [Archived exercise newsletter](https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK) · [Published weekly routine](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
+- **Sep 2026: 4 protocols after 40.** Blueprint’s guidance after 40: strength train 2–3 times a week, cover the major muscle groups with compound movements and gradually increase reps or load. Start with bodyweight if new. [4 Protocols to Follow After 40](https://blueprint.bryanjohnson.com/blogs/news/4-protocols-to-follow-after-40) · [Official exercise guidance](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol)
+- **Jul–Sep 2026: Training to dunk at 49.** Front squat 245 lb (1 Sep) and deadlift 385 lb (4 Sep) PRs, with jumps between sets, coached in the Knees-Over-Toes style. His own weak points: little fast-twitch muscle, slow force development, stiff tendons, limited ankle dorsiflexion, Achilles risk. [Dunk training targets](https://x.com/bryan_johnson/status/2081071661466689637) · [Front squat](https://x.com/bryan_johnson/status/2094836868747759751) · [Jumps between sets](https://x.com/bryan_johnson/status/2096020664268583215) · [Training with Ben Patrick](https://x.com/bryan_johnson/status/2098458369208332556)
+- **May 2026: “Everyone Is Wrong About Exercise”.** His five pillars: strength, Zone 2, high-intensity cardio, mobility & flexibility, balance. [Five pillars video](https://www.youtube.com/watch?v=JNuORofHhrk)
+- **Mar–Apr 2026: Posture guide, morning routine, bone density, squat breaks.** Posture guide updated. His day: 90 min of cardio, strength, balance and stretching, HIIT twice a week, active weekends. Bone protocol: jumping in warm-ups 4–7×/week, power training 2×/week. 9 Apr: 10 squats every 45 min of sitting. [Posture guide](https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture) · [Morning routine](https://blueprint.bryanjohnson.com/blogs/news/morning-routine) · [Bone protocol](https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol) · [Squat breaks](https://x.com/bryan_johnson/status/2042049389880045815)
+- **Jan 2026: Updated protocol.** 6 h a week: 3 strength + 3 cardio sessions, 150 min Zone 2, 75 min vigorous, plus flexibility, balance and mobility. At minimum, 20 min a day. [Official protocol](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol)
+- **2025: Session rebuilt with Dr. Andy Galpin.** Warm-up → speed & power (2 × 5) → strength (2 × 5–8) → posture → conditioning → flexibility (5 × 30 s). Feb 2025: VO2 max personal best 64.29. [Session with Andy Galpin](https://www.youtube.com/watch?v=QhL4VBHRBJY) · [VO₂ max result](https://x.com/bryan_johnson/status/1892287231521673528)
+- **Dec 2024: Official exercise protocol + 4×4.** A 7-day longevity plan (strength days, interval days, a mobility day, Norwegian 4×4, a light day). On X: 4 min all-out, 4 min rest, four times. [His 4×4 intervals](https://x.com/bryan_johnson/status/1871278967984185599)
+- **Oct 2024: Posture thread.** He said an MRI showed his posture was restricting blood flow out of his brain. Five habits plus two physical-therapist exercises, done to fatigue twice a week. [Five posture habits](https://x.com/bryan_johnson/status/1844454193572216969) · [PT exercise clips](https://x.com/bryan_johnson/status/1844454212333076616)
+- **Jul 2023: Daily workout protocol.** About 25 exercises in 45–60 min: backward sled, posture work, Knees-Over-Toes leg work, high-rep accessories (1 × 25), 10-min HIIT three times a week. [Full workout video](https://www.youtube.com/watch?v=sYyVi-H-ozI) · [Daily workout post](https://x.com/bryan_johnson/status/1683855033425866755)
 
 **What this plan takes from it**
 
@@ -566,17 +569,15 @@ Checked against Bryan's direct [Workout Protocol, updated 14 October 2026](https
 
 **Watch Bryan first**
 
-- [Everyone Is Wrong About Exercise (26 May 2026)](https://www.youtube.com/watch?v=JNuORofHhrk): May 2026: his five pillars (strength, Zone 2, high-intensity cardio, mobility & flexibility, balance) and how he trains them now.
-- [My Complete Anti-Aging Workout (Jul 2023, gym version)](https://www.youtube.com/watch?v=sYyVi-H-ozI): His full 2023 routine: backward sled, posture work, step-ups, slant squats, Nordics, tib raises, arms, core and stretches. The exercise links jump to the right minute.
-- [With Dr. Andy Galpin: Exercise Scientist Dismantles My Longevity Workout (2025)](https://www.youtube.com/watch?v=QhL4VBHRBJY): 2025: warm-up order, posture, stability, speed, power, strength and HIIT, coached by Dr. Andy Galpin.
-- [How I Fixed My Terrible Posture – 5 Habits](https://www.youtube.com/watch?v=in9ubCilsT8): The string cue, the phone, moving often and the two physical-therapist exercises.
-- [A 20-Minute Call with My Posture Coach](https://www.youtube.com/watch?v=cYGlj8Ryij8): His posture coach walks him through the neck and shoulder exercises.
-- [the two posture exercises, with clips (10 Oct 2024)](https://x.com/bryan_johnson/status/1844454212333076616): Short clips of the two posture exercises.
-- [how he does 4×4 HIIT (23 Dec 2024)](https://x.com/bryan_johnson/status/1871278967984185599): How he runs his own 4×4 intervals.
-- [10 squats every 45 minutes of sitting (9 Apr 2026)](https://x.com/bryan_johnson/status/2042049389880045815): April 2026: 10 squats every 45 minutes of sitting.
-- [a jump in between sets (4 Sep 2026)](https://x.com/bryan_johnson/status/2096020664268583215): 2026: jumps between heavy sets in his dunk training.
-
-His videos use gym machines; each exercise below gives the home version and a demo. Timestamps are approximate (±10 s).
+- `4 Sept 2026` · [a jump in between sets](https://x.com/bryan_johnson/status/2096020664268583215): 2026: jumps between heavy sets in his dunk training.
+- `26 May 2026` · [Everyone Is Wrong About Exercise](https://www.youtube.com/watch?v=JNuORofHhrk): May 2026: his five pillars (strength, Zone 2, high-intensity cardio, mobility & flexibility, balance) and how he trains them now.
+- `9 Apr 2026` · [10 squats every 45 minutes of sitting](https://x.com/bryan_johnson/status/2042049389880045815): April 2026: 10 squats every 45 minutes of sitting.
+- `23 Dec 2024` · [how he does 4×4 HIIT](https://x.com/bryan_johnson/status/1871278967984185599): How he runs his own 4×4 intervals.
+- `10 Oct 2024` · [the two posture exercises, with clips](https://x.com/bryan_johnson/status/1844454212333076616): Short clips of the two posture exercises.
+- `Jul 2023` · [My Complete Anti-Aging Workout · gym version](https://www.youtube.com/watch?v=sYyVi-H-ozI): His full 2023 routine: backward sled, posture work, step-ups, slant squats, Nordics, tib raises, arms, core and stretches. The exercise links jump to the right minute.
+- `Jun 2023` · [How I Fixed My Terrible Posture – 5 Habits](https://www.youtube.com/watch?v=in9ubCilsT8): The string cue, the phone, moving often and the two physical-therapist exercises.
+- `Undated` · [Bryan with Dr. Andy Galpin: Exercise Scientist Dismantles My Longevity Workout](https://www.youtube.com/watch?v=QhL4VBHRBJY): Warm-up order, posture, stability, speed, power, strength and HIIT, coached by Dr. Andy Galpin.
+- `Undated` · [A 20-Minute Call with My Posture Coach](https://www.youtube.com/watch?v=cYGlj8Ryij8): His posture coach walks him through the neck and shoulder exercises.
 
 ### Warm-up & balance
 
@@ -1288,50 +1289,50 @@ Watch: [Physical therapy tip: doorway pec stretch](https://www.youtube.com/watch
 
 **Bryan Johnson: official pages**
 
-- [My Exercise Protocol, exercise newsletter (4 Oct 2026), archived copy. Cited by two of the other reports; I couldn’t open it from here](https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK)
-- [Bryan Johnson’s Protocol (updated 23 Jan 2026)](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol)
-- [Don’t Die protocol site](https://protocol.bryanjohnson.com/)
-- [Bryan Johnson’s Workout Protocol (updated 14 Oct 2026; checked 16 Oct 2026)](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
-- [My Morning Routine (2026), 22 Apr 2026](https://blueprint.bryanjohnson.com/blogs/news/morning-routine)
-- [Bone Density for Longevity (13 Apr 2026)](https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol)
-- [How to Fix Your Posture: 5 Habits (updated Mar 2026)](https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture)
-- [Is Sitting Really That Bad for You?](https://blueprint.bryanjohnson.com/blogs/news/is-sitting-really-that-bad-for-you)
-- [Test Your Biological Age for $0 (balance test)](https://blueprint.bryanjohnson.com/blogs/news/test-your-biological-age-for-0)
-- [Blueprint fitness articles, incl. “4 Protocols to Follow After 40” (23 Sep 2026)](https://blueprint.bryanjohnson.com/blogs/news/tagged/fitness)
+- `14 Oct 2026` · [Bryan Johnson’s Workout Protocol](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
+- `4 Oct 2026` · [My Exercise Protocol · archived newsletter](https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK)
+- `23 Sept 2026` · [4 Protocols to Follow After 40](https://blueprint.bryanjohnson.com/blogs/news/4-protocols-to-follow-after-40)
+- `27 Apr 2026` · [Is Sitting Really That Bad for You?](https://blueprint.bryanjohnson.com/blogs/news/is-sitting-really-that-bad-for-you)
+- `22 Apr 2026` · [My Morning Routine](https://blueprint.bryanjohnson.com/blogs/news/morning-routine)
+- `13 Apr 2026` · [Bone Density for Longevity](https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol)
+- `1 Mar 2026` · [How to Fix Your Posture: 5 Habits](https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture)
+- `23 Jan 2026` · [Bryan Johnson’s Protocol](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol)
+- `27 Oct 2025` · [Test Your Biological Age for $0 (balance test)](https://blueprint.bryanjohnson.com/blogs/news/test-your-biological-age-for-0)
+- `Undated` · [Don’t Die protocol site](https://protocol.bryanjohnson.com/)
 
 **Bryan Johnson: videos**
 
-- [Everyone Is Wrong About Exercise (26 May 2026)](https://www.youtube.com/watch?v=JNuORofHhrk)
-- [Exercise Scientist Dismantles My Longevity Workout, with Dr. Andy Galpin (2025)](https://www.youtube.com/watch?v=QhL4VBHRBJY)
-- [My Complete Anti-Aging Workout (Jul 2023)](https://www.youtube.com/watch?v=sYyVi-H-ozI)
-- [How I Fixed My Terrible Posture – 5 Habits (Jun 2023)](https://www.youtube.com/watch?v=in9ubCilsT8)
-- [A 20-Minute Call with My Posture Coach](https://www.youtube.com/watch?v=cYGlj8Ryij8)
-- [My posture nearly killed me. Here’s why…](https://www.youtube.com/watch?v=k5nexY_nHI8)
+- `26 May 2026` · [Everyone Is Wrong About Exercise](https://www.youtube.com/watch?v=JNuORofHhrk)
+- `Jul 2023` · [My Complete Anti-Aging Workout](https://www.youtube.com/watch?v=sYyVi-H-ozI)
+- `Jun 2023` · [How I Fixed My Terrible Posture – 5 Habits](https://www.youtube.com/watch?v=in9ubCilsT8)
+- `Undated` · [Exercise Scientist Dismantles My Longevity Workout, with Dr. Andy Galpin](https://www.youtube.com/watch?v=QhL4VBHRBJY)
+- `Undated` · [A 20-Minute Call with My Posture Coach](https://www.youtube.com/watch?v=cYGlj8Ryij8)
+- `Undated` · [My posture nearly killed me. Here’s why…](https://www.youtube.com/watch?v=k5nexY_nHI8)
 
 **Bryan Johnson: posts on X**
 
-- [My daily workout protocol (25 Jul 2023)](https://x.com/bryan_johnson/status/1683855033425866755)
-- [Posture thread: five habits (10 Oct 2024)](https://x.com/bryan_johnson/status/1844454193572216969)
-- [Posture thread: the two PT exercises (10 Oct 2024)](https://x.com/bryan_johnson/status/1844454212333076616)
-- [4×4 HIIT (23 Dec 2024)](https://x.com/bryan_johnson/status/1871278967984185599)
-- [VO2 max 64.29 (19 Feb 2025)](https://x.com/bryan_johnson/status/1892287231521673528)
-- [Rotating sitting and standing (30 Jun 2025)](https://x.com/bryan_johnson/status/1939806415649935751)
-- [Grip strength predicts longevity (9 Sep 2025)](https://x.com/bryan_johnson/status/1965204330145087854)
-- [10 squats every 45 minutes of sitting (9 Apr 2026)](https://x.com/bryan_johnson/status/2042049389880045815)
-- [Training to dunk: the targets (25 Jul 2026)](https://x.com/bryan_johnson/status/2081071661466689637)
-- [Training to dunk: what’s good, what’s bad (31 Jul 2026)](https://x.com/bryan_johnson/status/2083240664209474046)
-- [365 lb for 2 reps (28 Aug 2026)](https://x.com/bryan_johnson/status/2093391998229402099)
-- [Front squat PR (1 Sep 2026)](https://x.com/bryan_johnson/status/2094836868747759751)
-- [A jump in between sets (4 Sep 2026)](https://x.com/bryan_johnson/status/2096020664268583215)
-- [Jefferson, Ben Patrick and the dunk (11 Sep 2026)](https://x.com/bryan_johnson/status/2098458369208332556)
+- `11 Sept 2026` · [Jefferson, Ben Patrick and the dunk](https://x.com/bryan_johnson/status/2098458369208332556)
+- `4 Sept 2026` · [A jump in between sets](https://x.com/bryan_johnson/status/2096020664268583215)
+- `1 Sept 2026` · [Front squat PR](https://x.com/bryan_johnson/status/2094836868747759751)
+- `28 Aug 2026` · [365 lb for 2 reps](https://x.com/bryan_johnson/status/2093391998229402099)
+- `31 Jul 2026` · [Training to dunk: what’s good, what’s bad](https://x.com/bryan_johnson/status/2083240664209474046)
+- `25 Jul 2026` · [Training to dunk: the targets](https://x.com/bryan_johnson/status/2081071661466689637)
+- `9 Apr 2026` · [10 squats every 45 minutes of sitting](https://x.com/bryan_johnson/status/2042049389880045815)
+- `9 Sept 2025` · [Grip strength predicts longevity](https://x.com/bryan_johnson/status/1965204330145087854)
+- `30 Jun 2025` · [Rotating sitting and standing](https://x.com/bryan_johnson/status/1939806415649935751)
+- `19 Feb 2025` · [VO2 max 64.29](https://x.com/bryan_johnson/status/1892287231521673528)
+- `23 Dec 2024` · [4×4 HIIT](https://x.com/bryan_johnson/status/1871278967984185599)
+- `10 Oct 2024` · [Posture thread: five habits](https://x.com/bryan_johnson/status/1844454193572216969)
+- `10 Oct 2024` · [Posture thread: the two PT exercises](https://x.com/bryan_johnson/status/1844454212333076616)
+- `25 Jul 2023` · [My daily workout protocol](https://x.com/bryan_johnson/status/1683855033425866755)
 
 **People who studied his training**
 
-- [Dr. Andy Galpin on the 2025 session (Biomolecular Athlete)](https://www.biomolecularathlete.com/content/bryan-johnson-exercise-scientist-dismantles-my-longevity-workout)
-- [Nucleus: breakdown of his session (warm-up, power, strength, posture, conditioning, flexibility)](https://mynucleus.com/blog/bryan-johnson-workout-routine)
-- [Generation Iron: the 2023 routine with sets and reps](https://generationiron.com/bryan-johnson-workout/)
-- [NAD: Bryan Johnson’s guide to fixing terrible posture](https://www.nad.com/news/bryan-johnsons-free-guide-to-fixing-terrible-posture)
-- [BodyBuildingBros: Bryan’s five pillars of exercise](https://www.bodybuildingbros.com/news/bryan-johnson-reveals-the-five-pillars-of-exercise-for-longevity/)
-- [Will Wayland: How I’d train Bryan Johnson to vertical jump (Sep 2026)](https://x.com/WSWayland/article/2100144371341443159)
+- `Sept 2026` · [Will Wayland: How I’d train Bryan Johnson to vertical jump](https://x.com/WSWayland/article/2100144371341443159)
+- `Undated` · [Dr. Andy Galpin on the 2025 session (Biomolecular Athlete)](https://www.biomolecularathlete.com/content/bryan-johnson-exercise-scientist-dismantles-my-longevity-workout)
+- `Undated` · [Nucleus: breakdown of his session (warm-up, power, strength, posture, conditioning, flexibility)](https://mynucleus.com/blog/bryan-johnson-workout-routine)
+- `Undated` · [Generation Iron: the 2023 routine with sets and reps](https://generationiron.com/bryan-johnson-workout/)
+- `Undated` · [NAD: Bryan Johnson’s guide to fixing terrible posture](https://www.nad.com/news/bryan-johnsons-free-guide-to-fixing-terrible-posture)
+- `Undated` · [BodyBuildingBros: Bryan’s five pillars of exercise](https://www.bodybuildingbros.com/news/bryan-johnson-reveals-the-five-pillars-of-exercise-for-longevity/)
 
 _Version 2, compiled 14 Oct 2026. Demo videos are by other coaches and only show technique. This is a training plan, not medical advice._
