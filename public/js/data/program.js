@@ -172,10 +172,10 @@ export const DAYS = [
             id: "mon-strength-poliquin",
             ex: "poliquin",
             rx: [
-              "1 × 8/leg, {cm:10} step",
-              "2 × 10/leg, {cm:10-15} step",
+              "1 × 8/leg, slant board on floor",
+              "2 × 10/leg, slant board on floor",
               "3 × 10/leg",
-              "3 × 10/leg, {cm:20} step or holding 2 × {kg:6-8}",
+              "3 × 10/leg, slant board, optionally holding 2 × {kg:6-8}",
             ],
             bryan: "Bryan: 3 × 10/leg",
           },
@@ -731,7 +731,7 @@ export const DAYS = [
           {
             id: "fri-strength-stepup",
             ex: "stepup",
-            rx: ["2 × 6/leg, {cm:20} step", "2 × 6/leg, {cm:30}", "2 × 8/leg, knee height", "3 × 8/leg holding 2 × {kg:8-12}, fast up"],
+            rx: ["2 × 6/leg, lowest stable step", "2 × 6/leg, low step", "2 × 8/leg, low step", "3 × 8/leg holding 2 × {kg:8-12}, low step, controlled drive"],
             bryan: "Official: 3 × 10/leg",
           },
         ],
@@ -908,11 +908,11 @@ export const EQUIPMENT = {
       use: "heels up on the slant board so the knees can travel far forward.",
     },
     {
-      i: "A sturdy step and a knee-height box or chair",
-      d: "A stair or 15–25 cm platform for step-up cardio, calf raises and Jefferson curls; a 30–45 cm box or solid chair for Friday’s step-ups.",
-      icon: "box",
+      i: "Adjustable aerobic step",
+      d: "A stable low step for cardio, strength step-ups and calf raises. Use the lowest secure height first; progress with control or dumbbells, not stacked furniture.",
+      icon: "step",
       ex: "stepup",
-      use: "drive up onto a knee-height box or solid chair, dumbbells in hand.",
+      use: "drive up onto a low stable step, with bodyweight or dumbbells.",
     },
     {
       i: "Nordic anchor",
@@ -932,7 +932,8 @@ export const SWAPS = [
   ["Backward sled drag", "Backward walk indoors, then holding dumbbells or band-resisted"],
   ["Sled push-pull (power)", "Stationary power skips, skater bounds"],
   ["Slant-board goblet squat", "Heels-elevated goblet squat on a slant board or plates"],
-  ["Poliquin step-up on a slant", "Same, on a stair with the heel on a plate or book"],
+  ["Poliquin step-up on a slant", "Slant board on the floor, short heel tap; use a higher stable platform only when ready"],
+  ["Box step-up", "Low aerobic step; progress with control and load within its rated capacity"],
   ["Leg extension / reverse Nordic bench", "Reverse Nordic on a mat"],
   ["Nordic bench", "Heels under a sofa or a door strap"],
   ["Tib bar, IsoTib", "Wall tibialis raises"],
@@ -956,6 +957,11 @@ export const SWAPS = [
 ];
 
 export const TIMELINE = [
+  {
+    d: "14 Oct 2026 · checked 16 Oct",
+    t: "Bryan’s Workout Protocol: direct published update",
+    s: "The official workout page confirms strength Monday/Wednesday/Friday, short intervals Tuesday and Norwegian 4×4 Thursday, plus weekend activity and recovery. This home plan keeps its level-scaled doses and substitutes compact equipment; owning extra gear does not add exercise volume.",
+  },
   {
     d: "Jul 2023",
     t: "Daily workout protocol",
@@ -1030,6 +1036,10 @@ export const SOURCES = [
     g: "Bryan Johnson: official pages",
     items: [
       {
+        t: "Bryan Johnson’s Workout Protocol (updated 14 Oct 2026; checked 16 Oct): direct source for the weekly routine",
+        u: "https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity",
+      },
+      {
         t: "My Exercise Protocol, exercise newsletter (4 Oct 2026), archived copy. Cited by two of the other reports; I couldn’t open it from here",
         u: "https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK",
       },
@@ -1038,10 +1048,6 @@ export const SOURCES = [
         u: "https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol",
       },
       { t: "Don’t Die protocol site", u: "https://protocol.bryanjohnson.com/" },
-      {
-        t: "Exercise and Fitness Protocol for Longevity (10 Dec 2024)",
-        u: "https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity",
-      },
       {
         t: "My Morning Routine (2026), 22 Apr 2026",
         u: "https://blueprint.bryanjohnson.com/blogs/news/morning-routine",

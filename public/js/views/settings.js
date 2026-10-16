@@ -14,6 +14,7 @@ import { SKINS, applyLook, currentSkin, detailMode, skinById, skinPickerHtml } f
 import { openSkinBar } from "../components/skin-bar.js";
 import { ANIM_STYLES, PREVIEW_EXERCISE, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
 import { openAnimBar } from "../components/anim-bar.js";
+import { createEquipmentEditor } from "../components/equipment-editor.js";
 import { createStagePanel } from "../components/stage-panel.js";
 import { thumbnail } from "../components/thumbs.js";
 
@@ -34,6 +35,7 @@ export function render(el) {
   } catch {}
   const previewEl = document.createElement("div");
   previewEl.className = "anim-preview stage";
+  let equipmentEditor = null;
   let preview = null;
   let disposed = false;
   const previewObserver = new IntersectionObserver((entries) => {
@@ -70,6 +72,11 @@ export function render(el) {
         </div>
       </section>
 
+      <section class="card card-pad" style="display:grid;gap:12px" id="equipment">
+        <h3>Your equipment</h3>
+        <div data-equipment-editor></div>
+      </section>
+
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Training level</h3>
         <p class="muted" style="font-size:0.86rem">Your level alone decides the workouts: sets, reps, intervals and which exercises you do. Your weight, sex and age (above) scale the suggested weights.</p>
@@ -101,7 +108,7 @@ export function render(el) {
 
       <section class="card card-pad" data-anim-settings style="display:grid;gap:14px">
         <h3>Animation style</h3>
-        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animations, on every exercise. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, as text or in a WebGL shader of their own. The movement is the same in all of them.</p>
+        <p class="muted" style="font-size:0.86rem">Other ways to draw the exercise animations, on every exercise. The first six are three.js scenes; the others are drawn without three.js, as SVG, on a 2D canvas, or as text. The movement is the same in all of them.</p>
         <div data-anim-preview></div>
         <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
         ${animStylePickerHtml(st.animStyle)}
@@ -309,7 +316,9 @@ export function render(el) {
   }
 
   function draw() {
+    equipmentEditor?.destroy();
     drawPage();
+    equipmentEditor = createEquipmentEditor(el.querySelector("[data-equipment-editor]"), { profile: p, save: updateProfile });
     el.querySelector("[data-anim-preview]").replaceWith(previewEl);
     if (preview) fillAnimThumbs();
     else {
@@ -321,6 +330,7 @@ export function render(el) {
   draw();
   return {
     destroy() {
+      equipmentEditor?.destroy();
       disposed = true;
       previewObserver.disconnect();
       window.removeEventListener("hp:look", onLook);

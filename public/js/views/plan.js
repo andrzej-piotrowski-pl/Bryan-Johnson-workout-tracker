@@ -1,7 +1,7 @@
 // The plan: training levels and rules, your heart-rate zones, the week by level, how it
 // compares with Bryan's targets, what Bryan does now, equipment and sources.
 
-import { CHANGES, DAYS, EQUIPMENT, LEVEL_PLANS, PROGRAM, RULES, SOURCES, SWAPS, TAKEAWAYS, TARGETS, TIMELINE, ZONES } from "../data/program.js";
+import { CHANGES, DAYS, LEVEL_PLANS, PROGRAM, RULES, SOURCES, SWAPS, TAKEAWAYS, TARGETS, TIMELINE, ZONES } from "../data/program.js";
 import { state } from "../store.js";
 import { dayMins } from "../plan.js";
 import { LEVELS, bpm, hrMax, levelIndex, personalize } from "../personalize.js";
@@ -49,8 +49,8 @@ export function render(el) {
       <tr><td><b>4×4 work</b></td><td class="num">85–95%</td><td class="num">${bpm(p, 85)}–${bpm(p, 95)}</td><td>Hard minutes of Thursday's 4×4 at Well trained (the other levels aim lower)</td></tr>
     </tbody></table></div>
 
-    <div class="section-title"><h2>Equipment</h2></div>
-    <div class="two-col">${[["You need", EQUIPMENT.have], ["Add (all small)", EQUIPMENT.add], ["Optional", EQUIPMENT.optional]].map(([t, arr]) => `<section class="card card-pad" style="display:grid;gap:8px"><h3>${esc(t)}</h3><ul class="list">${arr.map((x) => `<li><b>${esc(x.i)}.</b> ${esc(x.d)}</li>`).join("")}</ul></section>`).join("")}</div>
+    <div class="section-title"><h2>Home substitutions</h2><a class="btn sm" href="#/setup/redo/equipment">Set up your equipment</a></div>
+    <p class="muted">Manage your inventory during setup or in Settings → Your equipment. The table below explains how the home movements relate to Bryan's gym exercises.</p>
     <div class="table-wrap"><table><thead><tr><th>Bryan (gym)</th><th>You (home)</th></tr></thead><tbody>${SWAPS.map((s) => `<tr><td>${esc(s[0])}</td><td>${esc(s[1])}</td></tr>`).join("")}</tbody></table></div>
 
     <div class="section-title"><h2>What Bryan does now</h2></div>

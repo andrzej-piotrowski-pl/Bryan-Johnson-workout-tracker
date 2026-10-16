@@ -92,22 +92,20 @@ function gobletSquat(d) {
 }
 
 // ---------- Poliquin step-up ----------
-// Heels raised on a slant board on a low step. The left knee bends far over the toes while the
-// straight right leg reaches down to tap its heel on the floor in front of the step.
+// The slant board stays on the floor; the free heel taps just beyond its front edge.
 
 // RDL: dumbbells hang in front of the thighs (not through them) and slide down the legs.
 function rdlPose(d) {
   return hangArms(hinge(d), { fwd: 0.13 * (1 - d), inward: 0, drop: 0.95 });
 }
 
-const PQ_STEP = { type: "step", pos: [0, 0, 0.03], w: 0.6, d: 0.34, h: 0.15 };
-const PQ_BOARD = { type: "slant", pos: [0, 0.15, 0.06], w: 0.5, d: 0.28, angle: 15 };
+const PQ_BOARD = { type: "slant", pos: [0, 0, 0.06], w: 0.5, d: 0.28, angle: 15 };
 const PQ_L = onSlant(PQ_BOARD, 0.11, 0);
 const PQ_R = onSlant(PQ_BOARD, -0.11, 0);
 
 // Both feet on the board: start and end of each side, so the sides switch cleanly.
 const PQ_STAND = {
-  root: [0, 1.143, 0],
+  root: [0, 0.993, 0],
   footL: PQ_L.pos,
   footR: PQ_R.pos,
   toeL: PQ_L.toe,
@@ -119,10 +117,10 @@ const PQ_STAND = {
 function poliquin(d) {
   // d = 0: standing tall on the left leg, right leg straight in front; 1: heel tap
   const free = d < 0.5
-    ? { footR: [-0.07, 0.33, 0.29], toeR: -12 }
+    ? { footR: [-0.07, 0.18, 0.29], toeR: -12 }
     : { footR: footAt("R", "heel", [-0.08, 0, 0.255], -22), toeR: -22 };
   return {
-    root: mix([0.05, 1.143, 0.0], [0.05, 0.89, -0.04], d),
+    root: mix([0.05, 0.993, 0.0], [0.05, 0.89, -0.04], d),
     rot: [2 + 10 * d, 0, 0],
     spine: [2 * d, 0, 0],
     footL: PQ_L.pos,
@@ -330,23 +328,23 @@ function lunge(stage) {
 }
 
 // ---------- step-up ----------
-// Left foot onto a knee-height box, drive up, bring the right foot up, then step down slowly.
+// Left foot onto a low aerobic step, drive up, bring the right foot up, then step down slowly.
 
-const BOX = { type: "box", pos: [0, 0, 0.47], w: 0.5, d: 0.42, h: 0.45 };
+const BOX = { type: "step", pos: [0, 0, 0.47], w: 0.75, d: 0.34, h: 0.15 };
 const BOX_TOP = BOX.h + ANKLE_Y;
 
 function stepUp(stage, arms) {
   const S = {
     floor: { root: [0, 0.94, 0], rot: 2, L: [0.11, ANKLE_Y, 0], R: [-0.11, ANKLE_Y, 0] },
-    lift: { root: [-0.02, 0.935, 0], rot: 4, L: [0.11, 0.66, 0.1], toeL: 40, R: [-0.11, ANKLE_Y, 0] },
+    lift: { root: [-0.02, 0.935, 0], rot: 4, L: [0.11, 0.4, 0.1], toeL: 40, R: [-0.11, ANKLE_Y, 0] },
     place: { root: [-0.02, 0.92, 0.02], rot: 14, L: [0.11, BOX_TOP, 0.37], R: [-0.11, ANKLE_Y, 0] },
-    drive: { root: [0.02, 1.13, 0.24], rot: 18, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.33, -0.02], toeR: 15 },
-    knee: { root: [0.03, 1.37, 0.34], rot: 4, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.7, 0.16], toeR: 35 },
-    top: { root: [0, 1.39, 0.37], rot: 1, L: [0.11, BOX_TOP, 0.37], R: [-0.11, BOX_TOP, 0.37] },
-    reach: { root: [0.03, 1.3, 0.3], rot: 8, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.66, 0.1], toeR: 35 },
-    touch: { root: [0.02, 0.95, 0.14], rot: 12, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.09, 0.0], toeR: 12 },
-    shift: { root: [-0.03, 0.935, 0.05], rot: 6, L: [0.11, 0.6, 0.35], toeL: 8, R: [-0.11, ANKLE_Y, 0] },
-    back: { root: [-0.03, 0.935, 0.0], rot: 4, L: [0.11, 0.62, 0.04], toeL: 40, R: [-0.11, ANKLE_Y, 0] },
+    drive: { root: [0.02, 1.01, 0.24], rot: 18, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.2, -0.02], toeR: 15 },
+    knee: { root: [0.03, 1.07, 0.34], rot: 4, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.46, 0.16], toeR: 35 },
+    top: { root: [0, 1.09, 0.37], rot: 1, L: [0.11, BOX_TOP, 0.37], R: [-0.11, BOX_TOP, 0.37] },
+    reach: { root: [0.03, 1.02, 0.3], rot: 8, L: [0.11, BOX_TOP, 0.37], R: [-0.11, 0.4, 0.1], toeR: 35 },
+    touch: { root: [0.02, 0.93, 0.14], rot: 12, L: [0.11, BOX_TOP, 0.37], R: [-0.11, ANKLE_Y, 0.0], toeR: 0 },
+    shift: { root: [-0.03, 0.935, 0.05], rot: 6, L: [0.11, 0.37, 0.35], toeL: 8, R: [-0.11, ANKLE_Y, 0] },
+    back: { root: [-0.03, 0.935, 0.0], rot: 4, L: [0.11, 0.39, 0.04], toeL: 40, R: [-0.11, ANKLE_Y, 0] },
   }[stage];
   const p = {
     root: S.root,
@@ -365,7 +363,7 @@ function stepUp(stage, arms) {
 function stepUpKeys(arms, cues) {
   return [
     { t: 0, p: stepUp("floor", arms), cue: cues[0] },
-    { t: 0.6, p: stepUp("floor", arms), cue: "Whole foot on the box" },
+    { t: 0.6, p: stepUp("floor", arms), cue: "Whole foot on the step" },
     { t: 1.0, p: stepUp("lift", arms) },
     { t: 1.35, p: stepUp("place", arms), cue: cues[1] },
     { t: 1.8, p: stepUp("drive", arms) },
@@ -424,12 +422,12 @@ export default {
     clips: [
       {
         title: "Poliquin step-up",
-        props: [PQ_STEP, PQ_BOARD],
+        props: [PQ_BOARD],
         highlight: ["quads", "glutes"],
         camera: { view: "side", target: [0, 1.0, 0.1], dist: 4.3 },
         alternate: true,
         keys: [
-          { t: 0, p: PQ_STAND, cue: "On a low step, heels raised; one leg out in front" },
+          { t: 0, p: PQ_STAND, cue: "Slant board on the floor; one leg out in front" },
           { t: 0.6, p: poliquin(0), cue: "Knee far over the toes, lower slowly" },
           { t: 3.1, p: poliquin(1), cue: "Tap the heel lightly" },
           { t: 3.6, p: poliquin(1), cue: "Straighten the knee; no push-off" },
@@ -627,21 +625,21 @@ export default {
   stepup: {
     clips: [
       {
-        title: "Step-up onto a knee-height box",
+        title: "Step-up onto a low aerobic step",
         props: [BOX],
         highlight: ["quads", "glutes"],
-        camera: { view: [1, 0.22, 0.4], target: [0, 1.13, 0.3], dist: 4.85 },
+        camera: { view: [1, 0.22, 0.4], target: [0, 0.98, 0.3], dist: 4.3 },
         alternate: true,
-        keys: stepUpKeys(null, ["Box or sturdy chair about knee height", "Drive up through that leg, no push-off", "Lower slowly"]),
+        keys: stepUpKeys(null, ["Low, stable aerobic step", "Drive up through that leg, no push-off", "Lower slowly"]),
       },
       {
         title: "Step-up holding dumbbells",
         props: [BOX],
         hold: { L: true, R: true, axis: "z" },
         highlight: ["quads", "glutes"],
-        camera: { view: [1, 0.22, 0.4], target: [0, 1.13, 0.3], dist: 4.85 },
+        camera: { view: [1, 0.22, 0.4], target: [0, 0.98, 0.3], dist: 4.3 },
         alternate: true,
-        keys: stepUpKeys("dumbbells", ["Dumbbells at your sides, box at knee height", "Fast up: drive through the top leg", "Slow down: lower under control"]),
+        keys: stepUpKeys("dumbbells", ["Dumbbells at your sides, low stable step", "Fast up: drive through the top leg", "Slow down: lower under control"]),
       },
     ],
   },

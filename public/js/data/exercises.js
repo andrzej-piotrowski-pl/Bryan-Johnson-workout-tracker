@@ -215,7 +215,7 @@ export const EXERCISES = {
     muscles: ["quads"],
     bryan: "A Bryan staple (3 × 10 per leg) learned from Ben Patrick, the Knees-Over-Toes coach now behind his 2026 dunk project. Builds the inner quad (VMO) and knee resilience.",
     how: [
-      "Stand on a low step (10–20 cm) with the working heel raised on a plate, book or slant board.",
+      "Start on a slant board on the floor, working heel elevated, with the other leg reaching forward. The board alone gives a small heel tap; do not balance a large board on a narrow aerobic step.",
       "Lower the other heel slowly to the floor in front by bending the working knee far over the toes.",
       "Tap the heel lightly, then straighten the working knee to come up.",
       "Hips level; don’t push off the floor leg.",
@@ -363,10 +363,10 @@ export const EXERCISES = {
     muscles: ["glutes", "hamstrings", "core"],
     bryan: "Kettlebell swings are in Day 1 of Bryan’s official protocol (3 × 30 s) and in the power training of his bone protocol.",
     how: [
-      "Hold one dumbbell by one end with both hands, feet a bit wider than the hips.",
+      "Use one dumbbell with a secure two-handed grip, feet a bit wider than the hips. With an adjustable kit, use swings only if its manual permits dynamic use and all fasteners are locked.",
       "Hinge back so the dumbbell passes between your thighs.",
       "Snap the hips forward to float it to chest height; arms stay relaxed.",
-      "A hip snap, not a squat and not a front raise.",
+      "A hip snap, not a squat and not a front raise. If the kit is not rated for swings, use the farmer’s carry already in this session; Bryan’s template allows either.",
     ],
     videos: [
       { t: "How to: dumbbell swing", u: "https://www.youtube.com/watch?v=Y30kFfgW-bY" },
@@ -395,17 +395,17 @@ export const EXERCISES = {
     ],
   },
   stepup: {
-    name: "Step-up (knee-height, drive)",
+    name: "Step-up (low step, drive)",
     cat: "Legs & knees",
     log: "load",
-    equipment: ["box", "dumbbell"],
+    equipment: ["step", "dumbbell"],
     muscles: ["quads", "glutes"],
     bryan: "Step-ups are in the Friday session of Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026) (3 × 10 per leg), and box step-ups are part of the power training in his bone protocol.",
     how: [
-      "Use a sturdy chair, bench or stair about knee height (30–45 cm).",
+      "Use a stable aerobic step or stair, starting at its lowest secure height. A low step is the home adaptation of Bryan’s step-up.",
       "Whole foot on the step; drive up through that leg until you stand tall.",
       "Don’t push off the back foot.",
-      "Lower slowly. Fast up, slow down.",
+      "Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.",
     ],
     videos: [
       { t: "How to do a dumbbell step-up", u: "https://www.youtube.com/watch?v=DxUNi119Qzs" },
@@ -853,8 +853,8 @@ export const EXERCISES = {
     bryan: "Bryan’s protocol: at least 150 min a week of moderate activity (Zone 2) during which you can hold a conversation.",
     how: [
       "Heart rate {hr:60-70} (60–70% of max). You can speak in full sentences.",
-      "Main indoor option: continuous step-ups on a stair or {cm:15-20} step, switching the lead leg every minute.",
-      "Mix in brisk marching with arm swings, side steps or easy jump rope to break the boredom.",
+      "Main indoor option: continuous step-ups on a stable low aerobic step, switching the lead leg every minute. March instead if stepping raises your effort too much.",
+      "Mix in brisk marching with arm swings or side steps. A skipping rope is an optional home alternative only while you can still talk comfortably; slow down or march if it pushes you above Zone 2.",
       "Music, a podcast or a series helps; Bryan rotates music, books and podcasts too.",
     ],
     tips: ["When you get the chance, a brisk walk, hike or bike ride outside counts the same."],

@@ -4,11 +4,12 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (62 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
-- **Fifteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
+- **Fourteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
+- **Your equipment**: record what you own, with names and product links, during setup or any time in Settings. Add equivalent or extra equipment, including a separate Massage category. Exercise instructions keep generic equipment names.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
 - **Seven themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
@@ -23,7 +24,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 </p>
 <p>
 <img src="docs/screenshots/setup.png" width="49%" alt="First-run setup: choosing a theme">
-<img src="docs/screenshots/setup-accessories.png" width="49%" alt="First-run setup: the accessories you need, each shown in a 3D example exercise">
+<img src="docs/screenshots/setup-accessories.png" width="49%" alt="First-run equipment setup: 3D examples and your equipment names and links">
 </p>
 <p>
 <img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
@@ -45,7 +46,7 @@ npm install
 npm start
 ```
 
-Open **http://localhost:3030**. The first visit opens a short setup where you enter your details, pick your training level, see which accessories you need (each one shown in a 3D example exercise) and pick add-ons.
+Open **http://localhost:3030**. The first visit opens a short setup where you enter your details, pick your training level, record the equipment you own with names and links (the main accessories also have 3D examples) and pick add-ons.
 
 Keep the terminal window open while you use the app. To stop it, press **Ctrl+C** in that window. Next time, open a terminal in the project folder and run `npm start` again.
 
@@ -95,7 +96,7 @@ By default, files are stored in the `data/` folder. This folder is excluded from
 
 ```
 data/
-  profile.json          your details, settings and chosen add-ons
+  profile.json          your details, settings, equipment and chosen add-ons
   days/2026-10-14.json  one file per day: sets, reps, notes, skip reason…
 ```
 
@@ -112,6 +113,7 @@ Enter your details during setup and change them any time in **Settings**. If you
 |---|---|
 | Age, or a measured max heart rate | Your suggested heart-rate ranges during cardio |
 | Weight, sex, age, training level | Suggested starting dumbbell weights |
+| Equipment | Your optional inventory: names, links, equivalents and extra accessories. Exercises keep their generic labels. |
 | Heaviest dumbbell | Suggested weights are capped at it |
 | Units | kg/cm or lb/in throughout |
 | Training level | Which exercises you do, how many sets and reps, and how long the cardio lasts. Your level only changes when you choose it; past logs keep their original level. |
@@ -144,6 +146,16 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 | Sun | Rest |
 
 About 34–45 minutes a session at New to training, 41–50 at Returning, 53–60 at Active and 54–66 at Well trained, plus 8–10 minutes for the posture add-on. *The plan* page in the app explains the levels, rules, heart-rate zones, how the week compares with Bryan's targets, what Bryan does now, equipment swaps and all sources. A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
+
+## Equipment
+
+Equipment entry is optional: choose **Skip for now** during setup to continue without adding anything. Manage your inventory later in **Settings → Your equipment**, or return directly to the Equipment step from **The plan → Set up your equipment**. Setup saves when you finish it; Settings saves edits automatically. Tick what you own and enter a name and optional http/https product link. Use **Add equipment** for extras or equivalents, choosing a category and entering a name and link.
+
+The home recommendations cover adjustable dumbbells, a doorway bar, bands and a door anchor, a mat, a slant board, a low aerobic step and a secure Nordic anchor. Friday's step-ups use the low step rather than a knee-height chair. Poliquin heel taps start with the slant board on the floor. Names and links stay in the inventory, save with your profile and are included in backups. Exercises keep generic equipment labels and show no product links.
+
+A rope, push-up handles and a gripper can be kept in the inventory without adding exercises or sets. Massage devices have their own optional category; they are outside Bryan's workout prescription. A chest strap can help you read heart rate in its compatible app and enter it here; there is no automatic Bluetooth or ANT+ connection.
+
+![Equipment names and links in Settings](docs/screenshots/equipment.png)
 
 ## Themes
 
@@ -185,11 +197,13 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 ## Animation styles
 
-Choose one of fifteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+Choose one of fourteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+
+Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
-![The fifteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+![The fourteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
 
 ![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
 
@@ -198,7 +212,7 @@ The speed button goes up to **2×**. For demonstrations with several movements, 
 
 Other ways to draw the exercise animations, on all 62 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
-Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other nine don't use three.js to draw: they get the joints projected to the screen (or, for Liquid chrome, the camera itself) and draw with SVG, a 2D canvas, text or a shader of their own, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
+Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. The first six are three.js scenes. The other eight don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
@@ -216,7 +230,6 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 | 12 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
 | 13 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
 | 14 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
-| 15 | **Liquid chrome** | WebGL shader | A mirror-finish body that flows like poured metal, ray-marched per pixel in one fragment shader on plain WebGL: capsules melted together, reflections of the studio, the floor and itself, soft shadows, gold where the muscles work. It lowers its resolution by itself on slow devices. |
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 
@@ -263,7 +276,7 @@ public/
   js/views/               today, guided workout, week, history, progress, exercises, plan, settings, setup
   js/components/          exercise panel, logger, timers, videos, charts, 3D viewer, dialogs, live theme and style switchers
   js/anim/                three.js mannequin, inverse kinematics, props, exercise clips
-  js/anim/styles/         the animation styles (three.js, SVG, 2D canvas, text and a WebGL shader)
+  js/anim/styles/         the animation styles (three.js, SVG, 2D canvas, and text)
   js/data/                the plan, exercises, videos, add-ons
 docs/ANIMATIONS.md        guide to the animation system
 docs/THEMES.md            how the themes work and how to add one

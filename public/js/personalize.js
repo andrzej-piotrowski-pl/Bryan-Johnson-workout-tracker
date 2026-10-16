@@ -30,7 +30,13 @@ export function levelIndex(p) {
 // day, maps Re-entry → their level (at most Returning), Build → Active,
 // Blueprint → Well trained, and drops the old fields. Returns true if it changed p.
 export function migrateProfile(p, days = {}) {
-  if (!p || !("startPhase" in p || "phaseLock" in p || "levelSince" in p)) return false;
+  if (!p) return false;
+  let changed = false;
+  if (p.settings?.animStyle === "chrome") {
+    p.settings.animStyle = "athlete";
+    changed = true;
+  }
+  if (!("startPhase" in p || "phaseLock" in p || "levelSince" in p)) return changed;
   let phase = p.phaseLock != null && p.phaseLock !== "" ? Number(p.phaseLock) : null;
   if (phase == null) {
     const logged = Object.values(days).filter((d) => d && d.phase != null).sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -60,6 +66,7 @@ export function defaultProfile() {
     level: "new",
     units: "metric",
     maxDumbbellKg: 20,
+    equipment: [],
     hrMax: null,
     startDate: iso(new Date()),
     addons: { posture: true },

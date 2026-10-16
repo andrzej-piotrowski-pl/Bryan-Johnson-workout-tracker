@@ -9,8 +9,8 @@ import { esc } from "./util.js";
 
 // after: what the style is modelled on, shown on its card. tech: how it's drawn —
 // "3d" styles are three.js scenes; the others draw the same moving skeleton without
-// three.js: "svg" vector shapes, "canvas" 2D canvas, "text" characters, "shader" a
-// fragment shader on plain WebGL. fun: one of the funny ones.
+// three.js: "svg" vector shapes, "canvas" 2D canvas, "text" characters.
+// fun: one of the funny ones.
 export const ANIM_STYLES = [
   { id: "athlete", name: "Athlete", tech: "3d", after: "Semi-realistic, like Mixamo characters", blurb: "Skin, a T-shirt, shorts and trainers under soft studio light. The closest to a real person to copy." },
   { id: "mannequin", name: "Mannequin", tech: "3d", after: "The original", blurb: "Smooth grey figure; the muscles being worked light up. The look the app started with." },
@@ -26,7 +26,6 @@ export const ANIM_STYLES = [
   { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
   { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about every exercise. Drawn as SVG." },
   { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
-  { id: "chrome", name: "Liquid chrome", tech: "shader", after: "Liquid-metal studio renders", blurb: "A mirror-finish body that flows like poured metal, reflecting the studio, the floor and itself; gold where the muscles work. Ray-marched in one WebGL shader." },
 ];
 
 // The style until you pick one.
@@ -67,7 +66,7 @@ export function applyAnimStyle(settings = {}) {
 }
 
 // How each kind of style is drawn, for the badges on the cards.
-export const TECH_NAMES = { "3d": "three.js", svg: "SVG", canvas: "2D canvas", text: "Text", shader: "WebGL shader" };
+export const TECH_NAMES = { "3d": "three.js", svg: "SVG", canvas: "2D canvas", text: "Text" };
 
 // The picker in Settings: one card per style, with a still of the styled exercise
 // filled in by the settings view; the three.js styles first, then the others.
@@ -83,6 +82,6 @@ export function animStylePickerHtml(current) {
   const three = ANIM_STYLES.filter((s) => s.tech === "3d"), flat = ANIM_STYLES.filter((s) => s.tech !== "3d");
   return `<div class="anim-groups" role="group" aria-label="Animation style">
     ${group("3D scenes", `three.js · ${three.length} styles`, three)}
-    ${group("Drawn without three.js", `SVG, 2D canvas, text and a WebGL shader · ${flat.length} styles`, flat)}
+    ${group("Drawn without three.js", `SVG, 2D canvas and text · ${flat.length} styles`, flat)}
   </div>`;
 }

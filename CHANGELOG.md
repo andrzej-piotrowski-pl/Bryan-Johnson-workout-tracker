@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.12.0] - 2026-10-16
+
+### Added
+- Optional equipment names, links and ownership in setup and Settings, with custom items, a Massage category and a skip option.
+
+### Changed
+- Step-ups use a low aerobic step; Poliquin heel taps start on a slant board on the floor, with matching animations.
+- Checked the plan against Bryan’s workout protocol updated on 14 October 2026.
+
+### Removed
+- Liquid chrome and its automatic previews, which could freeze browsers; saved preferences switch to Athlete.
+
 ## [1.11.5] - 2026-10-15
 
 ### Changed

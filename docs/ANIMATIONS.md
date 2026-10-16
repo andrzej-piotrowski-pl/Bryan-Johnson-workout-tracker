@@ -22,6 +22,8 @@ It renders every keyframe side by side. Add `&view=side` to force a camera
 angle, `&size=320` for bigger tiles and `&style=voxel` to draw them in an
 animation style.
 
+The step-up clips use a low aerobic step, and Poliquin heel taps use a slant board on the floor. Both preserve the existing exercise ids and logged history.
+
 ## Coordinates and units
 
 - **+Y is up, the figure faces +Z, and its left side is +X.** The floor is `y = 0`.
@@ -206,7 +208,6 @@ public/js/anim/styles/
   pictogram.js  blueprint.js  doodle.js                              SVG
   ink.js  synthwave.js  stardust.js  googly.js                       2D canvas
   ascii.js                                                           text
-  chrome.js                                                          a WebGL fragment shader
 ```
 
 Each style module exports `createFigure()`. The stage still samples the clip and
@@ -251,10 +252,6 @@ behind the camera, for floor grids) and `horizonY`. `still` tells a style when a
 frame is a one-off (a thumbnail) rather than playback, so trails, physics and
 wobble start clean. It also needs `snapshot()`, a data URL of the last frame, for
 thumbnails.
-
-Liquid chrome shows how far that goes: it ignores the projection, takes the camera's
-matrices and casts a ray per pixel through a signed distance field built from the
-joints, in plain WebGL.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with

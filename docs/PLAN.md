@@ -137,7 +137,7 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 | [Heels-elevated goblet squat (slant-board squat)](#heels-elevated-goblet-squat-slant-board-squat) | 2 × 8 @ 7–10 kg, down to a chair, 3 s down | 2 × 10 @ 10–14 kg, 3 s down | 3 × 8–10 @ 16–24 kg | 3 × 6–8, heaviest dumbbell, 3 s down | Official 3 × 10–15; Bryan 2 × 5–8 |
 | [Push-ups](#push-ups) | 2 × 6–8, hands on a table or a wall | 3 × 8–10, hands raised if needed | 3 × 10–12 | 3 × 12–15, 3 s down, or feet raised | Official: 3 × 8–12 |
 | [One-arm dumbbell row](#one-arm-dumbbell-row) | 2 × 10/side @ 10–11 kg | 2 × 10/side @ 14–16 kg | 3 × 10/side @ 20–24 kg | 3 × 8–10/side, heaviest dumbbell | Official: 3 × 10–12 |
-| [Poliquin step-up](#poliquin-step-up) | 1 × 8/leg, 10 cm step | 2 × 10/leg, 10–15 cm step | 3 × 10/leg | 3 × 10/leg, 20 cm step or holding 2 × 8–10 kg | Bryan: 3 × 10/leg |
+| [Poliquin step-up](#poliquin-step-up) | 1 × 8/leg, slant board on floor | 2 × 10/leg, slant board on floor | 3 × 10/leg | 3 × 10/leg, slant board, optionally holding 2 × 8–10 kg | Bryan: 3 × 10/leg |
 | [Dumbbell swing](#dumbbell-swing) | — | 2 × 10 @ 12–16 kg | 3 × 12 @ 18–24 kg | 3 × 15 @ 26–32 kg | Official: 3 × 30 s |
 
 **Core & knees (≈5 / 6 / 8 / 8 min)** · Back to back, minimal rest.
@@ -365,7 +365,7 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 | [Dumbbell floor press](#dumbbell-floor-press) | 2 × 8 @ 2 × 7–8 kg | 2 × 10 @ 2 × 10–12 kg | 3 × 10 @ 2 × 16–18 kg | 3 × 8–10, heaviest pair | Official: 3 × 10–12 |
 | [Chin-ups (palms facing you)](#chin-ups-and-pull-ups) | 2 × 10–20 s dead hang | 2 × 3–5 band-assisted | 3 × 5 | 3 × 6–8 | Bryan does both grips |
 | [Standing dumbbell overhead press](#standing-dumbbell-overhead-press) | 2 × 8 @ 2 × 4–5.5 kg | 2 × 10 @ 2 × 6–8 kg | 3 × 10 @ 2 × 9–14 kg | 3 × 8–10 @ 2 × 16–20 kg | Official: 3 × 10–12 |
-| [Step-up (knee-height, drive)](#step-up-knee-height-drive) | 2 × 6/leg, 20 cm step | 2 × 6/leg, 30 cm | 2 × 8/leg, knee height | 3 × 8/leg holding 2 × 10–16 kg, fast up | Official: 3 × 10/leg |
+| [Step-up (low step, drive)](#step-up-low-step-drive) | 2 × 6/leg, lowest stable step | 2 × 6/leg, low step | 2 × 8/leg, low step | 3 × 8/leg holding 2 × 10–16 kg, low step, controlled drive | Official: 3 × 10/leg |
 
 **Side plank & tendons (≈6 / 7 / 8 / 9 min)**
 
@@ -493,17 +493,22 @@ Estimated max 182 bpm (220 − 38; Tanaka gives 181). If your device has a measu
 
 ## Equipment and home swaps
 
-**You have**
+Equipment entry is optional: skip it during setup or configure it later in **Settings → Your equipment**. Record ownership, names and product links, add equivalents or extra items, and use the separate **Massage** category for recovery devices. Names and product links stay in the inventory; exercises keep generic labels. Inventory is saved locally with the profile and included in backups.
+
+The list below is a recommendation, not an assumption about what a user owns. Push-up handles, a gripper and a rope do not add exercises, drills or sets. Massage equipment is optional and is not presented as Bryan's prescribed workout. Chest-strap heart rates are entered manually from a compatible app.
+
+
+**Core recommendations**
 
 - **Adjustable dumbbells.** Ideally up to 20–24 kg each, so the RDL, goblet squat and carries keep progressing.
 - **Doorway pull-up bar.** Pull-ups, chin-ups, hanging leg raises.
 
-**Add (all small)**
+**Other compact equipment**
 
 - **Resistance bands + door anchor.** Light, medium and heavy. Face pulls, pull-aparts, butterfly, Pallof press, woodchop and pull-up assistance.
 - **Exercise mat.** For kneeling work, stretches and quieter landings.
 - **Slant board or 2 small plates.** A foldable slant board (about 40 × 40 cm) or 2.5–5 kg plates under the heels: squats and Poliquin step-ups.
-- **A sturdy step and a knee-height box or chair.** A stair or 15–25 cm platform for step-up cardio, calf raises and Jefferson curls; a 30–45 cm box or solid chair for Friday’s step-ups.
+- **Adjustable aerobic step.** A stable low step for strength and cardio, starting at its lowest secure height. Progress with controlled movement and load within its rated capacity.
 - **Nordic anchor.** A heavy sofa or bed you can hook your heels under, or a door Nordic strap.
 
 **Optional**
@@ -516,7 +521,8 @@ Estimated max 182 bpm (220 − 38; Tanaka gives 181). If your device has a measu
 | Backward sled drag | Backward walk indoors, then holding dumbbells or band-resisted |
 | Sled push-pull (power) | Stationary power skips, skater bounds |
 | Slant-board goblet squat | Heels-elevated goblet squat on a slant board or plates |
-| Poliquin step-up on a slant | Same, on a stair with the heel on a plate or book |
+| Poliquin step-up on a slant | Slant board on the floor, short heel tap |
+| Box step-up | Low aerobic step, progress with control and load |
 | Leg extension / reverse Nordic bench | Reverse Nordic on a mat |
 | Nordic bench | Heels under a sofa or a door strap |
 | Tib bar, IsoTib | Wall tibialis raises |
@@ -533,6 +539,9 @@ Estimated max 182 bpm (220 − 38; Tanaka gives 181). If your device has a measu
 | Weekend hike, bike or pickleball | Indoor Zone 2 + long stretch on Saturday; go outside when you can |
 
 ## What Bryan does now
+
+Checked against Bryan's direct [Workout Protocol, updated 14 October 2026](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity), on 16 October 2026. The published week still supports the existing structure; only the necessary compact equipment substitutions have changed. Level-scaled sets, reps and cardio doses are retained.
+
 
 - **Jul 2023: Daily workout protocol.** About 25 exercises in 45–60 min: backward sled, posture work, Knees-Over-Toes leg work, high-rep accessories (1 × 25), 10-min HIIT three times a week.
 - **Oct 2024: Posture thread.** He said an MRI showed his posture was restricting blood flow out of his brain. Five habits plus two physical-therapist exercises, done to fatigue twice a week.
@@ -695,7 +704,7 @@ Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈14:2
 
 > **From Bryan:** A Bryan staple (3 × 10 per leg) learned from Ben Patrick, the Knees-Over-Toes coach now behind his 2026 dunk project. Builds the inner quad (VMO) and knee resilience.
 
-1. Stand on a low step (10–20 cm) with the working heel raised on a plate, book or slant board.
+1. Start on a slant board on the floor, working heel elevated, with the other leg reaching forward. The board gives a small heel tap; do not balance it on a narrow aerobic step.
 2. Lower the other heel slowly to the floor in front by bending the working knee far over the toes.
 3. Tap the heel lightly, then straighten the working knee to come up.
 4. Hips level; don’t push off the floor leg.
@@ -774,7 +783,7 @@ Watch: [Dumbbell RDL technique for beginners](https://www.youtube.com/watch?v=hQ
 
 > **From Bryan:** Kettlebell swings are in Day 1 of Bryan’s official protocol (3 × 30 s) and in the power training of his bone protocol.
 
-1. Hold one dumbbell by one end with both hands, feet a bit wider than the hips.
+1. Use a dumbbell with a secure two-handed grip, feet wider than the hips. An adjustable kit must permit dynamic use, with all fasteners locked; otherwise use the farmer’s carry already in the session (Bryan’s template allows either).
 2. Hinge back so the dumbbell passes between your thighs.
 3. Snap the hips forward to float it to chest height; arms stay relaxed.
 4. A hip snap, not a squat and not a front raise.
@@ -792,14 +801,14 @@ Watch: [How to: dumbbell swing](https://www.youtube.com/watch?v=Y30kFfgW-bY) · 
 
 Watch: [Dumbbell reverse lunges: tutorial and tips](https://www.youtube.com/watch?v=MyqQRJ2lW7Q) · [Dumbbell reverse lunge tutorial](https://www.youtube.com/watch?v=MpfeGnBFEo8)
 
-#### Step-up (knee-height, drive)
+#### Step-up (low step, drive)
 
 > **From Bryan:** Step-ups are in the Friday session of Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026) (3 × 10 per leg), and box step-ups are part of the power training in his bone protocol.
 
-1. Use a sturdy chair, bench or stair about knee height (30–45 cm).
+1. Use a stable aerobic step or stair, starting at its lowest secure height. This is the home adaptation of Bryan’s step-up.
 2. Whole foot on the step; drive up through that leg until you stand tall.
 3. Don’t push off the back foot.
-4. Lower slowly. Fast up, slow down.
+4. Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.
 
 Watch: [How to do a dumbbell step-up](https://www.youtube.com/watch?v=DxUNi119Qzs) · [Choosing the box height](https://www.youtube.com/watch?v=xYQsyViNwi4)
 
@@ -1066,7 +1075,7 @@ Watch: [Mountain climbers: 3 steps to proper form](https://www.youtube.com/watch
 > **From Bryan:** Bryan’s protocol: at least 150 min a week of moderate activity (Zone 2) during which you can hold a conversation.
 
 1. Heart rate 109–127 bpm (60–70% of max). You can speak in full sentences.
-2. Main indoor option: continuous step-ups on a stair or 15–20 cm step, switching the lead leg every minute.
+2. Main indoor option: continuous step-ups on a stable low aerobic step, switching the lead leg every minute. March if stepping raises your effort too much.
 3. Mix in brisk marching with arm swings, side steps or easy jump rope to break the boredom.
 4. Music, a podcast or a series helps; Bryan rotates music, books and podcasts too.
 
@@ -1282,7 +1291,7 @@ Watch: [Physical therapy tip: doorway pec stretch](https://www.youtube.com/watch
 - [My Exercise Protocol, exercise newsletter (4 Oct 2026), archived copy. Cited by two of the other reports; I couldn’t open it from here](https://milled.com/blueprint.bryanjohnson.com/my-exercise-protocol-iDTE0JjdPa191ocK)
 - [Bryan Johnson’s Protocol (updated 23 Jan 2026)](https://blueprint.bryanjohnson.com/blogs/news/bryan-johnsons-protocol)
 - [Don’t Die protocol site](https://protocol.bryanjohnson.com/)
-- [Exercise and Fitness Protocol for Longevity (10 Dec 2024)](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
+- [Bryan Johnson’s Workout Protocol (updated 14 Oct 2026; checked 16 Oct 2026)](https://blueprint.bryanjohnson.com/blogs/news/exercise-and-fitness-protocol-for-longevity)
 - [My Morning Routine (2026), 22 Apr 2026](https://blueprint.bryanjohnson.com/blogs/news/morning-routine)
 - [Bone Density for Longevity (13 Apr 2026)](https://blueprint.bryanjohnson.com/blogs/news/bone-health-protocol)
 - [How to Fix Your Posture: 5 Habits (updated Mar 2026)](https://blueprint.bryanjohnson.com/blogs/news/youre-likely-reading-this-with-poor-posture)

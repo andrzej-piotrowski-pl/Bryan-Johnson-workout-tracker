@@ -1,6 +1,5 @@
 // First-run setup: who you are (for heart-rate zones and starting loads),
-// your training level (which sets the workouts), units, the accessories
-// you need (with a 3D example of each), start date and optional add-ons.
+// your training level, units, equipment names and links, start date and add-ons.
 
 import { ADDONS } from "../data/addons/index.js";
 import { EQUIPMENT } from "../data/program.js";
@@ -11,10 +10,11 @@ import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { levelPickerHtml } from "../components/level-picker.js";
 import { createStagePanel } from "../components/stage-panel.js";
+import { createEquipmentEditor } from "../components/equipment-editor.js";
 import { seg } from "../components/ui.js";
 import { applyLook, skinById, skinPickerHtml } from "../themes.js";
 
-const STEPS = ["Welcome", "Theme", "About you", "Your level", "Accessories", "Add-ons", "Ready"];
+const STEPS = ["Welcome", "Theme", "About you", "Your level", "Equipment", "Add-ons", "Ready"];
 const LB = 2.20462;
 // Accessories with an example animation, in the order they're shown.
 const GEAR = [...EQUIPMENT.have, ...EQUIPMENT.add].filter((g) => g.ex);
@@ -35,7 +35,8 @@ export function render(el, params) {
       draft.settings.theme = JSON.parse(localStorage.getItem("hp:theme")) || "system";
     } catch {}
   }
-  let step = 0;
+  let step = redo && params.includes("equipment") ? 4 : 0;
+  let equipmentEditor = null;
   let saved = false;
   let error = "";
   let gear = 0;
@@ -87,12 +88,13 @@ export function render(el, params) {
         </dl><small class="muted">Starting weights, scaled to your level, weight, sex and age. The effort target of your level (reps left in the tank) decides the real weight.</small></div>`;
     }
     if (step === 4) {
-      return `<p class="muted">Everything happens at home with a few small accessories, nothing that needs its own room. Tap one to see how it's used in an example exercise.</p>
+      return `<p class="muted"><b>Optional.</b> Add equipment names and links now, or skip this step and add them later in Settings. The examples show the small accessories used by the home plan.</p>
         <div class="gear-demo card"><div class="stage-host"></div><p class="gear-use">${gearUse(GEAR[gear])}</p></div>
         <div class="gear-grid">${GEAR.map(
           (x, i) => `<button type="button" class="choice gear" data-gear="${i}" aria-pressed="${i === gear}">${icon(x.icon)}<b>${esc(x.i)}</b></button>`
         ).join("")}</div>
-        <p class="muted" style="font-size:0.88rem">Optional: ${esc(EQUIPMENT.optional.map((o) => o.i.toLowerCase()).join(" and "))}. Missing something? Every exercise has an easier version or a swap; see <i>The plan</i> page.</p>
+        <div data-equipment-editor></div>
+        <p class="muted" style="font-size:0.88rem">Missing something? Check the easier version and home swaps in <i>The plan</i>. Massage devices are optional extras, not prescribed exercise.</p>
         <label class="field" style="max-width:320px"><span>Heaviest dumbbell you have (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(wShow(draft.maxDumbbellKg))}"><small>Suggested weights are capped at this.</small></label>`;
     }
     if (step === 5) {
@@ -116,6 +118,8 @@ export function render(el, params) {
   }
 
   function draw() {
+    equipmentEditor?.destroy();
+    equipmentEditor = null;
     if (stage) stage.dispose();
     stage = null;
     el.innerHTML = `<div class="setup"><div class="card setup-card">
@@ -127,9 +131,12 @@ export function render(el, params) {
       <div class="setup-body">${stepBody()}${error ? `<p style="color:var(--danger)">${esc(error)}</p>` : ""}</div>
       <div class="setup-foot">
         ${step > 0 ? `<button type="button" class="btn" data-back>${icon("chevronL")} Back</button>` : redo ? `<a class="btn" href="#/settings">Cancel</a>` : "<span></span>"}
+        ${step === 4 ? '<button type="button" class="btn ghost" data-skip-equipment>Skip for now</button>' : ""}
         <button type="button" class="btn primary" data-next>${step === STEPS.length - 1 ? `${icon("check")} ${redo ? "Save" : "Start training"}` : `Next ${icon("chevronR")}`}</button>
       </div>
     </div></div>`;
+    const editorHost = el.querySelector("[data-equipment-editor]");
+    if (editorHost) equipmentEditor = createEquipmentEditor(editorHost, { profile: () => draft, save: (fn) => fn(draft) });
     const host = el.querySelector(".gear-demo .stage-host");
     if (host) {
       stage = createStagePanel(host);
@@ -138,6 +145,10 @@ export function render(el, params) {
   }
 
   function validate() {
+    if (step === 4) {
+      const invalid = [...el.querySelectorAll("[data-equipment-id]")].filter((row) => row.querySelector('[data-equipment-field="owned"]').checked).map((row) => row.querySelector("input:invalid")).find(Boolean);
+      if (invalid) { invalid.reportValidity(); return "Please check the equipment name or product link."; }
+    }
     if (step === 2) {
       const age = Number(draft.age);
       if (!(age >= 14 && age <= 99)) return "Please enter an age between 14 and 99.";
@@ -215,6 +226,13 @@ export function render(el, params) {
       draw();
       return;
     }
+    if (b.hasAttribute("data-skip-equipment")) {
+      draft.equipment = redo ? structuredClone(state.profile.equipment || []) : [];
+      step += 1;
+      error = "";
+      draw();
+      return;
+    }
     if (b.hasAttribute("data-next")) {
       error = validate();
       if (error) return draw();
@@ -234,6 +252,7 @@ export function render(el, params) {
   draw();
   return {
     destroy() {
+      equipmentEditor?.destroy();
       if (stage) stage.dispose();
       // Leaving a re-run of setup without saving puts the saved look back.
       if (redo && !saved && state.profile) applyLook(state.profile.settings);
