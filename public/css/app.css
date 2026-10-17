@@ -552,7 +552,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .log-entry .top { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .log-entry .note { color: var(--ink-2); font-size: 0.9rem; white-space: pre-wrap; }
 
-.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; }
+.charts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .chart-card { padding: 16px 18px; display: grid; gap: 10px; }
 .chart-card h3 { font-size: 1rem; }
 .chart-card .sub { color: var(--muted); font-size: 0.82rem; }
@@ -629,7 +629,6 @@ td.cur, th.cur { background: var(--accent-soft); }
 .equipment-row p, .equipment-row small { font-size: 0.82rem; overflow-wrap: anywhere; }
 .equipment-owned { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .equipment-owned input { accent-color: var(--accent); }
-.equipment-owned .muted { margin-left: auto; font-size: 0.75rem; white-space: nowrap; }
 .equipment-row [data-equipment-error] { color: var(--danger); }
 .equipment-row .field { min-width: 0; }
 @media (max-width: 640px) { .equipment-grid { grid-template-columns: minmax(0, 1fr); } }
@@ -775,6 +774,7 @@ td.cur, th.cur { background: var(--accent-soft); }
 .plan-page { min-width: 0; }
 .plan-page .table-wrap { min-width: 0; max-width: 100%; }
 .plan-levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.plan-levels .plan-level.current { border: 3px solid var(--accent); }
 .plan-week { table-layout: fixed; }
 .plan-week .weekday-col { width: 8%; }
 .plan-week .session-col { width: 32%; }
@@ -816,10 +816,10 @@ td.cur, th.cur { background: var(--accent-soft); }
 .library-count { font-size: 0.82rem; }
 .ex-card .meta small { font-size: 0.76rem; line-height: 1.4; }
 
-/* Activity keeps the three views together without crowding the main navigation. */
+/* Activity keeps the four views together. */
 .activity-head { display: grid; gap: 14px; }
 .activity-head h1 { font: 700 2.2rem/1.1 var(--font-display); }
-.activity-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 500px; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
+.activity-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 600px; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
 .activity-tabs a { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 8px; border-radius: var(--r-sm); text-decoration: none; color: var(--ink-2); font-size: 0.87rem; font-weight: 600; }
 .activity-tabs a[aria-current="page"] { background: var(--surface); color: var(--accent); box-shadow: var(--shadow); }
 .activity-page > [data-activity-view] { min-width: 0; }
@@ -839,6 +839,7 @@ td.cur, th.cur { background: var(--accent-soft); }
   .activity-page .section-title { flex-wrap: wrap; }
   .activity-tabs { max-width: none; }
   .activity-tabs a { gap: 5px; padding-inline: 5px; font-size: 0.82rem; }
+  .activity-tabs .icon { display: none; }
 }
 
 /* ---------- Next-time progression, easier days and the week scoreboard ---------- */
@@ -874,19 +875,18 @@ td.cur, th.cur { background: var(--accent-soft); }
 .desk-counts { font-size: 0.82rem; }
 .desk-counts b { color: var(--ink-2); }
 
-.week-scoreboards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 14px; }
 .week-scoreboard { display: grid; gap: 14px; align-content: start; }
-.week-scoreboard.level { border-top: 3px solid var(--accent); }
-.week-scoreboard.full { border-top: 3px solid var(--bryan); }
 .target-list { display: grid; gap: 8px; }
 .target { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); overflow: hidden; }
-.target > summary { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; list-style: none; }
+.target > summary, .target-columns { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.5fr) repeat(2, minmax(0, 1fr)); align-items: center; gap: 12px; padding: 12px 14px; }
+.target > summary { cursor: pointer; list-style: none; }
 .target > summary::-webkit-details-marker { display: none; }
-.target-name { flex: 1; min-width: 0; font-weight: 600; }
-.target-meta { font-size: 0.82rem; color: var(--muted); }
-.target-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); border: 1px solid var(--line-strong); flex: none; }
-.target[data-met="true"] .target-dot { background: var(--accent); border-color: var(--accent); }
-.target[data-met="true"] .target-meta { color: var(--accent); }
+.target-name { min-width: 0; font-weight: 600; }
+.target-columns { padding-block: 0; font-size: 0.85rem; font-weight: 600; }
+.target-columns small, .target-comparison small { display: block; color: var(--muted); font-size: 0.76rem; font-weight: 400; }
+.target-comparison { font-size: 0.85rem; }
+.target-comparison[data-met="true"], .target-comparison[data-met="true"] small { color: var(--accent); }
+.target-value, .target-comparison, .target-columns > :not(:first-child) { text-align: center; }
 .target-detail { padding: 0 14px 14px; display: grid; gap: 8px; }
 .target-detail p { font-size: 0.82rem; }
 .day-chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -899,7 +899,7 @@ td.cur, th.cur { background: var(--accent-soft); }
   0%, 100% { box-shadow: none; }
   35% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent); }
 }
-.level-check { display: grid; gap: 16px; background: linear-gradient(180deg, var(--accent-soft), var(--surface) 38%); border-color: color-mix(in srgb, var(--accent) 28%, var(--line)); }
+.level-check { display: grid; gap: 16px; }
 .level-check-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .level-check-head .grow { flex: 1; min-width: 0; display: grid; gap: 4px; }
 .level-check-head h3 { font: 700 1.5rem/1.1 var(--font-display); }
@@ -922,10 +922,18 @@ td.cur, th.cur { background: var(--accent-soft); }
 .level-check.compact .level-check-head h3 { font-size: 1.25rem; }
 .level-check.compact .level-check-row { padding: 10px 12px; }
 .guided-side .level-check { margin-top: 8px; }
-.level-manual > summary { cursor: pointer; font-weight: 650; }
-.level-manual[open] > summary { margin-bottom: 10px; }
+.level-manual { display: grid; gap: 10px; }
+.level-check-disclosure > summary { cursor: pointer; font-weight: 650; }
+.level-check-disclosure[open] > summary { margin-bottom: 12px; }
+.changelog-head h2 { flex: 1; min-width: 0; font-size: clamp(1rem, 3vw, 1.6rem); }
+.changelog-head > .btn { flex: none; }
+.benchmark-log-form { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.benchmark-log-form .field { flex: 1 0 100%; min-width: 0; }
+.benchmark-log-form [type="submit"] { margin-left: auto; }
 @media (max-width: 680px) {
-  .target-meta { font-size: 0.76rem; }
+  .target > summary, .target-columns { gap: 6px; padding-inline: 10px; }
+  .target-name, .target-comparison, .target-columns { font-size: 0.76rem; }
+  .target-comparison small, .target-columns small { font-size: 0.7rem; }
   .desk-timer { font-size: 0.82rem; }
   .level-check-head h3 { font-size: 1.3rem; }
   .level-check-foot { align-items: flex-start; }

@@ -55,6 +55,7 @@ Don't create git tags or GitHub releases; the user handles those. If a version s
 
 ## General
 
+- All user-facing text must follow the [Humanizer style](https://raw.githubusercontent.com/blader/humanizer/refs/heads/main/SKILL.md).
 - Match the style of the surrounding code: naming, comments, formatting.
 - Keep each change focused on what was asked. Note unrelated problems for the user instead of fixing them along the way.
 - Report what you actually did. If something was skipped, failed or wasn't tested, say so.

@@ -82,11 +82,14 @@ export function render(el) {
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Training level</h3>
         <p class="muted" style="font-size:0.86rem">Your level sets the exercises, sets, reps and intervals. Your weight, sex and age adjust the suggested weights.</p>
-        <div data-level-check-host></div>
-        <details class="level-manual">
-          <summary>Change level manually</summary>
-          <p class="muted" style="font-size:0.86rem">Use this if you want to move more than one level, or step down without waiting for a break. Past logs keep the level they were done at.</p>
+        <div class="level-manual">
+          <h4>Change level manually</h4>
+          <p class="muted" style="font-size:0.86rem">Choose an easier or harder level. Past logs keep the level they were done at.</p>
           ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
+        </div>
+        <details class="level-check-disclosure">
+          <summary>Level check</summary>
+          <div data-level-check-host></div>
         </details>
       </section>
 
@@ -225,8 +228,12 @@ export function render(el) {
         if (!releases.length) throw new Error("Changelog is empty");
         const PAGE_SIZE = 20;
         let shown = Math.min(PAGE_SIZE, releases.length);
-        const content = `<div class="btn-row"><a class="btn sm" href="${REPO}/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Full changelog on GitHub ${icon("external", "sm")}</a></div><div class="release-list">${renderReleases(releases.slice(0, shown))}</div>${shown < releases.length ? '<div class="btn-row changelog-more-row"><button type="button" class="btn sm" data-changelog-more>Read more</button></div>' : ""}`;
+        const content = `<div class="release-list">${renderReleases(releases.slice(0, shown))}</div>${shown < releases.length ? '<div class="btn-row changelog-more-row"><button type="button" class="btn sm" data-changelog-more>Read more</button></div>' : ""}`;
         const d = openDialog({ title: "Latest changes", content, wide: true });
+        d.el.querySelector(".modal-head").classList.add("changelog-head");
+        d.el.querySelector("[data-close]").insertAdjacentHTML("beforebegin", `<a class="btn sm" href="${REPO}/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Full changelog ${icon("external", "sm")}</a>`);
+        d.el.querySelector(".changelog-head a").focus();
+        d.el.scrollTop = 0;
         d.body.addEventListener("click", (ev) => {
           const moreBtn = ev.target.closest("[data-changelog-more]");
           if (!moreBtn) return;

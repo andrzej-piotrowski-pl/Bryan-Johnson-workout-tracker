@@ -220,10 +220,10 @@ export function render(el) {
         <p style="margin-top:6px;line-height:1.4">${esc(b.instructions)}</p>
       </details>
 
-      <form class="benchmark-log-form" data-bm-form="${esc(b.id)}" style="display:flex;gap:8px;align-items:center;margin-top:4px">
-        <input class="input num" inputmode="decimal" data-bm-input="${esc(b.id)}" placeholder="Enter score (${esc(b.unit)})" required style="max-width:140px">
-        <button type="submit" class="btn sm primary">${icon("check", "sm")} Save</button>
+      <form class="benchmark-log-form" data-bm-form="${esc(b.id)}">
+        <label class="field"><span>Score (${esc(b.unit)})</span><input class="input" inputmode="decimal" data-bm-input="${esc(b.id)}" placeholder="Enter score" required></label>
         ${b.hasTimer ? `<button type="button" class="btn sm ghost" data-bm-timer="${esc(b.id)}" data-sec="${b.timerSec}">${icon("timer", "sm")} Timer</button>` : ""}
+        <button type="submit" class="btn sm primary">${icon("check", "sm")} Save</button>
       </form>
     </section>`;
   }

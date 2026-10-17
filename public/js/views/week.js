@@ -40,42 +40,32 @@ export function render(el, params) {
     </a>`;
   }).join("");
 
-  // Two scoreboards at the end of the week: one against the level you picked,
-  // one against Bryan's full Well trained week. They count the same completed
-  // work; only the cardio targets change.
-  function targetCard(wt, title, sub, className = "") {
-    const dayLabel = (date) => parseIso(date).toLocaleDateString(undefined, { weekday: "short" });
-    const rows = wt.targets
-      .map((t) => {
-        const detail = t.minutes
-          ? t.minutes.map((d) => `<span class="day-chip${d.value ? " done" : ""}">${esc(dayLabel(d.date))} <b>${d.value}</b></span>`).join("")
-          : wt.days.map((d) => `<span class="day-chip${t.days.includes(d.date) ? " done" : ""}">${esc(dayLabel(d.date))}</span>`).join("");
-        const left = Math.max(0, t.target - t.value);
-        const leftText = t.unit === "min" ? `${left} min left` : t.unit === "days" ? `${left} ${left === 1 ? "day" : "days"} left` : `${left} ${left === 1 ? "session" : "sessions"} left`;
-        return `<details class="target" data-met="${t.met}">
-          <summary><span class="target-name">${esc(t.label)}</span><span class="target-meta mono">${t.value} / ${esc(t.targetLabel)}</span><span class="target-dot"></span></summary>
-          <div class="target-detail"><p class="muted">${esc(t.note)}</p><div class="day-chips">${detail}</div><p class="muted">${t.met ? "Met." : leftText}</p></div>
-        </details>`;
-      })
-      .join("");
-    return `<section class="card card-pad week-scoreboard${className ? ` ${className}` : ""}">
-      <div class="section-title"><div><h3>${esc(title)}</h3><p class="sub">${esc(sub)}</p></div><span class="chip ${wt.allMet ? "accent" : ""}">${wt.metCount}/${wt.total} met</span></div>
-      <div class="target-list">${rows}</div>
-      <p class="muted" style="font-size:0.82rem">Zone 2 and hard minutes follow the same rules as the totals above. Jumps, balance, mobility and posture come from the exercises you tick off each day.</p>
-    </section>`;
-  }
-
   function scoreboardHtml() {
     const lvl = levelIndex(state.profile);
     const levelWt = weekTargets(start, { level: lvl });
     const fullWt = weekTargets(start, { level: 3 });
-    if (lvl === 3) {
-      return `<div class="week-scoreboards">${targetCard(fullWt, "Bryan's full week · Well trained", "Your level is Well trained, so this is also your level's target.", "full")}</div>`;
-    }
-    return `<div class="week-scoreboards">
-      ${targetCard(levelWt, `Your level · ${LEVELS[lvl].name}`, "Against the weekly targets for the level you picked.", "level")}
-      ${targetCard(fullWt, "Bryan's full week · Well trained", "Against the full 150 Zone 2 and 75 hard-cardio targets.", "full")}
-    </div>`;
+    const dayLabel = (date) => parseIso(date).toLocaleDateString(undefined, { weekday: "short" });
+    const comparison = (target) => {
+      const left = Math.max(0, target.target - target.value);
+      const unit = target.unit === "min" ? "min" : target.unit === "days" ? (left === 1 ? "day" : "days") : (left === 1 ? "session" : "sessions");
+      return `<span class="target-comparison" data-met="${target.met}"><b>${esc(target.targetLabel)}</b><small>${target.met ? "Met" : `${left} ${unit} left`}</small></span>`;
+    };
+    const rows = levelWt.targets.map((target) => {
+      const full = fullWt.targets.find((t) => t.id === target.id);
+      const detail = target.minutes
+        ? target.minutes.map((d) => `<span class="day-chip${d.value ? " done" : ""}">${esc(dayLabel(d.date))} <b>${d.value}</b></span>`).join("")
+        : levelWt.days.map((d) => `<span class="day-chip${target.days.includes(d.date) ? " done" : ""}">${esc(dayLabel(d.date))}</span>`).join("");
+      return `<details class="target">
+        <summary><span class="target-name">${esc(target.label)}</span><b class="target-value mono">${target.value}</b>${comparison(target)}${comparison(full)}</summary>
+        <div class="target-detail"><p class="muted">${esc(target.note)}</p><div class="day-chips">${detail}</div></div>
+      </details>`;
+    }).join("");
+    return `<section class="card card-pad week-scoreboard">
+      <div class="section-title"><div><h3>Weekly targets</h3><p class="sub">Your level: ${esc(LEVELS[lvl].name)} · Bryan: Well trained</p></div></div>
+      <div class="target-columns"><span>Target</span><span>Done</span><span>Your level <small>${levelWt.metCount}/${levelWt.total} met</small></span><span>Bryan <small>${fullWt.metCount}/${fullWt.total} met</small></span></div>
+      <div class="target-list">${rows}</div>
+      <p class="muted" style="font-size:0.82rem">Open a target to see which days counted. Jumps, balance, mobility and posture come from exercises you tick off.</p>
+    </section>`;
   }
 
   const zonePct = Math.min(100, Math.round((s.zone2 / 150) * 100));

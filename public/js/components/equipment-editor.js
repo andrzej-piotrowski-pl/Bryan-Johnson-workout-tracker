@@ -15,7 +15,7 @@ export function createEquipmentEditor(host, { profile, save }) {
     host.innerHTML = `<div class="equipment-editor">
       <p class="muted">Your equipment list is optional. Tick what you own, then add a name and optional product link. You can add equivalent equipment below. These details stay in your inventory; exercise instructions use generic names.</p>
       ${EQUIPMENT_CATEGORIES.map((category) => `<details class="equipment-category" open><summary>${esc(category)}</summary><div class="equipment-grid">${rows().filter((g) => (EQUIPMENT_CATEGORIES.includes(g.category) ? g.category : "Other") === category).map((g) => `<article class="equipment-row" data-equipment-id="${esc(g.id)}">
-        <label class="equipment-owned"><input type="checkbox" data-equipment-field="owned" ${g.owned ? "checked" : ""}> <b>${esc(RECOMMENDED_EQUIPMENT.find((r) => r.type === g.type)?.name || "Extra equipment")}</b><span class="muted">I have this</span></label>
+        <label class="equipment-owned"><input type="checkbox" data-equipment-field="owned" ${g.owned ? "checked" : ""}> <b>${esc(RECOMMENDED_EQUIPMENT.find((r) => r.type === g.type)?.name || "Extra equipment")}</b></label>
         ${g.description ? `<p class="muted">${esc(g.description)}</p>` : ""}
         <label class="field"><span>Name</span><input class="input" data-equipment-field="name" value="${esc(g.name || "")}" maxlength="200" required></label>
         <label class="field"><span>Product link (optional)</span><input class="input" type="url" data-equipment-field="url" value="${esc(g.url || "")}" placeholder="https://…" maxlength="2000"><small data-equipment-error role="status"></small></label>

@@ -83,7 +83,6 @@ export function render(el, params) {
 
   function addonHtml(entry, level) {
     const { addon, variant, optional } = entry;
-    if (addon.id === "desk") return deskAddonHtml(entry);
     const a = (log() && log().addons && log().addons[addon.id]) || {};
     const prog = addonProgress(log(), entry, level);
     const items = variant.items.filter((it) => visible(it, level));
@@ -116,8 +115,7 @@ export function render(el, params) {
     </section>`;
   }
 
-  // Desk breaks is a separate add-on: a normal card below the posture block,
-  // with two gentle countdowns and a one-tap daily count.
+  // Desk breaks stays above the workout, with its own countdowns and daily count.
   function deskAddonHtml(entry) {
     if (date !== todayIso()) return "";
     const { addon, optional } = entry;
@@ -246,6 +244,7 @@ export function render(el, params) {
         <div><button type="button" class="btn sm" data-x-add>${icon("plus", "sm")} Add activity</button></div>
       </div>
       <label class="field" style="max-width:220px"><span>Body weight today (optional, ${esc(u)})</span><input class="input num" data-bw inputmode="decimal" value="${l.bodyWeightKg != null ? esc(u === "lb" ? Math.round(l.bodyWeightKg * 2.20462 * 10) / 10 : l.bodyWeightKg) : ""}" placeholder="${esc(fmtWeight(profile(), profile() && profile().weightKg).replace(/ (kg|lb)$/, ""))}"></label>
+      ${isToday ? '<div class="level-check-host" data-level-check-host></div>' : ""}
     </section>`;
   }
 
@@ -270,7 +269,7 @@ export function render(el, params) {
   }
 
   // Step down for a while after a long break. The move-up checkpoints live at
-  // the end of Today instead, so this banner only appears for a real gap.
+  // in Notes & observations, so this banner only appears for a real gap.
   function breakBanner(ctx) {
     if (!isToday || ctx.rest) return "";
     const p = profile();
@@ -355,7 +354,7 @@ export function render(el, params) {
             ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, level)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
             ${ctx.swapped ? `<span class="chip bryan">${icon("swap", "sm")} Doing ${esc(def.name)}'s session</span>` : ""}
             ${wt ? `<a class="chip link" href="#/activity/week" title="Weekly targets for your level; open This week for the full Bryan comparison">${icon("check", "sm")} ${wt.metCount}/${wt.total} weekly targets</a>` : ""}
-            ${rd && rd.ready ? `<button type="button" class="chip accent link" data-level-jump title="The plan's checks are done; see the level check at the end of the page">${icon("check", "sm")} Level check ready</button>` : ""}
+            ${rd && rd.ready ? `<button type="button" class="chip accent link" data-level-jump title="See your level check in Notes & observations">${icon("check", "sm")} Level check ready</button>` : ""}
             ${st ? `<span class="chip ${st === "skipped" ? "skip" : "accent"}" data-status>${esc(STATUS_TEXT[st] || st)}</span>` : `<span class="chip" data-status>${date > todayIso() ? "Planned" : isToday ? "Not started" : profile().startDate && date < profile().startDate ? "Before your start" : "Not logged"}</span>`}
           </div>
         </div>
@@ -401,6 +400,7 @@ export function render(el, params) {
             ${isToday ? '<span class="chip accent">Today</span>' : `<a class="btn sm ghost" href="#/today">Back to today</a>`}
           </div>
           ${heroHtml(ctx)}
+          ${addonsForDate(date).filter((a) => a.addon.id === "desk").map(deskAddonHtml).join("")}
           ${skipBanner()}
           ${breakBanner(ctx)}
           ${missedHint(ctx)}
@@ -409,12 +409,11 @@ export function render(el, params) {
         </div>
         <div class="day-list">
           ${showBlocks ? blocksHtml(ctx.def, ctx.level) : ""}
-          ${addonsForDate(date).map((a) => addonHtml(a, ctx.level)).join("")}
+          ${addonsForDate(date).filter((a) => a.addon.id !== "desk").map((a) => addonHtml(a, ctx.level)).join("")}
           ${obsHtml()}
         </div>
         <div class="detail-col"><div data-panel-host></div></div>
       </div>
-      ${isToday ? '<div class="level-check-host" data-level-check-host></div>' : ""}
     </div>`;
     if (panel) panel.dispose();
     panel = null;

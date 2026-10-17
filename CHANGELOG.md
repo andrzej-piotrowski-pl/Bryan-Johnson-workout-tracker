@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.22.0] - 2026-10-17
+
+### Added
+- Change your training level directly on the Plan page; a thick border marks your current level.
+
+### Changed
+- Settings shows the manual level picker first, with the level check collapsed below it.
+- Level checks follow your theme and sit inside Notes & observations on Today.
+- Weekly targets compare your level and Bryan's full week in one card.
+- The Plan page combines Bryan's weekly targets and home exercise choices.
+- Activity keeps all four tabs on one line and stacks the three weekly progress charts.
+- Benchmark score fields are wider, with Save on the right.
+- Latest changes puts the full changelog link beside its title and close button.
+- Equipment uses its checkbox without the repeated "I have this" label.
+
+### Fixed
+- Enabled desk breaks stay visible above the workout on Today.
+- Latest changes opens at the top instead of scrolling to Read more.
+
 ## [1.21.1] - 2026-10-17
 
 ### Changed

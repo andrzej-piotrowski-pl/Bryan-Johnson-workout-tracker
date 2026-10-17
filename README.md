@@ -12,8 +12,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4 with a spoken voice coach and heart-rate target announcements, hold and rest timers with beeps.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
-- **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) at the end of **Today** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
-- **Bryan's weekly targets**: two scoreboards in **Activity → This week**, one against your level's weekly targets and one against Bryan's full Well trained week, with what is left and which days count.
+- **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) in **Today → Notes & observations** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
+- **Bryan's weekly targets**: one comparison in **Activity → This week**, showing your level's weekly targets alongside Bryan's full Well trained week, with what is left and which days count.
 - **Daily readiness & "Don't Die" session scaling**: check in before training to adapt today's dose if feeling tired or sore, scaling volume for the day without modifying your permanent program.
 - **Longevity benchmarks & fitness age**: 8 zero-blood physical tests from Bryan Johnson's published battery (push-ups, grip strength, dead hangs, balance, sit-and-rise, VO2 Max, sit & reach, heart-rate recovery drop) tracked monthly or quarterly.
 - **Tough day, still on plan**: one tap on any exercise for the easier version already in the plan, the previous level's dose, or skipping it for today. Progression pauses after that until you repeat the session.
@@ -98,7 +98,7 @@ To update later: stop the app, run `git pull`, then `npm install` in the project
 
 Your details and workouts save automatically on your computer. They are not uploaded to GitHub.
 
-Open **Settings → Latest changes** for the newest 20 releases, with a link to the full changelog. A red **Plan changed** badge marks updates to exercises or workout doses, with the details highlighted in that release.
+Open **Settings → Latest changes** for the newest 20 releases, with a link to the full changelog beside the title. A red **Plan changed** badge marks updates to exercises or workout doses, with the details highlighted in that release.
 
 - **Back up** in **Settings → Export backup**. Keep the downloaded file somewhere safe.
 - **Restore a backup** in **Settings → Import backup**. Choose merge to combine it with your existing logs, or replace to overwrite your current logs.
@@ -151,11 +151,15 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 
 Open **Activity** for four views: **This week**, **History**, **Progress** and **Benchmarks**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
 
-**This week** ends with two scoreboards: one against the weekly targets of the level you picked, and one against Bryan's full Well trained week (150 Zone 2 and 75 hard-cardio minutes). Both cover strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left.
+**This week** ends with one weekly target card. Each row shows your completed work, the target for your level and Bryan's full Well trained target (150 Zone 2 and 75 hard-cardio minutes). It covers strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left.
 
-The **level check** is at the end of Today, after the session and notes, and again at the end of a guided workout: the plan's session count for your current level, its two move-up questions and the button to change level when you are ready. It also lives in **Settings → Training level**, next to the manual level picker.
+![Weekly targets with your level and Bryan's targets side by side](docs/screenshots/weekly-targets.png)
 
-In Progress, choose a time interval from two groups:
+The **level check** is in Today's **Notes & observations** and again at the end of a guided workout: the plan's session count for your current level, its two move-up questions and the button to change level when you are ready. In **Settings → Training level**, the manual picker comes first and stays open. The level check below it starts collapsed. Both checks follow your theme. You can also change levels directly on **The plan**, where a thick border marks your current level.
+
+Benchmark score fields use the full card width, with the unit shown above the field and Save on the right.
+
+In Progress, the sessions, Zone 2 and hard-cardio charts sit one below another. Choose a time interval from two groups:
 
 - **Recent**: This week, Last week, This month, Last month.
 - **Longer**: 8 weeks, 12 weeks, 6 months, 1 year, Since beginning.
@@ -163,7 +167,7 @@ In Progress, choose a time interval from two groups:
 Last week means the previous Monday–Sunday; Last month means the previous calendar month. The exact dates are shown above the choices. All charts, tables and totals use the same interval, including strength, body weight and posture. Weekly averages use full weeks when available. Since beginning includes older imported logs, even if they predate your current program start.
 
 <p>
-<img src="docs/screenshots/activity.png" width="65%" alt="Activity with This week, History and Progress tabs">
+<img src="docs/screenshots/activity.png" width="65%" alt="Activity with This week, History, Progress and Benchmarks tabs">
 <img src="docs/screenshots/mobile-progress.png" width="24%" alt="Progress on a phone with grouped time intervals and exact dates">
 </p>
 
@@ -191,7 +195,7 @@ A readable snapshot of the whole plan is in [docs/PLAN.md](docs/PLAN.md).
 <summary><b>Plan, sources and exercise filters</b></summary>
 
 <p>
-<img src="docs/screenshots/plan.png" width="49%" alt="The plan with training levels arranged in pairs">
+<img src="docs/screenshots/plan.png" width="49%" alt="Training levels with a thick border around the current level and buttons to switch">
 <img src="docs/screenshots/library.png" width="49%" alt="The exercise library filtered by equipment, with muscle, source and sorting options">
 </p>
 
@@ -314,7 +318,7 @@ Add-ons are optional blocks shown after the main session, picked on first run (a
 
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
 
-**Desk breaks** (separate add-on, off until you turn it on): two gentle countdowns from Bryan's posture habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Its own card sits below the posture block on **Today**. Tap **Done** to log a break, or **Not now, 5 min** to keep the log honest and be reminded again shortly. The countdowns pause while a workout is under way and resume afterwards. Today shows your daily count and streak; it is separate from the workout and adds no training volume. In **Settings → During workouts** you can turn on optional browser notifications so a due break reaches you while the app is in another window (off by default; the browser asks for permission).
+**Desk breaks** (separate add-on, off until you turn it on): two gentle countdowns from Bryan's posture habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Its card stays above the workout on **Today**, including before you start, during training and after finishing. Tap **Done** to log a break, or **Not now, 5 min** to keep the log honest and be reminded again shortly. The countdowns pause while a workout is under way and resume afterwards. Today shows your daily count and streak; it is separate from the workout and adds no training volume. In **Settings → During workouts** you can turn on optional browser notifications so a due break reaches you while the app is in another window (off by default; the browser asks for permission).
 
 **Bone density protocol** (separate add-on, off until enabled): 3–4 minutes of targeted high-impact mechanical shock to trigger bone remodeling and mineral deposition, from Bryan's April 2026 bone health protocol. Includes heel drops & stomp drills (osteogenic shockwaves), pogo hops and snap-down jump landing drills. It also reminds you periodically about DEXA scan benchmarking and bone-supporting nutrition.
 
