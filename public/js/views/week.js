@@ -5,6 +5,7 @@ import { SKIP_REASONS, addonsForDate, dayDef, dayMins, isRestKey, levelFor, sess
 import { addDays, esc, fmtDate, fmtShort, isoWeekNumber, parseIso, todayIso, weekStart } from "../util.js";
 import { icon } from "../components/icons.js";
 import { sessionKind } from "../themes.js";
+import { weekTargets } from "../week-targets.js";
 
 const STATUS = { done: "Done", partial: "In progress", skipped: "Skipped" };
 
@@ -38,6 +39,32 @@ export function render(el, params) {
     </a>`;
   }).join("");
 
+  // One card for every target the plan asks for this week: strength, Zone 2,
+  // hard cardio, jumps, balance, mobility and posture. It only counts what the
+  // week already schedules or that you have ticked off.
+  function scoreboardHtml() {
+    const wt = weekTargets(start);
+    const dayLabel = (date) => parseIso(date).toLocaleDateString(undefined, { weekday: "short" });
+    const rows = wt.targets
+      .map((t) => {
+        const detail = t.minutes
+          ? t.minutes.map((d) => `<span class="day-chip${d.value ? " done" : ""}">${esc(dayLabel(d.date))} <b>${d.value}</b></span>`).join("")
+          : wt.days.map((d) => `<span class="day-chip${t.days.includes(d.date) ? " done" : ""}">${esc(dayLabel(d.date))}</span>`).join("");
+        const left = Math.max(0, t.target - t.value);
+        const leftText = t.unit === "min" ? `${left} min left` : t.unit === "days" ? `${left} ${left === 1 ? "day" : "days"} left` : `${left} ${left === 1 ? "session" : "sessions"} left`;
+        return `<details class="target" data-met="${t.met}">
+          <summary><span class="target-name">${esc(t.label)}</span><span class="target-meta mono">${t.value} / ${esc(t.targetLabel)}</span><span class="target-dot"></span></summary>
+          <div class="target-detail"><p class="muted">${esc(t.note)}</p><div class="day-chips">${detail}</div><p class="muted">${t.met ? "Met." : leftText}</p></div>
+        </details>`;
+      })
+      .join("");
+    return `<section class="card card-pad week-scoreboard">
+      <div class="section-title"><div><h3>Bryan's weekly targets</h3><p class="sub">Counted from the plan's own sessions; no extra work is added.</p></div><span class="chip ${wt.allMet ? "accent" : ""}">${wt.metCount}/${wt.total} met</span></div>
+      <div class="target-list">${rows}</div>
+      <p class="muted" style="font-size:0.82rem">Zone 2 and hard minutes follow the same rules as the totals above. Jumps, balance, mobility and posture come from the exercises you tick off each day.</p>
+    </section>`;
+  }
+
   const zonePct = Math.min(100, Math.round((s.zone2 / 150) * 100));
   el.innerHTML = `<div class="page">
     <div class="section-title">
@@ -54,6 +81,7 @@ export function render(el, params) {
       <div class="card kpi">${icon("bolt")}<b>${s.hard}<small class="muted" style="font-size:1rem"> / 75</small></b><span>hard-cardio minutes</span></div>
       <div class="card kpi">${icon("history")}<b>${s.extra}</b><span>minutes of extra activity</span></div>
     </div>
+    ${scoreboardHtml()}
     <div class="week-grid">${cards}</div>
     <p class="muted" style="font-size:0.85rem">Zone 2 includes scheduled Zone 2 blocks, easy recovery between 4×4 intervals and extra activity logged as "Easy / Zone 2". Hard cardio includes vigorous blocks and hard intervals. Brisk beginner intervals, warm-ups and cool-downs don't count toward these targets. Bryan's weekly targets are at least 150 minutes of Zone 2 and 75 minutes of hard cardio. Lower levels build toward those amounts.</p>
   </div>`;

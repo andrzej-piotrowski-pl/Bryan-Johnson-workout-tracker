@@ -823,3 +823,67 @@ td.cur, th.cur { background: var(--accent-soft); }
   .activity-tabs { max-width: none; }
   .activity-tabs a { gap: 5px; padding-inline: 5px; font-size: 0.82rem; }
 }
+
+/* ---------- Next-time progression, easier days and the week scoreboard ---------- */
+
+.chip.link { text-decoration: none; color: var(--ink-2); }
+.chip.link:hover { border-color: var(--accent); color: var(--accent); }
+
+.next-time { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: var(--r); background: var(--accent-soft); }
+.next-time .grow { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.next-time p { font-size: 0.88rem; }
+.next-time[data-kind="repeat"] { border-color: var(--line-strong); background: var(--surface-2); }
+.next-time[data-kind="start"] { border-color: color-mix(in srgb, var(--bryan) 35%, var(--line)); background: var(--bryan-soft); }
+
+.banner.easier { background: var(--surface-2); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); }
+.banner.easier .grow b { color: var(--warn); }
+
+.item-easier { font-size: 0.78rem; color: var(--warn); }
+.item-easier.skip { color: var(--skip); }
+.item.skipped .item-name { text-decoration: line-through; text-decoration-color: var(--muted); }
+
+.easier-dialog [data-easy-options] { display: grid; gap: 10px; }
+.easier-dialog [data-easy-options][hidden] { display: none; }
+.easier-dialog .choice { text-align: left; }
+.easier-dialog .choice small { display: block; margin-top: 3px; }
+
+.desk-box { border: 1px solid color-mix(in srgb, var(--addon) 30%, var(--line)); border-radius: var(--r); background: var(--addon-soft); padding: 14px; display: grid; gap: 12px; }
+.desk-head { display: grid; gap: 3px; }
+.desk-head > b { font-size: 0.92rem; color: var(--addon); }
+.desk-head > span { font-size: 0.8rem; }
+.desk-timers { display: grid; gap: 8px; }
+.desk-timer { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--line); font-size: 0.86rem; }
+.desk-timer .grow { flex: 1; min-width: 0; }
+.desk-timer.due { border-color: var(--addon); background: var(--surface); }
+.desk-timer.due .grow { color: var(--addon); font-weight: 650; }
+.desk-counts { font-size: 0.8rem; }
+.desk-counts b { color: var(--ink-2); }
+
+.week-scoreboard { display: grid; gap: 14px; }
+.target-list { display: grid; gap: 8px; }
+.target { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); overflow: hidden; }
+.target > summary { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; list-style: none; }
+.target > summary::-webkit-details-marker { display: none; }
+.target-name { flex: 1; min-width: 0; font-weight: 600; }
+.target-meta { font-size: 0.82rem; color: var(--muted); }
+.target-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); border: 1px solid var(--line-strong); flex: none; }
+.target[data-met="true"] .target-dot { background: var(--accent); border-color: var(--accent); }
+.target[data-met="true"] .target-meta { color: var(--accent); }
+.target-detail { padding: 0 14px 14px; display: grid; gap: 8px; }
+.target-detail p { font-size: 0.82rem; }
+.day-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.day-chip { padding: 5px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font: 0.75rem var(--font-mono); }
+.day-chip.done { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: var(--accent); background: var(--accent-soft); }
+
+.level-check { display: grid; gap: 12px; }
+.level-meter { display: flex; align-items: center; gap: 12px; }
+.level-meter-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.level-meter-bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+.level-meter span { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+.check-list { display: grid; gap: 8px; }
+.check-line { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; cursor: pointer; }
+.check-line input { width: 18px; height: 18px; accent-color: var(--accent); }
+@media (max-width: 680px) {
+  .target-meta { font-size: 0.76rem; }
+  .desk-timer { font-size: 0.82rem; }
+}

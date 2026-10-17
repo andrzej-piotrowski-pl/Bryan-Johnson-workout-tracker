@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.0] - 2026-10-17
+
+### Added
+- A next-time suggestion on every strength exercise (repeat, add weight after two sessions at the top of the rep range, or add a rep) with a button to fill it in.
+- A level check in Progress using the plan's move-up checkpoints, a prompt when they are met, and a step-down reminder after a long break.
+- Bryan's weekly targets card in Activity → This week: strength, Zone 2, hard cardio, jumps, balance, mobility and posture.
+- A "Something hurts or too hard?" option on every exercise: the easier version already in the plan, the previous level's dose, or skipping it today. Progression pauses until you repeat the session.
+- Desk mode in the posture block: stand-and-move and 10-squat reminders with a daily count and streak.
+
+### Changed
+- Today shows a weekly-targets chip that links to the scoreboard, and Settings links to the level check.
+
 ## [1.16.1] - 2026-10-17
 
 ### Fixed

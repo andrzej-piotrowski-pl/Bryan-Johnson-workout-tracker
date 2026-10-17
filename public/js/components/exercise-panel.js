@@ -7,7 +7,7 @@ import { personalize } from "../personalize.js";
 import { rxFor } from "../plan.js";
 import { esc } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "./icons.js";
-import { renderLogger } from "./logger.js";
+import { getItemLog, renderLogger } from "./logger.js";
 import { createStagePanel } from "./stage-panel.js";
 import { renderVideos, videosFor } from "./video.js";
 
@@ -55,7 +55,8 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
     const p = state.profile;
     if (!sameExercise) stage.load(ctx.exId);
     const item = ctx.item;
-    const rx = item ? personalize(rxFor(item, ctx.level), p) : "";
+    const itemLog = item && ctx.date ? getItemLog(ctx.date, ctx.scope || "main", item.id) : null;
+    const rx = item ? personalize((itemLog && itemLog.rxOverride) || rxFor(item, ctx.level), p) : "";
     const vids = videosFor(ex);
     const bryanCount = vids.filter((v) => v.kind === "bryan").length;
     body.innerHTML = `
@@ -76,7 +77,20 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
       </div>
       <div class="tab-body" role="tabpanel"></div>`;
     const lh = body.querySelector(".logger-host");
-    if (lh) renderLogger(lh, { date: ctx.date, item, ex, level: ctx.level, scope: ctx.scope || "main", onChange: ctx.onChange });
+    if (lh)
+      renderLogger(lh, {
+        date: ctx.date,
+        item,
+        ex,
+        level: ctx.level,
+        scope: ctx.scope || "main",
+        onChange: ctx.onChange,
+        // Keep the dose above the logger in step with an easier choice.
+        onDraw: (log) => {
+          const rxEl = body.querySelector(".rx");
+          if (rxEl && item) rxEl.textContent = personalize((log && log.rxOverride) || rxFor(item, ctx.level), p);
+        },
+      });
     drawTab();
   }
 

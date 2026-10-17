@@ -17,11 +17,15 @@ function buildSteps(date) {
   const level = levelFor(date);
   const log = state.days[date];
   const steps = [];
+  const skipped = (scope, id) => {
+    const l = getItemLog(date, scope, id);
+    return !!(l && l.skipped);
+  };
   const def = dayDef(sessionKeyFor(date));
-  if (def) for (const b of def.blocks) for (const it of blockItems(b, level)) if (countable(it)) steps.push({ scope: "main", block: b.name, item: it, level });
+  if (def) for (const b of def.blocks) for (const it of blockItems(b, level)) if (countable(it) && !skipped("main", it.id)) steps.push({ scope: "main", block: b.name, item: it, level });
   for (const a of addonsForDate(date)) {
     if (log && log.addons && log.addons[a.addon.id] && log.addons[a.addon.id].skipped) continue;
-    for (const it of a.variant.items) if (visible(it, level) && countable(it)) steps.push({ scope: a.addon.id, block: a.addon.name, item: it, level });
+    for (const it of a.variant.items) if (visible(it, level) && countable(it) && !skipped(a.addon.id, it.id)) steps.push({ scope: a.addon.id, block: a.addon.name, item: it, level });
   }
   return steps;
 }
@@ -71,10 +75,11 @@ export function startGuided(date, onExit) {
     stage.load(s.item.ex);
     bar.style.width = `${(i / steps.length) * 100}%`;
     count.textContent = `${i + 1}/${steps.length}`;
+    const itemLog = getItemLog(date, s.scope, s.item.id);
     side.innerHTML = `
       <span class="eyebrow">${esc(s.block)}</span>
       <h2 class="display" style="font-size:2.1rem;line-height:1">${esc(s.item.label ? personalize(s.item.label, p) : ex.name)}</h2>
-      <div class="rx" style="font-family:var(--font-mono);padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)">${esc(personalize(rxFor(s.item, s.level), p))}</div>
+      <div class="rx" style="font-family:var(--font-mono);padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)">${esc(personalize((itemLog && itemLog.rxOverride) || rxFor(s.item, s.level), p))}</div>
       ${s.item.bryan ? `<span class="chip bryan" style="justify-self:start">${esc(personalize(s.item.bryan, p))}</span>` : ""}
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>

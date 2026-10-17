@@ -8,7 +8,7 @@ import { icon } from "./icons.js";
 import { openDialog } from "./ui.js";
 
 let audio = null;
-function beep(freq = 880, ms = 120, vol = 0.18) {
+export function beep(freq = 880, ms = 120, vol = 0.18) {
   if (state.profile && state.profile.settings && state.profile.settings.sound === false) return;
   try {
     audio = audio || new (window.AudioContext || window.webkitAudioContext)();

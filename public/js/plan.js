@@ -1,7 +1,7 @@
 // Program logic: which session belongs to a date, which training level's doses a
 // day uses, completion status, add-ons for the day, and the numbers behind the stats pages.
 
-import { DAYS } from "./data/program.js";
+import { DAYS, LEVEL_PLANS } from "./data/program.js";
 import { EXERCISES } from "./data/exercises.js";
 import { ADDONS } from "./data/addons/index.js";
 import { state, updateDay } from "./store.js";
@@ -99,6 +99,29 @@ export function sessionsDone(lvl = null) {
     if (countsAsSession(log)) n += 1;
   }
   return n;
+}
+
+// ---------- level readiness ----------
+
+// The plan's own move-up checkpoints for the current level, plus the answers the
+// user has ticked so far. Nothing changes level by itself.
+export function currentReadiness() {
+  const i = levelIndex(state.profile);
+  const plan = LEVEL_PLANS[i];
+  const r = plan && plan.readiness;
+  if (!r) return null;
+  const sessions = sessionsDone(i);
+  const saved = state.profile && state.profile.levelCheck && state.profile.levelCheck.level === plan.id ? state.profile.levelCheck : null;
+  const checks = {};
+  for (const q of r.questions) checks[q.id] = !!(saved && saved.checks && saved.checks[q.id]);
+  const allChecked = r.questions.every((q) => checks[q.id]);
+  return { levelIndex: i, plan, sessions, target: r.sessions, weeks: r.weeks, next: r.next, questions: r.questions, checks, allChecked, ready: allChecked && sessions >= r.sessions };
+}
+
+// The most recent day that counts as a completed session.
+export function lastSessionDate() {
+  const dates = Object.keys(state.days).filter((d) => countsAsSession(state.days[d])).sort();
+  return dates.length ? dates[dates.length - 1] : null;
 }
 
 // Every edit to a day goes through here: freezes the level on first touch and

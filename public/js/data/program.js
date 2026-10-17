@@ -23,6 +23,15 @@ export const LEVEL_PLANS = [
       "60 min of scheduled Zone 2 a week across five days. Intervals stay brisk, below vigorous effort. Mild muscle soreness is normal; joint pain is not.",
     ],
     moveUp: "Move up to Returning after about 3 weeks (around 18 sessions) when every session feels comfortable and nothing hurts the next day.",
+    readiness: {
+      weeks: 3,
+      sessions: 18,
+      next: "returning",
+      questions: [
+        { id: "comfortable", label: "Every session felt comfortable" },
+        { id: "no-pain", label: "Nothing hurt the next day" },
+      ],
+    },
   },
   {
     id: "returning",
@@ -34,6 +43,15 @@ export const LEVEL_PLANS = [
       "90 min of scheduled Zone 2 and about 26 min of vigorous work a week. Some muscle soreness is expected; joint pain is not. Still sore after 48 hours? Repeat sessions before moving up.",
     ],
     moveUp: "Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day.",
+    readiness: {
+      weeks: 2,
+      sessions: 12,
+      next: "active",
+      questions: [
+        { id: "top-range", label: "You reached the top of every rep range with clean form" },
+        { id: "recovered", label: "Soreness was gone within a day" },
+      ],
+    },
   },
   {
     id: "active",
@@ -44,6 +62,15 @@ export const LEVEL_PLANS = [
       "At least 120 min of scheduled Zone 2 and about 51 min of hard cardio a week; controlled vigorous blocks on Tuesday, Thursday and Saturday.",
     ],
     moveUp: "Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up.",
+    readiness: {
+      weeks: 4,
+      sessions: 24,
+      next: "trained",
+      questions: [
+        { id: "four-by-four", label: "Four rounds of the 4×4 stayed controlled" },
+        { id: "progressing", label: "Your weights kept going up" },
+      ],
+    },
   },
   {
     id: "trained",

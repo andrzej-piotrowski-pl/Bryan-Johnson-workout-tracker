@@ -3,18 +3,20 @@
 
 import { DAYS } from "../data/program.js";
 import { EXERCISES } from "../data/exercises.js";
-import { onChange, state } from "../store.js";
+import { onChange, state, updateDay, updateProfile } from "../store.js";
 import {
-  EXTRA_TYPES, SKIP_REASONS, addonProgress, addonsForDate, blockItems, blockMins, countable, dayDef, dayMins,
-  editDay, isRestKey, levelFor, progressOf, rxFor, sessionKeyFor, visible,
+  EXTRA_TYPES, SKIP_REASONS, addonProgress, addonsForDate, blockItems, blockMins, countable, currentReadiness, dayDef, dayMins,
+  editDay, isRestKey, lastSessionDate, levelFor, progressOf, rxFor, sessionKeyFor, visible,
 } from "../plan.js";
 import { LEVELS, fmtWeight, kgUnit, levelIndex, personalize } from "../personalize.js";
-import { addDays, daysBetween, esc, fmtDate, fmtShort, parseIso, todayIso, uid, weekdayKey } from "../util.js";
+import { addDays, daysBetween, esc, fmtDate, fmtShort, parseIso, todayIso, uid, weekStart, weekdayKey } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
 import { createExercisePanel } from "../components/exercise-panel.js";
 import { animBarOpen } from "../components/anim-bar.js";
 import { hasAnimStyles } from "../anim-styles.js";
 import { getItemLog, editItem, summarizeLog } from "../components/logger.js";
+import { deskState, deskStreak, doneDesk, startDesk, stopDesk, subscribeDesk } from "../components/desk.js";
+import { weekTargets } from "../week-targets.js";
 import { confirmDialog, openDialog, ring, toast } from "../components/ui.js";
 import { blockKind, detailMode, sessionKind } from "../themes.js";
 
@@ -50,13 +52,15 @@ export function render(el, params) {
     const name = item.label ? personalize(item.label, profile()) : ex.name;
     const sel = selected && selected.scope === scope && selected.id === item.id;
     const summary = summarizeLog(l, ex.log);
-    return `<li class="item${l && l.done ? " done" : ""}${info ? " info" : ""}" data-scope="${esc(scope)}" data-id="${esc(item.id)}" aria-selected="${sel}"${info ? "" : ` tabindex="0" aria-label="${esc(name)}: open details"`}>
+    const easier = l && l.easier ? `<div class="item-easier${l.skipped ? " skip" : ""}">${esc(l.skipped ? "Skipped today" : `Easier today: ${l.easier.text || ""}`)}</div>` : "";
+    return `<li class="item${l && l.done ? " done" : ""}${l && l.skipped ? " skipped" : ""}${info ? " info" : ""}" data-scope="${esc(scope)}" data-id="${esc(item.id)}" aria-selected="${sel}"${info ? "" : ` tabindex="0" aria-label="${esc(name)}: open details"`}>
       ${info ? `<span aria-hidden="true" style="display:grid;place-items:center;color:var(--muted)">${icon("list")}</span>` : `<input type="checkbox" class="tick" data-tick ${l && l.done ? "checked" : ""} aria-label="Done: ${esc(name)}">`}
       <div class="item-main">
         <div class="item-name">${esc(name)}${ex.classic ? ' <span class="badge-classic">classic</span>' : ""}</div>
-        <div class="item-rx">${esc(personalize(rxFor(item, level), profile()))}</div>
+        <div class="item-rx">${esc(personalize((l && l.rxOverride) || rxFor(item, level), profile()))}</div>
         ${item.bryan ? `<div class="item-b">${esc(personalize(item.bryan, profile()))}</div>` : ""}
         <div class="item-log" data-summary>${esc(summary)}</div>
+        ${easier}
       </div>
       <div class="item-side">${(ex.equipment || []).slice(0, 3).map((e) => `<span title="${esc(EQUIPMENT_NAMES[e] || e)}">${icon(e, "sm")}</span>`).join("")}${icon("chevronR", "sm")}</div>
     </li>`;
@@ -93,6 +97,7 @@ export function render(el, params) {
     const periodic = due
       .map((pd) => `<label class="banner hint" style="align-items:center"><input type="checkbox" class="tick" data-periodic="${esc(pd.id)}" ${a.periodic && a.periodic[pd.id] ? "checked" : ""}><span class="grow"><b>Due today</b><span>${esc(pd.label)}</span></span></label>`)
       .join("");
+    const desk = addon.id === "posture" && date === todayIso() ? `<div class="desk-box" data-desk>${deskBoxHtml()}</div>` : "";
     return `<section class="card block addon-scope" data-addon="${esc(addon.id)}">
       <div class="block-head">
         <div class="addon-head">${icon(addon.icon || "sparkle", "lg")}<h3>${esc(addon.name)}</h3><span class="chip addon">${optional ? "Optional today" : "Add-on"}</span></div>
@@ -103,11 +108,63 @@ export function render(el, params) {
         a.skipped
           ? `<div class="banner skip" style="margin:0 20px 16px"><div class="grow"><b>Skipped today</b>${a.skipReason ? `<span>${esc(a.skipReason)}</span>` : ""}</div><button type="button" class="btn sm" data-addon-unskip>${icon("undo", "sm")} Undo</button></div>`
           : `<ul class="items">${items.map((it) => itemRow(it, level, addon.id)).join("")}</ul>
-             <div style="padding:6px 20px 18px;display:grid;gap:14px">${metrics}${periodic}
+             <div style="padding:6px 20px 18px;display:grid;gap:14px">${desk}${metrics}${periodic}
                <div class="btn-row"><button type="button" class="btn sm" data-addon-all>${icon("check", "sm")} Mark all done</button><button type="button" class="btn sm ghost skip" data-addon-skip>${icon("skip", "sm")} Skip ${esc(addon.short || addon.name)} today</button></div>
              </div>`
       }
     </section>`;
+  }
+
+  // Bryan's desk habits: two gentle countdowns and a one-tap daily count.
+  function deskBoxHtml() {
+    const ds = deskState();
+    const d = (log() && log().desk) || {};
+    const move = d.move || 0;
+    const squats = d.squats || 0;
+    const streak = deskStreak();
+    const dueMove = ds.due.includes("move");
+    const dueSquats = ds.due.includes("squats");
+    const timerRow = (kind, due, label, left, action) => `<div class="desk-timer${due ? " due" : ""}" data-desk-kind="${kind}">
+      <span class="grow" data-desk-label="${kind}">${due ? label + " now" : label}</span>
+      <b class="mono" data-desk-left="${kind}">${due ? "due" : left}</b>
+      <button type="button" class="btn sm" data-desk-${action}>${icon("check", "sm")} Done</button>
+    </div>`;
+    return `<div class="desk-inner">
+      <div class="desk-head"><b>Desk mode</b><span class="muted">From Bryan's posture habits: stand and move 2–3 minutes every 30 minutes, 10 squats every 45 minutes. Separate from the workout.</span></div>
+      ${
+        ds.running
+          ? `<div class="desk-timers">
+              ${timerRow("move", dueMove, "Next stand-up", ds.nextMoveInText, "move")}
+              ${timerRow("squats", dueSquats, "Next 10 squats", ds.nextSquatInText, "squats")}
+            </div>
+            <div class="btn-row"><button type="button" class="btn sm ghost" data-desk-stop>${icon("pause", "sm")} Stop</button></div>`
+          : `<div class="btn-row"><button type="button" class="btn sm" data-desk-start>${icon("play", "sm")} Start desk mode</button></div>`
+      }
+      <div class="desk-counts muted">Today: <b>${move}</b> move ${move === 1 ? "break" : "breaks"} · <b>${squats}</b> squat ${squats === 1 ? "set" : "sets"} · <b>${streak}</b>-day streak</div>
+    </div>`;
+  }
+
+  // The countdown ticks every second, so update text in place: replacing the
+  // whole box would replace its buttons mid-click. `rebuild` is for start, stop
+  // and logging, when the structure or the counts change.
+  function refreshDesk(rebuild = false) {
+    const ds = deskState();
+    el.querySelectorAll("[data-desk]").forEach((box) => {
+      if (rebuild || !box.querySelector("[data-desk-left]")) {
+        box.innerHTML = deskBoxHtml();
+        return;
+      }
+      const row = (kind, due, left, label) => {
+        const el2 = box.querySelector(`[data-desk-kind="${kind}"]`);
+        const value = box.querySelector(`[data-desk-left="${kind}"]`);
+        const name = box.querySelector(`[data-desk-label="${kind}"]`);
+        if (value) value.textContent = due ? "due" : left;
+        if (name) name.textContent = due ? `${label} now` : label;
+        if (el2) el2.classList.toggle("due", due);
+      };
+      row("move", ds.due.includes("move"), ds.nextMoveInText, "Next stand-up");
+      row("squats", ds.due.includes("squats"), ds.nextSquatInText, "Next 10 squats");
+    });
   }
 
   // A periodic check shows until done, then hides for `every` days.
@@ -174,6 +231,29 @@ export function render(el, params) {
     return "";
   }
 
+  // The plan's own move-up checkpoints and the step-down advice after a long
+  // break. Nothing changes level without a tap.
+  function levelBanner(ctx) {
+    if (!isToday || ctx.rest) return "";
+    const p = profile();
+    const lvl = levelIndex(p);
+    const kept = p.levelCheck || {};
+    const last = lastSessionDate();
+    if (lvl > 0 && last && daysBetween(last, todayIso()) >= 14 && kept.breakDismissedFor !== last) {
+      const prev = LEVELS[lvl - 1];
+      return `<div class="banner hint"><span>${icon("info", "lg")}</span><div class="grow"><b>Coming back after a break?</b><span>Your last session was ${daysBetween(last, todayIso())} days ago. The plan says step down for a while after a long break.</span></div><div class="btn-row"><button type="button" class="btn sm" data-level-down="${esc(prev.id)}">Step down to ${esc(prev.name)}</button><button type="button" class="btn sm ghost" data-level-stay="${esc(last)}">Stay at this level</button></div></div>`;
+    }
+    const rd = currentReadiness();
+    if (!rd) return "";
+    const dismissedAt = kept.level === rd.plan.id && kept.dismissedAtSessions ? kept.dismissedAtSessions : 0;
+    if (rd.sessions < rd.target || (dismissedAt && rd.sessions < dismissedAt + 3)) return "";
+    const next = LEVELS.find((l) => l.id === rd.next);
+    if (rd.ready) {
+      return `<div class="banner hint"><span>${icon("info", "lg")}</span><div class="grow"><b>You met the plan's checkpoints at ${esc(LEVELS[rd.levelIndex].name)}.</b><span>You've done ${rd.sessions} sessions and ticked both checkpoints. Ready to move up to ${esc(next ? next.name : "the next level")}?</span></div><div class="btn-row"><button type="button" class="btn sm" data-level-up="${esc(rd.next)}">Move up to ${esc(next ? next.name : "next level")}</button><button type="button" class="btn sm ghost" data-level-not-yet>Not yet</button></div></div>`;
+    }
+    return `<div class="banner hint"><span>${icon("info", "lg")}</span><div class="grow"><b>You've completed ${rd.sessions} sessions at ${esc(LEVELS[rd.levelIndex].name)}; the plan suggests about ${rd.target} before moving up.</b><span>Check the plan's criteria when you feel ready; you stay in charge of when to move up.</span></div><div class="btn-row"><a class="btn sm" href="#/activity/progress">Check readiness</a><button type="button" class="btn sm ghost" data-level-not-yet>Not now</button></div></div>`;
+  }
+
   function heroHtml(ctx) {
     const { def, level, rest } = ctx;
     const l = log();
@@ -185,6 +265,7 @@ export function render(el, params) {
     const done = prog.done;
     // A day already logged keeps the level it was done at.
     const levelLine = level !== levelIndex(profile()) ? `Logged at ${LEVELS[level].name} level` : `${LEVELS[level].name} level`;
+    const wt = isToday && !rest ? weekTargets(weekStart(todayIso())) : null;
     const swapOptions = DAYS.filter((d) => d.blocks.length)
       .map((d) => `<option value="${d.key}" ${ctx.key === d.key ? "selected" : ""}>${esc(d.name)}: ${esc(d.title)}</option>`)
       .join("");
@@ -197,6 +278,7 @@ export function render(el, params) {
           <div class="chips">
             ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, level)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
             ${ctx.swapped ? `<span class="chip bryan">${icon("swap", "sm")} Doing ${esc(def.name)}'s session</span>` : ""}
+            ${wt ? `<a class="chip link" href="#/activity/week" title="Bryan's weekly targets">${icon("check", "sm")} ${wt.metCount}/${wt.total} weekly targets</a>` : ""}
             ${st ? `<span class="chip ${st === "skipped" ? "skip" : "accent"}" data-status>${esc(STATUS_TEXT[st] || st)}</span>` : `<span class="chip" data-status>${date > todayIso() ? "Planned" : isToday ? "Not started" : profile().startDate && date < profile().startDate ? "Before your start" : "Not logged"}</span>`}
           </div>
         </div>
@@ -239,6 +321,7 @@ export function render(el, params) {
           </div>
           ${heroHtml(ctx)}
           ${skipBanner()}
+          ${levelBanner(ctx)}
           ${missedHint(ctx)}
           ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} skipped session</button></div>` : ""}
         </div>
@@ -341,10 +424,21 @@ export function render(el, params) {
       if (!found) return;
       const il = getItemLog(date, li.dataset.scope, li.dataset.id);
       li.classList.toggle("done", !!(il && il.done));
+      li.classList.toggle("skipped", !!(il && il.skipped));
       const cb = li.querySelector("[data-tick]");
       if (cb) cb.checked = !!(il && il.done);
       const s = li.querySelector("[data-summary]");
       if (s) s.textContent = summarizeLog(il, EXERCISES[found.item.ex].log);
+      const rxEl = li.querySelector(".item-rx");
+      if (rxEl) rxEl.textContent = personalize((il && il.rxOverride) || rxFor(found.item, ctx.level), profile());
+      const old = li.querySelector(".item-easier");
+      if (old) old.remove();
+      if (il && il.easier) {
+        const div = document.createElement("div");
+        div.className = `item-easier${il.skipped ? " skip" : ""}`;
+        div.textContent = il.skipped ? "Skipped today" : `Easier today: ${il.easier.text || ""}`;
+        li.querySelector(".item-main").appendChild(div);
+      }
     });
     if (!ctx.rest) {
       const prog = progressOf(l || { date, items: {}, session: ctx.key });
@@ -406,7 +500,11 @@ export function render(el, params) {
     if (tick) {
       const li = tick.closest(".item");
       const found = findItem(li.dataset.scope, li.dataset.id);
-      if (found) editItem(date, li.dataset.scope, found.item, (l) => (l.done = tick.checked));
+      if (found)
+        editItem(date, li.dataset.scope, found.item, (l) => {
+          l.done = tick.checked;
+          if (tick.checked) l.skipped = false;
+        });
       refreshStatus();
       if (panel && selected && selected.id === li.dataset.id) showPanel(selected);
       return;
@@ -439,10 +537,55 @@ export function render(el, params) {
         for (const bl of ctx.def.blocks) for (const it of blockItems(bl, ctx.level)) if (countable(it)) {
           d.items[it.id] = d.items[it.id] || { ex: it.ex };
           d.items[it.id].done = true;
+          d.items[it.id].skipped = false;
         }
       });
       refreshStatus();
       if (panel && selected) showPanel(selected);
+    } else if (b.dataset.levelUp) {
+      const id = b.dataset.levelUp;
+      const name = (LEVELS.find((l) => l.id === id) || {}).name || id;
+      updateProfile((p) => {
+        p.level = id;
+        p.levelCheck = null;
+      });
+      toast(`Level set to ${name}. Past logs keep the level they were done at.`);
+      draw();
+    } else if (b.dataset.levelDown) {
+      const id = b.dataset.levelDown;
+      const name = (LEVELS.find((l) => l.id === id) || {}).name || id;
+      updateProfile((p) => {
+        p.level = id;
+        p.levelCheck = null;
+      });
+      toast(`Level set to ${name}. Past logs keep the level they were done at.`);
+      draw();
+    } else if (b.dataset.levelStay) {
+      updateProfile((p) => {
+        p.levelCheck = { ...(p.levelCheck || {}), breakDismissedFor: b.dataset.levelStay };
+      });
+      b.closest(".banner").remove();
+    } else if (b.hasAttribute("data-level-not-yet")) {
+      const rd = currentReadiness();
+      updateProfile((p) => {
+        p.levelCheck = { ...(p.levelCheck || {}), level: rd && rd.plan ? rd.plan.id : p.level, dismissedAtSessions: rd ? rd.sessions : 0 };
+      });
+      b.closest(".banner").remove();
+    } else if (b.hasAttribute("data-desk-start")) {
+      startDesk();
+      refreshDesk(true);
+    } else if (b.hasAttribute("data-desk-stop")) {
+      stopDesk();
+      refreshDesk(true);
+    } else if (b.hasAttribute("data-desk-move") || b.hasAttribute("data-desk-squats")) {
+      const kind = b.hasAttribute("data-desk-move") ? "move" : "squats";
+      updateDay(date, (d) => {
+        d.desk = d.desk || { move: 0, squats: 0 };
+        d.desk[kind] = (d.desk[kind] || 0) + 1;
+      });
+      doneDesk(kind);
+      refreshDesk(true);
+      toast(kind === "move" ? "Stand-and-move break logged" : "10 squats logged", { icon: "check" });
     } else if (b.hasAttribute("data-skip") || b.hasAttribute("data-skip-edit")) openSkip();
     else if (b.hasAttribute("data-unskip")) {
       editDay(date, (d) => {
@@ -569,6 +712,7 @@ export function render(el, params) {
   const unsub = onChange((evt) => {
     if (evt.type === "all" || evt.type === "profile") draw();
   });
+  const unsubDesk = subscribeDesk(refreshDesk);
   window.addEventListener("hp:look", onLook);
   narrowView.addEventListener("change", onLook);
   draw();
@@ -590,6 +734,7 @@ export function render(el, params) {
   return {
     destroy() {
       unsub();
+      unsubDesk();
       window.removeEventListener("hp:look", onLook);
       narrowView.removeEventListener("change", onLook);
       window.removeEventListener("wheel", onWheel);

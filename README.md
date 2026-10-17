@@ -11,6 +11,10 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
+- **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) using the plan's two-sessions-at-the-top rule. Tap **Use** to fill it in.
+- **Level check**: the plan's own move-up checkpoints (sessions at your level, plus the questions for that level), a gentle prompt when they are met, and a step-down reminder after a long break. You always change level yourself; past logs keep theirs.
+- **Bryan's weekly targets**: a scoreboard in **Activity → This week** for strength, Zone 2, hard cardio, jumps, balance, mobility and posture, with what is left and which days count.
+- **Tough day, still on plan**: one tap on any exercise for the easier version already in the plan, the previous level's dose, or skipping it for today. Progression pauses after that until you repeat the session.
 - **Your equipment**: record what you own, with names and product links, during setup or any time in Settings. Add equivalent or extra equipment, including a separate Massage category. Exercise instructions keep generic equipment names.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
@@ -148,6 +152,8 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 ## Activity and progress
 
 Open **Activity** for three views: **This week**, **History** and **Progress**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
+
+**This week** also shows Bryan's weekly targets as one card: strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left. **Progress** holds the level check: the plan's session count for your current level, its two move-up questions and the buttons to change level when you are ready.
 
 In Progress, choose a time interval from two groups:
 
@@ -307,6 +313,8 @@ How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIO
 Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
 
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
+
+**Desk mode**: from the posture block you can start two gentle countdowns for Bryan's sitting-day habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Tap **Done** to log a break; Today shows your daily count and streak. It is separate from the workout and adds no training volume.
 
 <details>
 <summary><b>Advanced: make your own add-on</b></summary>

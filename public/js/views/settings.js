@@ -82,6 +82,7 @@ export function render(el) {
         <h3>Training level</h3>
         <p class="muted" style="font-size:0.86rem">Your level sets the exercises, sets, reps and intervals. Your weight, sex and age adjust the suggested weights.</p>
         ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
+        <p class="muted" style="font-size:0.86rem"><a href="#/activity/progress">Open the level check in Progress</a> to track the plan's move-up checkpoints and change level when you are ready.</p>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
