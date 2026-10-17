@@ -196,6 +196,22 @@ export default {
     ],
   },
 
+  deadhang: {
+    clips: [
+      {
+        title: "Dead hang (passive & active)",
+        props: [DOORFRAME],
+        highlight: ["grip", "forearms", "shoulders", "back"],
+        camera: { view: [1, 0.2, 0.9], target: [0, 1.12, 0.1], dist: 4.5 },
+        keys: [
+          { t: 0, p: HANG, cue: "Hang from the bar; breathe slowly" },
+          { t: 2.0, p: HANG, cue: "Decompress the spine and ribs" },
+          { t: 4.0, p: HANG },
+        ],
+      },
+    ],
+  },
+
   legraise: {
     clips: [
       {

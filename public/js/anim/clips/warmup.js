@@ -380,4 +380,21 @@ export default {
       },
     ],
   },
+
+  heeldrop: {
+    clips: [
+      {
+        title: "Heel drops & stomp drills",
+        highlight: ["calves", "quads", "hips"],
+        camera: { view: [1, 0.18, 0.55], target: [0, 0.92, 0], dist: 4.1 },
+        keys: [
+          { t: 0, p: pogo("bottom"), cue: "Stand tall, feet hip-width" },
+          { t: 0.6, p: pogo("push"), cue: "Rise onto the balls of your feet" },
+          { t: 1.2, p: pogo("push") },
+          { t: 1.35, p: pogo("bottom"), cue: "Drop firmly onto your heels with soft knees" },
+          { t: 2.0, p: pogo("bottom") },
+        ],
+      },
+    ],
+  },
 };

@@ -92,6 +92,29 @@ export const EXERCISES = {
       { t: "Pogo hops", u: "https://www.youtube.com/watch?v=7SIfCcfP4g0" },
     ],
   },
+  heeldrop: {
+    name: "Heel drops & stomp drills",
+    cat: "Power",
+    log: "reps",
+    equipment: ["mat"],
+    muscles: ["calves", "quads", "glutes"],
+    bryan: "Bryan’s Bone Density protocol (Apr 2026): high ground-reaction shockwaves stimulate osteoblast mineral deposition to maintain 99th percentile bone density.",
+    how: [
+      "Stand tall with feet hip-width apart on a firm surface or thin mat.",
+      "Rise smoothly onto the balls of your feet, lifting heels 3–5 cm.",
+      "Drop your full body weight firmly down onto your heels with knees slightly soft (do not lock them).",
+      "Feel the mechanical vibration pulse up through the shins, femur neck and lumbar spine.",
+      "Perform rhythmic, controlled drops: 20–30 reps for beginners, up to 50 for trained.",
+    ],
+    easier: "Hold onto a wall or sturdy chair for balance, or reduce heel lift to 1–2 cm.",
+    tips: [
+      "Keep knees unlocked: soft knees allow the bone to absorb osteogenic impact without straining the joint cartilage.",
+    ],
+    videos: [
+      { t: "Heel drops for bone mineral density", u: "https://www.youtube.com/watch?v=wXhRk_Jz4K8" },
+      { t: "Stomp drills and bone loading", u: "https://www.youtube.com/watch?v=jj-0qlVuM3w" },
+    ],
+  },
   balance: {
     name: "Single-leg balance",
     cat: "Warm-up & balance",
@@ -581,6 +604,29 @@ export const EXERCISES = {
         u: "https://www.youtube.com/watch?v=62v48abT5-Y",
       },
       { t: "How to do a farmer’s walk", u: "https://www.youtube.com/watch?v=8OtwXwrJizk" },
+    ],
+  },
+  deadhang: {
+    name: "Dead hang (passive & active)",
+    cat: "Upper body",
+    log: "hold",
+    equipment: ["bar"],
+    muscles: ["forearms", "back", "shoulders"],
+    bryan: "Bryan measures grip strength as a primary longevity biomarker (scoring ~60 kg, top 5% of all ages). Hanging decompresses the spine and builds forearm grip endurance.",
+    how: [
+      "Grip the pull-up bar with an overhand grip, slightly wider than shoulder-width.",
+      "Allow your body to hang freely: let gravity gently stretch your shoulders and decompress the spine (passive hang).",
+      "To switch to active hang, pull your shoulder blades down and slightly back away from your ears without bending your elbows.",
+      "Breathe slowly and rhythmically; hold for the target duration without swinging.",
+    ],
+    easier: "Keep your toes lightly resting on the floor or a step to support 20–30% of your body weight.",
+    tips: [
+      "Decompress after spinal loading exercises like squats, RDLs and heavy carries.",
+      "Build up cumulative time: 2–3 sets of 20–30 s is great for beginners; advance toward 60 s continuous.",
+    ],
+    videos: [
+      { t: "Dead hang: passive vs active hang benefits", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0" },
+      { t: "How to dead hang for grip and shoulder health", u: "https://www.youtube.com/watch?v=8OtwXwrJizk" },
     ],
   },
   legraise: {

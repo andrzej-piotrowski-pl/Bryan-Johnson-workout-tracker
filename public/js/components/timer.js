@@ -29,6 +29,22 @@ export function beep(freq = 880, ms = 120, vol = 0.18) {
 }
 const buzz = (p) => navigator.vibrate && navigator.vibrate(p);
 
+export function speak(text) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const p = state.profile;
+  if (p && p.settings && (p.settings.sound === false || p.settings.voiceCoach === false)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.04;
+    u.pitch = 1.0;
+    u.lang = "en-US";
+    window.speechSynthesis.speak(u);
+  } catch {
+    /* speech is optional */
+  }
+}
+
 async function wake() {
   try {
     return navigator.wakeLock ? await navigator.wakeLock.request("screen") : null;
@@ -41,13 +57,19 @@ async function wake() {
 function runPhases({ title, phases, onFinish }) {
   const R = 120;
   const C = 2 * Math.PI * R;
+  let voiceOn = !(state.profile && state.profile.settings && state.profile.settings.voiceCoach === false);
   const d = openDialog({
     title,
     sheet: false,
     content: `<div class="timer" data-kind="ready">
         <div class="timer-ring"><svg viewBox="0 0 280 280"><circle class="bg" cx="140" cy="140" r="${R}"/><circle class="fg" cx="140" cy="140" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
           <div class="timer-center"><span class="phase"></span><span class="big mono">0:00</span><span class="sub"></span></div></div>
-        <div class="btn-row"><button class="btn" data-t="pause">${icon("pause")} Pause</button><button class="btn" data-t="skip">${icon("skip")} Next</button><button class="btn danger" data-t="stop">${icon("x")} Stop</button></div>
+        <div class="btn-row">
+          <button class="btn" data-t="pause">${icon("pause")} Pause</button>
+          <button class="btn" data-t="skip">${icon("skip")} Next</button>
+          <button class="btn sm ghost" data-t="voice" aria-label="Toggle voice coach">${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}</button>
+          <button class="btn danger" data-t="stop">${icon("x")} Stop</button>
+        </div>
         <p class="muted" data-t="info" style="text-align:center"></p>
       </div>`,
     onClose: () => stop(false),
@@ -65,6 +87,10 @@ function runPhases({ title, phases, onFinish }) {
   let lock = null;
   let lastWhole = null;
   let finished = false;
+  let lastSpokenPhase = -1;
+  let spokenHalfway = false;
+  let spokenThirty = false;
+  let spokenTen = false;
   const workDone = () => phases.slice(0, i).filter((p) => p.kind === "work").length;
   wake().then((l) => (lock = l));
 
@@ -76,7 +102,34 @@ function runPhases({ title, phases, onFinish }) {
     sub.textContent = p.sub || "";
     fg.setAttribute("stroke-dashoffset", String(C * (1 - left / p.sec)));
     const totalWork = phases.filter((x) => x.kind === "work").length;
-    info.textContent = totalWork > 1 ? `Interval ${Math.min(workDone() + (p.kind === "work" ? 1 : 0), totalWork)} of ${totalWork}` : "";
+    const currentWork = workDone() + (p.kind === "work" ? 1 : 0);
+    info.textContent = totalWork > 1 ? `Interval ${Math.min(currentWork, totalWork)} of ${totalWork}` : "";
+
+    if (lastSpokenPhase !== i) {
+      lastSpokenPhase = i;
+      spokenHalfway = false;
+      spokenThirty = false;
+      spokenTen = false;
+      if (p.kind === "ready") {
+        speak(p.sec >= 8 ? "Get ready. First interval starts soon." : "Get ready.");
+      } else if (p.kind === "work") {
+        if (p.sec <= 30) {
+          speak(totalWork > 1 ? `Work! Interval ${currentWork} of ${totalWork}.` : "Work!");
+        } else {
+          const mins = Math.round(p.sec / 60);
+          const hrText = p.sub ? `Target: ${p.sub}.` : "";
+          speak(`Work! Interval ${currentWork} of ${totalWork}. ${mins > 1 ? `${mins} minutes. ` : ""}${hrText}`);
+        }
+      } else if (p.kind === "rest") {
+        if (p.sec <= 30) {
+          speak("Rest.");
+        } else {
+          const mins = Math.round(p.sec / 60);
+          const hrText = p.sub ? `Target: ${p.sub}.` : "";
+          speak(`Recover. ${mins > 1 ? `${mins} minutes. ` : ""}${hrText}`);
+        }
+      }
+    }
   }
   function next() {
     i += 1;
@@ -91,6 +144,22 @@ function runPhases({ title, phases, onFinish }) {
     left -= 0.1;
     const whole = Math.ceil(left);
     if (whole !== lastWhole && whole <= 3 && whole > 0) beep(780, 90);
+    const p = phases[i];
+    if (p && p.kind === "work") {
+      if (p.sec >= 120 && !spokenHalfway && whole === Math.round(p.sec / 2)) {
+        spokenHalfway = true;
+        speak("Halfway.");
+      }
+      if (p.sec >= 60 && !spokenThirty && whole === 30) {
+        spokenThirty = true;
+        speak("30 seconds left.");
+      }
+    } else if (p && p.kind === "rest") {
+      if (p.sec >= 30 && !spokenTen && whole === 10) {
+        spokenTen = true;
+        speak("10 seconds. Get ready.");
+      }
+    }
     lastWhole = whole;
     if (left <= 0) next();
     else show();
@@ -100,6 +169,7 @@ function runPhases({ title, phases, onFinish }) {
     clearInterval(timer);
     beep(1320, 500, 0.25);
     buzz([200, 100, 200, 100, 400]);
+    speak("Intervals complete. Great job!");
     el.dataset.kind = "done";
     phaseEl.textContent = "Done";
     big.textContent = "✓";
@@ -110,6 +180,7 @@ function runPhases({ title, phases, onFinish }) {
   }
   function stop(close = true) {
     clearInterval(timer);
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
     if (lock) lock.release().catch(() => {});
     if (!finished && onFinish && workDone() > 0) onFinish(workDone(), true);
     finished = true;
@@ -121,6 +192,17 @@ function runPhases({ title, phases, onFinish }) {
     if (b.dataset.t === "pause") {
       paused = !paused;
       b.innerHTML = paused ? `${icon("play")} Resume` : `${icon("pause")} Pause`;
+      if (paused && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    } else if (b.dataset.t === "voice") {
+      const pr = state.profile;
+      if (pr) {
+        pr.settings = pr.settings || {};
+        pr.settings.voiceCoach = !(pr.settings.voiceCoach !== false);
+        voiceOn = pr.settings.voiceCoach !== false;
+        b.innerHTML = `${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}`;
+        if (!voiceOn && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+        else if (voiceOn) speak("Voice coach on");
+      }
     } else if (b.dataset.t === "skip") next();
     else if (b.dataset.t === "stop" || b.dataset.t === "close") stop(true);
   });

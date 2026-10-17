@@ -10,8 +10,10 @@
 
 import posture from "./posture.js";
 import desk from "./desk.js";
+import bone from "./bone.js";
+import hang from "./hang.js";
 
-export const ADDONS = [posture, desk];
+export const ADDONS = [posture, desk, bone, hang];
 
 export function getAddon(id) {
   return ADDONS.find((a) => a.id === id) || null;

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0] - 2026-10-17
+
+### Added
+- **Plan change:** Added two optional Blueprint micro-routine add-ons in Settings: **Bone density protocol** (heel drops & stomp drills, pogo hops, and landing drills from Bryan's bone health guide) and **Dead hang & grip** (passive and active bar hangs and farmer's holds for spinal decompression and grip longevity).
+- New exercises **Heel drops & stomp drills** and **Dead hang (passive & active)** with how-to guides, Bryan's notes, video links and 3D animations across all 17 styles.
+- An in-workout audio coach for interval training: spoken cues for work intervals, recovery blocks, heart-rate target reminders, 30-second warnings, and a voice toggle in the interval timer and Settings.
+
 ## [1.19.0] - 2026-10-17
 
 ### Added

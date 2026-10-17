@@ -172,10 +172,14 @@ state.profile.level = "trained";
 assert.equal(currentReadiness(), null, "Well trained is the full plan");
 assert.match(levelCheckHtml(), /full plan/);
 
-// Desk breaks is its own add-on and only shows when enabled.
+// Desk breaks, bone protocol and dead hang & grip are registered add-ons.
 assert(ADDONS.some((a) => a.id === "desk"), "Desk breaks is a registered add-on");
-state.profile = { ...baseProfile(), addons: { posture: true, desk: true } };
+assert(ADDONS.some((a) => a.id === "bone"), "Bone density protocol is a registered add-on");
+assert(ADDONS.some((a) => a.id === "hang"), "Dead hang & grip is a registered add-on");
+state.profile = { ...baseProfile(), addons: { posture: true, desk: true, bone: true, hang: true } };
 assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks appears when enabled");
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "bone"), "Bone density appears when enabled");
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "hang"), "Dead hang & grip appears when enabled");
 state.profile.addons.desk = false;
 assert(!addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks stays off until enabled");
 

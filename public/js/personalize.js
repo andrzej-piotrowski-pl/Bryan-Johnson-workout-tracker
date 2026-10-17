@@ -70,7 +70,7 @@ export function defaultProfile() {
     hrMax: null,
     startDate: iso(new Date()),
     addons: { posture: true },
-    settings: { theme: "system", skin: "original", restSec: 75, sound: true },
+    settings: { theme: "system", skin: "original", restSec: 75, sound: true, voiceCoach: true },
     createdAt: new Date().toISOString(),
   };
 }
