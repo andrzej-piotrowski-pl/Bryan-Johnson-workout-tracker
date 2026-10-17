@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.21.1] - 2026-10-17
+
+### Changed
+- Latest changes in Settings moves the full changelog button to the top linking to GitHub.
+- Latest changes displays the 20 most recent releases with a Read more button at the bottom to load the next 20 until all changes are shown.
+
 ## [1.21.0] - 2026-10-17
 
 ### Added

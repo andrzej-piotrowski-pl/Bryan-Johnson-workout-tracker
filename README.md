@@ -332,7 +332,7 @@ Add-ons are optional blocks shown after the main session, picked on first run (a
 
 ## Changing the plan
 
-- Record workout changes in `CHANGELOG.md` with a `**Plan change:**` prefix on each relevant bullet. **Settings → Latest changes** shows the newest 20 releases, marks workout updates with a red **Plan changed** badge and highlights the details. The Plan page shows the current routine and its sources.
+- Record workout changes in `CHANGELOG.md` with a `**Plan change:**` prefix on each relevant bullet. **Settings → Latest changes** shows the newest 20 releases with a Read more button to browse older changes, marks workout updates with a red **Plan changed** badge and highlights the details. The Plan page shows the current routine and its sources.
 - `public/js/data/program.js` — the days, blocks and doses per training level, what each level means, rules, sources.
 - `public/js/data/exercises.js` — every exercise: how-to steps, Bryan's notes, videos (with timestamps into his videos), equipment, what it's logged as.
 - `public/js/data/addons/` — optional blocks.
