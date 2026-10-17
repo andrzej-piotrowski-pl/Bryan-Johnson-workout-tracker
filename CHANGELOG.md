@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.23.1] - 2026-10-17
+
+### Changed
+- Movement pickers and video lists now stack vertically at full width instead of scrolling horizontally.
+
 ## [1.23.0] - 2026-10-17
 
 ### Added
