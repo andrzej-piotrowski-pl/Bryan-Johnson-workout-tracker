@@ -5,7 +5,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
-- **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History and Progress into three tabs.
+- **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History, Progress and Benchmarks into four tabs.
 - **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
@@ -14,12 +14,14 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
 - **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) at the end of **Today** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
 - **Bryan's weekly targets**: two scoreboards in **Activity → This week**, one against your level's weekly targets and one against Bryan's full Well trained week, with what is left and which days count.
+- **Daily readiness & "Don't Die" session scaling**: check in before training to adapt today's dose if feeling tired or sore, scaling volume for the day without modifying your permanent program.
+- **Longevity benchmarks & fitness age**: 8 zero-blood physical tests from Bryan Johnson's published battery (push-ups, grip strength, dead hangs, balance, sit-and-rise, VO2 Max, sit & reach, heart-rate recovery drop) tracked monthly or quarterly.
 - **Tough day, still on plan**: one tap on any exercise for the easier version already in the plan, the previous level's dose, or skipping it for today. Progression pauses after that until you repeat the session.
 - **Your equipment**: record what you own, with names and product links, during setup or any time in Settings. Add equivalent or extra equipment, including a separate Massage category. Exercise instructions keep generic equipment names.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
 - **Optional add-ons** chosen on first run: a daily **posture correction** block for tech neck and forward shoulders, **bone density loading** (heel drops and pogo hops), **dead hang & grip longevity** (passive and active hangs), and separate **desk breaks** for long sitting days.
 - **Nine themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
-- **Activity**: a weekly schedule, history calendar with skip reasons and progress charts with clear time intervals, including Last week, Last month and Since beginning.
+- **Activity**: a weekly schedule, history calendar with skip reasons, progress charts and longevity benchmarks.
 - An exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
 - Custom rest timer values, compact effort and energy ratings, and more than 30 extra activities to log.
 
@@ -147,7 +149,7 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 
 ## Activity and progress
 
-Open **Activity** for three views: **This week**, **History** and **Progress**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
+Open **Activity** for four views: **This week**, **History**, **Progress** and **Benchmarks**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
 
 **This week** ends with two scoreboards: one against the weekly targets of the level you picked, and one against Bryan's full Well trained week (150 Zone 2 and 75 hard-cardio minutes). Both cover strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left.
 

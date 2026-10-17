@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.21.0] - 2026-10-17
+
+### Added
+- **Longevity benchmarks & fitness age**: A dedicated Benchmarks view in Activity tracking the 8 core zero-blood physical biomarkers from Bryan Johnson's published battery (continuous push-ups, handgrip strength, dead hang, eyes-closed balance, sit-and-rise, VO2 Max, sit & reach, and heart-rate recovery drop), with ratings and monthly or quarterly cadence.
+- **Daily readiness check & "Don't Die" session scaling**: Check in before your session on Today. If feeling tired or sore, scale today's session volume to a lower level with one tap to protect joints and prevent injury without altering your permanent program level.
+
 ## [1.20.0] - 2026-10-17
 
 ### Added

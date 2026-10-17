@@ -55,7 +55,7 @@ function drawNav(route) {
 
 function parseHash() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
-  if (["week", "history", "progress"].includes(parts[0])) {
+  if (["week", "history", "progress", "benchmarks"].includes(parts[0])) {
     history.replaceState(null, "", "#/activity/" + parts.map(encodeURIComponent).join("/"));
     return { route: "activity", params: parts };
   }

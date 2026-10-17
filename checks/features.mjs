@@ -9,6 +9,7 @@ import { nextTimeRecommendation } from "../public/js/components/logger.js";
 import { levelCheckHtml } from "../public/js/components/level-check.js";
 import { weekTargets } from "../public/js/week-targets.js";
 import { deskState, deskStreak, pauseDesk, resumeDesk, snoozeDesk, startDesk, stopDesk } from "../public/js/components/desk.js";
+import { BENCHMARKS } from "../public/js/views/benchmarks.js";
 
 const baseProfile = () => ({ ...defaultProfile(), level: "returning", weightKg: 75, sex: "male", age: 38, units: "metric", maxDumbbellKg: 24 });
 
@@ -207,4 +208,15 @@ assert(deskState().nextMoveIn <= 300 && deskState().nextMoveIn > 280, "Snooze re
 stopDesk();
 assert.equal(deskState().running, false);
 
-console.log("Progression rules, week scoreboard, level readiness and desk streaks passed.");
+// ---------- longevity benchmarks ----------
+assert.equal(BENCHMARKS.length, 8, "All 8 core Blueprint longevity benchmarks are present");
+assert(BENCHMARKS.some((b) => b.id === "pushups"), "Push-ups test present");
+assert(BENCHMARKS.some((b) => b.id === "grip"), "Grip strength test present");
+assert(BENCHMARKS.some((b) => b.id === "vo2max"), "VO2 Max test present");
+assert(BENCHMARKS.some((b) => b.id === "deadhang"), "Dead hang test present");
+assert(BENCHMARKS.some((b) => b.id === "sitrise"), "Sit-and-rise test present");
+assert.equal(BENCHMARKS.find((b) => b.id === "pushups").rate(45).tier, "elite");
+assert.equal(BENCHMARKS.find((b) => b.id === "grip").rate(58).tier, "elite");
+assert.equal(BENCHMARKS.find((b) => b.id === "deadhang").rate(65).tier, "good");
+
+console.log("Progression rules, week scoreboard, level readiness, desk streaks and benchmarks passed.");

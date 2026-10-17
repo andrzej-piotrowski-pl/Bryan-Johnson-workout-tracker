@@ -284,6 +284,51 @@ export function render(el, params) {
     return "";
   }
 
+  // Pre-workout readiness check from Bryan's "Don't Die" / Zero Injury principle:
+  // if recovery, sleep or joints are compromised, adapt today's dose without guilt.
+  function readinessBanner(ctx) {
+    if (!isToday || ctx.rest) return "";
+    const l = log();
+    if (l && l.skip) return "";
+    const p = profile();
+    const curLevelIdx = levelIndex(p);
+    const todayLevelIdx = ctx.level;
+
+    if (l && l.readiness) {
+      const rd = l.readiness;
+      const isScaled = todayLevelIdx < curLevelIdx;
+      const title = rd === "ready" ? "Feeling 100%" : rd === "tired" ? "Tired / Low recovery" : "Joint tightness / Sore";
+      const desc = isScaled
+        ? `Session volume temporarily scaled to ${LEVELS[todayLevelIdx].name} for today.`
+        : rd === "ready"
+        ? "Normal session volume loaded."
+        : "Taking it controlled today.";
+      const ic = rd === "ready" ? "check" : rd === "tired" ? "battery" : "bandage";
+      return `<div class="banner hint readiness-banner"><span>${icon(ic, "lg")}</span><div class="grow"><b>Daily Readiness: ${esc(title)}</b><span>${esc(desc)}</span></div><button type="button" class="btn sm ghost" data-readiness-reset>${icon("undo", "sm")} Change</button></div>`;
+    }
+
+    try {
+      if (sessionStorage.getItem("hp:readiness-dismiss:" + date)) return "";
+    } catch {}
+
+    return `<div class="card readiness-check" style="padding:14px 18px;display:grid;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span>${icon("heart", "sm")}</span>
+          <b style="font-size:0.92rem">Daily Readiness Check</b>
+          <small class="muted">— Bryan's #1 rule: injury prevention first</small>
+        </div>
+        <button type="button" class="btn sm icon-only ghost" data-readiness-dismiss aria-label="Dismiss">${icon("x", "sm")}</button>
+      </div>
+      <p class="muted" style="font-size:0.84rem;margin:0">How did you recover overnight? Adapt today's dose to match how your body feels.</p>
+      <div class="btn-row" style="flex-wrap:wrap">
+        <button type="button" class="btn sm" data-readiness-pick="ready">${icon("check", "sm")} Feeling 100%</button>
+        <button type="button" class="btn sm ghost" data-readiness-pick="tired">${icon("battery", "sm")} Tired / Low sleep</button>
+        <button type="button" class="btn sm ghost" data-readiness-pick="sore">${icon("bandage", "sm")} Sore / Joint tight</button>
+      </div>
+    </div>`;
+  }
+
   function heroHtml(ctx) {
     const { def, level, rest } = ctx;
     const l = log();
@@ -359,6 +404,7 @@ export function render(el, params) {
           ${skipBanner()}
           ${breakBanner(ctx)}
           ${missedHint(ctx)}
+          ${readinessBanner(ctx)}
           ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} skipped session</button></div>` : ""}
         </div>
         <div class="day-list">
@@ -650,6 +696,31 @@ export function render(el, params) {
         localStorage.setItem("hp:hint:" + date, "1");
       } catch {}
       b.closest(".banner").remove();
+    } else if (b.dataset.readinessPick) {
+      const pick = b.dataset.readinessPick;
+      const curLvl = levelIndex(profile());
+      editDay(date, (d) => {
+        d.readiness = pick;
+        if (pick !== "ready" && curLvl > 0) {
+          d.level = LEVELS[curLvl - 1].id;
+        } else if (pick === "ready") {
+          delete d.level;
+        }
+      });
+      toast(pick === "ready" ? "Logged: Feeling 100%" : `Scaled session to ${LEVELS[curLvl > 0 ? curLvl - 1 : 0].name} for today`);
+      draw();
+    } else if (b.hasAttribute("data-readiness-reset")) {
+      editDay(date, (d) => {
+        delete d.readiness;
+        delete d.level;
+      });
+      toast("Readiness reset to standard plan");
+      draw();
+    } else if (b.hasAttribute("data-readiness-dismiss")) {
+      try {
+        sessionStorage.setItem("hp:readiness-dismiss:" + date, "1");
+      } catch {}
+      draw();
     } else if (b.dataset.rpe) {
       editDay(date, (d) => {
         d.rpe = d.rpe === Number(b.dataset.rpe) ? null : Number(b.dataset.rpe);
