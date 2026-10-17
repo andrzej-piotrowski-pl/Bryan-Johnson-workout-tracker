@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.16.1] - 2026-10-17
+
+### Fixed
+- Missed-workout and skipped-day notices keep their text readable on phones, with action buttons below the message.
+
 ## [1.16.0] - 2026-10-17
 
 ### Changed

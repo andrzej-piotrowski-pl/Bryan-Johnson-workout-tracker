@@ -327,6 +327,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .banner.skip { background: var(--skip-soft); border-color: transparent; }
 .banner.hint { background: var(--bryan-soft); border-color: transparent; }
 .banner .grow { flex: 1; min-width: 0; display: grid; gap: 4px; }
+@media (max-width: 900px) {
+  .day-head > .banner { display: grid; grid-template-columns: auto minmax(0, 1fr); }
+  .day-head > .banner > .btn-row { grid-column: 2; }
+}
 
 .block { overflow: hidden; }
 .block-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px 10px; }
