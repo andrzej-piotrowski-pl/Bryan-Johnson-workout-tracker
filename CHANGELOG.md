@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.22.1] - 2026-10-17
+
+### Fixed
+- Desk breaks appears after the other add-ons on Today and remains available throughout the day.
+- The README's main screenshot shows the exercise animation after it has loaded.
+
 ## [1.22.0] - 2026-10-17
 
 ### Added

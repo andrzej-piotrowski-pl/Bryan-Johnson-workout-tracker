@@ -115,7 +115,7 @@ export function render(el, params) {
     </section>`;
   }
 
-  // Desk breaks stays above the workout, with its own countdowns and daily count.
+  // Desk breaks follows the other add-ons, with its own countdowns and daily count.
   function deskAddonHtml(entry) {
     if (date !== todayIso()) return "";
     const { addon, optional } = entry;
@@ -400,7 +400,6 @@ export function render(el, params) {
             ${isToday ? '<span class="chip accent">Today</span>' : `<a class="btn sm ghost" href="#/today">Back to today</a>`}
           </div>
           ${heroHtml(ctx)}
-          ${addonsForDate(date).filter((a) => a.addon.id === "desk").map(deskAddonHtml).join("")}
           ${skipBanner()}
           ${breakBanner(ctx)}
           ${missedHint(ctx)}
@@ -410,6 +409,7 @@ export function render(el, params) {
         <div class="day-list">
           ${showBlocks ? blocksHtml(ctx.def, ctx.level) : ""}
           ${addonsForDate(date).filter((a) => a.addon.id !== "desk").map((a) => addonHtml(a, ctx.level)).join("")}
+          ${addonsForDate(date).filter((a) => a.addon.id === "desk").map(deskAddonHtml).join("")}
           ${obsHtml()}
         </div>
         <div class="detail-col"><div data-panel-host></div></div>
