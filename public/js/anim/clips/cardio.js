@@ -66,7 +66,12 @@ function onTheSpot(ph, o) {
       Object.assign(p, { ["foot" + side]: tiptoe([FOOT_X * s, ANKLE_Y, 0], pitch, 7 * s), ["toe" + side]: pitch, ["knee" + side]: [0.12 * s, 0, 1] });
     } else {
       const w = Math.sin((Math.PI * (q - o.duty)) / (1 - o.duty)); // 0 → 1 (knee highest) → 0
-      Object.assign(p, legIK(p, side, [o.knee * w, 5, o.bend * w + o.bend0 * (1 - w)]), { ["toe" + side]: o.swingToe });
+      const swing = legIK(p, side, [o.knee * w, 5, o.bend * w + o.bend0 * (1 - w)]);
+      const contact = tiptoe([FOOT_X * s, ANKLE_Y, 0], o.heel + o.roll, 7 * s);
+      const blend = w * w * (3 - 2 * w);
+      p["foot" + side] = contact.map((v, i) => v + (swing["foot" + side][i] - v) * blend);
+      p["knee" + side] = [0.12 * s, 0, 1].map((v, i) => v + (swing["knee" + side][i] - v) * blend);
+      p["toe" + side] = o.heel + o.roll + (o.swingToe - o.heel - o.roll) * blend;
     }
   }
   const peak = o.duty + (1 - o.duty) / 2; // left knee highest
@@ -147,7 +152,7 @@ function jack(open, air = 0) {
 // ---------- straight-arm plank: mountain climbers and burpees ----------
 
 // Body straight from heels to head, pivoting on the toes (built like the push-up, 20° up from the floor).
-const PLANK = anchor({ rot: [74, 0, 0], legL: [0, 4, 0, -22], legR: [0, 4, 0, -22], neck: [-6, 0], wristL: [75, 0, 0], wristR: [75, 0, 0] }, "toeL", [0, 0, -0.92], "yz");
+const PLANK = anchor({ rot: [74, 0, 0], legL: [0, 4, 0, -22], legR: [0, 4, 0, -22], neck: [-6, 0], palmL: [0, 1, 0], palmR: [0, 1, 0] }, "toeL", [0, 0, -0.92], "yz");
 const PLANK_J = joints(PLANK);
 const PLANK_TOE = Math.asin(-PLANK_J.footFL.y) / D2R; // the plank's toes as a floor pitch
 const HAND_Y = 0.035; // palm flat on the floor, with the wrist extended
@@ -177,8 +182,8 @@ function climber(l, r) {
     root: CLIMB_BODY.root,
     rot: CLIMB_BODY.rot,
     neck: CLIMB_BODY.neck,
-    wristL: [75, 0, 0],
-    wristR: [75, 0, 0],
+    palmL: [0, 1, 0],
+    palmR: [0, 1, 0],
     footL: L.pos, toeL: L.toe, kneeL: L.knee,
     footR: R.pos, toeR: R.toe, kneeR: R.knee,
     handsIn: "world",
@@ -199,7 +204,7 @@ const B_FEET = (pitch) => ({
 // Mid-jump: shoulders over the hands (as in the plank), trunk nearly level so the hips ride high.
 const B_KICK = anchor({ rot: [96, 0, 0], neck: [-16, 0] }, "neckBase", v3(PLANK_J.neckBase, B_SHIFT), "xyz");
 function burpee(stage) {
-  const hands = { handsIn: "world", handL: B_HANDS.L, handR: B_HANDS.R, wristL: [75, 0, 0], wristR: [75, 0, 0], ...ARM_POLES };
+  const hands = { handsIn: "world", handL: B_HANDS.L, handR: B_HANDS.R, palmL: [0, 1, 0], palmR: [0, 1, 0], ...ARM_POLES };
   switch (stage) {
     case "stand":
       return hangArms({ root: [0, 0.94, 0.02], ...B_FEET(0) }, { fwd: 0.04 });

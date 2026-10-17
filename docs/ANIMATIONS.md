@@ -61,6 +61,7 @@ A pose is a plain object. Anything you leave out takes the default from
 | `footYawL/R` | Optional world yaw of a ground-oriented foot. Use it to keep a planted foot facing the same way while the pelvis turns. |
 | `armL/R: [shFlex, shAbd, elbowFlex, extRot]` | Arm by angles. Flexion + raises the arm forward (180 = overhead), abduction + raises it to the side (90 = T-pose), elbow + bends, extRot + rotates the forearm outward. |
 | `wristL/R: [flex, side, twist]` | Wrist flexion, side bend and forearm rotation, in degrees. Twisting turns the hand without moving the elbow. Use `hold.axis: "hand"` when the dumbbell should turn with the grip. |
+| `palmL/R: [x, y, z]` | Optional world normal above a supported palm. `[0, 1, 0]` keeps it flat on the floor, with the fingers facing the body's yaw. Wrist IK targets still describe the wrist joint. |
 | `handL/R: [x, y, z]` | Arm by wrist target (IK). Overrides `armL/R`. |
 | `handsIn` | Frame for hand targets and elbow poles: `"world"` (default), `"chest"` (origin at the base of the neck, moves with the torso) or `"pelvis"`. |
 | `elbowL/R: [x, y, z]` | IK pole for the elbow, in the `handsIn` frame. Default: back, down and slightly out. |
@@ -164,6 +165,8 @@ export default {
   interpolation joins their velocities, preserves constant contact coordinates
   and stays within each coordinate's authored range. `lin`, `in`, `out` and
   `hold` keep their explicit timing. Do not use `smooth` across an intentional cut.
+- Freely moving FK arms follow the body by up to 45 ms within a segment. Endpoints,
+  holds, fast cycle keys and hands with IK targets keep their authored timing.
 - With `alternate: true` the mirrored side starts by blending from the first
   side's last pose into the mirrored second key. Start and end each side in a
   neutral pose. For lying poses (where that blend would swing the body over),
@@ -273,6 +276,13 @@ wobble start clean. It also needs `snapshot()`, a data URL of the last frame, fo
 thumbnails.
 
 `Stage.snapshot()` is asynchronous: await it so the selected figure has finished loading before rendering the still. The developer keyframe page and thumbnail queue use this same path.
+
+Athlete uses `styles/human.js` for a single skinned torso with three spine bones and
+three joints per finger. Its breathing deforms the ribcage without moving the
+skeleton or planted contacts. The stage passes `grip`, `gripAxis` and `breath` to
+`figure.update`: weights, goblet holds, bars and band ends determine which hands
+close. Hand-oriented dumbbell handles run across the palm. Blinking and breathing
+use clip time, so pausing and snapshots are repeatable.
 
 Robot uses ordinary standard materials and the shared three.js rig. Paper cutouts uses SVG polygons with folds and small offset shadows. Halftone uses a cached canvas dot pattern and bold outlines. All three reuse the existing joints, props and held-equipment helpers.
 

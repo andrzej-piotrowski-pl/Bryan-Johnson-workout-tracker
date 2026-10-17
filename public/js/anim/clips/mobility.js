@@ -39,27 +39,30 @@ function move(build, from, to, t0, t1, { n = 4, after } = {}) {
 // The pelvis stays over the knees. tilt rotates the pelvis (− tucks the tailbone) and the
 // hip flexion follows it, so thighs and knees stay put; hands are planted under the shoulders.
 const QUAD_BASE = ground(
-  { rot: [78, 0, 0], legL: [78, 4, 90, 80], legR: [78, 4, 90, 80], armL: [78, 4, 0, 0], armR: [78, 4, 0, 0] },
+  { rot: [82, 0, 0], legL: [82, 4, 90, 80], legR: [82, 4, 90, 80], armL: [82, 4, 0, 0], armR: [82, 4, 0, 0] },
   ["kneeL", "kneeR"],
   MAT_Y
 );
 const QUAD_J = joints(QUAD_BASE);
 const QUAD_HANDS = {
-  L: [QUAD_J.shoulderL.x + 0.02, 0.075 + MAT_Y, QUAD_J.shoulderL.z + 0.02],
-  R: [QUAD_J.shoulderR.x - 0.02, 0.075 + MAT_Y, QUAD_J.shoulderR.z + 0.02],
+  L: [QUAD_J.shoulderL.x + 0.02, 0.035 + MAT_Y, QUAD_J.shoulderL.z + 0.02],
+  R: [QUAD_J.shoulderR.x - 0.02, 0.035 + MAT_Y, QUAD_J.shoulderR.z + 0.02],
 };
 function quad({ tilt = 0, flex = 0, side = 0, twist = 0, neck = -8, turn = 0, nod = 0, shrug = 0, handL = QUAD_HANDS.L, handR = QUAD_HANDS.R, elbowL = [0.3, 0, -1], elbowR = [-0.3, 0, -1] } = {}) {
+  const palmTurn = Math.min(1, Math.max(0, (handR[1] - QUAD_HANDS.R[1]) / 0.5)) * Math.PI / 2;
   return {
     root: QUAD_BASE.root,
-    rot: [78 + tilt, 0, 0],
+    rot: [82 + tilt, 0, 0],
     spine: [flex, side, twist],
-    legL: [78 + tilt, 4, 90, 80],
-    legR: [78 + tilt, 4, 90, 80],
+    legL: [82 + tilt, 4, 90, 80],
+    legR: [82 + tilt, 4, 90, 80],
     neck: [neck, turn],
     head: [nod, 0],
     shrugL: [0, shrug],
     shrugR: [0, shrug],
     handsIn: "world",
+    palmL: [0, 1, 0],
+    palmR: [0, Math.cos(palmTurn), -Math.sin(palmTurn)],
     handL,
     handR,
     elbowL,
@@ -109,11 +112,11 @@ function proneBody(lift = 0) {
   return ground(p, ["pelvis", "kneeL", "kneeR"], MAT_Y + 0.006);
 }
 const COBRA_J = joints(proneBody(0));
-const COBRA_HANDS = { L: [0.22, 0.087 + MAT_Y, COBRA_J.shoulderL.z - 0.07], R: [-0.22, 0.087 + MAT_Y, COBRA_J.shoulderR.z - 0.07] };
+const COBRA_HANDS = { L: [0.22, 0.035 + MAT_Y, COBRA_J.shoulderL.z - 0.07], R: [-0.22, 0.035 + MAT_Y, COBRA_J.shoulderR.z - 0.07] };
 function cobra(lift = 0) {
   const s = Math.min(1, lift / 50); // elbow pole: up and back when flat, back along the ribs when lifted
   const pole = [0.15, 1 - 0.7 * s, -0.3 - 0.7 * s];
-  return { ...proneBody(lift), handsIn: "world", handL: COBRA_HANDS.L, handR: COBRA_HANDS.R, elbowL: pole, elbowR: [-pole[0], pole[1], pole[2]] };
+  return { ...proneBody(lift), handsIn: "world", palmL: [0, 1, 0], palmR: [0, 1, 0], handL: COBRA_HANDS.L, handR: COBRA_HANDS.R, elbowL: pole, elbowR: [-pole[0], pole[1], pole[2]] };
 }
 
 // ---------- kneeling (shin stretch, toe sit) ----------

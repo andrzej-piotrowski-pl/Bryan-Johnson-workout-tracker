@@ -177,7 +177,12 @@ function highKnee(ph) {
       Object.assign(p, { ["foot" + side]: tiptoe([FOOT_X * s, ANKLE_Y, 0], 12, 7 * s), ["toe" + side]: 12, ["knee" + side]: [0.12 * s, 0, 1] });
     } else {
       const u = Math.sin(Math.PI * ((q - 0.5) / 0.5)); // 0 → 1 (knee at hip height) → 0
-      Object.assign(p, legIK(p, side, [92 * u, 5, 20 + 75 * u]), { ["toe" + side]: 10 + 18 * u });
+      const swing = legIK(p, side, [92 * u, 5, 20 + 75 * u]);
+      const contact = tiptoe([FOOT_X * s, ANKLE_Y, 0], 12, 7 * s);
+      const blend = u * u * (3 - 2 * u);
+      p["foot" + side] = contact.map((v, i) => v + (swing["foot" + side][i] - v) * blend);
+      p["knee" + side] = [0.12 * s, 0, 1].map((v, i) => v + (swing["knee" + side][i] - v) * blend);
+      p["toe" + side] = 12 + 16 * blend;
     }
   }
   const drive = Math.sin(2 * Math.PI * (ph - 0.5)); // right arm forward while the left knee is up

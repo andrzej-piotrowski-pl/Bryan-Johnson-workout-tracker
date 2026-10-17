@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.24.2] - 2026-10-17
+
+### Changed
+- Athlete has a torso that bends continuously, articulated fingers, a more detailed face, breathing and blinking.
+- Hands grip weights, bars and bands, relax when free, and flatten during floor exercises.
+- Free arms follow through slightly after the body, and muscle highlights are softer on Athlete.
+
+### Fixed
+- High knees and marching lift off and land without a sudden foot jump.
+- Floor exercises keep palms parallel to the floor as the body moves.
+
 ## [1.24.1] - 2026-10-17
 
 ### Changed

@@ -277,6 +277,8 @@ Choose one of seventeen looks in **Settings → Animation style**. **Athlete** i
 
 All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
 
+Athlete has a flexible torso, individual fingers that grip weights and bars, flat palms for floor exercises, and subtle breathing and blinking. Its hands relax when free. High knees and marching roll through take-off and landing, and free arms follow through slightly after the body.
+
 ![Squats, presses and floor exercises shown at several points in their movement](docs/screenshots/animation-motion.png)
 
 Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.

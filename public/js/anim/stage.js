@@ -112,6 +112,15 @@ export function sampleClip(clip, time) {
   let cue = a.cue;
   for (let j = i; !cue && j >= 0; j--) cue = keys[j].cue;
   const pose = b.e === "smooth" ? smoothPose(clip, i, raw) : lerpPose(a.pose, b.pose, alpha);
+  let following;
+  for (const side of ["L", "R"]) {
+    const arm = "arm" + side;
+    if (span <= 0.1 || b.e === "hold" || a.pose["hand" + side] || b.pose["hand" + side] || a.pose[arm].every((v, j) => v === b.pose[arm][j])) continue;
+    // Free arms follow the body's movement by up to 45 ms, without moving planted contacts.
+    const delayed = raw - Math.min(0.08, 0.045 / span) * Math.sin(Math.PI * raw) ** 2;
+    following ||= b.e === "smooth" ? smoothPose(clip, i, delayed) : lerpPose(a.pose, b.pose, (EASE[b.e] || EASE.inOut)(delayed));
+    pose[arm] = following[arm];
+  }
   return { pose, cue, mirrored: clip.half != null && tt >= clip.half, phase: tt / clip.duration };
 }
 
@@ -601,10 +610,18 @@ export class Stage {
       const s = sampleClip(clip, t);
       const J = computeJoints(s.pose);
       // still: a single frame at a set time (thumbnails), not part of the playback.
-      this.figure.update(J, { t, still: time != null, id: this.id, title: clip.title });
       this.propGroups[0].visible = !s.mirrored;
       this.propGroups[1].visible = s.mirrored;
       this.updateAttachments(clip, J, s.mirrored);
+      const hold = clip.hold ? (s.mirrored ? mirrorHold(clip.hold) : clip.hold) : {};
+      const bar = clip.props.some((p) => p.type === "bar" || p.bar);
+      const grip = {}, gripAxis = {};
+      for (const side of ["L", "R"]) {
+        grip[side] = !!(hold.goblet || hold[side] || bar || clip.bands.some((b) => [b.a, b.b].some((end) => (s.mirrored ? swapSide(end) : end) === "hand" + side)));
+        if (hold[side] || hold.goblet) gripAxis[side] = new THREE.Vector3(1, 0, 0).applyQuaternion(this.dumbbells[hold.goblet ? "goblet" : side].quaternion);
+        else if (grip[side]) gripAxis[side] = new THREE.Vector3(1, 0, 0);
+      }
+      this.figure.update(J, { t, still: time != null, id: this.id, title: clip.title, grip, gripAxis, breath: 0.5 - 0.5 * Math.cos(t * Math.PI * 2 / 4.2) });
       this.figure.setPulse(0.5 + 0.5 * Math.sin(s.phase * Math.PI * 2));
       if (clip.floorScroll) this.gridTex.offset.y = ((time == null ? this.time : time) * clip.floorScroll) % 1;
       this.mirrored = s.mirrored;
@@ -703,7 +720,7 @@ export class Stage {
         const fore = J["foreDir" + s];
         const axisName = hold.axis || "x";
         let ref;
-        if (axisName === "hand") ref = J["handRef" + s].clone();
+        if (axisName === "hand") ref = new THREE.Vector3().setFromMatrixColumn(J["handFrame" + s], 0);
         else if (axisName === "z") ref = new THREE.Vector3(0, 0, 1).applyMatrix4(J.Rc);
         else if (axisName === "y") ref = new THREE.Vector3(0, 1, 0);
         else if (axisName === "wz") ref = new THREE.Vector3(0, 0, 1);

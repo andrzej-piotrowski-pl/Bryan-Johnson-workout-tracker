@@ -38,7 +38,7 @@ const PUSH_HANDS = (() => {
 })();
 function pushup(theta) {
   const reach = (theta - 5) / 11;
-  return { ...pushBody(theta), shrugL: [0, 0.018 * reach], shrugR: [0, 0.018 * reach], wristL: [75, 0, 0], wristR: [75, 0, 0], handsIn: "world", handL: PUSH_HANDS.L, handR: PUSH_HANDS.R, elbowL: [0.7, 0.35, -0.6], elbowR: [-0.7, 0.35, -0.6] };
+  return { ...pushBody(theta), shrugL: [0, 0.018 * reach], shrugR: [0, 0.018 * reach], palmL: [0, 1, 0], palmR: [0, 1, 0], handsIn: "world", handL: PUSH_HANDS.L, handR: PUSH_HANDS.R, elbowL: [0.7, 0.35, -0.6], elbowR: [-0.7, 0.35, -0.6] };
 }
 
 // ---------- pull-up / chin-up ----------
@@ -78,7 +78,8 @@ function row(pull) {
     kneeR: [-0.35, 0, 1],
     shrugR: [0, 0.03 - 0.05 * pull],
     handsIn: "world",
-    handL: [ROW_J.shoulderL.x + 0.015, ROW_H + 0.05, ROW_J.shoulderL.z + 0.07],
+    handL: [ROW_J.shoulderL.x + 0.015, ROW_H + 0.032, ROW_J.shoulderL.z + 0.07],
+    palmL: [0, 1, 0],
     handR: mix(stretch, atHip, pull),
     elbowL: [0.4, 0.3, -1],
     elbowR: [-0.25, 1, -0.6],

@@ -67,6 +67,8 @@ export function defaultPose() {
     armR: [0, 7, 10, 0],
     wristL: [0, 0, 0], // wrist flexion, side bend, forearm rotation (degrees)
     wristR: [0, 0, 0],
+    palmL: null, // world normal above a supported palm; keeps the fingers on its surface
+    palmR: null,
     // or IK: wrist target. Frame given by handsIn: "world" | "chest" | "pelvis".
     handL: null,
     handR: null,
@@ -241,10 +243,20 @@ export function computeJoints(pose) {
     const lateral = new THREE.Vector3().crossVectors(fore, ref).normalize();
     const wr = P["wrist" + side];
     const frame = new THREE.Matrix4().makeBasis(lateral, fore, ref).multiply(rotMat(wr[0], wr[2] * s, wr[1] * s, "YXZ"));
+    const palm = P["palm" + side] ? new THREE.Vector3(...P["palm" + side]).normalize() : null;
+    if (palm) {
+      const fingers = new THREE.Vector3(Math.sin(P.rot[1] * D2R), 0, Math.cos(P.rot[1] * D2R));
+      fingers.addScaledVector(palm, -fingers.dot(palm));
+      if (fingers.lengthSq() < 1e-6) fingers.copy(fore).addScaledVector(palm, -fore.dot(palm));
+      fingers.normalize();
+      frame.makeBasis(new THREE.Vector3().crossVectors(fingers, palm).normalize(), fingers, palm);
+    }
     J["handFrame" + side] = frame;
     J["handDir" + side] = dirOf(frame, 0, 1, 0);
     J["handRef" + side] = dirOf(frame, 0, 0, 1);
     J["hand" + side] = wrist.clone().addScaledVector(J["handDir" + side], DIM.hand * 0.55);
+    if (palm) J["hand" + side].addScaledVector(palm, -0.018);
+    if (palm) J["palm" + side] = palm;
     J["foreDir" + side] = fore;
   }
   return J;
@@ -290,6 +302,7 @@ export function mirrorPose(p) {
   swap("legL", "legR");
   swap("armL", "armR");
   swap("wristL", "wristR");
+  swap("palmL", "palmR", flipX);
   swap("shrugL", "shrugR");
   swap("toeL", "toeR");
   swap("footYawL", "footYawR", (v) => v == null ? v : -v);

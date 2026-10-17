@@ -18,13 +18,13 @@ function plank(theta, breath = 0) {
   const body = plankBody(theta, breath);
   const J = joints(plankBody(9));
   const zEl = J.shoulderL.z + 0.02;
-  return { ...body, handsIn: "world", handL: [0.1, 0.035, zEl + 0.25], handR: [-0.1, 0.035, zEl + 0.25], elbowL: [0.25, -1, -0.2], elbowR: [-0.25, -1, -0.2] };
+  return { ...body, handsIn: "world", palmL: [0, 1, 0], palmR: [0, 1, 0], handL: [0.1, 0.035, zEl + 0.25], handR: [-0.1, 0.035, zEl + 0.25], elbowL: [0.25, -1, -0.2], elbowR: [-0.25, -1, -0.2] };
 }
 
 // ---------- quadruped (bird dog base) ----------
-const QUAD = pinHands(ground({ rot: [78, 0, 0], legL: [78, 4, 90, 80], legR: [78, 4, 90, 80], armL: [78, 4, 0, 0], armR: [78, 4, 0, 0], neck: [-8, 0] }, ["kneeL", "kneeR", "handL", "handR"]), "R");
+const QUAD = pinHands(ground({ rot: [82, 0, 0], legL: [82, 4, 90, 80], legR: [82, 4, 90, 80], armL: [82, 4, 0, 0], armR: [82, 4, 0, 0], neck: [-8, 0], palmL: [0, 1, 0], palmR: [0, 1, 0] }, ["kneeL", "kneeR", "handL", "handR"]), "R");
 function birdDog(reach) {
-  return pinHands({ ...QUAD, armL: [78 + 94 * reach, 4 + 2 * reach, 5 * Math.sin(Math.PI * reach), 0], legR: [78 * (1 - reach), 4 - reach, 90 - 88 * reach, 80 - 50 * reach], shrugL: [0.012 * reach, 0], elbowR: [-0.3, 0, -1] });
+  return pinHands({ ...QUAD, armL: [82 + 90 * reach, 4 + 2 * reach, 5 * Math.sin(Math.PI * reach), 0], legR: [82 * (1 - reach), 4 - reach, 90 - 88 * reach, 80 - 50 * reach], shrugL: [0.012 * reach, 0], elbowL: [0.3, 0, -1], elbowR: [-0.3, 0, -1] });
 }
 
 // ---------- supine (dead bug base) ----------
@@ -147,7 +147,7 @@ const TAP_TOE = Math.asin(-TAP_J.footFL.y) * 180 / Math.PI;
 const TAP_TARGET = at(TAP_J.Rc, TAP_J.shoulderL, [-0.06, 0.06, 0.05]);
 function shoulderTap(reach = 0) {
   const handR = TAP_HANDS.R.map((v, i) => v + (TAP_TARGET[i] - v) * reach);
-  return { ...TAP_BODY, root: [TAP_BODY.root[0] + 0.015 * reach, TAP_BODY.root[1], TAP_BODY.root[2]], footL: TAP_J.ankleL.toArray(), footR: TAP_J.ankleR.toArray(), feetMode: "ground", toeL: TAP_TOE, toeR: TAP_TOE, kneeL: [0.1, -1, 0.3], kneeR: [-0.1, -1, 0.3], wristL: [75, 0, 0], wristR: [75 - 65 * reach, 0, 0], handsIn: "world", handL: TAP_HANDS.L, handR, elbowL: [0.6, 0.2, -0.6], elbowR: [-1, -0.2, -0.4] };
+  return { ...TAP_BODY, root: [TAP_BODY.root[0] + 0.015 * reach, TAP_BODY.root[1], TAP_BODY.root[2]], footL: TAP_J.ankleL.toArray(), footR: TAP_J.ankleR.toArray(), feetMode: "ground", toeL: TAP_TOE, toeR: TAP_TOE, kneeL: [0.1, -1, 0.3], kneeR: [-0.1, -1, 0.3], palmL: [0, 1, 0], palmR: [0, 1, 0], handsIn: "world", handL: TAP_HANDS.L, handR, elbowL: [0.6, 0.2, -0.6], elbowR: [-1, -0.2, -0.4] };
 }
 
 export default {
@@ -171,7 +171,7 @@ export default {
       {
         title: "Bird dog",
         highlight: ["core", "lowerBack", "glutes"],
-        camera: { view: [1, 0.38, 0.35], target: [0, 0.42, -0.12], dist: 3.9 },
+        camera: { view: [1, 0.38, 0.35], target: [0, 0.42, 0.1], dist: 4.4 },
         alternate: true,
         keys: [
           { t: 0, p: birdDog(0), cue: "Hands under shoulders, knees under hips" },
@@ -189,7 +189,7 @@ export default {
       {
         title: "Dead bug",
         highlight: ["core"],
-        camera: { view: [1, 0.55, -0.15], target: [0, 0.3, -0.3], dist: 3.2 },
+        camera: { view: [1, 0.55, -0.15], target: [0, 0.3, -0.35], dist: 3.7 },
         alternate: true,
         keys: [
           { t: 0, p: deadBug(0), cue: "Arms up, knees over hips, lower back pressed down" },

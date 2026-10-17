@@ -5,6 +5,9 @@ import { EXERCISES } from "../public/js/data/exercises.js";
 import { animationIds, getAnimation } from "../public/js/anim/clips/index.js";
 import { computeJoints, DIM, makePose, mirrorPose } from "../public/js/anim/rig.js";
 import { prepareClip, sampleClip } from "../public/js/anim/stage.js";
+import { createFigure } from "../public/js/anim/styles/athlete.js";
+import { createHand } from "../public/js/anim/styles/human.js";
+import { MeshStandardMaterial } from "three";
 
 const near = (a, b, epsilon = 1e-8) => assert.ok(Math.abs(a - b) < epsilon, `${a} differs from ${b}`);
 
@@ -105,4 +108,107 @@ test("sampling is repeatable, leaves authored poses unchanged, and supports reve
     assert.deepEqual(sampleClip(clip, 0.25), sampleClip(clip, 0.25));
     assert.equal(JSON.stringify(raw), before);
   }
+});
+
+test("supported palms lie flat and mirror without moving the wrists", () => {
+  for (const id of ["pushup", "shouldertap", "plank", "birddog", "catcow", "cobra", "thread"]) {
+    const clip = prepareClip(getAnimation(id).clips[0]);
+    for (let t = 0; t < clip.duration; t += 1 / 30) {
+      const pose = sampleClip(clip, t).pose, J = computeJoints(pose);
+      for (const side of ["L", "R"]) if (pose["palm" + side]) {
+        near(J["handDir" + side].dot(J["palm" + side]), 0);
+        near(J["handRef" + side].dot(J["palm" + side]), 1);
+        if (pose["hand" + side]?.[1] < 0.15) assert.ok(J["wrist" + side].distanceTo(new Vector3(...pose["hand" + side])) < 0.004, `${id}: palm out of reach`);
+      }
+      const mirrored = computeJoints(mirrorPose(pose));
+      if (J.palmL) near(J.handL.y, mirrored.handR.y);
+    }
+  }
+});
+
+test("Athlete's torso stays skinned and finite through every movement and every breath", () => {
+  const figure = createFigure();
+  const torso = figure.group.getObjectByName("human-torso");
+  assert.ok(torso.isSkinnedMesh);
+  const weights = torso.geometry.attributes.skinWeight;
+  for (let i = 0; i < weights.count; i++) near(weights.getX(i) + weights.getY(i) + weights.getZ(i) + weights.getW(i), 1, 1e-6);
+  for (const id of animationIds()) for (const raw of getAnimation(id).clips) {
+    const clip = prepareClip(raw);
+    for (const phase of [0.1, 0.5, 0.9]) {
+      const J = computeJoints(sampleClip(clip, clip.duration * phase).pose);
+      figure.update(J, { t: clip.duration * phase, breath: phase });
+      figure.group.updateMatrixWorld(true);
+      torso.skeleton.update();
+      assert.ok([...torso.skeleton.boneMatrices].every(Number.isFinite), id + ": skin transform");
+      for (let i = 0; i < torso.geometry.attributes.position.count; i += 8) {
+        const v = new Vector3().fromBufferAttribute(torso.geometry.attributes.position, i);
+        torso.applyBoneTransform(i, v);
+        assert.ok(Number.isFinite(v.lengthSq()), id + ": skin vertex");
+      }
+    }
+  }
+  const neutral = computeJoints(makePose());
+  figure.update(neutral, { breath: 0 });
+  const before = torso.geometry.attributes.position.array.slice();
+  figure.update(neutral, { breath: 1 });
+  assert.ok(torso.geometry.attributes.position.array.some((v, i) => v !== before[i]));
+  near(figure.group.getObjectByName("handL").position.distanceTo(neutral.handL), 0);
+  figure.update(neutral, { t: 3.1 });
+  assert.ok(figure.group.getObjectByName("human-eyeL").scale.y < 0.1);
+  figure.update(neutral, { t: 0 });
+  near(figure.group.getObjectByName("human-eyeL").scale.y, 1);
+  figure.dispose();
+});
+
+test("human hands open flat and close each finger around a grip deterministically", () => {
+  const material = new MeshStandardMaterial(), hand = createHand(material, "L");
+  const rotations = () => {
+    const values = [];
+    hand.group.traverse((o) => { if (o.isGroup) values.push(o.rotation.x, o.rotation.y, o.rotation.z); });
+    return values;
+  };
+  hand.update(false, true);
+  const flat = rotations();
+  hand.update(true, false, new Vector3(-1, 0, 0));
+  assert.ok(rotations().some((v, i) => Math.abs(v - flat[i]) > 0.5));
+  near(hand.group.rotation.y, 0);
+  hand.update(false, true);
+  assert.deepEqual(rotations(), flat);
+  const right = createHand(material, "R");
+  right.update(false, true);
+  const centers = (group) => {
+    group.updateMatrixWorld(true);
+    const points = [];
+    group.traverse((o) => { if (o.isMesh) points.push(o.getWorldPosition(new Vector3())); });
+    return points;
+  };
+  const leftPoints = centers(hand.group), rightPoints = centers(right.group);
+  for (let i = 0; i < leftPoints.length; i++) {
+    near(leftPoints[i].x, -rightPoints[i].x); near(leftPoints[i].y, rightPoints[i].y); near(leftPoints[i].z, rightPoints[i].z);
+  }
+  for (const h of [hand, right]) h.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
+  material.dispose();
+});
+
+test("high knees lift off and land without a foot-position jump", () => {
+  for (const [id, ci, phase] of [["shortint", 0, 0.4], ["shortint", 1, 0.6], ["dynamic", 2, 0.5]]) {
+    const clip = prepareClip(getAnimation(id).clips[ci]);
+    for (const t of [clip.duration * phase, clip.duration]) {
+      const a = computeJoints(sampleClip(clip, t - 0.002).pose);
+      const b = computeJoints(sampleClip(clip, t + 0.002).pose);
+      assert.ok(a.ankleL.distanceTo(b.ankleL) < 0.01, `${id}: foot jumped across the contact boundary`);
+    }
+  }
+});
+
+test("free arms follow the body without delaying a planted hand or an authored endpoint", () => {
+  const clip = prepareClip({ keys: [
+    { t: 0, p: { armL: [0, 8, 10, 0], handR: [-0.2, 0.035, 0.3] } },
+    { t: 1, e: "lin", p: { armL: [90, 8, 10, 0], handR: [-0.2, 0.035, 0.3] } },
+  ] });
+  const mid = sampleClip(clip, 0.5).pose;
+  assert.ok(mid.armL[0] > 40 && mid.armL[0] < 45);
+  assert.deepEqual(mid.handR, [-0.2, 0.035, 0.3]);
+  near(sampleClip(clip, 1).pose.armL[0], 90);
+  near(sampleClip(clip, 0).pose.armL[0], 0);
 });
