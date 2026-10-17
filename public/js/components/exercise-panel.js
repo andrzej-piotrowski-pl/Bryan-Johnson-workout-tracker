@@ -52,6 +52,7 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
         groups: videoGroupsFor(ex),
         activeGroup: stage.clipIndex,
         onSelectGroup: (gi) => stage.setClip(gi),
+        onSelectVideo: () => stage.setAutoAdvance(false),
         onPlay: () => stage.setAutoAdvance(false),
       });
     } else {

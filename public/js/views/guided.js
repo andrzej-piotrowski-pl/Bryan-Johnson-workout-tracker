@@ -101,6 +101,7 @@ export function startGuided(date, onExit) {
       groups: videoGroupsFor(ex),
       activeGroup: stage.clipIndex,
       onSelectGroup: (gi) => stage.setClip(gi),
+      onSelectVideo: () => stage.setAutoAdvance(false),
       onPlay: () => stage.setAutoAdvance(false),
     });
     wrap.querySelector('[data-g="prev"]').disabled = i === 0;

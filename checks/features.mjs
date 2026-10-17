@@ -239,6 +239,8 @@ for (const [id, ex] of Object.entries(EXERCISES)) {
   for (const v of all) {
     assert.equal(typeof v.start, "number", `Video start must be numeric for ${id}`);
     assert(v.start >= 0, `Video start must be >= 0 for ${id}`);
+    assert(typeof v.channel === "string" && v.channel.length > 0, `Video channel must be present for ${id}: ${v.url}`);
+    assert(typeof v.date === "string" && v.date.length > 0, `Video upload date must be present for ${id}: ${v.url}`);
     const look = lookDetailHtml(v);
     assert(look.includes("Where to look:"), `Look detail must appear for ${id}`);
     assert(look.includes(fmtMinSec(v.start)), `Look detail must show min X sec Y for ${id}`);
@@ -251,24 +253,38 @@ for (const [id, ex] of Object.entries(EXERCISES)) {
       if (g.videos.some((v) => v.kind === "bryan")) {
         assert.equal(g.videos[0].kind, "bryan", `Bryan's video must come first in ${id} group "${g.title}"`);
       }
+      for (const v of g.videos) {
+        assert(v.channel && v.date, `Group video must have channel and date in ${id} "${g.title}"`);
+      }
     }
   } else {
     assert.equal(groups.length, 1);
   }
 }
 
-// Verify renderVideos sub-movement switching and look banner placement above .video-frame
+// Verify renderVideos sub-movement switching, video switching and look banner placement above .video-frame
 const fakeContainer = {
   innerHTML: "",
   listeners: {},
   addEventListener(type, fn) {
     this.listeners[type] = fn;
   },
+  removeEventListener(type) {
+    delete this.listeners[type];
+  },
 };
 const dynGroups = videoGroupsFor(EXERCISES.dynamic);
+let selectedGroup = null;
+let selectedVideo = null;
 const ctrl = renderVideos(fakeContainer, videosFor(EXERCISES.dynamic), {
   groups: dynGroups,
   activeGroup: 0,
+  onSelectGroup: (gi) => {
+    selectedGroup = gi;
+  },
+  onSelectVideo: (vi) => {
+    selectedVideo = vi;
+  },
 });
 assert.equal(ctrl.activeGroup, 0);
 assert(fakeContainer.innerHTML.includes("Movement 1 of 6: Arm circles"));
@@ -276,6 +292,20 @@ assert(
   fakeContainer.innerHTML.indexOf('class="video-look"') < fakeContainer.innerHTML.indexOf('class="video-frame"'),
   "Where-to-look timestamp banner must appear above the video frame"
 );
+assert(
+  fakeContainer.innerHTML.indexOf('class="video-frame"') < fakeContainer.innerHTML.indexOf('class="video-byline"'),
+  "Channel name and upload date must appear below the video frame"
+);
+assert(fakeContainer.innerHTML.includes("Sworkit") && fakeContainer.innerHTML.includes("Uploaded Oct 1, 2021"));
+fakeContainer.listeners.click({
+  target: { closest: (sel) => (sel === "[data-sub]" ? { dataset: { sub: "2" } } : null) },
+});
+assert.equal(selectedGroup, 2, "Clicking a movement triggers onSelectGroup");
+assert.equal(ctrl.activeGroup, 2);
+fakeContainer.listeners.click({
+  target: { closest: (sel) => (sel === "[data-i]" ? { dataset: { i: "1" } } : null) },
+});
+assert.equal(selectedVideo, 1, "Clicking a video triggers onSelectVideo");
 ctrl.setGroup(4);
 assert.equal(ctrl.activeGroup, 4);
 assert(fakeContainer.innerHTML.includes("Movement 5 of 6: Hip CARs"));

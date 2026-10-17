@@ -446,6 +446,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .video-tabs { display: grid; gap: 6px; }
 .video-tabs button { width: 100%; display: flex; gap: 8px; align-items: center; text-align: left; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); border-radius: 10px; padding: 7px 12px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
 .video-tabs button span { min-width: 0; overflow-wrap: anywhere; }
+.video-tabs button .video-tab-info { display: grid; gap: 2px; min-width: 0; }
+.video-tabs button .video-tab-sub { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
 .video-tabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
 .video-tabs button .tag { flex: none; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--bryan); }
 .video-tabs button .tag.demo { color: var(--accent); }
@@ -460,6 +462,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .video-frame .poster .play .icon { width: 26px; height: 26px; margin-left: 4px; }
 .video-frame .poster .vt { position: absolute; left: 12px; right: 12px; bottom: 10px; font-weight: 600; font-size: 0.86rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
 .video-meta { display: flex; justify-content: space-between; gap: 10px; align-items: center; font-size: 0.82rem; color: var(--muted); }
+.video-meta-info { display: grid; gap: 2px; }
+.video-byline { color: var(--ink-2); }
+.video-byline b { color: var(--ink); font-weight: 600; }
 
 /* ---------- overlays ---------- */
 

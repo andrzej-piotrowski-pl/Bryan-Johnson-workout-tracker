@@ -107,7 +107,9 @@ export function createStagePanel(container, { onClipChange } = {}) {
     wanted = id;
     curClipIndex = 0;
     curClipCount = 0;
+    autoAdvance = true;
     if (!stage) return;
+    stage.setAutoAdvance(true);
     container.querySelector(".no3d")?.remove();
     container.querySelectorAll(".ctrls, .views, .cue").forEach((el) => (el.hidden = false));
     const ok = stage.load(id);
@@ -128,6 +130,7 @@ export function createStagePanel(container, { onClipChange } = {}) {
   }
 
   function setClip(index) {
+    setAutoAdvance(false);
     curClipIndex = index;
     if (!stage) return;
     pendingManual = true;
@@ -156,6 +159,7 @@ export function createStagePanel(container, { onClipChange } = {}) {
       stage.userMoved = false;
       stage.setView(b.dataset.view);
     } else if (b.dataset.clip) {
+      setAutoAdvance(false);
       pendingManual = true;
       stage.nextClip(Number(b.dataset.clip));
       pendingManual = false;

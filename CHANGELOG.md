@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.24.0] - 2026-10-17
+
+### Added
+- Every video now shows its channel name and upload date both below the video player and underneath its title in the video list.
+
+### Changed
+- Switching between movements or videos automatically moves the 3D animation from `Auto` to `Fixed` so the selected movement and video list stay locked in place.
+
 ## [1.23.1] - 2026-10-17
 
 ### Changed

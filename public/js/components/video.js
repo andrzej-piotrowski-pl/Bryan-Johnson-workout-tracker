@@ -2,7 +2,7 @@
 // other coaches. The YouTube player (privacy-enhanced youtube-nocookie.com) only
 // loads when you press play.
 
-import { BRYAN_VIDEOS } from "../data/videos.js";
+import { BRYAN_VIDEOS, VIDEO_META } from "../data/videos.js";
 import { esc, fmtMinSec, fmtSecs } from "../util.js";
 import { icon } from "./icons.js";
 
@@ -17,6 +17,21 @@ export function isYoutubeShort(url) {
 
 const shortTitle = (t) => t.replace(/^Bryan( on X)?: /, "").replace(/^Bryan with /, "With ");
 
+function fmtUploadDate(d) {
+  if (!d) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(d + "T12:00:00Z"));
+  }
+  return d;
+}
+
+export function videoChannelDate(v) {
+  const meta = (v && v.id && VIDEO_META[v.id]) || {};
+  const channel = (v && v.channel) || meta.c || (v && v.kind === "bryan" ? "Bryan Johnson" : "");
+  const date = (v && v.date && fmtUploadDate(v.date)) || meta.d || "";
+  return { channel, date };
+}
+
 function buildVideoList(src) {
   const out = [];
   if (!src) return out;
@@ -25,27 +40,35 @@ function buildVideoList(src) {
     if (!v) continue;
     const at = typeof b.s === "number" ? b.s : 0;
     const end = typeof b.e === "number" ? b.e : null;
+    const id = youtubeId(v.u);
+    const meta = (id && VIDEO_META[id]) || {};
     out.push({
       kind: "bryan",
       title: shortTitle(v.t) + (b.n ? ` (${b.n})` : ""),
       url: v.u,
-      id: youtubeId(v.u),
+      id,
       isShort: isYoutubeShort(v.u),
       start: at,
       end,
+      channel: v.c || meta.c || "Bryan Johnson",
+      date: meta.d || fmtUploadDate(v.date) || "",
     });
   }
   for (const v of src.videos || []) {
     const at = typeof v.s === "number" ? v.s : 0;
     const end = typeof v.e === "number" ? v.e : null;
+    const id = youtubeId(v.u);
+    const meta = (id && VIDEO_META[id]) || {};
     out.push({
       kind: "demo",
       title: v.t,
       url: v.u,
-      id: youtubeId(v.u),
+      id,
       isShort: isYoutubeShort(v.u),
       start: at,
       end,
+      channel: v.c || meta.c || "",
+      date: v.d || fmtUploadDate(v.date) || meta.d || "",
     });
   }
   return out;
@@ -149,15 +172,17 @@ export function renderVideos(container, list, opts = {}) {
       return;
     }
     const at = typeof v.start === "number" ? v.start : 0;
+    const vm = videoChannelDate(v);
     container.innerHTML = `
       <div class="videos">
         ${subTabsHtml}
         <div class="video-tabs" role="group" aria-label="Videos">
           ${items
-            .map(
-              (x, i) =>
-                `<button type="button" data-i="${i}" aria-pressed="${i === active}"><span class="tag ${x.kind === "demo" ? "demo" : ""}">${x.kind === "bryan" ? "Bryan" : "Demo"}</span><span>${esc(x.title)}</span></button>`
-            )
+            .map((x, i) => {
+              const m = videoChannelDate(x);
+              const sub = [m.channel, m.date].filter(Boolean).join(" · ");
+              return `<button type="button" data-i="${i}" aria-pressed="${i === active}"><span class="tag ${x.kind === "demo" ? "demo" : ""}">${x.kind === "bryan" ? "Bryan" : "Demo"}</span><span class="video-tab-info"><span class="video-tab-title">${esc(x.title)}</span>${sub ? `<small class="video-tab-sub">${esc(sub)}</small>` : ""}</span></button>`;
+            })
             .join("")}
         </div>
         ${lookDetailHtml(v)}
@@ -166,7 +191,7 @@ export function renderVideos(container, list, opts = {}) {
             ? `<div class="video-frame"><div class="poster" role="button" tabindex="0" aria-label="Play ${esc(v.title)}" style="background-image:url('https://i.ytimg.com/vi/${v.id}/hqdefault.jpg')"><span class="play">${icon("play")}</span><span class="vt">${esc(v.title)} · ${fmtMinSec(at)} (${fmtSecs(at)})</span></div></div>`
             : `<div class="banner"><div class="grow"><b>${esc(v.title)}</b><span class="muted">Open this post on X to watch the clip.</span></div></div>`
         }
-        <div class="video-meta"><span>${v.kind === "bryan" ? (at > 0 ? `Bryan demonstrates it at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Bryan's video or post") : at > 0 ? `Demonstration starts at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Technique demonstration by another coach"}</span><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
+        <div class="video-meta"><div class="video-meta-info">${vm.channel || vm.date ? `<div class="video-byline"><b>${esc(vm.channel)}</b>${vm.date ? ` · <span>Uploaded ${esc(vm.date)}</span>` : ""}</div>` : ""}<div>${v.kind === "bryan" ? (at > 0 ? `Bryan demonstrates it at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Bryan's video or post") : at > 0 ? `Demonstration starts at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Technique demonstration by another coach"}</div></div><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
       </div>`;
   }
 
@@ -183,7 +208,11 @@ export function renderVideos(container, list, opts = {}) {
     frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?${params}" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
   }
 
-  container.addEventListener("click", (e) => {
+  if (container._videoClick && container.removeEventListener) {
+    container.removeEventListener("click", container._videoClick);
+    container.removeEventListener("keydown", container._videoKey);
+  }
+  container._videoClick = (e) => {
     const sub = e.target.closest("[data-sub]");
     if (sub) {
       const gi = Number(sub.dataset.sub);
@@ -192,8 +221,8 @@ export function renderVideos(container, list, opts = {}) {
         active = 0;
         playing = false;
         draw();
-        if (opts.onSelectGroup) opts.onSelectGroup(gi);
       }
+      if (opts.onSelectGroup) opts.onSelectGroup(gi);
       return;
     }
     const tab = e.target.closest("[data-i]");
@@ -201,16 +230,19 @@ export function renderVideos(container, list, opts = {}) {
       active = Number(tab.dataset.i);
       playing = false;
       draw();
+      if (opts.onSelectVideo) opts.onSelectVideo(active);
       return;
     }
     if (e.target.closest(".poster")) play();
-  });
-  container.addEventListener("keydown", (e) => {
+  };
+  container._videoKey = (e) => {
     if ((e.key === "Enter" || e.key === " ") && e.target.closest(".poster")) {
       e.preventDefault();
       play();
     }
-  });
+  };
+  container.addEventListener("click", container._videoClick);
+  container.addEventListener("keydown", container._videoKey);
   draw();
 
   return {
