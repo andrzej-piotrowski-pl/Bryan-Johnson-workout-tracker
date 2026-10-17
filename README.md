@@ -275,6 +275,10 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 Choose one of seventeen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
 
+All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
+
+![Squats, presses and floor exercises shown at several points in their movement](docs/screenshots/animation-motion.png)
+
 Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
@@ -286,7 +290,7 @@ The speed button goes up to **2×**. For demonstrations with several movements, 
 <details>
 <summary><b>Animation style descriptions and technical details</b></summary>
 
-Other ways to draw the exercise animations, on all 63 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
+Other ways to draw the exercise animations, on all 65 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
 Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Seven are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 

@@ -23,7 +23,7 @@ import { animStyleFor } from "../anim-styles.js";
 
 const EASE = {
   lin: (t) => t,
-  inOut: (t) => 0.5 - 0.5 * Math.cos(Math.PI * t),
+  inOut: (t) => t * t * t * (10 + t * (-15 + 6 * t)),
   in: (t) => 1 - Math.cos((Math.PI * t) / 2),
   out: (t) => Math.sin((Math.PI * t) / 2),
   hold: (t) => (t < 1 ? 0 : 1),
@@ -84,6 +84,7 @@ export function prepareClip(raw) {
   return {
     title: raw.title || "",
     keys: all,
+    cyclic: JSON.stringify(all[0].pose) === JSON.stringify(all.at(-1).pose),
     duration: all[all.length - 1].t,
     half: raw.alternate ? half : null,
     loops: raw.loops ?? null,
@@ -110,7 +111,34 @@ export function sampleClip(clip, time) {
   const alpha = (EASE[b.e] || EASE.inOut)(raw);
   let cue = a.cue;
   for (let j = i; !cue && j >= 0; j--) cue = keys[j].cue;
-  return { pose: lerpPose(a.pose, b.pose, alpha), cue, mirrored: clip.half != null && tt >= clip.half, phase: tt / clip.duration };
+  const pose = b.e === "smooth" ? smoothPose(clip, i, raw) : lerpPose(a.pose, b.pose, alpha);
+  return { pose, cue, mirrored: clip.half != null && tt >= clip.half, phase: tt / clip.duration };
+}
+
+// Monotone cubic tangents keep continuous motion flowing without overshooting a contact.
+function smoothPose(clip, i, t) {
+  const keys = clip.keys, a = keys[i], b = keys[i + 1];
+  const closed = clip.cyclic;
+  const before = keys[i - 1] || (closed ? { ...keys.at(-2), t: keys.at(-2).t - clip.duration } : a);
+  const after = keys[i + 2] || (closed ? { ...keys[1], t: keys[1].t + clip.duration } : b);
+  const span = b.t - a.t;
+  const tangent = (d0, d1, h0, h1) => d0 * d1 <= 0 ? 0 : 3 * (h0 + h1) / ((2 * h1 + h0) / d0 + (h1 + 2 * h0) / d1);
+  const blend = (v0, v1, vp, vn) => {
+    if (v0 === v1) return v0;
+    const d = (v1 - v0) / span;
+    const hp = a.t - before.t, hn = after.t - b.t;
+    const m0 = hp > 0 ? tangent((v0 - vp) / hp, d, hp, span) : 0;
+    const m1 = hn > 0 ? tangent(d, (vn - v1) / hn, span, hn) : 0;
+    return (2 * t ** 3 - 3 * t ** 2 + 1) * v0 + (t ** 3 - 2 * t ** 2 + t) * span * m0
+      + (-2 * t ** 3 + 3 * t ** 2) * v1 + (t ** 3 - t ** 2) * span * m1;
+  };
+  const pose = lerpPose(a.pose, b.pose, t);
+  for (const k of Object.keys(pose)) {
+    const x = a.pose[k], y = b.pose[k], p = before.pose[k], n = after.pose[k];
+    if (typeof x === "number" && typeof y === "number") pose[k] = blend(x, y, p ?? x, n ?? y);
+    else if (Array.isArray(x) && Array.isArray(y)) pose[k] = x.map((v, j) => blend(v, y[j], p?.[j] ?? v, n?.[j] ?? y[j]));
+  }
+  return pose;
 }
 
 export class Stage {
@@ -675,7 +703,8 @@ export class Stage {
         const fore = J["foreDir" + s];
         const axisName = hold.axis || "x";
         let ref;
-        if (axisName === "z") ref = new THREE.Vector3(0, 0, 1).applyMatrix4(J.Rc);
+        if (axisName === "hand") ref = J["handRef" + s].clone();
+        else if (axisName === "z") ref = new THREE.Vector3(0, 0, 1).applyMatrix4(J.Rc);
         else if (axisName === "y") ref = new THREE.Vector3(0, 1, 0);
         else if (axisName === "wz") ref = new THREE.Vector3(0, 0, 1);
         else if (axisName === "wx") ref = new THREE.Vector3(1, 0, 0);

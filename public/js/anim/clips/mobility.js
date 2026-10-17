@@ -1,6 +1,6 @@
 // Animations for the mobility & stretching exercises. Keyed by exercise id (see data/exercises.js).
 // Each entry: { clips: [{ title, props, hold, bands, camera, highlight, keys: [{ t, p, cue, e }] }] }
-import { ANKLE_Y, ARMS, FOOT_X, LEG, STAND_Y, anchor, ground, hangArms, hinge, joints, legsTo, pinFeet, pinHands, squat, stand, translate } from "../poses.js";
+import { ANKLE_Y, ARMS, FOOT_X, LEG, STAND_Y, anchor, ground, hangArms, hinge, joints, legsTo, pinFeet, pinHands, squat, stand, translate, transition } from "../poses.js";
 
 const MAT_Y = 0.012; // top of the exercise mat
 const mat = (z = 0, d = 1.85) => ({ type: "mat", pos: [0, 0, z], w: 0.62, d });
@@ -29,7 +29,7 @@ function move(build, from, to, t0, t1, { n = 4, after } = {}) {
   const keys = [];
   for (let i = 1; i <= n; i++) {
     const s = i === n ? 1 : a + (i - 1) * a * (Math.PI / 2);
-    keys.push({ t: t0 + ((t1 - t0) * i) / n, p: build(mix(from, to, s)), e: n === 1 ? "inOut" : i === 1 ? "in" : i === n ? "out" : "lin" });
+    keys.push({ t: t0 + ((t1 - t0) * i) / n, p: build(mix(from, to, s)), e: "smooth" });
   }
   if (after) keys[n - 1].cue = after;
   return keys;
@@ -105,7 +105,7 @@ const threadPose = (q) => thread(q.u ?? 0);
 // Face down on the mat; lift = spine extension, the hips stay down. Low cobra: hands planted
 // beside the chest, wrists just behind the shoulder line, elbows drawn back along the ribs.
 function proneBody(lift = 0) {
-  const p = { rot: [88, 0, 0], spine: [-lift, 0, 0], neck: [lift * 0.12, 0], legL: [6, 3, 6, 72], legR: [6, 3, 6, 72] };
+  const p = { rot: [88, 0, 0], spine: [-lift, 0, 0], lumbar: [-lift * 0.25, 0, 0], neck: [lift * 0.12, 0], shrugL: [-0.0002 * lift, -0.0003 * lift], shrugR: [-0.0002 * lift, -0.0003 * lift], legL: [6, 3, 6, 72], legR: [6, 3, 6, 72] };
   return ground(p, ["pelvis", "kneeL", "kneeR"], MAT_Y + 0.006);
 }
 const COBRA_J = joints(proneBody(0));
@@ -147,7 +147,9 @@ function handsRest(J, sit) {
     const d = k.clone().sub(h).normalize(); // thigh axis; its front faces (0, d.z, −d.y)
     const hang = [sh.x + out * 2, sh.y - 0.535, sh.z + 0.07];
     const thigh = [h.x + (k.x - h.x) * 0.33 + out, h.y + (k.y - h.y) * 0.33 + d.z * 0.075, h.z + (k.z - h.z) * 0.33 - d.y * 0.075];
-    return hang.map((v, i) => v + (thigh[i] - v) * w);
+    const hand = hang.map((v, i) => v + (thigh[i] - v) * w);
+    const distance = Math.hypot(hand[0] - sh.x, hand[1] - sh.y, hand[2] - sh.z);
+    return hand.map((v, i) => [sh.x, sh.y, sh.z][i] + (v - [sh.x, sh.y, sh.z][i]) * Math.min(1, 0.535 / distance));
   };
   return { L: spot("L", 0.02), R: spot("R", -0.02) };
 }
@@ -273,7 +275,7 @@ function butterfly(o) {
     const d = Math.hypot(sh.x - g[0], sh.y - g[1], sh.z - g[2]);
     return g.map((v, i) => v + ([sh.x, sh.y, sh.z][i] - v) * (0.06 / d));
   };
-  return { ...body, handsIn: "world", handL: grip("L"), handR: grip("R"), elbowL: [1, -0.4, -0.2], elbowR: [-1, -0.4, -0.2] };
+  return { ...body, shrugL: [0, (o.hinge ?? 0) * 0.0004], shrugR: [0, (o.hinge ?? 0) * 0.0004], handsIn: "world", handL: grip("L"), handR: grip("R"), elbowL: [1, -0.4, -0.2], elbowR: [-1, -0.4, -0.2] };
 }
 
 // ---------- standing hamstring stretch ----------
@@ -563,9 +565,9 @@ export default {
         keys: [
           { t: 0, p: cobra(0), cue: "Face down, hands under the shoulders, elbows in" },
           { t: 0.6, p: cobra(0), cue: "Press up to lift the chest; hips stay down" },
-          { t: 2.6, p: cobra(48), cue: "Neck long, gaze forward and down" },
+          ...transition(cobra, 0, 48, 0.6, 2.6, "Neck long, gaze forward and down"),
           { t: 4.6, p: cobra(50), cue: "Lower slowly" },
-          { t: 6.6, p: cobra(0) },
+          ...transition(cobra, 50, 0, 4.6, 6.6),
         ],
       },
     ],

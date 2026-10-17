@@ -1,5 +1,5 @@
 // Animations for the warm-up & balance exercises.
-import { ANKLE_Y, ARMS, D2R, DIM, FOOT_X, STAND_Y, ground, joints, stand } from "../poses.js";
+import { ANKLE_Y, ARMS, D2R, DIM, FOOT_X, STAND_Y, ground, joints, stand, transition } from "../poses.js";
 
 // ---------- helpers ----------
 
@@ -25,13 +25,14 @@ function tiptoe([x, y, z], pitch, yaw = 0) {
   return [x + fwd * Math.sin(yaw * D2R), y + up, z + fwd * Math.cos(yaw * D2R)];
 }
 
-// Samples a periodic pose function into evenly spaced linear keys; the last key repeats the first
+// Samples a periodic pose function into continuous curves; the last key repeats the first
 // so the loop closes without an extra blend.
 function cycle(fn, period, n, cue) {
+  n *= 4;
   const keys = [];
-  for (let i = 0; i < n; i++) keys.push({ t: (period * i) / n, p: fn(i / n), e: "lin" });
+  for (let i = 0; i < n; i++) keys.push({ t: (period * i) / n, p: fn(i / n), e: "smooth" });
   keys[0].cue = cue;
-  keys.push({ t: period, p: keys[0].p, e: "lin" });
+  keys.push({ t: period, p: keys[0].p, e: "smooth" });
   return keys;
 }
 
@@ -60,6 +61,7 @@ function oneLeg(sway = 0, eyes = 0) {
   return {
     root: [-0.05 + sway * 0.01, STAND_Y - 0.004, 0],
     rot: [0, 0, sway * 1.2],
+    spine: [0, -sway * 1.2, 0],
     footR: [-FOOT_X, ANKLE_Y, 0],
     footL: [FOOT_X - 0.02, 0.44, 0.14],
     toeL: 28,
@@ -105,10 +107,12 @@ function backwalk(ph, { dumbbells = false } = {}) {
     : { armL: [-16 * swing, 8, 32, 0], armR: [16 * swing, 8, 32, 0] };
   return {
     root: [sway, 0.885 + bob, 0],
-    rot: [6, 0, 0],
-    spine: [6, 0, 0],
+    rot: [6, 3 * swing, 0.8 * swing],
+    spine: [6, -0.8 * swing, -5 * swing],
     neck: [-8, 0],
     footL: L.pos,
+    footYawL: 7,
+    footYawR: -7,
     toeL: L.toe,
     footR: R.pos,
     toeR: R.toe,
@@ -137,7 +141,8 @@ function pogo(stage) {
 // Arm circles: arms out to the sides; f walks around the circle
 // (0 low, −90 back, −180 high, −270 front), so a falling f draws forward circles.
 function armCircle(f) {
-  return { ...stand(), armL: [f, 58, 6, 0], armR: [f, 58, 6, 0], neck: [-2, 0] };
+  const follow = Math.sin(f * D2R);
+  return { ...stand(), spine: [1.2 * follow, 0, 0], armL: [f, 58, 6 + 3 * follow, 0], armR: [f, 58, 6 + 3 * follow, 0], wristL: [4 * follow, 0, 0], wristR: [4 * follow, 0, 0], neck: [-2 - follow, 0] };
 }
 
 // Leg swings: right hand on a wall, the left leg swings like a pendulum (angles, so the arc stays round).
@@ -160,8 +165,11 @@ function legSwing(flex, knee, { hand = true } = {}) {
 function highKnee(ph) {
   const p = {
     root: [0, 0.95 + 0.01 * Math.cos(4 * Math.PI * (ph - 0.25)), 0.02],
-    rot: [2, 0, 0],
+    rot: [2, 3 * Math.sin(2 * Math.PI * ph), 0],
+    spine: [0, 0, -5 * Math.sin(2 * Math.PI * ph)],
     neck: [-3, 0],
+    footYawL: 7,
+    footYawR: -7,
   };
   for (const [side, s, off] of [["L", 1, 0], ["R", -1, 0.5]]) {
     const q = (ph + off) % 1;
@@ -321,9 +329,9 @@ export default {
         loops: 1,
         keys: [
           { t: 0, p: lateralLunge(0), cue: "Wide stance; sit the hips back over one foot" },
-          { t: 1.4, p: lateralLunge(1), cue: "Other leg long, knee over the toes" },
+          ...transition(lateralLunge, 0, 1, 0, 1.4, "Other leg long, knee over the toes"),
           { t: 1.9, p: lateralLunge(1), cue: "Push back to the middle" },
-          { t: 2.9, p: lateralLunge(0), cue: "Now the other side; 5 per side" },
+          ...transition(lateralLunge, 1, 0, 1.9, 2.9, "Now the other side; 5 per side"),
         ],
       },
       {

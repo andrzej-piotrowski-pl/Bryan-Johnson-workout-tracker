@@ -105,8 +105,7 @@ export function createRig() {
       for (const n of ["hip", "knee", "ankle"]) frame(anchors[n + s], J.Rp, J[n + s]);
       // Hand: +Y toward the fingertips, +Z toward the chest's front (the thumb side).
       const hand = anchors["hand" + s];
-      tY.copy(J["foreDir" + s]);
-      aim(hand, tY, tRef.setFromMatrixColumn(J.Rc, 2), tAlt.setFromMatrixColumn(J.Rc, 1));
+      hand.quaternion.setFromRotationMatrix(J["handFrame" + s]);
       hand.position.copy(J["hand" + s]);
       // Foot: +X to the side, +Y the top of the foot, +Z toward the toes; origin at the ankle.
       const f = J["footF" + s], u = J["footU" + s];

@@ -22,6 +22,11 @@ It renders every keyframe side by side. Add `&view=side` to force a camera
 angle, `&size=320` for bigger tiles and `&style=voxel` to draw them in an
 animation style.
 
+Use `&samples=8` to inspect evenly spaced times, including the motion between keys,
+without rendering every authored pose. Run `npm test` for the animation checks:
+all 65 exercises and 90 clips, sampled at 60 frames per second, plus contact,
+mirroring and loop regressions.
+
 The step-up clips use a low aerobic step, and Poliquin heel taps use a slant board on the floor. Both preserve the existing exercise ids and logged history.
 
 ## Coordinates and units
@@ -44,6 +49,7 @@ A pose is a plain object. Anything you leave out takes the default from
 | `root: [x, y, z]` | Pelvis centre, world space. |
 | `rot: [pitch, yaw, roll]` | Pelvis orientation. Pitch + tips the body forward (90 = lying face down, head toward +Z; −90 = lying on the back, head toward −Z). Yaw + turns left. Roll + leans to the figure's right. |
 | `spine: [flex, side, twist]` | Bend between pelvis and chest, spread over two joints. Flex + rounds forward, side + bends right, twist + turns the chest left. |
+| `lumbar: [flex, side, twist]` | Optional lower-spine share of `spine`; the remainder goes to the upper back. Defaults to 40% of flexion, 25% of side bend and 15% of twist. |
 | `neck: [pitch, yaw]`, `head: [nod, turn]` | Pitch/nod + looks down. |
 | `tuck` | Chin-tuck glide of the head backwards (metres, ~0.03). |
 | `shrugL/R: [up, forward]` | Shoulder elevation and protraction (metres, ~0.04). |
@@ -52,7 +58,9 @@ A pose is a plain object. Anything you leave out takes the default from
 | `kneeL/R: [x, y, z]` | IK pole: the direction the knee should point (world). Default: forward and slightly out. |
 | `toeL/R` | For IK feet on the floor: foot pitch, + = toes down/heel up (slant board, calf raise), − = toes up. |
 | `turnout` | Feet angle outward (default 7°). |
+| `footYawL/R` | Optional world yaw of a ground-oriented foot. Use it to keep a planted foot facing the same way while the pelvis turns. |
 | `armL/R: [shFlex, shAbd, elbowFlex, extRot]` | Arm by angles. Flexion + raises the arm forward (180 = overhead), abduction + raises it to the side (90 = T-pose), elbow + bends, extRot + rotates the forearm outward. |
+| `wristL/R: [flex, side, twist]` | Wrist flexion, side bend and forearm rotation, in degrees. Twisting turns the hand without moving the elbow. Use `hold.axis: "hand"` when the dumbbell should turn with the grip. |
 | `handL/R: [x, y, z]` | Arm by wrist target (IK). Overrides `armL/R`. |
 | `handsIn` | Frame for hand targets and elbow poles: `"world"` (default), `"chest"` (origin at the base of the neck, moves with the torso) or `"pelvis"`. |
 | `elbowL/R: [x, y, z]` | IK pole for the elbow, in the `handsIn` frame. Default: back, down and slightly out. |
@@ -65,6 +73,11 @@ arms circling, a leg lifted behind you).
 
 Keep the same representation for a limb in every key of a clip. Blending
 from IK to angles snaps instead of animating.
+
+The shoulder girdle follows overhead arm elevation in both FK and IK. Explicit
+`shrugL/R` still adds the authored shoulder-blade movement. Hands expose
+`handFrameL/R`, `handDirL/R` and `handRefL/R` to renderers, while `foreDirL/R`
+continues to describe the forearm.
 
 ## Helpers (`poses.js`)
 
@@ -79,6 +92,7 @@ ground(p, ["kneeL", "handL", ...]) // drop/raise the figure until the lowest joi
 translate(p, [dx, dy, dz])          // move root and world IK targets together
 pinHands(p) / pinFeet(p)            // freeze wrists/ankles at their current world spot
 joints(p)           // all joint positions for a pose (for measuring)
+transition(build, from, to, start, end, cue) // eight rebuilt poses along a curved movement
 ARMS.hips / goblet / chest / overhead / forward / tPose / relaxed / runL / runR
 LEG.kneel / straight / sit90
 ```
@@ -145,6 +159,11 @@ export default {
   last key only shows if the engine adds a return key. Keep cues short and
   practical, and match the exercise's how-to text.
 - `e` on a key sets the easing of the segment that **arrives** at that key.
+  The default `inOut` eases velocity and acceleration to zero at either end.
+  Use `smooth` for continuous cycles or densely authored arcs: monotone cubic
+  interpolation joins their velocities, preserves constant contact coordinates
+  and stays within each coordinate's authored range. `lin`, `in`, `out` and
+  `hold` keep their explicit timing. Do not use `smooth` across an intentional cut.
 - With `alternate: true` the mirrored side starts by blending from the first
   side's last pose into the mirrored second key. Start and end each side in a
   neutral pose. For lying poses (where that blend would swing the body over),

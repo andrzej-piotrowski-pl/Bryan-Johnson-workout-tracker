@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.24.1] - 2026-10-17
+
+### Changed
+- Refined all 65 exercise animations with coordinated shoulders and spine, smoother transitions and more detailed movement paths.
+- Walking and cardio show weight shifts, torso counter-rotation and changing elbow bends; curls turn the hands and dumbbells together.
+
+### Fixed
+- Push-up hands reach the floor, shoulder taps keep the toes planted, and bird dog keeps its supporting hand and knee still.
+- Single-leg hinges keep the reaching hand within arm length, and elbow-on-knee rotation rests the elbow on the knee.
+
 ## [1.24.0] - 2026-10-17
 
 ### Added

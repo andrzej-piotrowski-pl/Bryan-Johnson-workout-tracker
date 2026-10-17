@@ -31,6 +31,7 @@ import { animationIds, getAnimation } from "../js/anim/clips/index.js";
 const q = new URLSearchParams(location.search);
 const size = Number(q.get("size")) || 220;
 const view = q.get("view") || null;
+const samples = Math.min(30, Math.max(0, Math.floor(Number(q.get("samples")) || 0)));
 const ids = (q.get("ids") || "all") === "all" ? animationIds() : q.get("ids").split(",");
 document.documentElement.style.setProperty("--w", size + "px");
 const box = document.getElementById("stage");
@@ -53,7 +54,7 @@ for (const id of ids) {
     const clip = prepareClip(raw);
     const row = document.createElement("div");
     row.className = "row";
-    const times = clip.keys.slice(0, -1).map((k) => k.t);
+    const times = samples ? Array.from({ length: samples }, (_, i) => (clip.half ?? clip.duration) * i / samples) : clip.keys.slice(0, -1).map((k) => k.t);
     for (const t of times) {
       const url = await stage.snapshot(id, ci, t + 0.001, view);
       const key = clip.keys.find((k) => k.t === t);

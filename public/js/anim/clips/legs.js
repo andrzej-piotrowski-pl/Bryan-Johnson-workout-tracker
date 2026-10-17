@@ -1,5 +1,5 @@
 // Animations for the legs & knees exercises.
-import { ANKLE_Y, ARMS, DIM, FOOT_X, anchor, hangArms, hinge, joints, legsTo, squat } from "../poses.js";
+import { ANKLE_Y, ARMS, DIM, FOOT_X, anchor, hangArms, hinge, joints, legsTo, squat, transition } from "../poses.js";
 
 // ---------- shared helpers ----------
 
@@ -85,7 +85,9 @@ function gobletSquat(d) {
   return {
     ...squat(d, { feet: { y: f.pos[1], z: f.pos[2], toe: f.toe, x: 0.14 } }),
     rot: [24 * d, 0, 0],
-    spine: [4 * d, 0, 0],
+    spine: [2 * d, 0, 0],
+    shrugL: [-0.008 * d, 0],
+    shrugR: [-0.008 * d, 0],
     neck: [-10 * d, 0],
     ...ARMS.goblet,
   };
@@ -121,7 +123,8 @@ function poliquin(d) {
     : { footR: footAt("R", "heel", [-0.08, 0, 0.255], -22), toeR: -22 };
   return {
     root: mix([0.05, 0.993, 0.0], [0.05, 0.89, -0.04], d),
-    rot: [2 + 10 * d, 0, 0],
+    rot: [2 + 10 * d, 0, -1.5 * d],
+    neck: [-4 * d, 0],
     spine: [2 * d, 0, 0],
     footL: PQ_L.pos,
     toeL: PQ_L.toe,
@@ -143,6 +146,7 @@ function atgPose(root, pitch, spine, backToe) {
   return {
     root,
     rot: [pitch, 0, 0],
+    neck: [-pitch * 0.4, 0],
     spine: [spine, 0, 0],
     footL: ATG_FRONT,
     footR: back.pos,
@@ -176,7 +180,7 @@ function nordicBody(theta) {
   // theta: forward lean of the straight body from vertical (deg)
   const slope = 6; // shins run slightly down from the mat to the floor
   const leg = [0, 3, 90 - slope - theta, 72];
-  const p = { rot: [theta, 0, 0], legL: leg, legR: leg, neck: [-4, 0] };
+  const p = { rot: [theta, 0, 0], legL: leg, legR: leg, neck: [-4, 0], shrugL: [0, 0.012 * Math.sin(theta * Math.PI / 180)], shrugR: [0, 0.012 * Math.sin(theta * Math.PI / 180)] };
   return anchor(p, "kneeL", NORDIC_KNEE, "yz");
 }
 
@@ -195,7 +199,7 @@ function revNordic(lean) {
   // lean: backward lean of the straight body from vertical (deg)
   const slope = 2;
   const leg = [0, 3, 90 - slope + lean, 70];
-  const p = { rot: [-lean, 0, 0], legL: leg, legR: leg, neck: [6, 0], armL: [78, 10, 12, 0], armR: [78, 10, 12, 0] };
+  const p = { rot: [-lean, 0, 0], legL: leg, legR: leg, neck: [6, 0], armL: [78 + 0.15 * lean, 10, 12 + 0.12 * lean, 0], armR: [78 + 0.15 * lean, 10, 12 + 0.12 * lean, 0] };
   return anchor(p, "kneeL", [0.118, 0.062, 0], "yz");
 }
 
@@ -214,6 +218,7 @@ function tibRaise(lift) {
   return {
     root: [0, y, pz],
     rot: [-2, 0, 0],
+    neck: [2, 0],
     footL,
     footR,
     toeL: -lift,
@@ -236,6 +241,7 @@ function seatedCalf(raise) {
     root: [0, 0.555, 0],
     rot: [5, 0, 0],
     spine: [7, 0, 0],
+    neck: [-5, 0],
     footL: footAt("L", "ball", [0.135, 0.05, CALF_BALL_Z], raise),
     footR: footAt("R", "ball", [-0.135, 0.05, CALF_BALL_Z], raise),
     toeL: raise,
@@ -268,6 +274,7 @@ function stepCalf(raise, oneLeg = true) {
   return {
     root: pelvis,
     rot: [3, 0, 0],
+    neck: [-3, 0],
     footL,
     footR,
     toeL: raise,
@@ -323,7 +330,7 @@ function lunge(stage) {
     footR = b.pos;
     toeR = b.toe;
   }
-  const p = { root: S.root, rot: [S.rot, 0, 0], footL: [0.11, ANKLE_Y, 0], footR, toeR, kneeR: [0, -0.2, 1] };
+  const p = { root: S.root, rot: [S.rot, 0, 0], neck: [-S.rot, 0], shrugL: [-0.008, 0], shrugR: [-0.008, 0], footL: [0.11, ANKLE_Y, 0], footR, toeR, kneeR: [0, -0.2, 1] };
   return hangArms(p, { fwd: 0.03, out: 0.05 });
 }
 
@@ -349,6 +356,8 @@ function stepUp(stage, arms) {
   const p = {
     root: S.root,
     rot: [S.rot, 0, 0],
+    neck: [-S.rot * 0.7, 0],
+    spine: [-2 * Math.sin(S.rot * Math.PI / 36), 0, 0],
     footL: S.L,
     footR: S.R,
     toeL: S.toeL ?? 0,
@@ -390,9 +399,9 @@ export default {
         keys: [
           { t: 0, p: gobletSquat(0), cue: "Heels on the board, dumbbell at your chest" },
           { t: 0.6, p: gobletSquat(0), cue: "3 s down: knees travel past the toes" },
-          { t: 3.6, p: gobletSquat(1), cue: "Pause at the bottom" },
+          ...transition(gobletSquat, 0, 1, 0.6, 3.6, "Pause at the bottom"),
           { t: 4.1, p: gobletSquat(1), cue: "Push firmly through your feet to stand" },
-          { t: 5.3, p: gobletSquat(0) },
+          ...transition(gobletSquat, 1, 0, 4.1, 5.3),
         ],
       },
     ],

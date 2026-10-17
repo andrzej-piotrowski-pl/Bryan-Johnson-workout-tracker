@@ -36,10 +36,11 @@ function legIK(p, side, [flex, abd, knee]) {
 
 // Samples a periodic pose function into evenly spaced linear keys; the last key repeats the first.
 function cycle(fn, period, n, cue) {
+  n *= 4;
   const keys = [];
-  for (let i = 0; i < n; i++) keys.push({ t: (period * i) / n, p: fn(i / n), e: "lin" });
+  for (let i = 0; i < n; i++) keys.push({ t: (period * i) / n, p: fn(i / n), e: "smooth" });
   keys[0].cue = cue;
-  keys.push({ t: period, p: keys[0].p, e: "lin" });
+  keys.push({ t: period, p: keys[0].p, e: "smooth" });
   return keys;
 }
 
@@ -50,10 +51,12 @@ const HIGH_KNEES = { T: 0.64, duty: 0.4, hip: 0.95, bob: 0.02, high: 0.45, lean:
 const MARCH = { T: 1.1, duty: 0.6, hip: 0.935, bob: 0.007, high: 0.3, lean: 0, knee: 55, bend: 70, bend0: 25, heel: 0, roll: 14, swingToe: 10, arm0: 4, arm: 22, elbow: 32 };
 function onTheSpot(ph, o) {
   const p = {
-    root: [0, o.hip + o.bob * Math.cos(4 * Math.PI * (ph - o.high)), 0.02],
-    rot: [o.lean, 0, 0],
-    spine: [2, 0, 0],
+    root: [0.012 * Math.cos(2 * Math.PI * ph), o.hip + o.bob * Math.cos(4 * Math.PI * (ph - o.high)), 0.02],
+    rot: [o.lean, 3 * Math.sin(2 * Math.PI * ph), Math.cos(2 * Math.PI * ph)],
+    spine: [2, -Math.cos(2 * Math.PI * ph), -5 * Math.sin(2 * Math.PI * ph)],
     neck: [-o.lean - 2, 0],
+    footYawL: 7,
+    footYawR: -7,
   };
   for (const [side, s, off] of [["L", 1, 0], ["R", -1, 0.5]]) {
     const q = (ph + off) % 1;
@@ -68,8 +71,8 @@ function onTheSpot(ph, o) {
   }
   const peak = o.duty + (1 - o.duty) / 2; // left knee highest
   const sw = Math.sin(2 * Math.PI * (ph - peak + 0.25)); // +1: right arm forward, left arm back
-  p.armL = [o.arm0 - o.arm * sw, 8, o.elbow, 0];
-  p.armR = [o.arm0 + o.arm * sw, 8, o.elbow, 0];
+  p.armL = [o.arm0 - o.arm * sw, 8, o.elbow - 9 * sw, 0];
+  p.armR = [o.arm0 + o.arm * sw, 8, o.elbow + 9 * sw, 0];
   return p;
 }
 const highKneeKeys = (cue) => cycle((ph) => onTheSpot(ph, HIGH_KNEES), HIGH_KNEES.T, 10, cue);
@@ -102,19 +105,22 @@ function stepPose(ph, { arm = 30, elbow = 40 } = {}) {
   };
   const L = foot(ph.L, 1), R = foot(ph.R, -1);
   return {
-    root: ph.root,
-    rot: [ph.lean ?? 3, 0, 0],
+    root: [ph.root[0] + 0.022 * (Number(ph.L === "on") - Number(ph.R === "on")), ph.root[1], ph.root[2]],
+    rot: [ph.lean ?? 3, 2 * ph.arm, 0],
+    spine: [0, 0, -4 * ph.arm],
     neck: [-(ph.lean ?? 3), 0],
     footL: L.pos, toeL: L.toe, kneeL: [0.12, 0, 1],
     footR: R.pos, toeR: R.toe, kneeR: [-0.12, 0, 1],
-    armL: [6 - arm * ph.arm, 8, elbow, 0],
-    armR: [6 + arm * ph.arm, 8, elbow, 0],
+    footYawL: 7,
+    footYawR: -7,
+    armL: [6 - arm * ph.arm, 8, elbow - 5 * ph.arm, 0],
+    armR: [6 + arm * ph.arm, 8, elbow + 5 * ph.arm, 0],
   };
 }
 // One left-led cycle, `dt` seconds per phase (also the closing step back to the start); with
 // alternate: true the next cycle leads with the right leg.
 function stepClip(dt, cues, style) {
-  return { closeTime: dt, keys: STEP_PHASES.map((ph, i) => ({ t: i * dt, p: stepPose(ph, style), cue: cues[i] })) };
+  return { closeTime: dt, keys: [...STEP_PHASES, STEP_PHASES[0]].map((ph, i) => ({ t: i * dt, p: stepPose(ph, style), e: "smooth", cue: cues[i] })) };
 }
 
 // ---------- jumping jacks ----------
@@ -126,24 +132,25 @@ function jack(open, air = 0) {
   return {
     root: [0, (air ? 0.99 : 0.945 - 0.04 * open) + air, 0.03],
     rot: [3, 0, 0],
+    neck: [-3, 0],
     footL: tiptoe([x, ANKLE_Y + air, 0], pitch, 7),
     footR: tiptoe([-x, ANKLE_Y + air, 0], pitch, -7),
     toeL: pitch,
     toeR: pitch,
     kneeL: [0.35, 0, 1],
     kneeR: [-0.35, 0, 1],
-    armL: [6, 10 + 160 * open, 14, 0],
-    armR: [6, 10 + 160 * open, 14, 0],
+    armL: [6, 10 + 160 * open, 14 - 7 * open, -12 * open],
+    armR: [6, 10 + 160 * open, 14 - 7 * open, -12 * open],
   };
 }
 
 // ---------- straight-arm plank: mountain climbers and burpees ----------
 
 // Body straight from heels to head, pivoting on the toes (built like the push-up, 20° up from the floor).
-const PLANK = anchor({ rot: [70, 0, 0], legL: [0, 4, 0, -22], legR: [0, 4, 0, -22], neck: [-6, 0] }, "toeL", [0, 0, -0.92], "yz");
+const PLANK = anchor({ rot: [74, 0, 0], legL: [0, 4, 0, -22], legR: [0, 4, 0, -22], neck: [-6, 0], wristL: [75, 0, 0], wristR: [75, 0, 0] }, "toeL", [0, 0, -0.92], "yz");
 const PLANK_J = joints(PLANK);
 const PLANK_TOE = Math.asin(-PLANK_J.footFL.y) / D2R; // the plank's toes as a floor pitch
-const HAND_Y = 0.09; // wrist height that puts the hand's tip on the floor with a vertical forearm
+const HAND_Y = 0.035; // palm flat on the floor, with the wrist extended
 const ARM_POLES = { elbowL: [0.7, 0.3, -0.6], elbowR: [-0.7, 0.3, -0.6] };
 const v3 = (v, dz = 0) => [v.x, v.y, v.z + dz];
 
@@ -152,7 +159,7 @@ const v3 = (v, dz = 0) => [v.x, v.y, v.z + dz];
 // without touching the floor). Hands and shoulders stay where the plank put them.
 // Each foot: "back" (toes on the floor, leg long), "in" (knee under the chest, toes off the floor),
 // "out" (on its way back, nearly long) or "up" (on its way in, knee lifting).
-const CLIMB_BODY = anchor({ rot: [78, 0, 0], neck: [-8, 0] }, "neckBase", v3(PLANK_J.neckBase), "xyz");
+const CLIMB_BODY = anchor({ rot: [86, 0, 0], neck: [-8, 0] }, "neckBase", v3(PLANK_J.neckBase), "xyz");
 const CLIMB_BACK = (() => {
   const hip = joints(CLIMB_BODY).hipL;
   const y = PLANK_J.ankleL.y, dx = PLANK_J.ankleL.x - hip.x;
@@ -170,6 +177,8 @@ function climber(l, r) {
     root: CLIMB_BODY.root,
     rot: CLIMB_BODY.rot,
     neck: CLIMB_BODY.neck,
+    wristL: [75, 0, 0],
+    wristR: [75, 0, 0],
     footL: L.pos, toeL: L.toe, kneeL: L.knee,
     footR: R.pos, toeR: R.toe, kneeR: R.knee,
     handsIn: "world",
@@ -188,9 +197,9 @@ const B_FEET = (pitch) => ({
   kneeL: [0.3, 0, 1], kneeR: [-0.3, 0, 1], // knees out over the toes
 });
 // Mid-jump: shoulders over the hands (as in the plank), trunk nearly level so the hips ride high.
-const B_KICK = anchor({ rot: [84, 0, 0], neck: [-16, 0] }, "neckBase", v3(PLANK_J.neckBase, B_SHIFT), "xyz");
+const B_KICK = anchor({ rot: [96, 0, 0], neck: [-16, 0] }, "neckBase", v3(PLANK_J.neckBase, B_SHIFT), "xyz");
 function burpee(stage) {
-  const hands = { handsIn: "world", handL: B_HANDS.L, handR: B_HANDS.R, ...ARM_POLES };
+  const hands = { handsIn: "world", handL: B_HANDS.L, handR: B_HANDS.R, wristL: [75, 0, 0], wristR: [75, 0, 0], ...ARM_POLES };
   switch (stage) {
     case "stand":
       return hangArms({ root: [0, 0.94, 0.02], ...B_FEET(0) }, { fwd: 0.04 });

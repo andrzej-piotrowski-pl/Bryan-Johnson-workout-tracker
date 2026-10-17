@@ -43,6 +43,7 @@ export function defaultPose() {
     root: [0, STAND_Y, 0], // pelvis centre, world
     rot: [0, 0, 0], // pelvis pitch (+ tips forward), yaw (+ turns left), roll (+ leans right)
     spine: [0, 0, 0], // flexion (+ forward), side bend (+ right), twist (+ left); spread over 2 joints
+    lumbar: null, // optional lower-spine share; the rest of spine is applied at the chest
     neck: [0, 0], // pitch (+ chin down), yaw
     head: [0, 0], // nod (+ down), turn
     tuck: 0, // chin-tuck glide backwards, metres
@@ -58,10 +59,14 @@ export function defaultPose() {
     kneeR: null,
     toeL: 0, // foot pitch vs. the floor when IK'd: + toes down (heel up), − toes up
     toeR: 0,
+    footYawL: null, // optional world yaw for a planted foot while the pelvis turns
+    footYawR: null,
     turnout: 7, // feet point slightly outward (deg)
     // Arms: FK angles [shoulder flexion, shoulder abduction, elbow flexion, shoulder external rotation]
     armL: [0, 7, 10, 0],
     armR: [0, 7, 10, 0],
+    wristL: [0, 0, 0], // wrist flexion, side bend, forearm rotation (degrees)
+    wristR: [0, 0, 0],
     // or IK: wrist target. Frame given by handsIn: "world" | "chest" | "pelvis".
     handL: null,
     handR: null,
@@ -119,12 +124,13 @@ export function computeJoints(pose) {
   J.pelvis = pelvis;
   J.Rp = Rp;
 
-  // Spine: two equal joints (lumbar, thoracic) give a smooth curve.
-  const half = rotMat(P.spine[0] / 2, P.spine[2] / 2, P.spine[1] / 2, "XZY");
+  // Most twisting and side bending comes from the upper back.
+  const lower = P.lumbar || [P.spine[0] * 0.4, P.spine[1] * 0.25, P.spine[2] * 0.15];
+  const upper = P.spine.map((v, i) => v - lower[i]);
   J.lumbar = pelvis.clone().add(apply(Rp, 0, DIM.lumbar, 0));
-  const R1 = Rp.clone().multiply(half);
+  const R1 = Rp.clone().multiply(rotMat(lower[0], lower[2], lower[1], "XZY"));
   J.thoracic = J.lumbar.clone().add(apply(R1, 0, DIM.thoracic, 0));
-  const Rc = R1.clone().multiply(half);
+  const Rc = R1.clone().multiply(rotMat(upper[0], upper[2], upper[1], "XZY"));
   J.neckBase = J.thoracic.clone().add(apply(Rc, 0, DIM.chest, 0));
   J.R1 = R1;
   J.Rc = Rc;
@@ -176,7 +182,7 @@ export function computeJoints(pose) {
       f = fwd0.clone().multiplyScalar(Math.cos(plantar)).addScaledVector(up0, -Math.sin(plantar));
       u = fwd0.clone().multiplyScalar(Math.sin(plantar)).addScaledVector(up0, Math.cos(plantar));
     } else {
-      const yaw = (P.rot[1] + P.turnout * s) * D2R;
+      const yaw = (P["footYaw" + side] ?? P.rot[1] + P.turnout * s) * D2R;
       const flat = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
       const a = P["toe" + side] * D2R;
       f = flat.clone().multiplyScalar(Math.cos(a)).add(new THREE.Vector3(0, -Math.sin(a), 0)).normalize();
@@ -195,18 +201,23 @@ export function computeJoints(pose) {
     const s = side === "L" ? 1 : -1;
     const shrug = P["shrug" + side];
     const shoulder = J.neckBase.clone().add(apply(Rc, DIM.shoulderX * s, DIM.shoulderY + shrug[0], DIM.shoulderZ + shrug[1]));
-    J["shoulder" + side] = shoulder;
     const ik = P["hand" + side];
-    let elbow, wrist;
+    const target = ik ? (handFrame ? apply(handFrame.R, ...ik).add(handFrame.o) : new THREE.Vector3(...ik)) : null;
+    const arm = P["arm" + side];
+    const raised = target
+      ? THREE.MathUtils.clamp(target.clone().sub(shoulder).normalize().dot(dirOf(Rc, 0, 1, 0)), 0, 1)
+      : Math.max(0, -Math.cos(arm[0] * D2R) * Math.cos(arm[1] * D2R));
+    // The shoulder blade rotates up with an overhead reach, rather than a fixed ball joint.
+    shoulder.add(apply(Rc, -s * 0.012 * raised, 0.025 * raised, 0));
+    J["shoulder" + side] = shoulder;
+    let elbow, wrist, foreRef;
     if (ik) {
       // Default elbow direction: back, down and slightly out, relative to the chest.
       const poleIn = P["elbow" + side];
-      let target, pole;
+      let pole;
       if (handFrame) {
-        target = apply(handFrame.R, ...ik).add(handFrame.o);
         pole = poleIn ? dirOf(handFrame.R, ...poleIn) : dirOf(Rc, 0.35 * s, -0.4, -0.85);
       } else {
-        target = new THREE.Vector3(...ik);
         pole = poleIn ? new THREE.Vector3(...poleIn).normalize() : dirOf(Rc, 0.35 * s, -0.4, -0.85);
       }
       const r = solveTwoBone(shoulder, target, DIM.upperArm, DIM.forearm, pole);
@@ -218,11 +229,22 @@ export function computeJoints(pose) {
       elbow = shoulder.clone().add(apply(Ru, 0, -DIM.upperArm, 0));
       const Rf = Ru.clone().multiply(rotMat(-elbowFlex, 0, 0, "XYZ"));
       wrist = elbow.clone().add(apply(Rf, 0, -DIM.forearm, 0));
+      foreRef = dirOf(Rf, 0, 0, 1);
     }
     J["elbow" + side] = elbow;
     J["wrist" + side] = wrist;
     const fore = new THREE.Vector3().subVectors(wrist, elbow).normalize();
-    J["hand" + side] = wrist.clone().addScaledVector(fore, DIM.hand * 0.55);
+    let ref = foreRef || dirOf(Rc, 0, 0, 1);
+    ref.addScaledVector(fore, -ref.dot(fore));
+    if (ref.lengthSq() < 1e-6) ref = dirOf(Rc, 0, 1, 0).addScaledVector(fore, -dirOf(Rc, 0, 1, 0).dot(fore));
+    ref.normalize();
+    const lateral = new THREE.Vector3().crossVectors(fore, ref).normalize();
+    const wr = P["wrist" + side];
+    const frame = new THREE.Matrix4().makeBasis(lateral, fore, ref).multiply(rotMat(wr[0], wr[2] * s, wr[1] * s, "YXZ"));
+    J["handFrame" + side] = frame;
+    J["handDir" + side] = dirOf(frame, 0, 1, 0);
+    J["handRef" + side] = dirOf(frame, 0, 0, 1);
+    J["hand" + side] = wrist.clone().addScaledVector(J["handDir" + side], DIM.hand * 0.55);
     J["foreDir" + side] = fore;
   }
   return J;
@@ -262,12 +284,15 @@ export function mirrorPose(p) {
   m.root = flipX(p.root);
   m.rot = [p.rot[0], -p.rot[1], -p.rot[2]];
   m.spine = [p.spine[0], -p.spine[1], -p.spine[2]];
+  m.lumbar = p.lumbar ? [p.lumbar[0], -p.lumbar[1], -p.lumbar[2]] : null;
   m.neck = [p.neck[0], -p.neck[1]];
   m.head = [p.head[0], -p.head[1]];
   swap("legL", "legR");
   swap("armL", "armR");
+  swap("wristL", "wristR");
   swap("shrugL", "shrugR");
   swap("toeL", "toeR");
+  swap("footYawL", "footYawR", (v) => v == null ? v : -v);
   swap("ankleL", "ankleR");
   swap("footModeL", "footModeR");
   swap("footL", "footR", flipX);

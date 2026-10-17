@@ -1,6 +1,6 @@
 // Animations for the power exercises: jumps, power skips, skater bounds and the band woodchop.
 import { lerpPose, makePose, mirrorPose } from "../rig.js";
-import { ANKLE_Y, D2R, DIM, STAND_Y, joints, legsTo, translate } from "../poses.js";
+import { ANKLE_Y, D2R, DIM, STAND_Y, joints, legsTo, translate, transition } from "../poses.js";
 
 // ---------- helpers ----------
 
@@ -35,15 +35,15 @@ function legIK(p, side, [flex, abd, knee]) {
 }
 
 // In-air keys between a take-off and a landing pose: the body blends from one to the other while
-// the root and feet follow a parabola `h` high. Linear keys keep the sideways speed constant.
-function flight(from, to, t0, dur, h, n = 4) {
+// the root and feet follow a parabola `h` high, with continuous motion through the intermediate keys.
+function flight(from, to, t0, dur, h, n = 12) {
   const a = makePose(from), b = makePose(to);
   const keys = [];
   for (let i = 1; i < n; i++) {
     const s = i / n;
-    keys.push({ t: t0 + dur * s, p: translate(lerpPose(a, b, s), [0, 4 * h * s * (1 - s), 0]), e: "lin" });
+    keys.push({ t: t0 + dur * s, p: translate(lerpPose(a, b, s), [0, 4 * h * s * (1 - s), 0]), e: "smooth" });
   }
-  keys.push({ t: t0 + dur, p: to, e: "lin" });
+  keys.push({ t: t0 + dur, p: to, e: "smooth" });
   return keys;
 }
 
@@ -80,7 +80,7 @@ function tall(arms, pitch = 0) {
 // Feet flat, knees over the toes: shin and thigh angles (deg from vertical), torso leaning with the thighs.
 function crouch(shin, thigh, arms, lean = 0.62) {
   const { y, z } = legsTo(shin, thigh);
-  return { root: [0, y, z], rot: [thigh * lean, 0, 0], spine: [6, 0, 0], neck: [-thigh * 0.4, 0], ...jumpFeet(0), ...ARM_POS[arms] };
+  return { root: [0, y, z], rot: [thigh * lean, 0, 0], spine: [4, 0, 0], neck: [-thigh * 0.4, 0], wristL: [arms === "back" ? -8 : 4, 0, 0], wristR: [arms === "back" ? -8 : 4, 0, 0], ...jumpFeet(0), ...ARM_POS[arms] };
 }
 // Airborne: the take-off pose lifted by h, toes pointed.
 function airborne(h, arms, pitch = 42) {
@@ -297,7 +297,7 @@ export default {
           { t: 0.3, p: chop(0, true) },
           { t: 1.0, p: chop(0) },
           { t: 1.3, p: chop(0), cue: "Chop fast across, turn the hips, pivot the back foot" },
-          { t: 1.75, p: chop(1) },
+          ...transition(chop, 0, 1, 1.3, 1.75),
           { t: 2.0, p: chop(1), cue: "Return slowly, 2–3 s" },
           { t: 2.8, p: chop(0.67), e: "in" },
           { t: 3.6, p: chop(0.33), e: "lin" },

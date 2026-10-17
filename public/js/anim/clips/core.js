@@ -1,5 +1,5 @@
 // Animations for the core & stability exercises.
-import { anchor, ground, joints, LEG, translate } from "../poses.js";
+import { anchor, ground, joints, pinHands, transition } from "../poses.js";
 
 const MAT_Y = 0.012; // top of the exercise mat
 
@@ -22,15 +22,16 @@ function plank(theta, breath = 0) {
 }
 
 // ---------- quadruped (bird dog base) ----------
-function quad(o = {}) {
-  const p = { rot: [78, 0, 0], legL: [78, 4, 90, 80], legR: [78, 4, 90, 80], armL: [78, 4, 0, 0], armR: [78, 4, 0, 0], neck: [-8, 0], ...o };
-  return ground(p, ["kneeL", "kneeR", "handL", "handR"]);
+const QUAD = pinHands(ground({ rot: [78, 0, 0], legL: [78, 4, 90, 80], legR: [78, 4, 90, 80], armL: [78, 4, 0, 0], armR: [78, 4, 0, 0], neck: [-8, 0] }, ["kneeL", "kneeR", "handL", "handR"]), "R");
+function birdDog(reach) {
+  return pinHands({ ...QUAD, armL: [78 + 94 * reach, 4 + 2 * reach, 5 * Math.sin(Math.PI * reach), 0], legR: [78 * (1 - reach), 4 - reach, 90 - 88 * reach, 80 - 50 * reach], shrugL: [0.012 * reach, 0], elbowR: [-0.3, 0, -1] });
 }
 
 // ---------- supine (dead bug base) ----------
-function supine(o = {}) {
-  const p = { rot: [-90, 0, 0], legL: [90, 4, 90, 10], legR: [90, 4, 90, 10], armL: [90, 6, 0, 0], armR: [90, 6, 0, 0], neck: [6, 0], ...o };
-  return ground(p, ["pelvis", "thoracic", "head"]);
+const SUPINE = ground({ rot: [-90, 0, 0], legL: [90, 4, 90, 10], legR: [90, 4, 90, 10], armL: [90, 6, 0, 0], armR: [90, 6, 0, 0], neck: [6, 0] }, ["pelvis", "thoracic", "head"]);
+function deadBug(reach) {
+  const leg = reach * reach * (3 - 2 * reach);
+  return { ...SUPINE, armL: [90 + 78 * reach, 6, 3 * Math.sin(Math.PI * reach), 0], legR: [90 - 72 * leg, 4, 90 - 86 * leg, 10 + 5 * leg] };
 }
 
 // ---------- hanging knee / leg raise ----------
@@ -77,6 +78,9 @@ function backExt(lift = 0) {
   const p = {
     rot: [88, 0, 0],
     spine: [-lift, 0, 0],
+    lumbar: [-lift * 0.25, 0, 0],
+    shrugL: [0, -0.0006 * lift],
+    shrugR: [0, -0.0006 * lift],
     neck: [lift * 0.25, 0],
     legL: [6, 3, 6, 72],
     legR: [6, 3, 6, 72],
@@ -131,18 +135,19 @@ function sidePlank(o) {
 // ---------- high plank (shoulder taps) ----------
 // Straight body on the hands, feet a bit wider than the hips; hands planted under the shoulders.
 const TAP_BODY = anchor(
-  { rot: [90 - 19, 0, 0], spine: [-1, 0, 0], legL: [0, 6, 0, -24], legR: [0, 6, 0, -24], neck: [-6, 0] },
+  { rot: [90 - 16, 0, 0], spine: [-1, 0, 0], legL: [0, 6, 0, -24], legR: [0, 6, 0, -24], neck: [-6, 0] },
   "toeL",
   [0, 0.006 + MAT_Y, -0.95],
   "yz"
 );
 const TAP_J = joints(TAP_BODY);
-const TAP_HANDS = { L: [0.21, 0.09 + MAT_Y, TAP_J.shoulderL.z + 0.02], R: [-0.21, 0.09 + MAT_Y, TAP_J.shoulderR.z + 0.02] };
+const TAP_HANDS = { L: [0.21, 0.035 + MAT_Y, TAP_J.shoulderL.z + 0.02], R: [-0.21, 0.035 + MAT_Y, TAP_J.shoulderR.z + 0.02] };
+const TAP_TOE = Math.asin(-TAP_J.footFL.y) * 180 / Math.PI;
 // Right hand touching the front of the left shoulder.
 const TAP_TARGET = at(TAP_J.Rc, TAP_J.shoulderL, [-0.06, 0.06, 0.05]);
 function shoulderTap(reach = 0) {
   const handR = TAP_HANDS.R.map((v, i) => v + (TAP_TARGET[i] - v) * reach);
-  return { ...TAP_BODY, handsIn: "world", handL: TAP_HANDS.L, handR, elbowL: [0.6, 0.2, -0.6], elbowR: [-1, -0.2, -0.4] };
+  return { ...TAP_BODY, root: [TAP_BODY.root[0] + 0.015 * reach, TAP_BODY.root[1], TAP_BODY.root[2]], footL: TAP_J.ankleL.toArray(), footR: TAP_J.ankleR.toArray(), feetMode: "ground", toeL: TAP_TOE, toeR: TAP_TOE, kneeL: [0.1, -1, 0.3], kneeR: [-0.1, -1, 0.3], wristL: [75, 0, 0], wristR: [75 - 65 * reach, 0, 0], handsIn: "world", handL: TAP_HANDS.L, handR, elbowL: [0.6, 0.2, -0.6], elbowR: [-1, -0.2, -0.4] };
 }
 
 export default {
@@ -169,11 +174,11 @@ export default {
         camera: { view: [1, 0.38, 0.35], target: [0, 0.42, -0.12], dist: 3.9 },
         alternate: true,
         keys: [
-          { t: 0, p: quad(), cue: "Hands under shoulders, knees under hips" },
-          { t: 0.4, p: quad(), cue: "Reach one arm forward and the opposite leg back" },
-          { t: 1.8, p: quad({ armL: [172, 6, 0, 0], legR: [0, 3, 2, 30] }), cue: "Hold 2 s, hips level" },
-          { t: 3.3, p: quad({ armL: [172, 6, 0, 0], legR: [0, 3, 2, 30] }), cue: "Return slowly, switch sides" },
-          { t: 4.5, p: quad() },
+          { t: 0, p: birdDog(0), cue: "Hands under shoulders, knees under hips" },
+          { t: 0.4, p: birdDog(0), cue: "Reach one arm forward and the opposite leg back" },
+          ...transition(birdDog, 0, 1, 0.4, 1.8, "Hold 2 s, hips level"),
+          { t: 3.3, p: birdDog(1), cue: "Return slowly, switch sides" },
+          ...transition(birdDog, 1, 0, 3.3, 4.5),
         ],
       },
     ],
@@ -187,11 +192,11 @@ export default {
         camera: { view: [1, 0.55, -0.15], target: [0, 0.3, -0.3], dist: 3.2 },
         alternate: true,
         keys: [
-          { t: 0, p: supine(), cue: "Arms up, knees over hips, lower back pressed down" },
-          { t: 0.4, p: supine(), cue: "Lower one arm and the opposite leg slowly" },
-          { t: 2.2, p: supine({ armL: [168, 6, 0, 0], legR: [18, 4, 4, 15] }) },
-          { t: 2.7, p: supine({ armL: [168, 6, 0, 0], legR: [18, 4, 4, 15] }), cue: "Return, breathe out, then switch sides" },
-          { t: 4.2, p: supine() },
+          { t: 0, p: deadBug(0), cue: "Arms up, knees over hips, lower back pressed down" },
+          { t: 0.4, p: deadBug(0), cue: "Lower one arm and the opposite leg slowly" },
+          ...transition(deadBug, 0, 1, 0.4, 2.2),
+          { t: 2.7, p: deadBug(1), cue: "Return, breathe out, then switch sides" },
+          ...transition(deadBug, 1, 0, 2.7, 4.2),
         ],
       },
     ],
@@ -310,9 +315,9 @@ export default {
         keys: [
           { t: 0, p: shoulderTap(0), cue: "High plank, feet a bit wider than the hips" },
           { t: 0.5, p: shoulderTap(0), cue: "Tap the opposite shoulder" },
-          { t: 1.4, p: shoulderTap(1), cue: "Keep the hips still" },
+          ...transition(shoulderTap, 0, 1, 0.5, 1.4, "Keep the hips still"),
           { t: 1.8, p: shoulderTap(1), cue: "Put your hand down, then tap with the other hand" },
-          { t: 2.7, p: shoulderTap(0) },
+          ...transition(shoulderTap, 1, 0, 1.8, 2.7),
         ],
       },
     ],

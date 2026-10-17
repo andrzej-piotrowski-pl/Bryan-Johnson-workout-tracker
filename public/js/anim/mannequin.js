@@ -121,7 +121,7 @@ export function createMannequin() {
       place(parts["forearm" + s], J["elbow" + s], J["wrist" + s]);
       const hand = parts["hand" + s];
       hand.position.copy(J["hand" + s]);
-      hand.quaternion.setFromUnitVectors(UP, J["foreDir" + s]);
+      hand.quaternion.setFromRotationMatrix(J["handFrame" + s]);
       parts["hip" + s].position.copy(J["hip" + s]);
       place(parts["thigh" + s], J["hip" + s], J["knee" + s]);
       parts["knee" + s].position.copy(J["knee" + s]);

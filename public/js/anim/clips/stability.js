@@ -1,5 +1,5 @@
 // Animations for the standing stability exercises (side bend, Pallof press, single-leg RDL, Jefferson curl).
-import { ANKLE_Y, ARM, FOOT_X, STAND_Y, joints, stand } from "../poses.js";
+import { ANKLE_Y, ARM, FOOT_X, STAND_Y, joints, stand, transition } from "../poses.js";
 
 // Linear blend of two points.
 const mix = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
@@ -30,7 +30,7 @@ function turn(p, deg, shift = [0, 0, 0]) {
 // (no twist, no forward lean) while the hips shift a little left; the dumbbell slides down
 // the outside of the leg.
 function sidebend(d) {
-  const p = { ...stand({ root: [0.035 * d, STAND_Y - 0.004 - 0.01 * d, 0] }), footL: [0.13, ANKLE_Y, 0], footR: [-0.13, ANKLE_Y, 0], spine: [0, 40 * d, 0], neck: [0, 0] };
+  const p = { ...stand({ root: [0.035 * d, STAND_Y - 0.004 - 0.01 * d, 0] }), footL: [0.13, ANKLE_Y, 0], footR: [-0.13, ANKLE_Y, 0], spine: [0, 40 * d, 0], lumbar: [0, 14 * d, 0], neck: [0, 0] };
   const J = joints(p);
   const sh = J.shoulderR;
   const hx = -0.245 + 0.02 * d; // the dumbbell slides down just outside the thigh
@@ -63,6 +63,8 @@ function pallof(out) {
     kneeR: [-0.3, 0, 1],
     rot: [4, 0, 0],
     spine: [-2, 0, 0],
+    shrugL: [0, 0.012 * out],
+    shrugR: [0, 0.012 * out],
     handsIn: "chest",
     handL: h,
     handR: [-h[0], h[1], h[2]],
@@ -78,22 +80,19 @@ function pallof(out) {
 // torso, and the right hand reaches toward the left foot. Both feet stay IK (one is just lifted).
 const SL_PITCH = 88;
 const SL_ROOT = [0.06, 0.885, -0.11]; // bottom: hips back, standing knee soft
-const SL_BACKFOOT = (() => {
-  const a = (SL_PITCH * Math.PI) / 180;
-  const hip = [SL_ROOT[0] - 0.095, SL_ROOT[1], SL_ROOT[2]];
-  return [hip[0], hip[1] - 0.862 * Math.cos(a), hip[2] - 0.862 * Math.sin(a)]; // straight leg behind
-})();
 function slrdl(phase, { bothHands = false } = {}) {
   // phase 0 = both feet down, 1 = on the left leg, 2 = bottom of the hinge
   const lift = Math.min(phase, 1), h = Math.max(phase - 1, 0);
   const root = mix([0.06 * lift, STAND_Y - 0.004 - 0.008 * lift, 0], SL_ROOT, h);
+  const a = (15 + (SL_PITCH - 15) * h) * Math.PI / 180;
+  const length = 0.828 + 0.034 * h;
   const p = {
     root,
     rot: [SL_PITCH * h, 0, 0],
     neck: [-14 * h, 0],
     footL: [FOOT_X, ANKLE_Y, 0],
     kneeL: [0.1, 0, 1],
-    footR: mix(mix([-FOOT_X, ANKLE_Y, 0], [-0.12, 0.135, -0.22], lift), SL_BACKFOOT, h),
+    footR: h > 0 ? [root[0] - 0.095, root[1] - length * Math.cos(a), root[2] - length * Math.sin(a)] : mix([-FOOT_X, ANKLE_Y, 0], [-0.12, 0.135, -0.22], lift),
     toeR: 25 * lift + 65 * h,
     kneeR: [0, -0.3 * h, 1 - 1.3 * h],
   };
@@ -102,8 +101,8 @@ function slrdl(phase, { bothHands = false } = {}) {
   const J = joints(p);
   const hangL = [J.shoulderL.x + 0.015 + 0.03 * lift, J.shoulderL.y - ARM * 0.985, J.shoulderL.z + 0.03];
   const hangR = [J.shoulderR.x - 0.015, J.shoulderR.y - ARM * 0.985, J.shoulderR.z + 0.03];
-  const outL = bothHands ? [0.14, 0.36, 0.16] : [J.shoulderL.x + 0.2, J.shoulderL.y - 0.5, J.shoulderL.z - 0.06];
-  const outR = bothHands ? [-0.08, 0.36, 0.16] : [0.06, 0.33, 0.2];
+  const outL = bothHands ? [J.shoulderL.x - 0.03, J.shoulderL.y - 0.53, J.shoulderL.z - 0.04] : [J.shoulderL.x + 0.2, J.shoulderL.y - 0.5, J.shoulderL.z - 0.06];
+  const outR = bothHands ? [J.shoulderR.x + 0.03, J.shoulderR.y - 0.53, J.shoulderR.z - 0.04] : [0.06, J.shoulderR.y - 0.5, J.shoulderR.z - 0.12];
   return {
     ...p,
     handsIn: "world",
@@ -124,6 +123,7 @@ function jefferson(neck, flex, pitch, back = 0) {
     root: [0, JC_FOOT_Y + Math.sqrt(0.866 ** 2 - back * back), -back],
     rot: [pitch, 0, 0],
     spine: [flex, 0, 0],
+    lumbar: [Math.max(0, flex - 24) * 0.5, 0, 0],
     neck: [neck, 0],
     head: [neck * 0.25, 0],
     tuck: 0.02 * Math.min(1, neck / 30),
@@ -152,8 +152,8 @@ export default {
           { t: 0, p: sidebend(0), cue: "Dumbbell in one hand, other hand on your waist" },
           { t: SWITCH, p: sidebend(0) },
           { t: 0.5, p: sidebend(0), cue: "Bend straight to the side, no twisting" },
-          { t: 2.5, p: sidebend(1), cue: "Squeeze the other side to come back up" },
-          { t: 4.3, p: sidebend(0), cue: "Switch sides" },
+          ...transition(sidebend, 0, 1, 0.5, 2.5, "Squeeze the other side to come back up"),
+          ...transition(sidebend, 1, 0, 2.5, 4.3, "Switch sides"),
         ],
       },
     ],
@@ -190,9 +190,9 @@ export default {
         keys: [
           { t: 0, p: slrdl(0), cue: "Stand tall, then shift onto one leg" },
           { t: 0.8, p: slrdl(1), cue: "Reach the opposite hand toward your standing foot" },
-          { t: 3.0, p: slrdl(2), cue: "Back leg rises; hips stay square" },
+          ...transition(slrdl, 1, 2, 0.8, 3.0, "Back leg rises; hips stay square"),
           { t: 3.5, p: slrdl(2), cue: "Squeeze the glute to stand back up" },
-          { t: 5.5, p: slrdl(1) },
+          ...transition(slrdl, 2, 1, 3.5, 5.5),
           { t: 6.2, p: slrdl(0), cue: "Switch legs" },
         ],
       },
@@ -204,9 +204,9 @@ export default {
         keys: [
           { t: 0, p: slrdl(0, { bothHands: true }), cue: "Stand on one leg with a soft knee, spine long" },
           { t: 0.8, p: slrdl(1, { bothHands: true }), cue: "Hinge from the hip, both hands tracking below the shoulders" },
-          { t: 3.0, p: slrdl(2, { bothHands: true }), cue: "Torso and back leg form a straight line" },
+          ...transition((v) => slrdl(v, { bothHands: true }), 1, 2, 0.8, 3.0, "Torso and back leg form a straight line"),
           { t: 3.5, p: slrdl(2, { bothHands: true }), cue: "Drive the hips forward to stand tall" },
-          { t: 5.5, p: slrdl(1, { bothHands: true }) },
+          ...transition((v) => slrdl(v, { bothHands: true }), 2, 1, 3.5, 5.5),
           { t: 6.2, p: slrdl(0, { bothHands: true }), cue: "Switch legs" },
         ],
       },

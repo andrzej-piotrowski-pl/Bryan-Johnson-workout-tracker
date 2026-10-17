@@ -1,5 +1,5 @@
 // Animations for the upper-body exercises.
-import { ANKLE_Y, anchor, ground, joints, stand } from "../poses.js";
+import { ANKLE_Y, anchor, ground, joints, stand, transition } from "../poses.js";
 
 // Linear blend of two points.
 const mix = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
@@ -31,20 +31,21 @@ function pushBody(theta) {
   const p = { rot: [90 - theta, 0, 0], legL: [0, 4, 0, -22], legR: [0, 4, 0, -22], neck: [-6, 0] };
   return anchor(p, "toeL", [0, 0.0, -0.92], "yz");
 }
-const PUSH_TOP = pushBody(21);
+const PUSH_TOP = pushBody(16);
 const PUSH_HANDS = (() => {
   const J = joints(PUSH_TOP);
   return { L: [0.2, 0.035, J.shoulderL.z + 0.02], R: [-0.2, 0.035, J.shoulderR.z + 0.02] };
 })();
 function pushup(theta) {
-  return { ...pushBody(theta), handsIn: "world", handL: PUSH_HANDS.L, handR: PUSH_HANDS.R, elbowL: [0.7, 0.35, -0.6], elbowR: [-0.7, 0.35, -0.6] };
+  const reach = (theta - 5) / 11;
+  return { ...pushBody(theta), shrugL: [0, 0.018 * reach], shrugR: [0, 0.018 * reach], wristL: [75, 0, 0], wristR: [75, 0, 0], handsIn: "world", handL: PUSH_HANDS.L, handR: PUSH_HANDS.R, elbowL: [0.7, 0.35, -0.6], elbowR: [-0.7, 0.35, -0.6] };
 }
 
 // ---------- pull-up / chin-up ----------
 const BAR_Y = 2.14;
 const BAR_Z = 0.08;
 function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1] } = {}) {
-  const p = { rot: [-lean, 0, 0], legL: [12, 4, 70, 25], legR: [12, 4, 70, 25], neck: [-lift * 16, 0] };
+  const p = { rot: [-lean, 0, 0], spine: [-8 * lift, 0, 0], shrugL: [-0.045 * lift, -0.035 * lift], shrugR: [-0.045 * lift, -0.035 * lift], legL: [12 + 8 * lift, 4, 70 - 10 * lift, 25], legR: [12 + 8 * lift, 4, 70 - 10 * lift, 25], neck: [-lift * 16, 0] };
   const top = BAR_Y - 0.56 + lift;
   const placed = anchor(p, "neckBase", [0, top, BAR_Z - 0.02], "yz");
   return {
@@ -91,6 +92,7 @@ function ohpress(up) {
   const rack = [0.255, -0.02, 0.135];
   const top = [0.215, 0.52, -0.005];
   const h = mix(rack, top, up);
+  h[2] += 0.045 * Math.sin(Math.PI * up); // clear the face before stacking over the shoulders
   return {
     ...stand({ root: [0, 0.935, 0] }),
     shrugL: [0.02 * up, 0],
@@ -144,7 +146,8 @@ function triceps(arm) {
 // Upper arms hang still at the sides; the forearms angle slightly out so the dumbbells clear the thighs.
 function curl(up) {
   const arm = [4 + 3 * up, 10, 18 + 122 * up, 22 - 10 * up];
-  return { ...stand({ root: [0, 0.938, 0] }), shrugL: [-0.005, -0.01], shrugR: [-0.005, -0.01], armL: arm, armR: arm };
+  const wrist = [0, 0, 65 * up];
+  return { ...stand({ root: [0, 0.938, 0] }), shrugL: [-0.005, -0.01], shrugR: [-0.005, -0.01], armL: arm, armR: arm, wristL: wrist, wristR: wrist };
 }
 
 // ---------- band chest fly ----------
@@ -168,7 +171,7 @@ function fly(close) {
 // ---------- farmer's carry ----------
 // Walking in place while the floor grid scrolls: each stance foot slides back at walking
 // speed (so it stays put on the moving floor) while the other foot swings through.
-// One stride (two steps) per loop, sampled into evenly spaced linear keys.
+// One stride (two steps) per loop, sampled into continuous curves.
 const WALK = { T: 1.4, half: 0.27, lift: 0.08, keys: 10 };
 const HEEL = 0.06, BALL = 0.1368; // ankle → heel / ball of the foot, along the sole
 // Ankle target and foot pitch for one foot; its heel strikes at phase 0.
@@ -207,10 +210,13 @@ function farmer(ph) {
   const swing = -3 * c; // arms barely swing with heavy dumbbells
   return {
     root: [0.018 * Math.sin(2 * Math.PI * (ph - 0.05)), 0.94 - 0.024 * bob, 0],
-    rot: [2, -4 * c, 0],
-    spine: [0, 0, 3 * c],
+    rot: [2, -4 * c, 1.2 * Math.sin(2 * Math.PI * ph)],
+    spine: [0, -1.2 * Math.sin(2 * Math.PI * ph), 6 * c],
+    neck: [0, -2 * c],
     footL: [0.11, L.y, L.z],
     footR: [-0.11, R.y, R.z],
+    footYawL: 7,
+    footYawR: -7,
     toeL: L.toe,
     toeR: R.toe,
     shrugL: [-0.012, -0.01],
@@ -219,10 +225,10 @@ function farmer(ph) {
     armR: [-swing, 9, 6, 0],
   };
 }
-// Evenly spaced linear keys over one stride (the last equals the first, so the loop is seamless).
+// Evenly spaced keys over one stride (the last equals the first, so the loop is seamless).
 function walkKeys(cues) {
   const { T, keys } = WALK;
-  return Array.from({ length: keys + 1 }, (_, i) => ({ t: +((T * i) / keys).toFixed(3), p: farmer((i % keys) / keys), e: "lin", ...(cues[i] ? { cue: cues[i] } : {}) }));
+  return Array.from({ length: keys * 3 + 1 }, (_, i) => ({ t: (T * i) / (keys * 3), p: farmer((i % (keys * 3)) / (keys * 3)), e: "smooth", ...(cues[i / 3] ? { cue: cues[i / 3] } : {}) }));
 }
 
 export default {
@@ -233,11 +239,11 @@ export default {
         highlight: ["chest", "triceps", "shoulders", "core"],
         camera: { view: [1, 0.42, 0.28], target: [0, 0.28, -0.12], dist: 3.9 },
         keys: [
-          { t: 0, p: pushup(21), cue: "Plank: body in one straight line" },
-          { t: 0.5, p: pushup(21), cue: "Lower until your chest is a fist above the floor" },
-          { t: 2.2, p: pushup(5) },
+          { t: 0, p: pushup(16), cue: "Plank: body in one straight line" },
+          { t: 0.5, p: pushup(16), cue: "Lower until your chest is a fist above the floor" },
+          ...transition(pushup, 16, 5, 0.5, 2.2),
           { t: 2.5, p: pushup(5), cue: "Press up until your arms are straight" },
-          { t: 3.5, p: pushup(21) },
+          ...transition(pushup, 5, 16, 2.5, 3.5),
         ],
       },
     ],
@@ -305,9 +311,9 @@ export default {
         keys: [
           { t: 0, p: ohpress(0), cue: "Dumbbells at your shoulders, palms facing in" },
           { t: 0.5, p: ohpress(0), cue: "Brace your abs and glutes, then press straight up" },
-          { t: 1.6, p: ohpress(1), cue: "Arms straight overhead" },
+          ...transition(ohpress, 0, 1, 0.5, 1.6, "Arms straight overhead"),
           { t: 2.0, p: ohpress(1), cue: "Lower in 2 s, don't lean back" },
-          { t: 4.0, p: ohpress(0) },
+          ...transition(ohpress, 1, 0, 2.0, 4.0),
         ],
       },
     ],
@@ -356,7 +362,7 @@ export default {
     clips: [
       {
         title: "Dumbbell biceps curl",
-        hold: { L: true, R: true, axis: "x" },
+        hold: { L: true, R: true, axis: "hand" },
         highlight: ["biceps", "grip"],
         camera: { view: [1, 0.2, 0.6], target: [0, 1.0, 0], dist: 4.0 },
         keys: [
@@ -396,7 +402,7 @@ export default {
         hold: { L: true, R: true, axis: "z" },
         highlight: ["grip", "upperBack", "core"],
         camera: { view: [1, 0.2, 0.45], target: [0, 0.92, 0], dist: 4.0 },
-        floorScroll: -1.0,
+        floorScroll: -(2 * WALK.half / (0.6 * WALK.T)) / 0.64,
         effects: ["string"],
         keys: walkKeys({ 0: "Heavy dumbbells at your sides, stand tall", 5: "Slow, steady steps; shoulders down and back" }),
       },

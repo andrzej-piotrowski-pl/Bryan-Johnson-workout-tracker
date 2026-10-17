@@ -21,6 +21,16 @@ const RADIUS = {
 export const joints = (p) => computeJoints(makePose(p));
 const v3 = (v) => [v.x, v.y, v.z];
 
+// Rebuild a curved movement between its endpoints, keeping authored joint/contact geometry.
+export function transition(build, from, to, start, end, cue = "") {
+  const n = 8;
+  return Array.from({ length: n }, (_, i) => {
+    const u = (i + 1) / n;
+    const eased = u * u * u * (10 + u * (-15 + 6 * u));
+    return { t: start + (end - start) * u, p: build(from + (to - from) * eased), e: "smooth", ...(i === n - 1 && cue ? { cue } : {}) };
+  });
+}
+
 // Hip (pelvis) height and depth for a bilateral stance with planted feet.
 // shin: forward tilt of the shins from vertical (knees travel over the toes)
 // thigh: thigh angle from vertical (90 = parallel to the floor)
@@ -60,7 +70,7 @@ export function squat(d, o = {}) {
     kneeL: [0.3, 0, 1],
     kneeR: [-0.3, 0, 1],
     rot: [30 * d, 0, 0],
-    spine: [6 * d, 0, 0],
+    spine: [3 * d, 0, 0],
     neck: [-12 * d, 0],
     ...rest,
   };
@@ -69,7 +79,7 @@ export function squat(d, o = {}) {
 // Hip hinge (RDL, swing), d = 0 … 1 (torso about 65° forward, hips pushed back).
 export function hinge(d, o = {}) {
   const { y, z } = legsTo(7 * d, 20 * d);
-  return stand({ root: [0, y - 0.002, z], rot: [66 * d, 0, 0], neck: [-8 * d, 0], ...o });
+  return stand({ root: [0, y - 0.002, z], rot: [66 * d, 0, 0], spine: [-2 * d, 0, 0], neck: [-8 * d, 0], ...o });
 }
 
 // Moves the whole figure so joint `name` sits at `target` (only on the given axes).

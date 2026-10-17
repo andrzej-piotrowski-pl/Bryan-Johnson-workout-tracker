@@ -2,7 +2,7 @@
 // Most of these are small head and shoulder-blade motions, so cameras sit close to the
 // shoulders. Pose fields used a lot here: tuck (head glide back), neck/head (pitch),
 // shrugL/R ([up, forward] of the shoulder girdle) and spine flexion for slouching.
-import { ANKLE_Y, D2R, DIM, FOOT_X, STAND_Y, joints, stand } from "../poses.js";
+import { ANKLE_Y, D2R, DIM, FOOT_X, STAND_Y, joints, stand, transition } from "../poses.js";
 
 // Keys for one smooth move through n intermediate poses, poseAt(u) for u = 1/n … 1.
 // The first segment eases in, the middle ones are linear and the last eases out, with
@@ -15,7 +15,7 @@ function sweep(t0, dur, n, poseAt, endCue) {
   let t = t0;
   for (let i = 1; i <= n; i++) {
     t += i === 1 || i === n ? end : lin;
-    keys.push({ t: +t.toFixed(3), p: poseAt(i / n), e: i === 1 ? "in" : i === n ? "out" : "lin" });
+    keys.push({ t: +t.toFixed(3), p: poseAt(i / n), e: "smooth" });
   }
   if (endCue) keys[n - 1].cue = endCue;
   return keys;
@@ -58,7 +58,7 @@ function tall(breath = 0, settle = 1) {
 // ---------- chin tuck ----------
 // The head glides straight back (no nod), d = 0…1. Slightly exaggerated so it reads.
 function chinTuck(d) {
-  return stand({ tuck: 0.04 * d });
+  return stand({ tuck: 0.04 * d, neck: [-3 * d, 0], head: [3 * d, 0] });
 }
 
 // ---------- wall slide ----------
@@ -102,7 +102,7 @@ function wallSlide(u) {
 // a = 0: arms straight in front at shoulder height, hands shoulder-width; a = 1: band on the chest.
 function pullApart(a) {
   const arm = [90, 74.5 * a, 4, 0]; // flex 90 + abduction sweeps the arm level at shoulder height
-  return stand({ armL: arm, armR: arm.slice(), tuck: 0.008, ...shrug(-0.006 * a, -0.03 * a) });
+  return stand({ armL: arm, armR: arm.slice(), spine: [-2 * a, 0, 0], lumbar: [0, 0, 0], tuck: 0.008, ...shrug(-0.006 * a, -0.03 * a) });
 }
 
 // ---------- levator shrug ----------
@@ -124,8 +124,11 @@ const mirrorX = (v) => [-v[0], v[1], v[2]];
 function faceArms(hand, pole, sh) {
   return stand({ tuck: 0.01, ...shrug(...sh), handsIn: "world", handL: hand, handR: mirrorX(hand), elbowL: pole, elbowR: mirrorX(pole) });
 }
-const faceReach = () => faceArms([0.075, 1.585, 0.535], [1, -0.4, -0.1], [0.004, 0.028]); // arms long, blades forward
-const faceFinish = () => faceArms([0.26, 1.69, 0.06], [1, 0.05, -0.35], [-0.006, -0.03]); // hands by the eyes, elbows high
+function facePull(pull) {
+  const mix = (a, b) => a.map((v, i) => v + (b[i] - v) * pull);
+  const wrist = [0, 0, -35 * pull];
+  return { ...faceArms(mix([0.075, 1.585, 0.535], [0.26, 1.69, 0.06]), mix([1, -0.4, -0.1], [1, 0.05, -0.35]), mix([0.004, 0.028], [-0.006, -0.03])), wristL: wrist, wristR: wrist };
+}
 
 // ---------- side-lying external rotation ----------
 // Lying on the right side, knees bent and stacked, head on a cushion. The top (left) elbow
@@ -157,6 +160,18 @@ const CUSHION = (() => {
   return { type: "step", pos: [J.head.x - 0.01, 0, J.head.z], w: 0.24, d: 0.34, h: +(J.head.y - drop).toFixed(3) };
 })();
 const LIE_MAT = { type: "mat", pos: [0.05, 0, 0.12], rotY: 90, w: 0.7, d: 1.85 };
+
+// Lean over the raised knee; rotate the forearm around an elbow resting on that knee.
+function elbowOnKnee(rotation) {
+  const body = { root: [-0.04, 0.87, -0.16], rot: [41.3, 0, 0], neck: [-12, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], armR: [12, 8, 12, 0] };
+  const J = joints(body), S = J.shoulderL;
+  const axis = J.kneeL.clone().add({ x: 0, y: 0.065, z: 0 }).sub(S).normalize();
+  const elbow = S.clone().addScaledVector(axis, DIM.upperArm);
+  const fore = axis.clone().set(0, 0, 1).addScaledVector(axis, -axis.z).normalize();
+  fore.applyAxisAngle(axis, rotation * D2R);
+  const wrist = elbow.clone().addScaledVector(fore, DIM.forearm);
+  return { ...body, handsIn: "world", handL: wrist.toArray(), elbowL: elbow.clone().sub(S).toArray() };
+}
 
 // ---------- neck: forehead resistance ----------
 // Left palm on the forehead. ext 0…1 tips the head back up to about 30° (the hand follows).
@@ -264,9 +279,9 @@ export default {
         keys: [
           { t: 0, p: chinTuck(0), cue: "Stand tall, eyes level" },
           { t: 0.6, p: chinTuck(0), cue: "Slide your head straight back to make a slight double chin" },
-          { t: 1.8, p: chinTuck(1), cue: "Hold 3 s; don't nod down" },
+          ...transition(chinTuck, 0, 1, 0.6, 1.8, "Hold 3 s; don't nod down"),
           { t: 4.8, p: chinTuck(1), cue: "Release slowly" },
-          { t: 6.4, p: chinTuck(0) },
+          ...transition(chinTuck, 1, 0, 4.8, 6.4),
         ],
       },
     ],
@@ -301,9 +316,9 @@ export default {
         keys: [
           { t: 0, p: pullApart(0), cue: "Arms straight at shoulder height, hands shoulder-width" },
           { t: 0.5, p: pullApart(0), cue: "Pull the band to your chest and squeeze your shoulder blades" },
-          { t: 1.8, p: pullApart(1), cue: "Shoulders down, away from the ears; pause 1 s" },
+          ...transition(pullApart, 0, 1, 0.5, 1.8, "Shoulders down, away from the ears; pause 1 s"),
           { t: 2.8, p: pullApart(1), cue: "Return slowly" },
-          { t: 4.4, p: pullApart(0) },
+          ...transition(pullApart, 1, 0, 2.8, 4.4),
         ],
       },
     ],
@@ -336,11 +351,11 @@ export default {
         highlight: ["upperBack", "rotatorCuff", "shoulders"],
         camera: { view: [0.3, 0.32, -1], target: [0, 1.42, 0.45], dist: 3.3 },
         keys: [
-          { t: 0, p: faceReach(), cue: "Band at face height, arms long, stand tall" },
-          { t: 0.5, p: faceReach(), cue: "Pull toward your eyes, elbows high" },
-          { t: 1.7, p: faceFinish(), cue: "Point your thumbs back; squeeze your shoulder blades for 1 s" },
-          { t: 2.7, p: faceFinish(), cue: "Slow return; stay tall" },
-          { t: 4.7, p: faceReach() },
+          { t: 0, p: facePull(0), cue: "Band at face height, arms long, stand tall" },
+          { t: 0.5, p: facePull(0), cue: "Pull toward your eyes, elbows high" },
+          ...transition(facePull, 0, 1, 0.5, 1.7, "Point your thumbs back; squeeze your shoulder blades for 1 s"),
+          { t: 2.7, p: facePull(1), cue: "Slow return; stay tall" },
+          ...transition(facePull, 1, 0, 2.7, 4.7),
         ],
       },
     ],
@@ -356,12 +371,12 @@ export default {
         camera: { view: [0.75, 0.25, 0.85], target: [0, 1.05, 0.1], dist: 3.6 },
         alternate: true,
         keys: [
-          { t: 0, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] }, cue: "Prop one foot up and rest your elbow on the knee at 90°" },
-          { t: 0.001, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] } },
-          { t: 0.6, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] }, cue: "Rotate the forearm up and back" },
-          { t: 1.8, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, 50] } },
-          { t: 2.2, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, 50] }, cue: "Lower slowly in 2–3 s, shoulder blade down" },
-          { t: 4.7, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] } },
+          { t: 0, p: elbowOnKnee(-55), cue: "Prop one foot up and rest your elbow on the knee at 90°" },
+          { t: 0.001, p: elbowOnKnee(-55), e: "hold" },
+          { t: 0.6, p: elbowOnKnee(-55), cue: "Rotate the forearm up and back" },
+          ...transition(elbowOnKnee, -55, 50, 0.6, 1.8),
+          { t: 2.2, p: elbowOnKnee(50), cue: "Lower slowly in 2–3 s, shoulder blade down" },
+          ...transition(elbowOnKnee, 50, -55, 2.2, 4.7),
         ],
       },
       {
