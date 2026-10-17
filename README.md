@@ -41,10 +41,6 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 ![Mobile bottom navigation: Today, Activity, Exercises, Plan and Settings](docs/screenshots/mobile-navigation.png)
 
-On phones, missed-workout reminders and skipped-day notices put their buttons below the message.
-
-<img src="docs/screenshots/mobile-session-notice.png" width="390" alt="A missed-workout reminder on a phone, with readable text and buttons below it">
-
 > Unofficial and not affiliated with or endorsed by Bryan Johnson or Blueprint. It's a training plan, not medical advice. If you have been inactive for a while, are over 50 or have a heart condition, check with a doctor before hard intervals.
 
 ## Run it locally
