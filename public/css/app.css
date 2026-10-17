@@ -315,6 +315,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .day-nav { display: flex; align-items: center; gap: 8px; }
 .day-nav .date { font-weight: 650; min-width: 0; }
 .hero { padding: 22px 24px; display: grid; gap: 14px; position: relative; overflow: hidden; }
+.hero:has(.session-swap[open]) { overflow: visible; z-index: 10; }
 .hero::after {
   content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%;
   background: radial-gradient(circle, var(--accent-soft), transparent 70%); pointer-events: none;
@@ -323,6 +324,22 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .hero h1 { font-family: var(--font-display); font-size: clamp(2rem, 4.2vw, 3rem); text-transform: uppercase; letter-spacing: 0.01em; line-height: 0.98; }
 .hero .focus { color: var(--ink-2); max-width: 70ch; }
 .hero.rest h1 { color: var(--muted); }
+.session-swap { position: relative; }
+.session-swap > summary { list-style: none; }
+.session-swap > summary::-webkit-details-marker { display: none; }
+.session-swap-chevron { transition: transform 0.15s; }
+.session-swap[open] .session-swap-chevron { transform: rotate(180deg); }
+.session-swap-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; display: grid; gap: 2px;
+  width: min(340px, calc(100vw - 32px)); max-height: min(60vh, 420px); overflow: auto; padding: 6px;
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow-pop);
+}
+.session-swap-menu button {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 12px;
+  border: 0; border-radius: var(--r-sm); background: transparent; color: var(--ink); text-align: left;
+  font-weight: 600; white-space: normal; cursor: pointer;
+}
+.session-swap-menu button:hover, .session-swap-menu button[aria-current="true"] { background: var(--surface-2); }
 .banner { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--line); }
 .banner.skip { background: var(--skip-soft); border-color: transparent; }
 .banner.hint { background: var(--bryan-soft); border-color: transparent; }

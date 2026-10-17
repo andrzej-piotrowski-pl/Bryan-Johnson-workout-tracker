@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.17.1] - 2026-10-17
+
+### Changed
+- Today puts Swap session before Skip day and styles the session picker for each theme.
+
 ## [1.17.0] - 2026-10-17
 
 ### Added

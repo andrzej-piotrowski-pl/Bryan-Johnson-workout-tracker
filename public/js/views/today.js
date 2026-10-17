@@ -267,7 +267,7 @@ export function render(el, params) {
     const levelLine = level !== levelIndex(profile()) ? `Logged at ${LEVELS[level].name} level` : `${LEVELS[level].name} level`;
     const wt = isToday && !rest ? weekTargets(weekStart(todayIso())) : null;
     const swapOptions = DAYS.filter((d) => d.blocks.length)
-      .map((d) => `<option value="${d.key}" ${ctx.key === d.key ? "selected" : ""}>${esc(d.name)}: ${esc(d.title)}</option>`)
+      .map((d) => `<button type="button" data-swap-to="${esc(d.key)}" ${ctx.key === d.key ? 'aria-current="true"' : ""}>${esc(d.name)}: ${esc(d.title)}${ctx.key === d.key ? icon("check", "sm") : ""}</button>`)
       .join("");
     return `<section class="card hero${rest ? " rest" : ""}">
       <div class="hero-top">
@@ -286,10 +286,14 @@ export function render(el, params) {
       </div>
       <div class="btn-row">
         ${rest || (l && l.skip) ? "" : `<button type="button" class="btn primary" data-guided>${icon("play")} Start guided workout</button><button type="button" class="btn" data-all>${icon("check")} Mark all done</button>`}
-        ${rest ? "" : l && l.skip ? "" : `<button type="button" class="btn ghost skip" data-skip>${icon("skip")} Skip day</button>`}
-        <label class="btn" style="position:relative">${icon("swap")} <span>${rest ? "Train anyway" : "Swap session"}</span>
-          <select data-swap aria-label="Swap session" style="position:absolute;inset:0;opacity:0;cursor:pointer"><option value="">${rest ? "Choose a session…" : "Scheduled session"}</option>${swapOptions}</select>
-        </label>
+        <details class="session-swap">
+          <summary class="btn">${icon("swap")} <span>${rest ? "Train anyway" : "Swap session"}</span>${icon("chevronD", "sm session-swap-chevron")}</summary>
+          <div class="session-swap-menu">
+            ${ctx.swapped ? `<button type="button" data-swap-reset>Scheduled session</button>` : ""}
+            ${swapOptions}
+          </div>
+        </details>
+        ${rest || (l && l.skip) ? "" : `<button type="button" class="btn ghost skip" data-skip>${icon("skip")} Skip day</button>`}
       </div>
     </section>`;
   }
@@ -595,9 +599,15 @@ export function render(el, params) {
     } else if (b.hasAttribute("data-show-skipped")) {
       showSkipped = !showSkipped;
       draw();
+    } else if (b.hasAttribute("data-swap-reset")) {
+      editDay(date, (d) => {
+        d.session = null;
+      });
+      selected = null;
+      draw();
     } else if (b.dataset.swapTo) {
       editDay(date, (d) => {
-        d.session = b.dataset.swapTo;
+        d.session = b.dataset.swapTo === weekdayKey(date) ? null : b.dataset.swapTo;
       });
       selected = null;
       draw();
@@ -676,14 +686,7 @@ export function render(el, params) {
 
   el.addEventListener("change", (e) => {
     const t = e.target;
-    if (t.matches("[data-swap]")) {
-      const v = t.value;
-      editDay(date, (d) => {
-        d.session = v && v !== weekdayKey(date) ? v : null;
-      });
-      selected = null;
-      draw();
-    } else if (t.matches("[data-x]") && t.tagName === "SELECT") {
+    if (t.matches("[data-x]") && t.tagName === "SELECT") {
       const id = t.closest("[data-extra]").dataset.extra;
       editDay(date, (d) => {
         const x = d.extras.find((y) => y.id === id);
