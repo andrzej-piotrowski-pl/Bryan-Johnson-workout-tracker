@@ -29,7 +29,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 <p>
 <img src="docs/screenshots/exercise.png" width="32%" alt="An exercise page with its animation, steps and videos">
-<img src="docs/screenshots/progress.png" width="32%" alt="Progress charts: sessions, Zone 2 and hard-cardio minutes per week">
+<img src="docs/screenshots/progress-returning.png" width="32%" alt="Progress at Returning: sessions, Zone 2 and hard-cardio minutes per week">
 <img src="docs/screenshots/history.png" width="32%" alt="History calendar with skip reasons">
 </p>
 <p>
@@ -153,7 +153,7 @@ Open **Activity** for four views: **This week**, **History**, **Progress** and *
 
 **This week** ends with one weekly target card. Each row shows your completed work, the target for your level and Bryan's full Well trained target (150 Zone 2 and 75 hard-cardio minutes). It covers strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left.
 
-![Weekly targets with your level and Bryan's targets side by side](docs/screenshots/weekly-targets.png)
+![Weekly targets at Returning: 90 Zone 2 and 26 hard-cardio minutes, alongside Bryan's full targets](docs/screenshots/weekly-targets-returning.png)
 
 The **level check** is in Today's **Notes & observations** and again at the end of a guided workout: the plan's session count for your current level, its two move-up questions and the button to change level when you are ready. In **Settings → Training level**, the manual picker comes first and stays open. The level check below it starts collapsed. Both checks follow your theme. You can also change levels directly on **The plan**, where a thick border marks your current level.
 
@@ -165,11 +165,6 @@ In Progress, the sessions, Zone 2 and hard-cardio charts sit one below another. 
 - **Longer**: 8 weeks, 12 weeks, 6 months, 1 year, Since beginning.
 
 Last week means the previous Monday–Sunday; Last month means the previous calendar month. The exact dates are shown above the choices. All charts, tables and totals use the same interval, including strength, body weight and posture. Weekly averages use full weeks when available. Since beginning includes older imported logs, even if they predate your current program start.
-
-<p>
-<img src="docs/screenshots/activity.png" width="65%" alt="Activity with This week, History, Progress and Benchmarks tabs">
-<img src="docs/screenshots/mobile-progress.png" width="24%" alt="Progress on a phone with grouped time intervals and exact dates">
-</p>
 
 Activity and Progress with the **Returning** plan, using sample logs:
 

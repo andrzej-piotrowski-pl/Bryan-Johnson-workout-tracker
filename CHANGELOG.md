@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.22.3] - 2026-10-17
+
+### Fixed
+- The README's main weekly targets, Activity and Progress images now show Returning, with the duplicate examples removed.
+
 ## [1.22.2] - 2026-10-17
 
 ### Changed
