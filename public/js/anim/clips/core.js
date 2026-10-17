@@ -41,14 +41,14 @@ const BAR_Y = 2.14;
 const BAR_Z = 0.08;
 const GRIP = 0.25;
 const DOORFRAME = { type: "doorframe", pos: [0, 0, 0], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z };
-function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 22 } = {}) {
+function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 22, shrug = -0.03 } = {}) {
   const p = {
     rot: [lean - curl, 0, 0],
     spine: [curl, 0, 0],
     legL: [hip, 2, knee, plantar],
     legR: [hip, 2, knee, plantar],
-    shrugL: [-0.03, 0],
-    shrugR: [-0.03, 0],
+    shrugL: [shrug, 0],
+    shrugR: [shrug, 0],
     neck: [4, 0],
   };
   // Shoulders sit exactly one (straight) arm length below the hands.
@@ -64,6 +64,7 @@ function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 2
     elbowR: [-0.6, -1, 0.1],
   };
 }
+const PASSIVE_HANG = legRaise({ shrug: 0.032 });
 const HANG = legRaise();
 const KNEES_UP = legRaise({ hip: 92, knee: 105, curl: 4, lean: 12, back: 0.04 });
 const KNEES_CURL = legRaise({ hip: 106, knee: 115, curl: 20, lean: 16, back: 0.05 });
@@ -199,14 +200,27 @@ export default {
   deadhang: {
     clips: [
       {
-        title: "Dead hang (passive & active)",
+        title: "Passive dead hang",
         props: [DOORFRAME],
         highlight: ["grip", "forearms", "shoulders", "back"],
         camera: { view: [1, 0.2, 0.9], target: [0, 1.12, 0.1], dist: 4.5 },
         keys: [
-          { t: 0, p: HANG, cue: "Hang from the bar; breathe slowly" },
-          { t: 2.0, p: HANG, cue: "Decompress the spine and ribs" },
-          { t: 4.0, p: HANG },
+          { t: 0, p: PASSIVE_HANG, cue: "Passive hang: relax shoulders and let gravity stretch your spine" },
+          { t: 2.0, p: legRaise({ shrug: 0.036, hip: 2 }), cue: "Breathe slowly and decompress the spine" },
+          { t: 4.0, p: PASSIVE_HANG },
+        ],
+      },
+      {
+        title: "Active dead hang",
+        props: [DOORFRAME],
+        highlight: ["grip", "forearms", "shoulders", "upperBack"],
+        camera: { view: [1, 0.2, 0.9], target: [0, 1.12, 0.1], dist: 4.5 },
+        keys: [
+          { t: 0, p: PASSIVE_HANG, cue: "Start from a full passive hang, elbows straight" },
+          { t: 0.6, p: PASSIVE_HANG, cue: "Pull shoulder blades down and back away from your ears" },
+          { t: 1.6, p: HANG, cue: "Hold the active hang without bending your elbows" },
+          { t: 3.4, p: HANG, cue: "Lower slowly back into a passive hang" },
+          { t: 4.4, p: PASSIVE_HANG },
         ],
       },
     ],

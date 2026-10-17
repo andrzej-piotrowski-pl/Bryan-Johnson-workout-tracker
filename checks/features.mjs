@@ -208,6 +208,10 @@ assert(deskState().nextMoveIn <= 300 && deskState().nextMoveIn > 280, "Snooze re
 stopDesk();
 assert.equal(deskState().running, false);
 
+import { fmtMinSec } from "../public/js/util.js";
+import { getAnimation } from "../public/js/anim/clips/index.js";
+import { lookDetailHtml, renderVideos, videoGroupsFor, videosFor } from "../public/js/components/video.js";
+
 // ---------- longevity benchmarks ----------
 assert.equal(BENCHMARKS.length, 8, "All 8 core Blueprint longevity benchmarks are present");
 assert(BENCHMARKS.some((b) => b.id === "pushups"), "Push-ups test present");
@@ -219,4 +223,61 @@ assert.equal(BENCHMARKS.find((b) => b.id === "pushups").rate(45).tier, "elite");
 assert.equal(BENCHMARKS.find((b) => b.id === "grip").rate(58).tier, "elite");
 assert.equal(BENCHMARKS.find((b) => b.id === "deadhang").rate(65).tier, "good");
 
-console.log("Progression rules, week scoreboard, level readiness, desk streaks and benchmarks passed.");
+// ---------- video timestamps, look detail & per-movement clipVideos ----------
+assert.equal(fmtMinSec(0), "min 0 sec 0");
+assert.equal(fmtMinSec(96), "min 1 sec 36");
+assert.equal(fmtMinSec(920), "min 15 sec 20");
+
+for (const [id, ex] of Object.entries(EXERCISES)) {
+  const anim = getAnimation(id);
+  assert(anim && anim.clips.length >= 1, `Animation clips must exist for ${id}`);
+  const all = videosFor(ex);
+  assert(all.length >= 1, `Every exercise must have at least one video: ${id}`);
+  if (all.some((v) => v.kind === "bryan")) {
+    assert.equal(all[0].kind, "bryan", `Bryan's video must come first for ${id}`);
+  }
+  for (const v of all) {
+    assert.equal(typeof v.start, "number", `Video start must be numeric for ${id}`);
+    assert(v.start >= 0, `Video start must be >= 0 for ${id}`);
+    const look = lookDetailHtml(v);
+    assert(look.includes("Where to look:"), `Look detail must appear for ${id}`);
+    assert(look.includes(fmtMinSec(v.start)), `Look detail must show min X sec Y for ${id}`);
+  }
+  const groups = videoGroupsFor(ex);
+  if (anim.clips.length > 1) {
+    assert.equal(groups.length, anim.clips.length, `Multi-clip exercise ${id} must have one video group per animation clip`);
+    for (const g of groups) {
+      assert(g.videos.length >= 1 && g.videos.length <= 5, `${id} group "${g.title}" must have 1 to 5 videos`);
+      if (g.videos.some((v) => v.kind === "bryan")) {
+        assert.equal(g.videos[0].kind, "bryan", `Bryan's video must come first in ${id} group "${g.title}"`);
+      }
+    }
+  } else {
+    assert.equal(groups.length, 1);
+  }
+}
+
+// Verify renderVideos sub-movement switching and look banner placement above .video-frame
+const fakeContainer = {
+  innerHTML: "",
+  listeners: {},
+  addEventListener(type, fn) {
+    this.listeners[type] = fn;
+  },
+};
+const dynGroups = videoGroupsFor(EXERCISES.dynamic);
+const ctrl = renderVideos(fakeContainer, videosFor(EXERCISES.dynamic), {
+  groups: dynGroups,
+  activeGroup: 0,
+});
+assert.equal(ctrl.activeGroup, 0);
+assert(fakeContainer.innerHTML.includes("Movement 1 of 6: Arm circles"));
+assert(
+  fakeContainer.innerHTML.indexOf('class="video-look"') < fakeContainer.innerHTML.indexOf('class="video-frame"'),
+  "Where-to-look timestamp banner must appear above the video frame"
+);
+ctrl.setGroup(4);
+assert.equal(ctrl.activeGroup, 4);
+assert(fakeContainer.innerHTML.includes("Movement 5 of 6: Hip CARs"));
+
+console.log("Progression rules, week scoreboard, level readiness, desk streaks, benchmarks and video sync passed.");

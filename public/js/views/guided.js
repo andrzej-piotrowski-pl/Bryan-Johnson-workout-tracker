@@ -10,7 +10,7 @@ import { icon } from "../components/icons.js";
 import { createStagePanel } from "../components/stage-panel.js";
 import { editItem, getItemLog, renderLogger } from "../components/logger.js";
 import { exerciseInfoHtml } from "../components/exercise-panel.js";
-import { renderVideos, videosFor } from "../components/video.js";
+import { renderVideos, videoGroupsFor, videosFor } from "../components/video.js";
 import { mountLevelCheck } from "../components/level-check.js";
 import { pauseDesk, resumeDesk } from "../components/desk.js";
 import { stopRest } from "../components/timer.js";
@@ -54,7 +54,12 @@ export function startGuided(date, onExit) {
   </div>`);
   document.getElementById("overlay-root").appendChild(wrap);
   document.body.style.overflow = "hidden";
-  const stage = createStagePanel(wrap.querySelector(".stage-host"));
+  let videoCtrl = null;
+  const stage = createStagePanel(wrap.querySelector(".stage-host"), {
+    onClipChange: ({ clipIndex, manual }) => {
+      if (videoCtrl) videoCtrl.setGroup(clipIndex, { manual });
+    },
+  });
   const side = wrap.querySelector(".guided-side");
   const bar = wrap.querySelector(".bar i");
   const count = wrap.querySelector('[data-g="count"]');
@@ -92,7 +97,12 @@ export function startGuided(date, onExit) {
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
     renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope });
-    renderVideos(side.querySelector('[data-g="videos"]'), videosFor(ex));
+    videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(ex), {
+      groups: videoGroupsFor(ex),
+      activeGroup: stage.clipIndex,
+      onSelectGroup: (gi) => stage.setClip(gi),
+      onPlay: () => stage.setAutoAdvance(false),
+    });
     wrap.querySelector('[data-g="prev"]').disabled = i === 0;
   }
 

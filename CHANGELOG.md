@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.23.0] - 2026-10-17
+
+### Added
+- A `Where to look: min X sec Y` timestamp banner appears above every video so you always know where the exercise starts, even if a player resets or can't embed at a timestamp.
+- Exercises with multiple movements (such as the dynamic warm-up, jumps, calf raises, pull-ups & chin-ups, dead hangs, heel drops & stomps, knee & leg raises, single-leg RDL & toe touch, external rotation, neck resistance and interval moves) now have 1–5 videos per movement that switch automatically as the 3D animation changes movement.
+- Separate 3D animation clips for passive vs active dead hangs, heel drops vs stomp drills, single-leg toe touch vs single-leg RDL, and elbow-on-knee vs side-lying external rotation.
+
+### Changed
+- Video embeds start at the exact second where the exercise is demonstrated, with Bryan's clips listed first, and pressing Play pauses animation auto-switching so your video isn't interrupted.
+- Replaced long multi-exercise workout videos and mismatched or unavailable clips with short videos focused on the specific exercise.
+
 ## [1.22.3] - 2026-10-17
 
 ### Fixed

@@ -20,7 +20,7 @@ const SPEEDS = [0.5, 1, 1.5, 2];
 // Height of the cue bar plus its margin, kept clear of the figure.
 const CUE_SPACE = 64;
 
-export function createStagePanel(container) {
+export function createStagePanel(container, { onClipChange } = {}) {
   container.classList.add("stage");
   container.innerHTML = `
     <div class="ctrls">
@@ -45,14 +45,33 @@ export function createStagePanel(container) {
   let speed = 1;
   let autoAdvance = true;
   let disposed = false;
+  let curClipIndex = 0;
+  let curClipCount = 0;
+  let pendingManual = false;
+
+  function syncAdvanceBtn() {
+    const b = navEl.querySelector('[data-a="advance"]');
+    if (!b) return;
+    b.textContent = autoAdvance ? "Auto" : "Fixed";
+    b.setAttribute("aria-pressed", String(autoAdvance));
+    b.title = autoAdvance ? "Automatically switch movements" : "Keep this movement selected";
+  }
 
   function onCue({ cue, title, clipIndex, clipCount }) {
+    const changed = clipIndex !== curClipIndex || clipCount !== curClipCount;
+    curClipIndex = clipIndex || 0;
+    curClipCount = clipCount || 0;
     cueEl.textContent = cue || title || "";
     navEl.innerHTML =
       clipCount > 1
         ? `<button type="button" class="btn sm icon-only" data-clip="-1" aria-label="Previous movement">${icon("chevronL", "sm")}</button><span class="mono" aria-label="Movement ${clipIndex + 1} of ${clipCount}">${clipIndex + 1}/${clipCount}</span><button type="button" class="btn sm icon-only" data-clip="1" aria-label="Next movement">${icon("chevronR", "sm")}</button><button type="button" class="btn sm" data-a="advance" aria-pressed="${autoAdvance}" title="${autoAdvance ? "Automatically switch movements" : "Keep this movement selected"}">${autoAdvance ? "Auto" : "Fixed"}</button>`
         : "";
     titleEl.textContent = title || "";
+    if (changed && onClipChange) {
+      const manual = pendingManual;
+      pendingManual = false;
+      onClipChange({ clipIndex: curClipIndex, clipCount: curClipCount, title, manual });
+    }
   }
 
   function fail(message) {
@@ -75,6 +94,7 @@ export function createStagePanel(container) {
         stage = new Stage(container, { onCue });
         stage.setInset(CUE_SPACE);
         stage.setSpeed(speed);
+        stage.setAutoAdvance(autoAdvance);
         if (wanted) load(wanted);
       })
       .catch((err) => {
@@ -85,6 +105,8 @@ export function createStagePanel(container) {
 
   function load(id) {
     wanted = id;
+    curClipIndex = 0;
+    curClipCount = 0;
     if (!stage) return;
     container.querySelector(".no3d")?.remove();
     container.querySelectorAll(".ctrls, .views, .cue").forEach((el) => (el.hidden = false));
@@ -97,6 +119,20 @@ export function createStagePanel(container) {
     if (!stage.playing) stage.play();
     playBtn.innerHTML = icon("pause");
     playBtn.setAttribute("aria-label", "Pause animation");
+  }
+
+  function setAutoAdvance(enabled) {
+    autoAdvance = !!enabled;
+    if (stage) stage.setAutoAdvance(autoAdvance);
+    syncAdvanceBtn();
+  }
+
+  function setClip(index) {
+    curClipIndex = index;
+    if (!stage) return;
+    pendingManual = true;
+    stage.setClip(index);
+    pendingManual = false;
   }
 
   container.addEventListener("click", (e) => {
@@ -115,21 +151,27 @@ export function createStagePanel(container) {
     } else if (b.dataset.a === "zoom-out") {
       stage.zoom(1 / 1.2);
     } else if (b.dataset.a === "advance") {
-      autoAdvance = !autoAdvance;
-      stage.setAutoAdvance(autoAdvance);
-      b.textContent = autoAdvance ? "Auto" : "Fixed";
-      b.setAttribute("aria-pressed", String(autoAdvance));
-      b.title = autoAdvance ? "Automatically switch movements" : "Keep this movement selected";
+      setAutoAdvance(!autoAdvance);
     } else if (b.dataset.view) {
       stage.userMoved = false;
       stage.setView(b.dataset.view);
     } else if (b.dataset.clip) {
+      pendingManual = true;
       stage.nextClip(Number(b.dataset.clip));
+      pendingManual = false;
     }
   });
 
   return {
     load,
+    setClip,
+    setAutoAdvance,
+    get clipIndex() {
+      return stage ? stage.clipIndex : curClipIndex;
+    },
+    get autoAdvance() {
+      return autoAdvance;
+    },
     pause: () => stage && stage.pause(),
     play: () => stage && stage.play(),
     dispose() {

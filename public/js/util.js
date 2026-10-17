@@ -77,6 +77,13 @@ export function fmtSecs(sec) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+export function fmtMinSec(sec) {
+  sec = Math.max(0, Math.round(sec || 0));
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `min ${m} sec ${s}`;
+}
+
 export function plural(n, one, many = one + "s") {
   return `${n} ${n === 1 ? one : many}`;
 }

@@ -9,7 +9,7 @@ import { esc } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "./icons.js";
 import { getItemLog, renderLogger } from "./logger.js";
 import { createStagePanel } from "./stage-panel.js";
-import { renderVideos, videosFor } from "./video.js";
+import { renderVideos, videoGroupsFor, videosFor } from "./video.js";
 
 const MUSCLE_NAMES = {
   quads: "Quads", hamstrings: "Hamstrings", adductors: "Inner thighs", glutes: "Glutes", hips: "Hips", calves: "Calves",
@@ -31,7 +31,12 @@ export function exerciseInfoHtml(ex) {
 
 export function createExercisePanel(container, { mode = "log" } = {}) {
   container.innerHTML = `<div class="card detail"><div class="stage-host"></div><div class="detail-body"></div></div>`;
-  const stage = createStagePanel(container.querySelector(".stage-host"));
+  let videoCtrl = null;
+  const stage = createStagePanel(container.querySelector(".stage-host"), {
+    onClipChange: ({ clipIndex, manual }) => {
+      if (videoCtrl) videoCtrl.setGroup(clipIndex, { manual });
+    },
+  });
   const body = container.querySelector(".detail-body");
   let tab = "how";
   let current = null;
@@ -43,8 +48,16 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
     const ex = EXERCISES[current.exId];
     if (tab === "videos") {
       host.innerHTML = "";
-      renderVideos(host, videosFor(ex));
-    } else host.innerHTML = exerciseInfoHtml(ex);
+      videoCtrl = renderVideos(host, videosFor(ex), {
+        groups: videoGroupsFor(ex),
+        activeGroup: stage.clipIndex,
+        onSelectGroup: (gi) => stage.setClip(gi),
+        onPlay: () => stage.setAutoAdvance(false),
+      });
+    } else {
+      videoCtrl = null;
+      host.innerHTML = exerciseInfoHtml(ex);
+    }
   }
 
   function show(ctx) {

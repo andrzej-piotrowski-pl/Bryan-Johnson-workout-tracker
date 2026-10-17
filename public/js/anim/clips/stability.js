@@ -83,7 +83,7 @@ const SL_BACKFOOT = (() => {
   const hip = [SL_ROOT[0] - 0.095, SL_ROOT[1], SL_ROOT[2]];
   return [hip[0], hip[1] - 0.862 * Math.cos(a), hip[2] - 0.862 * Math.sin(a)]; // straight leg behind
 })();
-function slrdl(phase) {
+function slrdl(phase, { bothHands = false } = {}) {
   // phase 0 = both feet down, 1 = on the left leg, 2 = bottom of the hinge
   const lift = Math.min(phase, 1), h = Math.max(phase - 1, 0);
   const root = mix([0.06 * lift, STAND_Y - 0.004 - 0.008 * lift, 0], SL_ROOT, h);
@@ -98,16 +98,17 @@ function slrdl(phase) {
     kneeR: [0, -0.3 * h, 1 - 1.3 * h],
   };
   // Both hands IK so the two-footed start is mirror-symmetric: they hang at the sides, then the
-  // right hand reaches toward the left foot and the left arm hangs a little out for balance.
+  // right hand reaches toward the left foot (or both hands hang below the shoulders for RDL).
   const J = joints(p);
   const hangL = [J.shoulderL.x + 0.015 + 0.03 * lift, J.shoulderL.y - ARM * 0.985, J.shoulderL.z + 0.03];
   const hangR = [J.shoulderR.x - 0.015, J.shoulderR.y - ARM * 0.985, J.shoulderR.z + 0.03];
-  const outL = [J.shoulderL.x + 0.2, J.shoulderL.y - 0.5, J.shoulderL.z - 0.06];
+  const outL = bothHands ? [0.14, 0.36, 0.16] : [J.shoulderL.x + 0.2, J.shoulderL.y - 0.5, J.shoulderL.z - 0.06];
+  const outR = bothHands ? [-0.08, 0.36, 0.16] : [0.06, 0.33, 0.2];
   return {
     ...p,
     handsIn: "world",
     handL: mix(hangL, outL, h),
-    handR: mix(hangR, [0.06, 0.33, 0.2], h),
+    handR: mix(hangR, outR, h),
     elbowL: [0.4, 0.2, -1],
     elbowR: [-0.4, 0.2, -1],
   };
@@ -182,17 +183,31 @@ export default {
   slrdl: {
     clips: [
       {
-        title: "Single-leg RDL / toe touch",
+        title: "Single-leg toe touch",
         highlight: ["hamstrings", "glutes", "ankles"],
         camera: { view: "side", target: [0, 0.78, -0.22], dist: 4.4 },
         alternate: true,
         keys: [
           { t: 0, p: slrdl(0), cue: "Stand tall, then shift onto one leg" },
-          { t: 0.8, p: slrdl(1), cue: "Hinge at your hips and reach toward the foot on the floor" },
+          { t: 0.8, p: slrdl(1), cue: "Reach the opposite hand toward your standing foot" },
           { t: 3.0, p: slrdl(2), cue: "Back leg rises; hips stay square" },
           { t: 3.5, p: slrdl(2), cue: "Squeeze the glute to stand back up" },
           { t: 5.5, p: slrdl(1) },
           { t: 6.2, p: slrdl(0), cue: "Switch legs" },
+        ],
+      },
+      {
+        title: "Single-leg RDL",
+        highlight: ["hamstrings", "glutes", "lowerBack"],
+        camera: { view: [0.85, 0.22, 0.5], target: [0, 0.78, -0.18], dist: 4.4 },
+        alternate: true,
+        keys: [
+          { t: 0, p: slrdl(0, { bothHands: true }), cue: "Stand on one leg with a soft knee, spine long" },
+          { t: 0.8, p: slrdl(1, { bothHands: true }), cue: "Hinge from the hip, both hands tracking below the shoulders" },
+          { t: 3.0, p: slrdl(2, { bothHands: true }), cue: "Torso and back leg form a straight line" },
+          { t: 3.5, p: slrdl(2, { bothHands: true }), cue: "Drive the hips forward to stand tall" },
+          { t: 5.5, p: slrdl(1, { bothHands: true }) },
+          { t: 6.2, p: slrdl(0, { bothHands: true }), cue: "Switch legs" },
         ],
       },
     ],

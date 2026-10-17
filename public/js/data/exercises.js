@@ -11,7 +11,9 @@
 //   bryan             what Bryan does / says about it
 //   how, tips, easier technique notes
 //   bryanVideos       [{ k: key in videos.js, s: start second, n: note }]
-//   videos            demo videos by other coaches
+//   videos            demo videos by other coaches ({ t: title, u: url, s: start second })
+//   clipVideos        per-movement video sets synced with multi-clip 3D animations:
+//                     [{ title, bryanVideos?, videos }]
 //
 // Text may contain personalisation tokens: {hr:60-70} → heart-rate range for the
 // user's max heart rate, {kg:4-6} → load scaled to the user, {cm:30} → length in
@@ -43,12 +45,41 @@ export const EXERCISES = {
       "At Returning and above, hold a dumbbell in each hand, or loop a band around your waist with its anchor in front of you. The band should pull you forward, like a sled.",
     ],
     tips: ["You should feel the front of your thighs working. Stop if you feel pain inside the knee."],
-    bryanVideos: [{ k: "w23", s: 96 }],
+    bryanVideos: [
+      { k: "w23", s: 96, n: "backward sled" },
+      { k: "galpin", s: 1948, n: "heavy sled burst" },
+    ],
     videos: [
-      { t: "At-home sled pull alternative", u: "https://www.youtube.com/watch?v=47XXOSCVUlg" },
+      { t: "Backward walk for knee strength", u: "https://www.youtube.com/watch?v=6EhaDP7WKG0", s: 0 },
       {
         t: "Sled pull alternative (Knees Over Toes style)",
         u: "https://www.youtube.com/watch?v=6zcj8dNolrA",
+        s: 12,
+      },
+    ],
+    clipVideos: [
+      {
+        title: "Backward walk",
+        bryanVideos: [{ k: "w23", s: 96, n: "backward sled" }],
+        videos: [
+          { t: "Backward walk for knee strength", u: "https://www.youtube.com/watch?v=6EhaDP7WKG0", s: 0 },
+          { t: "Walk backward for knee and back health", u: "https://www.youtube.com/watch?v=HLdGJaPrjZ8", s: 18 },
+        ],
+      },
+      {
+        title: "Backward walk with dumbbells (Phase 2+)",
+        bryanVideos: [
+          { k: "galpin", s: 1948, n: "heavy sled burst" },
+          { k: "w23", s: 96, n: "backward sled" },
+        ],
+        videos: [
+          {
+            t: "Sled pull alternative (Knees Over Toes style)",
+            u: "https://www.youtube.com/watch?v=6zcj8dNolrA",
+            s: 12,
+          },
+          { t: "Backward walking progression", u: "https://www.youtube.com/watch?v=kQvm1_KQ2Jg", s: 45 },
+        ],
       },
     ],
   },
@@ -68,10 +99,67 @@ export const EXERCISES = {
       "Lunge with twist: 5 per side, turning your chest toward the front knee.",
     ],
     videos: [
-      { t: "Leg swings", u: "https://www.youtube.com/watch?v=difYoBtZi2s" },
-      { t: "Lateral lunge", u: "https://www.youtube.com/watch?v=vwK7vZNQwUI" },
-      { t: "Standing hip CARs", u: "https://www.youtube.com/watch?v=vybS-uVNrqA" },
-      { t: "Lunge with twist", u: "https://www.youtube.com/watch?v=KDelmDbh4Ms" },
+      { t: "Arm circles warm-up", u: "https://www.youtube.com/watch?v=UVMEnIaY8aU", s: 0 },
+      { t: "Leg swings", u: "https://www.youtube.com/watch?v=difYoBtZi2s", s: 3 },
+      { t: "High knees on the spot", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+      { t: "Lateral lunge", u: "https://www.youtube.com/watch?v=apsp_uuXZTU", s: 3 },
+      { t: "Standing hip CARs", u: "https://www.youtube.com/watch?v=vybS-uVNrqA", s: 4 },
+      { t: "Lunge with twist", u: "https://www.youtube.com/watch?v=peb887Bc0-Q", s: 2 },
+    ],
+    clipVideos: [
+      {
+        title: "Arm circles",
+        videos: [
+          { t: "Arm circles exercise", u: "https://www.youtube.com/watch?v=UVMEnIaY8aU", s: 0 },
+          { t: "Standing warm-up arm circles", u: "https://www.youtube.com/watch?v=mwDgFY86zck", s: 0 },
+        ],
+      },
+      {
+        title: "Leg swings",
+        videos: [
+          { t: "How to do leg swings", u: "https://www.youtube.com/watch?v=difYoBtZi2s", s: 3 },
+          {
+            t: "Front-to-back and side-to-side leg swings",
+            u: "https://www.youtube.com/watch?v=RdL35MpuoQs",
+            s: 12,
+          },
+          { t: "Active warm-up leg swings", u: "https://www.youtube.com/watch?v=naW8u72lOzI", s: 6 },
+        ],
+      },
+      {
+        title: "High knees on the spot",
+        videos: [
+          { t: "How to do high knees", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+          { t: "High knee warm-up drill", u: "https://www.youtube.com/watch?v=ymdS7tM0zws", s: 2 },
+        ],
+      },
+      {
+        title: "Lateral lunges",
+        videos: [
+          { t: "How to do lateral lunges (side lunges)", u: "https://www.youtube.com/watch?v=apsp_uuXZTU", s: 3 },
+          { t: "Lateral lunge form and cues", u: "https://www.youtube.com/watch?v=vwK7vZNQwUI", s: 22 },
+        ],
+      },
+      {
+        title: "Hip CARs",
+        videos: [
+          { t: "Standing hip CARs explained", u: "https://www.youtube.com/watch?v=PO1of6rKX3Q", s: 3 },
+          {
+            t: "Standing hip CARs (controlled articular rotations)",
+            u: "https://www.youtube.com/watch?v=vybS-uVNrqA",
+            s: 4,
+          },
+          { t: "Wall-supported standing hip CARs", u: "https://www.youtube.com/watch?v=C4MDREc9ERg", s: 0 },
+        ],
+      },
+      {
+        title: "Lunge with twist",
+        videos: [
+          { t: "Lunge with twist", u: "https://www.youtube.com/watch?v=peb887Bc0-Q", s: 2 },
+          { t: "Walking lunge with twist tutorial", u: "https://www.youtube.com/watch?v=7yrkGWJHSP0", s: 3 },
+          { t: "Lunge with torso rotation", u: "https://www.youtube.com/watch?v=KDelmDbh4Ms", s: 5 },
+        ],
+      },
     ],
   },
   pogo: {
@@ -88,8 +176,8 @@ export const EXERCISES = {
     ],
     easier: "For less noise, do fast heel raises without leaving the floor.",
     videos: [
-      { t: "Stationary pogo jumps (progression)", u: "https://www.youtube.com/watch?v=jj-0qlVuM3w" },
-      { t: "Pogo hops", u: "https://www.youtube.com/watch?v=7SIfCcfP4g0" },
+      { t: "Stationary pogo jumps (progression)", u: "https://www.youtube.com/watch?v=jj-0qlVuM3w", s: 8 },
+      { t: "Pogo hops", u: "https://www.youtube.com/watch?v=7SIfCcfP4g0", s: 10 },
     ],
   },
   heeldrop: {
@@ -111,8 +199,24 @@ export const EXERCISES = {
       "Keep knees unlocked: soft knees allow the bone to absorb osteogenic impact without straining the joint cartilage.",
     ],
     videos: [
-      { t: "Heel drops for bone mineral density", u: "https://www.youtube.com/watch?v=wXhRk_Jz4K8" },
-      { t: "Stomp drills and bone loading", u: "https://www.youtube.com/watch?v=jj-0qlVuM3w" },
+      { t: "Heel drop exercise for bone density", u: "https://www.youtube.com/watch?v=tZ8gy_V6bxM", s: 18 },
+      { t: "Heel drop and foot stomp exercises", u: "https://www.youtube.com/watch?v=kMbajq1u-Us", s: 58 },
+    ],
+    clipVideos: [
+      {
+        title: "Heel drops",
+        videos: [
+          { t: "Heel drop exercise for bone density", u: "https://www.youtube.com/watch?v=tZ8gy_V6bxM", s: 18 },
+          { t: "How to do heel drops for osteoporosis", u: "https://www.youtube.com/watch?v=d3FVrOVuQtM", s: 42 },
+        ],
+      },
+      {
+        title: "Stomp drills",
+        videos: [
+          { t: "Foot stomp exercise for strengthening bone", u: "https://www.youtube.com/watch?v=kMbajq1u-Us", s: 58 },
+          { t: "Bone-building stomp drill", u: "https://www.youtube.com/watch?v=Hpg5COs6LNA", s: 24 },
+        ],
+      },
     ],
   },
   balance: {
@@ -128,9 +232,13 @@ export const EXERCISES = {
       "Stop the clock when the foot shifts, a hand leaves the hip or the raised foot touches down.",
       "Once a month, record your best eyes-closed time per leg.",
     ],
+    bryanVideos: [
+      { k: "pillars", s: 719, n: "10 s balance test" },
+      { k: "galpin", s: 1547, n: "balance drill" },
+    ],
     videos: [
-      { t: "Eyes-closed single-leg balance", u: "https://www.youtube.com/watch?v=cDnTke5lZPA" },
-      { t: "Single-leg stance basics", u: "https://www.youtube.com/watch?v=HTVVv4ESgms" },
+      { t: "Eyes-closed single-leg balance", u: "https://www.youtube.com/watch?v=cDnTke5lZPA", s: 5 },
+      { t: "Single-leg stance basics", u: "https://www.youtube.com/watch?v=HTVVv4ESgms", s: 6 },
     ],
   },
   jumps: {
@@ -148,10 +256,37 @@ export const EXERCISES = {
     ],
     tips: ["Wear shoes and land on a mat. Stop the set if your landings get loud."],
     easier: "Quiet version: explosive squat to calf raise without leaving the floor.",
+    bryanVideos: [{ k: "galpin", s: 2537, n: "jump to overhead throw" }],
     videos: [
-      { t: "Snap-downs: introduction to landings", u: "https://www.youtube.com/watch?v=4BkMWe3au9w" },
-      { t: "Squat jump with stable landing", u: "https://www.youtube.com/watch?v=d0p-3x84nj0" },
-      { t: "How to land properly", u: "https://www.youtube.com/watch?v=ORF7BS3ewQo" },
+      { t: "Snap-downs: introduction to landings", u: "https://www.youtube.com/watch?v=4BkMWe3au9w", s: 4 },
+      { t: "Squat jump with stable landing", u: "https://www.youtube.com/watch?v=d0p-3x84nj0", s: 10 },
+      { t: "Countermovement jump (CMJ)", u: "https://www.youtube.com/watch?v=m7-AV0mikkI", s: 2 },
+    ],
+    clipVideos: [
+      {
+        title: "Snap-down (phase 1)",
+        videos: [
+          { t: "Snap-downs: introduction to landings", u: "https://www.youtube.com/watch?v=4BkMWe3au9w", s: 4 },
+          { t: "Snap-down plyometric landing drill", u: "https://www.youtube.com/watch?v=0fadxQR0g0c", s: 0 },
+          { t: "Snap-down mechanics", u: "https://www.youtube.com/watch?v=x1nBhDLUUi0", s: 15 },
+        ],
+      },
+      {
+        title: "Squat jump (phase 2)",
+        videos: [
+          { t: "How to jump squat", u: "https://www.youtube.com/watch?v=BRfxI2Es2lE", s: 0 },
+          { t: "Squat jump with stable landing", u: "https://www.youtube.com/watch?v=d0p-3x84nj0", s: 10 },
+          { t: "How to land properly", u: "https://www.youtube.com/watch?v=ORF7BS3ewQo", s: 18 },
+        ],
+      },
+      {
+        title: "Countermovement jump (phase 3)",
+        bryanVideos: [{ k: "galpin", s: 2537, n: "jump to overhead throw" }],
+        videos: [
+          { t: "Countermovement jump (CMJ)", u: "https://www.youtube.com/watch?v=m7-AV0mikkI", s: 2 },
+          { t: "How to countermovement jump", u: "https://www.youtube.com/watch?v=09yR5a4u-6A", s: 0 },
+        ],
+      },
     ],
   },
   powerskip: {
@@ -167,9 +302,10 @@ export const EXERCISES = {
       "Land softly, then move into the next skip. Do 5 per leg.",
     ],
     easier: "For less noise, drive the knee up quickly with a calf raise, keeping the supporting foot on the floor.",
+    bryanVideos: [{ k: "galpin", s: 2188 }],
     videos: [
-      { t: "Alternating stationary power skips", u: "https://www.youtube.com/watch?v=_J-HVW83W9Y" },
-      { t: "Power skips tutorial", u: "https://www.youtube.com/watch?v=Hec1yEEOPYU" },
+      { t: "Alternating stationary power skips", u: "https://www.youtube.com/watch?v=_J-HVW83W9Y", s: 5 },
+      { t: "Power skips tutorial", u: "https://www.youtube.com/watch?v=Hec1yEEOPYU", s: 15 },
     ],
   },
   heidens: {
@@ -186,9 +322,10 @@ export const EXERCISES = {
       "Bound back. Build distance before adding speed.",
     ],
     easier: "For an easier, quieter version, step sideways onto one leg and hold without hopping.",
+    bryanVideos: [{ k: "galpin", s: 2447 }],
     videos: [
-      { t: "How to lateral bound", u: "https://www.youtube.com/watch?v=niEGdFUQ6sY" },
-      { t: "Lateral bound (Heiden)", u: "https://www.youtube.com/watch?v=Hc9_FQgIeeg" },
+      { t: "How to lateral bound", u: "https://www.youtube.com/watch?v=niEGdFUQ6sY", s: 5 },
+      { t: "Lateral bound (Heiden)", u: "https://www.youtube.com/watch?v=Hc9_FQgIeeg", s: 10 },
     ],
   },
   woodchop: {
@@ -205,9 +342,13 @@ export const EXERCISES = {
       "Pull down quickly, then return over 2–3 s. Do the same number of reps on both sides.",
     ],
     easier: "At easier levels, move slowly until you learn the movement.",
+    bryanVideos: [
+      { k: "galpin", s: 3415, n: "woodchopper" },
+      { k: "galpin", s: 2263, n: "rotational throw" },
+    ],
     videos: [
-      { t: "Band woodchop", u: "https://www.youtube.com/watch?v=73Zyu5g3GQg" },
-      { t: "Attaching a band to a door safely", u: "https://www.youtube.com/watch?v=fXncsqemFcQ" },
+      { t: "Band woodchop", u: "https://www.youtube.com/watch?v=73Zyu5g3GQg", s: 2 },
+      { t: "Attaching a band to a door safely", u: "https://www.youtube.com/watch?v=fXncsqemFcQ", s: 18 },
     ],
   },
   gobletsquat: {
@@ -226,8 +367,8 @@ export const EXERCISES = {
     tips: ["Elbows inside the knees at the bottom.", "Use a full range of motion before adding weight."],
     bryanVideos: [{ k: "w23", s: 866 }, { k: "galpin", s: 2784 }],
     videos: [
-      { t: "Heels-elevated goblet squat", u: "https://www.youtube.com/watch?v=nfTnWMX4U3I" },
-      { t: "Slant-board goblet squat", u: "https://www.youtube.com/watch?v=L19fSqANw8c" },
+      { t: "Heels-elevated goblet squat", u: "https://www.youtube.com/watch?v=nfTnWMX4U3I", s: 21 },
+      { t: "Slant-board goblet squat", u: "https://www.youtube.com/watch?v=L19fSqANw8c", s: 3 },
     ],
   },
   poliquin: {
@@ -248,10 +389,12 @@ export const EXERCISES = {
       {
         t: "How to perform a Poliquin (Patrick) step-up",
         u: "https://www.youtube.com/watch?v=HwFbp7irGwg",
+        s: 15,
       },
       {
         t: "Knees Over Toes progression: Poliquin step",
         u: "https://www.youtube.com/shorts/WPQnPm-Hl-w",
+        s: 0,
       },
     ],
   },
@@ -273,10 +416,12 @@ export const EXERCISES = {
       {
         t: "Knees Over Toes: ATG split squat how-to",
         u: "https://www.youtube.com/watch?v=dm3QVGhqItA",
+        s: 20,
       },
       {
         t: "Split squat: beginner-to-advanced progression",
         u: "https://www.youtube.com/shorts/9I06taRrGyI",
+        s: 0,
       },
     ],
   },
@@ -294,10 +439,10 @@ export const EXERCISES = {
       "At Returning, push back up with your hands. At higher levels, pull yourself back with your hamstrings.",
     ],
     easier: "Lowering only, over a small range.",
-    bryanVideos: [{ k: "w23", s: 904 }],
+    bryanVideos: [{ k: "w23", s: 904 }, { k: "galpin", s: 3164 }],
     videos: [
-      { t: "Nordic curl at home", u: "https://www.youtube.com/watch?v=ie7yQ5k5ZyU" },
-      { t: "Nordic curl progression", u: "https://www.youtube.com/watch?v=LWfqK8-w1J4" },
+      { t: "Nordic curl at home", u: "https://www.youtube.com/watch?v=ie7yQ5k5ZyU", s: 35 },
+      { t: "Nordic curl progression", u: "https://www.youtube.com/watch?v=LWfqK8-w1J4", s: 327 },
     ],
   },
   revnordic: {
@@ -315,10 +460,11 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 940 }],
     videos: [
-      { t: "Reverse Nordic (beginner to advanced)", u: "https://www.youtube.com/watch?v=BnlPIJ3d-ck" },
+      { t: "Reverse Nordic (beginner to advanced)", u: "https://www.youtube.com/watch?v=BnlPIJ3d-ck", s: 30 },
       {
         t: "How to perform and progress reverse Nordics",
         u: "https://www.youtube.com/shorts/uJSCxJh-tec",
+        s: 0,
       },
     ],
   },
@@ -337,8 +483,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 963 }],
     videos: [
-      { t: "Wall tibialis raise", u: "https://www.youtube.com/watch?v=O8ZcXfwFuqs" },
-      { t: "Knees Over Toes wall shin raises", u: "https://www.youtube.com/watch?v=t3JPQkBMjuU" },
+      { t: "Wall tibialis raise", u: "https://www.youtube.com/watch?v=O8ZcXfwFuqs", s: 5 },
+      { t: "Knees Over Toes wall shin raises", u: "https://www.youtube.com/watch?v=t3JPQkBMjuU", s: 10 },
     ],
   },
   calf: {
@@ -352,9 +498,33 @@ export const EXERCISES = {
       "Seated: sit on a chair, balls of the feet on a book or plate, dumbbells on your knees. Raise the heels high, pause, lower to a full stretch.",
       "Standing single-leg: one foot on a step, hand on a wall. 2 s up, 2 s down, full range.",
     ],
+    bryanVideos: [
+      { k: "w23", s: 827, n: "seated calf raises" },
+      { k: "galpin", s: 3727, n: "standing calf raises" },
+    ],
     videos: [
-      { t: "Seated dumbbell calf raise", u: "https://www.youtube.com/watch?v=4-slnRXcGDc" },
-      { t: "Single-leg calf raise", u: "https://www.youtube.com/watch?v=_rKgZMP1X5o" },
+      { t: "Seated dumbbell calf raise", u: "https://www.youtube.com/watch?v=4-slnRXcGDc", s: 4 },
+      { t: "Single-leg calf raise", u: "https://www.youtube.com/watch?v=_rKgZMP1X5o", s: 5 },
+    ],
+    clipVideos: [
+      {
+        title: "Seated dumbbell calf raise",
+        bryanVideos: [{ k: "w23", s: 827, n: "seated calf raises" }],
+        videos: [
+          { t: "Seated dumbbell calf raise", u: "https://www.youtube.com/watch?v=4-slnRXcGDc", s: 4 },
+          { t: "How to do a dumbbell seated calf raise", u: "https://www.youtube.com/watch?v=fFWpWJy8ybU", s: 12 },
+          { t: "Seated calf raise form", u: "https://www.youtube.com/watch?v=3ZRe_QpvRPg", s: 0 },
+        ],
+      },
+      {
+        title: "Single-leg calf raise on a step",
+        bryanVideos: [{ k: "galpin", s: 3727, n: "standing calf raises" }],
+        videos: [
+          { t: "Single-leg calf raise", u: "https://www.youtube.com/watch?v=_rKgZMP1X5o", s: 5 },
+          { t: "Single-leg calf raise (HSS)", u: "https://www.youtube.com/watch?v=qPd73snQfUs", s: 5 },
+          { t: "Single-leg calf raise over a step", u: "https://www.youtube.com/watch?v=ZSa8XCt6VLQ", s: 0 },
+        ],
+      },
     ],
   },
   rdl: {
@@ -374,8 +544,8 @@ export const EXERCISES = {
       "Well trained contrast: 20–30 s after each set, do 3 max countermovement jumps, the way Bryan pairs his heavy pulls with jumps.",
     ],
     videos: [
-      { t: "Dumbbell RDL technique for beginners", u: "https://www.youtube.com/watch?v=hQgFixeXdZo" },
-      { t: "Dumbbell RDL at home", u: "https://www.youtube.com/watch?v=dNQucsVf90I" },
+      { t: "Dumbbell RDL technique for beginners", u: "https://www.youtube.com/watch?v=hQgFixeXdZo", s: 21 },
+      { t: "Dumbbell RDL at home", u: "https://www.youtube.com/watch?v=dNQucsVf90I", s: 12 },
     ],
   },
   swing: {
@@ -392,8 +562,8 @@ export const EXERCISES = {
       "Drive the movement by snapping your hips forward. Avoid squatting or lifting the weight with your arms. If the kit is not rated for swings, use the farmer’s carry already in this session; Bryan’s template allows either.",
     ],
     videos: [
-      { t: "How to: dumbbell swing", u: "https://www.youtube.com/watch?v=Y30kFfgW-bY" },
-      { t: "Hip hinge: preparation for the swing", u: "https://www.youtube.com/watch?v=aXnMzbV0vMs" },
+      { t: "How to: dumbbell swing", u: "https://www.youtube.com/watch?v=Y30kFfgW-bY", s: 10 },
+      { t: "Hip hinge: preparation for the swing", u: "https://www.youtube.com/watch?v=aXnMzbV0vMs", s: 15 },
     ],
   },
   lunge: {
@@ -413,8 +583,9 @@ export const EXERCISES = {
       {
         t: "Dumbbell reverse lunges: tutorial and tips",
         u: "https://www.youtube.com/watch?v=MyqQRJ2lW7Q",
+        s: 10,
       },
-      { t: "Dumbbell reverse lunge tutorial", u: "https://www.youtube.com/watch?v=MpfeGnBFEo8" },
+      { t: "Dumbbell reverse lunge tutorial", u: "https://www.youtube.com/watch?v=MpfeGnBFEo8", s: 2 },
     ],
   },
   stepup: {
@@ -431,8 +602,26 @@ export const EXERCISES = {
       "Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.",
     ],
     videos: [
-      { t: "How to do a dumbbell step-up", u: "https://www.youtube.com/watch?v=DxUNi119Qzs" },
-      { t: "Choosing the box height", u: "https://www.youtube.com/watch?v=xYQsyViNwi4" },
+      { t: "How to do a dumbbell step-up", u: "https://www.youtube.com/watch?v=DxUNi119Qzs", s: 0 },
+      { t: "Choosing the box height", u: "https://www.youtube.com/watch?v=xYQsyViNwi4", s: 15 },
+    ],
+    clipVideos: [
+      {
+        title: "Step-up onto a low aerobic step",
+        videos: [
+          { t: "Bodyweight step-up", u: "https://www.youtube.com/watch?v=wfhXnLILqdk", s: 0 },
+          { t: "Choosing the box height", u: "https://www.youtube.com/watch?v=xYQsyViNwi4", s: 15 },
+          { t: "Step-up technique and common mistakes", u: "https://www.youtube.com/watch?v=WCFCdxzFBa4", s: 18 },
+        ],
+      },
+      {
+        title: "Step-up holding dumbbells",
+        videos: [
+          { t: "How to do a dumbbell step-up", u: "https://www.youtube.com/watch?v=DxUNi119Qzs", s: 0 },
+          { t: "Dumbbell step-up demonstration", u: "https://www.youtube.com/watch?v=9ZknEYboBOQ", s: 3 },
+          { t: "Dumbbell step-ups guide", u: "https://www.youtube.com/watch?v=7AtIjR-QqVA", s: 6 },
+        ],
+      },
     ],
   },
   chinup: {
@@ -448,10 +637,36 @@ export const EXERCISES = {
       "Lower in 2–3 s to a full hang.",
       "If you cannot do 5 clean reps, use a band for assistance, or jump up and lower over 5 s (negatives).",
     ],
-    bryanVideos: [{ k: "w23", s: 1007, n: "pull-ups" }, { k: "w23", s: 1033, n: "chin-ups" }],
+    bryanVideos: [
+      { k: "w23", s: 1007, n: "pull-ups" },
+      { k: "w23", s: 1033, n: "chin-ups" },
+      { k: "galpin", s: 3024, n: "reverse pull-ups" },
+    ],
     videos: [
-      { t: "Band-assisted pull-ups: 0 to 10", u: "https://www.youtube.com/watch?v=Dx6DNiOklZI" },
-      { t: "How to do a negative pull-up", u: "https://www.youtube.com/watch?v=gbPURTSxQLY" },
+      { t: "Band-assisted pull-ups: 0 to 10", u: "https://www.youtube.com/watch?v=Dx6DNiOklZI", s: 212 },
+      { t: "How to do a negative pull-up", u: "https://www.youtube.com/watch?v=gbPURTSxQLY", s: 8 },
+    ],
+    clipVideos: [
+      {
+        title: "Pull-up (palms away)",
+        bryanVideos: [{ k: "w23", s: 1007, n: "pull-ups" }],
+        videos: [
+          { t: "How to do pull-ups", u: "https://www.youtube.com/watch?v=PHdHnZcbsB8", s: 0 },
+          { t: "Band-assisted pull-ups: setup and reps", u: "https://www.youtube.com/watch?v=Dx6DNiOklZI", s: 212 },
+          { t: "How to do a negative pull-up", u: "https://www.youtube.com/watch?v=gbPURTSxQLY", s: 8 },
+        ],
+      },
+      {
+        title: "Chin-up (palms facing you)",
+        bryanVideos: [
+          { k: "w23", s: 1033, n: "chin-ups" },
+          { k: "galpin", s: 3024, n: "reverse pull-ups" },
+        ],
+        videos: [
+          { t: "Proper chin-up form", u: "https://www.youtube.com/watch?v=mRy9m2Q9_1I", s: 5 },
+          { t: "Chin-up technique guide", u: "https://www.youtube.com/watch?v=e1YSApl-QcM", s: 24 },
+        ],
+      },
     ],
   },
   pushup: {
@@ -467,9 +682,10 @@ export const EXERCISES = {
       "Lower until the chest is a fist above the floor, then press to full lockout.",
       "Too hard: hands on a sofa or bench. Too easy: 3 s down, or feet raised.",
     ],
+    bryanVideos: [{ k: "galpin", s: 3594, n: "spiderman push-ups" }],
     videos: [
-      { t: "How to do a push-up correctly", u: "https://www.youtube.com/watch?v=k2YnU7UFAaE" },
-      { t: "Push-up form", u: "https://www.youtube.com/watch?v=s1X8e4JFdbE" },
+      { t: "How to do a push-up correctly", u: "https://www.youtube.com/watch?v=k2YnU7UFAaE", s: 18 },
+      { t: "Push-up form", u: "https://www.youtube.com/watch?v=s1X8e4JFdbE", s: 91 },
     ],
   },
   row: {
@@ -485,10 +701,13 @@ export const EXERCISES = {
       "Squeeze for 1 s, then lower to a full stretch.",
       "Keep your torso still.",
     ],
-    bryanVideos: [{ k: "galpin", s: 2898 }],
+    bryanVideos: [
+      { k: "galpin", s: 2898, n: "single-arm bent row" },
+      { k: "galpin", s: 3791, n: "chest-supported row" },
+    ],
     videos: [
-      { t: "One-arm dumbbell row", u: "https://www.youtube.com/watch?v=Qx2f4YwJAu4" },
-      { t: "One-arm dumbbell row on a bench", u: "https://www.youtube.com/watch?v=PgpQ4-jHiq4" },
+      { t: "One-arm dumbbell row", u: "https://www.youtube.com/watch?v=Qx2f4YwJAu4", s: 8 },
+      { t: "One-arm dumbbell row on a bench", u: "https://www.youtube.com/watch?v=PgpQ4-jHiq4", s: 10 },
     ],
   },
   ohpress: {
@@ -504,12 +723,14 @@ export const EXERCISES = {
       "Head moves slightly back to let the dumbbells pass, then forward under them.",
       "Lower in 2 s. Don’t lean back.",
     ],
+    bryanVideos: [{ k: "galpin", s: 3054, n: "1-arm overhead press" }],
     videos: [
       {
         t: "Standing dumbbell overhead press: 3 steps",
         u: "https://www.youtube.com/watch?v=bj53-0DYKFo",
+        s: 6,
       },
-      { t: "Dumbbell overhead press: how to", u: "https://www.youtube.com/watch?v=Did01dFR3Lk" },
+      { t: "Dumbbell overhead press: how to", u: "https://www.youtube.com/watch?v=Did01dFR3Lk", s: 4 },
     ],
   },
   floorpress: {
@@ -525,11 +746,13 @@ export const EXERCISES = {
       "Press up until the arms are straight; lower until the upper arms touch the floor lightly.",
       "Pause on the floor for 1 s without bouncing.",
     ],
+    bryanVideos: [{ k: "galpin", s: 3345, n: "hollow dumbbell press" }],
     videos: [
-      { t: "How to do a dumbbell floor press", u: "https://www.youtube.com/watch?v=T0Y3OBF1bNI" },
+      { t: "How to do a dumbbell floor press", u: "https://www.youtube.com/watch?v=T0Y3OBF1bNI", s: 8 },
       {
         t: "Dumbbell floor press: correct technique",
         u: "https://www.youtube.com/watch?v=-cpfMqSGxvg",
+        s: 10,
       },
     ],
   },
@@ -548,8 +771,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 198 }],
     videos: [
-      { t: "Two-arm overhead triceps extension", u: "https://www.youtube.com/watch?v=IJ6J7EKprsc" },
-      { t: "Dumbbell overhead triceps extension", u: "https://www.youtube.com/watch?v=xbNm9fRoUTw" },
+      { t: "Two-arm overhead triceps extension", u: "https://www.youtube.com/watch?v=IJ6J7EKprsc", s: 6 },
+      { t: "Dumbbell overhead triceps extension", u: "https://www.youtube.com/watch?v=xbNm9fRoUTw", s: 3 },
     ],
   },
   curl: {
@@ -564,8 +787,11 @@ export const EXERCISES = {
       "Curl up while turning the palms up; squeeze at the top.",
       "Lower over 2–3 s and keep your body still.",
     ],
-    bryanVideos: [{ k: "w23", s: 1042 }],
-    videos: [{ t: "How to do a dumbbell biceps curl", u: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo" }],
+    bryanVideos: [
+      { k: "w23", s: 1042 },
+      { k: "galpin", s: 3688, n: "incline curls" },
+    ],
+    videos: [{ t: "How to do a dumbbell biceps curl", u: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo", s: 5 }],
   },
   fly: {
     name: "Band butterfly",
@@ -582,8 +808,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 244 }],
     videos: [
-      { t: "Standing chest fly with a band", u: "https://www.youtube.com/watch?v=8zayKW1skQg" },
-      { t: "Mid-door anchored chest fly", u: "https://www.youtube.com/watch?v=7l8HfDNXY6E" },
+      { t: "Standing chest fly with a band", u: "https://www.youtube.com/watch?v=8zayKW1skQg", s: 10 },
+      { t: "Mid-door anchored chest fly", u: "https://www.youtube.com/watch?v=7l8HfDNXY6E", s: 25 },
     ],
   },
   farmer: {
@@ -602,8 +828,9 @@ export const EXERCISES = {
       {
         t: "Dumbbell farmer’s walk: form and mistakes",
         u: "https://www.youtube.com/watch?v=62v48abT5-Y",
+        s: 7,
       },
-      { t: "How to do a farmer’s walk", u: "https://www.youtube.com/watch?v=8OtwXwrJizk" },
+      { t: "How to do a farmer’s walk", u: "https://www.youtube.com/watch?v=8OtwXwrJizk", s: 4 },
     ],
   },
   deadhang: {
@@ -625,8 +852,26 @@ export const EXERCISES = {
       "Build up cumulative time: 2–3 sets of 20–30 s is great for beginners; advance toward 60 s continuous.",
     ],
     videos: [
-      { t: "Dead hang: passive vs active hang benefits", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0" },
-      { t: "How to dead hang for grip and shoulder health", u: "https://www.youtube.com/watch?v=8OtwXwrJizk" },
+      { t: "Passive vs active hang tutorial", u: "https://www.youtube.com/watch?v=ny4AVinFBmI", s: 18 },
+      { t: "How to do an active hang", u: "https://www.youtube.com/watch?v=0_YZc2yuKkE", s: 2 },
+    ],
+    clipVideos: [
+      {
+        title: "Passive dead hang",
+        videos: [
+          { t: "Passive dead hang tutorial", u: "https://www.youtube.com/watch?v=ny4AVinFBmI", s: 18 },
+          { t: "Passive vs active hang key differences", u: "https://www.youtube.com/watch?v=7DcNQ_bDaME", s: 3 },
+          { t: "Build hanging from zero (beginner progression)", u: "https://www.youtube.com/watch?v=no_ZdiJsLu4", s: 20 },
+        ],
+      },
+      {
+        title: "Active dead hang",
+        videos: [
+          { t: "How to do an active hang", u: "https://www.youtube.com/watch?v=0_YZc2yuKkE", s: 2 },
+          { t: "Active hang technique and scapular pull", u: "https://www.youtube.com/watch?v=ny4AVinFBmI", s: 95 },
+          { t: "Dead hang vs active hang explained", u: "https://www.youtube.com/watch?v=GwMTIwfOPQE", s: 30 },
+        ],
+      },
     ],
   },
   legraise: {
@@ -645,8 +890,27 @@ export const EXERCISES = {
     easier: "Lying leg raises on the floor.",
     bryanVideos: [{ k: "w23", s: 703 }],
     videos: [
-      { t: "Hanging knee raise / leg lift", u: "https://www.youtube.com/watch?v=KhPTiWP6lB4" },
-      { t: "Hanging leg raise progressions", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0" },
+      { t: "Hanging knee raise / leg lift", u: "https://www.youtube.com/watch?v=KhPTiWP6lB4", s: 12 },
+      { t: "Hanging leg raise progressions", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0", s: 69 },
+    ],
+    clipVideos: [
+      {
+        title: "Hanging knee raise",
+        videos: [
+          { t: "Hanging knee raise tutorial", u: "https://www.youtube.com/watch?v=l7OroezzX9k", s: 3 },
+          { t: "Hanging knee raise / leg lift", u: "https://www.youtube.com/watch?v=KhPTiWP6lB4", s: 12 },
+          { t: "Hanging knee raise progression", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0", s: 233 },
+        ],
+      },
+      {
+        title: "Hanging straight-leg raise",
+        bryanVideos: [{ k: "w23", s: 703 }],
+        videos: [
+          { t: "How to perform hanging straight-leg raises", u: "https://www.youtube.com/watch?v=2n4UqRIJyk4", s: 0 },
+          { t: "Hanging leg raise technique", u: "https://www.youtube.com/watch?v=EYe6dc_i4L0", s: 69 },
+          { t: "Hanging leg raise tutorial", u: "https://www.youtube.com/watch?v=_jLskVdzS4o", s: 5 },
+        ],
+      },
     ],
   },
   backext: {
@@ -664,8 +928,8 @@ export const EXERCISES = {
     tips: ["Progress with slower reps, then hold a light dumbbell at your chest."],
     bryanVideos: [{ k: "w23", s: 432 }],
     videos: [
-      { t: "Prone floor back extension", u: "https://www.youtube.com/watch?v=UAr1x4W4VLc" },
-      { t: "Superman exercise tutorial", u: "https://www.youtube.com/watch?v=z6PJMT2y8GQ" },
+      { t: "Prone floor back extension", u: "https://www.youtube.com/watch?v=UAr1x4W4VLc", s: 6 },
+      { t: "Superman exercise tutorial", u: "https://www.youtube.com/watch?v=z6PJMT2y8GQ", s: 5 },
     ],
   },
   sidebend: {
@@ -680,11 +944,15 @@ export const EXERCISES = {
       "Bend straight to the side, without twisting or leaning forward.",
       "Squeeze the opposite side to return upright. Finish all reps, then switch sides.",
     ],
-    bryanVideos: [{ k: "w23", s: 457 }],
+    bryanVideos: [
+      { k: "w23", s: 457 },
+      { k: "galpin", s: 3637, n: "oblique side bends" },
+    ],
     videos: [
       {
         t: "How to do dumbbell side bends correctly",
         u: "https://www.youtube.com/watch?v=SAc_r42va6g",
+        s: 8,
       },
     ],
   },
@@ -703,8 +971,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "galpin", s: 2824 }],
     videos: [
-      { t: "How to do a Pallof press", u: "https://www.youtube.com/watch?v=LA6Uc5yIV1c" },
-      { t: "Standing band Pallof press", u: "https://www.youtube.com/watch?v=AH_QZLm_0-s" },
+      { t: "How to do a Pallof press", u: "https://www.youtube.com/watch?v=LA6Uc5yIV1c", s: 65 },
+      { t: "Standing band Pallof press", u: "https://www.youtube.com/watch?v=AH_QZLm_0-s", s: 5 },
     ],
   },
   plank: {
@@ -719,7 +987,7 @@ export const EXERCISES = {
       "Body straight; squeeze the glutes and brace the abs.",
       "Look at the floor and breathe normally.",
     ],
-    videos: [{ t: "Perfect plank: fix common mistakes", u: "https://www.youtube.com/watch?v=rzHRA7S96_E" }],
+    videos: [{ t: "Perfect plank: fix common mistakes", u: "https://www.youtube.com/watch?v=rzHRA7S96_E", s: 12 }],
   },
   sideplank: {
     name: "Side plank",
@@ -732,7 +1000,7 @@ export const EXERCISES = {
       "On one forearm, elbow under the shoulder, feet stacked (knees bent to start).",
       "Lift the hips into a straight line and hold.",
     ],
-    videos: [{ t: "Side plank: form and 5 progressions", u: "https://www.youtube.com/watch?v=0M-erHBl48U" }],
+    videos: [{ t: "Side plank: form and 5 progressions", u: "https://www.youtube.com/watch?v=0M-erHBl48U", s: 15 }],
   },
   slrdl: {
     name: "Single-leg RDL / toe touch",
@@ -751,8 +1019,34 @@ export const EXERCISES = {
       {
         t: "Single-leg toe touches for balance (beginners)",
         u: "https://www.youtube.com/watch?v=dUJf1IuITAo",
+        s: 5,
       },
-      { t: "Bodyweight single-leg RDL", u: "https://www.youtube.com/watch?v=DPFnfAUCvTA" },
+      { t: "Bodyweight single-leg RDL", u: "https://www.youtube.com/watch?v=DPFnfAUCvTA", s: 5 },
+    ],
+    clipVideos: [
+      {
+        title: "Single-leg toe touch",
+        videos: [
+          {
+            t: "Single-leg toe touches for balance (beginners)",
+            u: "https://www.youtube.com/watch?v=dUJf1IuITAo",
+            s: 5,
+          },
+          { t: "Single-leg toe touch demonstration", u: "https://www.youtube.com/watch?v=oBU22OqbIag", s: 3 },
+        ],
+      },
+      {
+        title: "Single-leg RDL",
+        videos: [
+          { t: "Bodyweight single-leg RDL", u: "https://www.youtube.com/watch?v=DPFnfAUCvTA", s: 5 },
+          {
+            t: "Bodyweight single-leg Romanian deadlift demo",
+            u: "https://www.youtube.com/watch?v=JQZqPsmeesc",
+            s: 2,
+          },
+          { t: "Single-leg deadlift bodyweight", u: "https://www.youtube.com/watch?v=SHY8-2cErd0", s: 3 },
+        ],
+      },
     ],
   },
   birddog: {
@@ -768,8 +1062,8 @@ export const EXERCISES = {
       "Hold for 2 s without tilting your hips, then return and switch sides.",
     ],
     videos: [
-      { t: "How to do a bird dog", u: "https://www.youtube.com/watch?v=KA0ekfSePrQ" },
-      { t: "Bird dog: mistakes and variations", u: "https://www.youtube.com/watch?v=dDMvch2Z9yY" },
+      { t: "How to do a bird dog", u: "https://www.youtube.com/watch?v=KA0ekfSePrQ", s: 15 },
+      { t: "Bird dog: mistakes and variations", u: "https://www.youtube.com/watch?v=dDMvch2Z9yY", s: 18 },
     ],
   },
   deadbug: {
@@ -786,8 +1080,8 @@ export const EXERCISES = {
       "Alternate sides; move slowly and breathe out as you extend.",
     ],
     videos: [
-      { t: "How to do the dead bug correctly", u: "https://www.youtube.com/watch?v=-gRN_JyVTLY" },
-      { t: "Core exercise: dead bug", u: "https://www.youtube.com/watch?v=g_BYB0R-4Ws" },
+      { t: "How to do the dead bug correctly", u: "https://www.youtube.com/watch?v=-gRN_JyVTLY", s: 124 },
+      { t: "Core exercise: dead bug", u: "https://www.youtube.com/watch?v=g_BYB0R-4Ws", s: 10 },
     ],
   },
   shouldertap: {
@@ -806,8 +1100,14 @@ export const EXERCISES = {
       {
         t: "Plank shoulder taps: core stability and control",
         u: "https://www.youtube.com/watch?v=NV55raYCP0E",
+        s: 4,
       },
-      { t: "How to do plank shoulder taps", u: "https://www.youtube.com/watch?v=mPIym8BigIc" },
+      { t: "Pure plank: shoulder taps", u: "https://www.youtube.com/watch?v=88RyDleXGi8", s: 3 },
+      {
+        t: "How to properly do a plank with shoulder taps",
+        u: "https://www.youtube.com/watch?v=gKA5LBy7WAI",
+        s: 12,
+      },
     ],
   },
   jefferson: {
@@ -824,8 +1124,8 @@ export const EXERCISES = {
       "Move slowly and keep the weight light. Do not try to lift heavy on this exercise.",
     ],
     videos: [
-      { t: "Jefferson curl progressions", u: "https://www.youtube.com/watch?v=CscPML4QWfU" },
-      { t: "The Jefferson curl explained", u: "https://www.youtube.com/watch?v=ZWaI1jrtzOk" },
+      { t: "Jefferson curl progressions", u: "https://www.youtube.com/watch?v=CscPML4QWfU", s: 570 },
+      { t: "The Jefferson curl explained", u: "https://www.youtube.com/watch?v=ZWaI1jrtzOk", s: 15 },
     ],
   },
   shortint: {
@@ -840,10 +1140,36 @@ export const EXERCISES = {
       "Work hard for 20 s, then march gently during the rest. Record the number of rounds.",
       "At New to training and Returning, keep the pace brisk and below all-out effort. At Active, work hard. At Well trained, use all-out effort.",
     ],
+    bryanVideos: [
+      { k: "w23", s: 1063, n: "HIIT intervals" },
+      { k: "pillars", s: 467, n: "high-intensity cardio" },
+    ],
     videos: [
+      { t: "Fast high knees (20 s hard burst)", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+      { t: "Marching in place (recovery interval)", u: "https://www.youtube.com/watch?v=Ac8M_Osjy6s", s: 0 },
+    ],
+    clipVideos: [
       {
-        t: "No-jumping HIIT, apartment friendly (move ideas)",
-        u: "https://www.youtube.com/watch?v=u_CscwYKo5U",
+        title: "20 s hard: fast high knees",
+        bryanVideos: [
+          { k: "w23", s: 1063, n: "HIIT intervals" },
+          { k: "pillars", s: 467, n: "high-intensity cardio" },
+        ],
+        videos: [
+          { t: "How to do high knees", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+          { t: "Alternating step-up hops (hard burst option)", u: "https://www.youtube.com/watch?v=TGtwCyVqfvM", s: 4 },
+        ],
+      },
+      {
+        title: "Easy: march on the spot",
+        videos: [
+          { t: "Marching in place", u: "https://www.youtube.com/watch?v=Ac8M_Osjy6s", s: 0 },
+          {
+            t: "Marching in place (physical therapist demo)",
+            u: "https://www.youtube.com/watch?v=u1gmWFvEluM",
+            s: 15,
+          },
+        ],
       },
     ],
   },
@@ -861,9 +1187,51 @@ export const EXERCISES = {
       "Repeat, then 5 min easy. Indoors, change the move every minute so the legs don’t fail before the heart and lungs.",
     ],
     tips: ["If round 4 falls apart, start slower next time. Don’t sprint the first minute."],
+    bryanVideos: [
+      { k: "pillars", s: 467, n: "4×4 protocol" },
+      { k: "galpin", s: 3941, n: "4 min HIIT" },
+    ],
     videos: [
-      { t: "4×4 HIIT with no equipment", u: "https://www.youtube.com/watch?v=ZOU0eUMYB8o" },
-      { t: "4×4 timing and heart rates explained", u: "https://www.youtube.com/watch?v=EirgwA1FXUs" },
+      { t: "4×4 timing and heart rates explained", u: "https://www.youtube.com/watch?v=EirgwA1FXUs", s: 40 },
+      { t: "Alternating step-ups (minute 1)", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+    ],
+    clipVideos: [
+      {
+        title: "4×4 hard, minute 1: fast step-ups",
+        bryanVideos: [
+          { k: "pillars", s: 467, n: "4×4 protocol" },
+          { k: "galpin", s: 3941, n: "4 min HIIT" },
+        ],
+        videos: [
+          { t: "Alternating step-ups", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+          { t: "4×4 timing and heart rates explained", u: "https://www.youtube.com/watch?v=EirgwA1FXUs", s: 40 },
+        ],
+      },
+      {
+        title: "Minute 2: high knees",
+        videos: [
+          { t: "How to do high knees", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+          { t: "High knee cardio drill", u: "https://www.youtube.com/watch?v=ymdS7tM0zws", s: 2 },
+        ],
+      },
+      {
+        title: "Minute 3: jumping jacks",
+        videos: [
+          { t: "How to do jumping jacks", u: "https://www.youtube.com/watch?v=ttVmvj88Zwc", s: 0 },
+          { t: "Low-impact step jacks (quiet option)", u: "https://www.youtube.com/watch?v=qhy7VjMqsck", s: 2 },
+        ],
+      },
+      {
+        title: "Minute 4: mountain climbers",
+        videos: [
+          { t: "How to do mountain climbers", u: "https://www.youtube.com/watch?v=kLh-uczlPLg", s: 0 },
+          {
+            t: "Mountain climbers: 3 steps to proper form",
+            u: "https://www.youtube.com/watch?v=gW-q50V6Z_0",
+            s: 8,
+          },
+        ],
+      },
     ],
   },
   indoorhiit: {
@@ -882,12 +1250,58 @@ export const EXERCISES = {
     ],
     tips: ["For the 4×4, rotate step-ups → high knees → jacks → climbers, one minute each."],
     videos: [
+      { t: "Alternating step-ups", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+      { t: "High knees", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
       {
         t: "Mountain climbers: 3 steps to proper form",
         u: "https://www.youtube.com/watch?v=gW-q50V6Z_0",
+        s: 8,
       },
-      { t: "No-push-up burpee", u: "https://www.youtube.com/watch?v=CqJ947Bj2Zg" },
-      { t: "Silent HIIT cardio (quiet move ideas)", u: "https://www.youtube.com/watch?v=gi7pZ8CYzvk" },
+      { t: "Jumping jacks", u: "https://www.youtube.com/watch?v=ttVmvj88Zwc", s: 0 },
+      { t: "No-push-up burpee", u: "https://www.youtube.com/watch?v=CqJ947Bj2Zg", s: 4 },
+    ],
+    clipVideos: [
+      {
+        title: "Fast step-ups",
+        videos: [
+          { t: "Alternating step-ups", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+          { t: "Alternating step-up hops", u: "https://www.youtube.com/watch?v=TGtwCyVqfvM", s: 4 },
+        ],
+      },
+      {
+        title: "High knees",
+        videos: [
+          { t: "How to do high knees", u: "https://www.youtube.com/watch?v=sTvekaq6vOU", s: 0 },
+          { t: "High knee exercise and warm-up", u: "https://www.youtube.com/watch?v=ymdS7tM0zws", s: 2 },
+        ],
+      },
+      {
+        title: "Mountain climbers",
+        videos: [
+          { t: "How to do mountain climbers", u: "https://www.youtube.com/watch?v=kLh-uczlPLg", s: 0 },
+          {
+            t: "Mountain climbers: 3 steps to proper form",
+            u: "https://www.youtube.com/watch?v=gW-q50V6Z_0",
+            s: 8,
+          },
+        ],
+      },
+      {
+        title: "Jumping jacks",
+        videos: [
+          { t: "How to do jumping jacks", u: "https://www.youtube.com/watch?v=ttVmvj88Zwc", s: 0 },
+          { t: "Jumping jack proper form (NASM)", u: "https://www.youtube.com/watch?v=uLVt6u15L98", s: 0 },
+          { t: "Low-impact step jacks (quiet option)", u: "https://www.youtube.com/watch?v=qhy7VjMqsck", s: 2 },
+        ],
+      },
+      {
+        title: "Burpee without push-up",
+        videos: [
+          { t: "No-push-up burpee", u: "https://www.youtube.com/watch?v=CqJ947Bj2Zg", s: 4 },
+          { t: "No-push-up burpee demo", u: "https://www.youtube.com/watch?v=HfV1UBKzQTo", s: 0 },
+          { t: "Squat thrust (burpee without push-up)", u: "https://www.youtube.com/watch?v=QOk0tYKehFw", s: 0 },
+        ],
+      },
     ],
   },
   vigorous: {
@@ -905,7 +1319,11 @@ export const EXERCISES = {
       "Finish with the scheduled Zone 2 or cool-down. Use the quiet versions of the indoor interval moves when needed.",
     ],
     tips: ["Keep the effort controlled. Save near-max efforts for the short bursts and the ends of the 4×4 rounds."],
-    videos: [{ t: "Low-impact indoor cardio moves", u: "https://www.youtube.com/watch?v=gi7pZ8CYzvk" }],
+    bryanVideos: [{ k: "pillars", s: 467, n: "high-intensity cardio" }],
+    videos: [
+      { t: "Alternating step-ups", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+      { t: "Low-impact step jacks", u: "https://www.youtube.com/watch?v=qhy7VjMqsck", s: 2 },
+    ],
   },
   zone2: {
     name: "Zone 2 cardio (indoors)",
@@ -921,9 +1339,11 @@ export const EXERCISES = {
       "Music, a podcast or a series helps; Bryan rotates music, books and podcasts too.",
     ],
     tips: ["When you get the chance, a brisk walk, hike or bike ride outside counts the same."],
+    bryanVideos: [{ k: "pillars", s: 362, n: "low-intensity cardio" }],
     videos: [
-      { t: "Simple beginner step cardio", u: "https://www.youtube.com/watch?v=aAHCk7dbnKM" },
-      { t: "10-minute low-impact step workout", u: "https://www.youtube.com/watch?v=A0dUuUTe4jQ" },
+      { t: "Continuous alternating step-ups", u: "https://www.youtube.com/watch?v=RbRFci8p1m8", s: 5 },
+      { t: "Basic step cardio (low-impact step workout)", u: "https://www.youtube.com/watch?v=A0dUuUTe4jQ", s: 35 },
+      { t: "Brisk marching in place", u: "https://www.youtube.com/watch?v=u1gmWFvEluM", s: 15 },
     ],
   },
   couch: {
@@ -940,8 +1360,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 510 }],
     videos: [
-      { t: "Couch stretch progressions", u: "https://www.youtube.com/watch?v=WKo4APrwfXQ" },
-      { t: "How to do a couch stretch", u: "https://www.youtube.com/watch?v=nTJaGnjUkTY" },
+      { t: "Couch stretch progressions", u: "https://www.youtube.com/watch?v=WKo4APrwfXQ", s: 50 },
+      { t: "How to do a couch stretch", u: "https://www.youtube.com/watch?v=nTJaGnjUkTY", s: 3 },
     ],
   },
   shin: {
@@ -958,8 +1378,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 606 }],
     videos: [
-      { t: "Kneeling shin stretch tutorial", u: "https://www.youtube.com/watch?v=OffABI3UJEM" },
-      { t: "Kneeling tibialis stretch", u: "https://www.youtube.com/watch?v=wLnYZRHLhnY" },
+      { t: "Kneeling shin stretch tutorial", u: "https://www.youtube.com/watch?v=OffABI3UJEM", s: 8 },
+      { t: "Kneeling tibialis stretch", u: "https://www.youtube.com/watch?v=wLnYZRHLhnY", s: 15 },
     ],
   },
   hipflexor: {
@@ -979,6 +1399,7 @@ export const EXERCISES = {
       {
         t: "Half-kneeling hip flexor stretch with pelvic tilt",
         u: "https://www.youtube.com/watch?v=KiTGo4L4Bgg",
+        s: 4,
       },
     ],
   },
@@ -994,9 +1415,10 @@ export const EXERCISES = {
       "Sit back gently toward the heels; take weight on your hands to adjust.",
       "Build tolerance slowly.",
     ],
+    bryanVideos: [{ k: "pillars", s: 639, n: "mobility & flexibility" }],
     videos: [
-      { t: "Kneeling toe and ankle stretches", u: "https://www.youtube.com/watch?v=-jHllwPRhTI" },
-      { t: "Big-toe extension mobility", u: "https://www.youtube.com/watch?v=yVrPFPUecgk" },
+      { t: "Kneeling toes and plantar fascia stretch (toe sit)", u: "https://www.youtube.com/watch?v=6qD9U_MRTC8", s: 0 },
+      { t: "Big-toe extension mobility", u: "https://www.youtube.com/watch?v=yVrPFPUecgk", s: 5 },
     ],
   },
   butterfly: {
@@ -1010,7 +1432,8 @@ export const EXERCISES = {
       "Sit tall, soles of the feet together, knees falling out.",
       "Hinge forward from the hips with a long spine.",
     ],
-    videos: [{ t: "Seated butterfly stretch", u: "https://www.youtube.com/watch?v=4xweyzS7Rno" }],
+    bryanVideos: [{ k: "pillars", s: 639, n: "mobility & flexibility" }],
+    videos: [{ t: "Seated butterfly stretch", u: "https://www.youtube.com/watch?v=4xweyzS7Rno", s: 4 }],
   },
   hamstring: {
     name: "Hamstring stretch",
@@ -1023,8 +1446,11 @@ export const EXERCISES = {
       "Rest your heel on a step or chair with your leg straight and toes up.",
       "Hinge forward with a flat back until you feel the stretch.",
     ],
-    bryanVideos: [{ k: "w23", s: 363 }],
-    videos: [{ t: "Standing hamstring stretch", u: "https://www.youtube.com/watch?v=MAhReT40WAU" }],
+    bryanVideos: [{ k: "w23", s: 363 }, { k: "galpin", s: 3146 }],
+    videos: [
+      { t: "Standing hamstring stretch on a step or chair", u: "https://www.youtube.com/watch?v=pP2CojTFq3k", s: 5 },
+      { t: "Standing hamstring stretch", u: "https://www.youtube.com/watch?v=LVY692zJK0A", s: 8 },
+    ],
   },
   catcow: {
     name: "Cat-cow",
@@ -1038,7 +1464,8 @@ export const EXERCISES = {
       "Breathe out: round the back, tuck chin and tailbone.",
       "Breathe in slowly as you lift your chest and tailbone.",
     ],
-    videos: [{ t: "Cat-cow with good form", u: "https://www.youtube.com/watch?v=KT6Fk7FWYfM" }],
+    bryanVideos: [{ k: "galpin", s: 3221, n: "cats & dogs" }],
+    videos: [{ t: "Cat-cow with good form", u: "https://www.youtube.com/watch?v=KT6Fk7FWYfM", s: 8 }],
   },
   cobra: {
     name: "Cobra",
@@ -1053,8 +1480,8 @@ export const EXERCISES = {
       "Keep your neck long and look forward and down.",
     ],
     videos: [
-      { t: "Cobra pose for beginners", u: "https://www.youtube.com/watch?v=fNW64R1zJsU" },
-      { t: "How to do cobra safely", u: "https://www.youtube.com/watch?v=gPCns6PkF84" },
+      { t: "Cobra pose for beginners", u: "https://www.youtube.com/watch?v=fNW64R1zJsU", s: 12 },
+      { t: "How to do cobra safely", u: "https://www.youtube.com/watch?v=gPCns6PkF84", s: 10 },
     ],
   },
   tree: {
@@ -1068,7 +1495,8 @@ export const EXERCISES = {
       "Stand on one leg; place the other foot on the inner calf or thigh, never on the knee.",
       "Hands at the chest or overhead; fix your gaze on one point.",
     ],
-    videos: [{ t: "How to do tree pose", u: "https://www.youtube.com/watch?v=UkUIBDHolKk" }],
+    bryanVideos: [{ k: "pillars", s: 719, n: "single-leg balance" }],
+    videos: [{ t: "How to do tree pose", u: "https://www.youtube.com/watch?v=UkUIBDHolKk", s: 25 }],
   },
   thread: {
     name: "Thread the needle",
@@ -1083,7 +1511,7 @@ export const EXERCISES = {
       "Then open it up to the ceiling, eyes following the hand.",
     ],
     videos: [
-      { t: "Thoracic rotation: thread the needle", u: "https://www.youtube.com/watch?v=aOFdI2oTTxU" },
+      { t: "Thoracic rotation: thread the needle", u: "https://www.youtube.com/watch?v=aOFdI2oTTxU", s: 8 },
     ],
   },
   string: {
@@ -1120,8 +1548,9 @@ export const EXERCISES = {
       {
         t: "Physical therapist: how to do chin tucks",
         u: "https://www.youtube.com/watch?v=ekJzJTnd43s",
+        s: 15,
       },
-      { t: "Chin tuck for neck pain and posture", u: "https://www.youtube.com/watch?v=qtcBiYF7yuQ" },
+      { t: "Chin tuck for neck pain and posture", u: "https://www.youtube.com/watch?v=qtcBiYF7yuQ", s: 18 },
     ],
   },
   wallslide: {
@@ -1138,10 +1567,11 @@ export const EXERCISES = {
       "Slow reps; ribs stay down.",
     ],
     videos: [
-      { t: "Scapular wall slides", u: "https://www.youtube.com/watch?v=BiREOSisYWU" },
+      { t: "Scapular wall slides", u: "https://www.youtube.com/watch?v=BiREOSisYWU", s: 6 },
       {
         t: "Wall slides for thoracic mobility and posture",
         u: "https://www.youtube.com/watch?v=ti_FUZZz_7k",
+        s: 10,
       },
     ],
   },
@@ -1159,8 +1589,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 278 }],
     videos: [
-      { t: "Band pull-apart tutorial", u: "https://www.youtube.com/watch?v=Zxp9IORjjK4" },
-      { t: "How to do band pull-aparts", u: "https://www.youtube.com/watch?v=smSSXITNpCI" },
+      { t: "Band pull-apart tutorial", u: "https://www.youtube.com/watch?v=Zxp9IORjjK4", s: 5 },
+      { t: "How to do band pull-aparts", u: "https://www.youtube.com/watch?v=smSSXITNpCI", s: 10 },
     ],
   },
   facepull: {
@@ -1178,8 +1608,8 @@ export const EXERCISES = {
     ],
     bryanVideos: [{ k: "w23", s: 217 }],
     videos: [
-      { t: "Band face pull with a door anchor", u: "https://www.youtube.com/shorts/Q77ORURfeYc" },
-      { t: "Face pulls with a door anchor", u: "https://www.youtube.com/watch?v=Fe37Ll4VDfI" },
+      { t: "Band face pull with a door anchor", u: "https://www.youtube.com/shorts/Q77ORURfeYc", s: 0 },
+      { t: "Face pulls with a door anchor", u: "https://www.youtube.com/watch?v=Fe37Ll4VDfI", s: 8 },
     ],
   },
   extrot: {
@@ -1199,8 +1629,30 @@ export const EXERCISES = {
       {
         t: "Dumbbell external rotation with the elbow on the knee",
         u: "https://www.youtube.com/watch?v=7hfjcXtXi0w",
+        s: 15,
       },
-      { t: "Side-lying dumbbell external rotation", u: "https://www.youtube.com/watch?v=3XLT7kpMzcM" },
+      { t: "Side-lying dumbbell external rotation", u: "https://www.youtube.com/watch?v=3XLT7kpMzcM", s: 12 },
+    ],
+    clipVideos: [
+      {
+        title: "Elbow-on-knee external rotation",
+        bryanVideos: [{ k: "w23", s: 302 }],
+        videos: [
+          { t: "Elbow-on-knee shoulder external rotation", u: "https://www.youtube.com/watch?v=mbdDt0c9bZY", s: 0 },
+          {
+            t: "Dumbbell external rotation with the elbow on the knee",
+            u: "https://www.youtube.com/watch?v=7hfjcXtXi0w",
+            s: 15,
+          },
+        ],
+      },
+      {
+        title: "Side-lying external rotation",
+        videos: [
+          { t: "Side-lying dumbbell external rotation", u: "https://www.youtube.com/watch?v=brwBvldn4gw", s: 0 },
+          { t: "Side-lying external rotation form tutorial", u: "https://www.youtube.com/watch?v=3XLT7kpMzcM", s: 12 },
+        ],
+      },
     ],
   },
   neck: {
@@ -1221,7 +1673,45 @@ export const EXERCISES = {
       "His 2023 version: neck long, chin down, light hand pressure on top of the head, lift the chin about 30° and lower, until fatigue.",
     ],
     bryanVideos: [{ k: "posture", s: 212 }, { k: "w23", s: 165 }, { k: "coach", s: 634 }],
-    videos: [],
+    videos: [
+      { t: "Isometric cervical flexion (forehead hold)", u: "https://www.youtube.com/watch?v=aF6txnLeC04", s: 0 },
+      {
+        t: "Controlled neck flexion against hand resistance",
+        u: "https://www.youtube.com/watch?v=WnKcq1Uh8m4",
+        s: 5,
+      },
+    ],
+    clipVideos: [
+      {
+        title: "Forehead resistance: hold",
+        bryanVideos: [
+          { k: "posture", s: 212, n: "forehead resistance" },
+          { k: "coach", s: 634, n: "posture coach demo" },
+        ],
+        videos: [
+          { t: "Isometric cervical flexion (forehead hold)", u: "https://www.youtube.com/watch?v=aF6txnLeC04", s: 0 },
+          {
+            t: "Isometric cervical flexion for neck strengthening",
+            u: "https://www.youtube.com/watch?v=4rK-m6GvNCk",
+            s: 8,
+          },
+        ],
+      },
+      {
+        title: "Forehead resistance: slow",
+        bryanVideos: [
+          { k: "w23", s: 165, n: "2023 dynamic version" },
+          { k: "posture", s: 212, n: "2026 version" },
+        ],
+        videos: [
+          {
+            t: "Controlled neck flexion against hand resistance",
+            u: "https://www.youtube.com/watch?v=WnKcq1Uh8m4",
+            s: 5,
+          },
+        ],
+      },
+    ],
   },
   levator: {
     name: "Shoulders up and out (levator shrug)",
@@ -1256,8 +1746,9 @@ export const EXERCISES = {
       {
         t: "Physical therapy tip: doorway pec stretch",
         u: "https://www.youtube.com/watch?v=069o76BafTk",
+        s: 10,
       },
-      { t: "Doorway pec and shoulder stretch", u: "https://www.youtube.com/watch?v=Dmm8_S23I74" },
+      { t: "Doorway pec and shoulder stretch", u: "https://www.youtube.com/watch?v=Dmm8_S23I74", s: 12 },
     ],
   },
 };

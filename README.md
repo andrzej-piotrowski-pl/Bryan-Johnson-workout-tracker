@@ -3,7 +3,7 @@
 A local web app that plans and tracks a six-day home workout built from **Bryan Johnson's public exercise protocol** (his October 2026 weekly template), rebuilt for bodyweight, adjustable dumbbells, a pull-up bar and resistance bands.
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
-- **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the right minute and demo videos you can switch between.
+- **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the exact timestamp and focused single-exercise demo videos, with a `min X sec Y` timestamp guide above the player and per-movement video sets that switch automatically with multi-movement animations.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
 - **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History, Progress and Benchmarks into four tabs.
 - **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.

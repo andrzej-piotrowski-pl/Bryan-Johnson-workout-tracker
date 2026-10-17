@@ -349,6 +349,22 @@ export default {
   extrot: {
     clips: [
       {
+        title: "Elbow-on-knee external rotation",
+        props: [{ type: "bench", pos: [0.14, 0, 0.28], w: 0.42, d: 0.42, h: 0.42 }],
+        hold: { L: true, axis: "wx" },
+        highlight: ["rotatorCuff", "shoulders"],
+        camera: { view: [0.75, 0.25, 0.85], target: [0, 1.05, 0.1], dist: 3.6 },
+        alternate: true,
+        keys: [
+          { t: 0, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] }, cue: "Prop one foot up and rest your elbow on the knee at 90°" },
+          { t: 0.001, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] } },
+          { t: 0.6, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] }, cue: "Rotate the forearm up and back" },
+          { t: 1.8, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, 50] } },
+          { t: 2.2, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, 50] }, cue: "Lower slowly in 2–3 s, shoulder blade down" },
+          { t: 4.7, p: { root: [-0.04, STAND_Y - 0.02, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [0.14, 0.42 + ANKLE_Y, 0.28], kneeL: [0.2, 0, 1], spine: [10, 0, 0], armR: [0, 8, 12, 0], armL: [52, 18, 90, -55] } },
+        ],
+      },
+      {
         title: "Side-lying external rotation",
         props: [LIE_MAT, CUSHION],
         hold: { L: true, axis: "wx" },

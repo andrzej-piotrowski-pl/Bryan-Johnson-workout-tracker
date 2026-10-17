@@ -384,7 +384,7 @@ export default {
   heeldrop: {
     clips: [
       {
-        title: "Heel drops & stomp drills",
+        title: "Heel drops",
         highlight: ["calves", "quads", "hips"],
         camera: { view: [1, 0.18, 0.55], target: [0, 0.92, 0], dist: 4.1 },
         keys: [
@@ -393,6 +393,19 @@ export default {
           { t: 1.2, p: pogo("push") },
           { t: 1.35, p: pogo("bottom"), cue: "Drop firmly onto your heels with soft knees" },
           { t: 2.0, p: pogo("bottom") },
+        ],
+      },
+      {
+        title: "Stomp drills",
+        highlight: ["calves", "quads", "glutes"],
+        camera: { view: [0.85, 0.2, 0.7], target: [0, 0.92, 0], dist: 4.1 },
+        alternate: true,
+        keys: [
+          { t: 0, p: stand(ARMS.hips), cue: "Lift one foot to mid-shin height" },
+          { t: 0.55, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...ARMS.hips } },
+          { t: 0.75, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...ARMS.hips }, cue: "Stomp the whole foot firmly into the floor, knee soft" },
+          { t: 0.92, p: { root: [0.02, STAND_Y - 0.032, 0.02], rot: [3, 0, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, ANKLE_Y, 0], ...ARMS.hips }, e: "in" },
+          { t: 1.5, p: stand(ARMS.hips), cue: "Switch legs" },
         ],
       },
     ],

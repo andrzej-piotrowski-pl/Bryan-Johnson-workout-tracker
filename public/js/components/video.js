@@ -3,7 +3,7 @@
 // loads when you press play.
 
 import { BRYAN_VIDEOS } from "../data/videos.js";
-import { esc, fmtSecs } from "../util.js";
+import { esc, fmtMinSec, fmtSecs } from "../util.js";
 import { icon } from "./icons.js";
 
 export function youtubeId(url) {
@@ -11,64 +11,195 @@ export function youtubeId(url) {
   return m ? m[1] : null;
 }
 
+export function isYoutubeShort(url) {
+  return /youtube\.com\/shorts\//.test(url || "");
+}
+
 const shortTitle = (t) => t.replace(/^Bryan( on X)?: /, "").replace(/^Bryan with /, "With ");
 
-// All videos for an exercise, Bryan's first.
-export function videosFor(ex) {
+function buildVideoList(src) {
   const out = [];
-  for (const b of ex.bryanVideos || []) {
+  if (!src) return out;
+  for (const b of src.bryanVideos || []) {
     const v = BRYAN_VIDEOS[b.k];
     if (!v) continue;
-    const at = typeof b.s === "number" ? b.s : null;
-    out.push({ kind: "bryan", title: shortTitle(v.t) + (b.n ? ` (${b.n})` : ""), url: v.u, id: youtubeId(v.u), start: at });
+    const at = typeof b.s === "number" ? b.s : 0;
+    const end = typeof b.e === "number" ? b.e : null;
+    out.push({
+      kind: "bryan",
+      title: shortTitle(v.t) + (b.n ? ` (${b.n})` : ""),
+      url: v.u,
+      id: youtubeId(v.u),
+      isShort: isYoutubeShort(v.u),
+      start: at,
+      end,
+    });
   }
-  for (const v of ex.videos || []) out.push({ kind: "demo", title: v.t, url: v.u, id: youtubeId(v.u), start: null });
+  for (const v of src.videos || []) {
+    const at = typeof v.s === "number" ? v.s : 0;
+    const end = typeof v.e === "number" ? v.e : null;
+    out.push({
+      kind: "demo",
+      title: v.t,
+      url: v.u,
+      id: youtubeId(v.u),
+      isShort: isYoutubeShort(v.u),
+      start: at,
+      end,
+    });
+  }
   return out;
+}
+
+// Per-movement video groups for exercises that have multiple movements in the animation window.
+export function videoGroupsFor(ex) {
+  if (!ex) return [];
+  if (Array.isArray(ex.clipVideos) && ex.clipVideos.length > 0) {
+    return ex.clipVideos.map((cv) => ({
+      title: cv.title,
+      videos: buildVideoList(cv),
+    }));
+  }
+  return [{ title: ex.name || "", videos: buildVideoList(ex) }];
+}
+
+// All videos for an exercise, Bryan's first (deduplicated across sub-movements if present).
+export function videosFor(ex) {
+  if (!ex) return [];
+  if (Array.isArray(ex.clipVideos) && ex.clipVideos.length > 0) {
+    const seen = new Set();
+    const bryan = [];
+    const demo = [];
+    for (const src of [ex, ...ex.clipVideos]) {
+      for (const v of buildVideoList(src)) {
+        const key = `${v.url}#${v.start || 0}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        (v.kind === "bryan" ? bryan : demo).push(v);
+      }
+    }
+    return [...bryan, ...demo];
+  }
+  return buildVideoList(ex);
 }
 
 export function watchUrl(v) {
   if (!v.id) return v.url;
-  return `https://www.youtube.com/watch?v=${v.id}${v.start ? `&t=${v.start}s` : ""}`;
+  return `https://www.youtube.com/watch?v=${v.id}${v.start ? `&t=${Math.floor(v.start)}s` : ""}`;
 }
 
-export function renderVideos(container, list) {
-  if (!list.length) {
-    container.innerHTML = `<p class="muted">No video available. Follow the instructions and animation.</p>`;
-    return;
+export function lookDetailHtml(v) {
+  const at = typeof v.start === "number" ? v.start : 0;
+  const ms = fmtMinSec(at);
+  const clock = fmtSecs(at);
+  const range = v.end ? ` to <b>${fmtMinSec(v.end)}</b> (${fmtSecs(v.end)})` : "";
+  if (!v.id) {
+    return `<div class="video-look">${icon("clock", "sm")}<span>Where to look: <b>${ms}</b> (${clock}) · Direct embedding isn't available for X posts; open the link below to watch the clip.</span></div>`;
   }
+  if (v.isShort) {
+    return `<div class="video-look">${icon("clock", "sm")}<span>Where to look: <b>${ms}</b> (${clock})${range} · ${at > 0 ? `Embed starts at ${ms}; if the Short restarts from the beginning, look at ${ms}.` : `Short clip showing this exercise from ${ms}.`}</span></div>`;
+  }
+  if (at > 0) {
+    return `<div class="video-look">${icon("clock", "sm")}<span>Where to look: <b>${ms}</b> (${clock})${range} · Embed starts right at this exercise (if your player resets, seek to ${ms}).</span></div>`;
+  }
+  return `<div class="video-look">${icon("clock", "sm")}<span>Where to look: <b>${ms}</b> (${clock})${range} · Dedicated clip demonstrating this exercise from the start.</span></div>`;
+}
+
+export function renderVideos(container, list, opts = {}) {
+  const groups =
+    opts.groups && opts.groups.length
+      ? opts.groups
+      : [{ title: "", videos: Array.isArray(list) ? list : videosFor(list) }];
+  const hasAny = groups.some((g) => g.videos && g.videos.length);
+  if (!hasAny) {
+    container.innerHTML = `<p class="muted">No video available. Follow the instructions and animation.</p>`;
+    return { setGroup() {}, playing: false, activeGroup: 0 };
+  }
+  let activeGroup = Math.min(Math.max(0, opts.activeGroup || 0), groups.length - 1);
   let active = 0;
+  let playing = false;
+
+  function curList() {
+    return (groups[activeGroup] && groups[activeGroup].videos) || [];
+  }
+
   function draw() {
-    const v = list[active];
+    const items = curList();
+    if (active >= items.length) active = 0;
+    const v = items[active];
+    const subTabsHtml =
+      groups.length > 1
+        ? `<div class="video-sub">
+            <div class="video-sub-head">
+              <span class="eyebrow">Movement ${activeGroup + 1} of ${groups.length}: ${esc(groups[activeGroup].title)}</span>
+              <span class="muted">Switches with the animation</span>
+            </div>
+            <div class="video-sub-tabs" role="group" aria-label="Exercise movements">
+              ${groups
+                .map(
+                  (g, gi) =>
+                    `<button type="button" data-sub="${gi}" aria-pressed="${gi === activeGroup}"><span class="sub-num">${gi + 1}/${groups.length}</span><span>${esc(g.title)}</span><span class="sub-cnt">${g.videos.length}</span></button>`
+                )
+                .join("")}
+            </div>
+          </div>`
+        : "";
+    if (!v) {
+      container.innerHTML = `<div class="videos">${subTabsHtml}<p class="muted">No video available for this movement. Follow the instructions and animation.</p></div>`;
+      return;
+    }
+    const at = typeof v.start === "number" ? v.start : 0;
     container.innerHTML = `
       <div class="videos">
+        ${subTabsHtml}
         <div class="video-tabs" role="group" aria-label="Videos">
-          ${list
+          ${items
             .map(
               (x, i) =>
                 `<button type="button" data-i="${i}" aria-pressed="${i === active}"><span class="tag ${x.kind === "demo" ? "demo" : ""}">${x.kind === "bryan" ? "Bryan" : "Demo"}</span><span>${esc(x.title)}</span></button>`
             )
             .join("")}
         </div>
+        ${lookDetailHtml(v)}
         ${
           v.id
-            ? `<div class="video-frame"><div class="poster" role="button" tabindex="0" aria-label="Play ${esc(v.title)}" style="background-image:url('https://i.ytimg.com/vi/${v.id}/hqdefault.jpg')"><span class="play">${icon("play")}</span><span class="vt">${esc(v.title)}${v.start ? ` · from ${fmtSecs(v.start)}` : ""}</span></div></div>`
+            ? `<div class="video-frame"><div class="poster" role="button" tabindex="0" aria-label="Play ${esc(v.title)}" style="background-image:url('https://i.ytimg.com/vi/${v.id}/hqdefault.jpg')"><span class="play">${icon("play")}</span><span class="vt">${esc(v.title)} · ${fmtMinSec(at)} (${fmtSecs(at)})</span></div></div>`
             : `<div class="banner"><div class="grow"><b>${esc(v.title)}</b><span class="muted">Open this post on X to watch the clip.</span></div></div>`
         }
-        <div class="video-meta"><span>${v.kind === "bryan" ? (v.start ? `Bryan demonstrates it around ${fmtSecs(v.start)}` : "Bryan's video or post") : "Technique demonstration by another coach"}</span><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
+        <div class="video-meta"><span>${v.kind === "bryan" ? (at > 0 ? `Bryan demonstrates it at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Bryan's video or post") : at > 0 ? `Demonstration starts at ${fmtMinSec(at)} (${fmtSecs(at)})` : "Technique demonstration by another coach"}</span><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
       </div>`;
   }
+
   function play() {
-    const v = list[active];
+    const items = curList();
+    const v = items[active];
     const frame = container.querySelector(".video-frame");
-    if (!frame || !v.id) return;
+    if (!frame || !v || !v.id) return;
+    playing = true;
+    if (opts.onPlay) opts.onPlay();
     const params = new URLSearchParams({ autoplay: "1", rel: "0", playsinline: "1", modestbranding: "1" });
-    if (v.start) params.set("start", String(v.start));
+    if (v.start > 0) params.set("start", String(Math.floor(v.start)));
+    if (v.end > 0) params.set("end", String(Math.floor(v.end)));
     frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?${params}" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
   }
+
   container.addEventListener("click", (e) => {
+    const sub = e.target.closest("[data-sub]");
+    if (sub) {
+      const gi = Number(sub.dataset.sub);
+      if (gi !== activeGroup) {
+        activeGroup = gi;
+        active = 0;
+        playing = false;
+        draw();
+        if (opts.onSelectGroup) opts.onSelectGroup(gi);
+      }
+      return;
+    }
     const tab = e.target.closest("[data-i]");
     if (tab) {
       active = Number(tab.dataset.i);
+      playing = false;
       draw();
       return;
     }
@@ -81,4 +212,21 @@ export function renderVideos(container, list) {
     }
   });
   draw();
+
+  return {
+    setGroup(gi, { manual = false } = {}) {
+      if (gi < 0 || gi >= groups.length || gi === activeGroup) return;
+      if (!manual && playing) return;
+      activeGroup = gi;
+      active = 0;
+      playing = false;
+      draw();
+    },
+    get playing() {
+      return playing;
+    },
+    get activeGroup() {
+      return activeGroup;
+    },
+  };
 }

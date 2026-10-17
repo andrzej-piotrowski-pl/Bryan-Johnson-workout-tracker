@@ -526,6 +526,15 @@ export class Stage {
     this.clipLoops = 0;
     this.applyClip(false);
   }
+  setClip(index) {
+    if (!this.clips.length) return;
+    const next = ((index % this.clips.length) + this.clips.length) % this.clips.length;
+    if (next === this.clipIndex) return;
+    this.clipIndex = next;
+    this.time = 0;
+    this.clipLoops = 0;
+    this.applyClip(false);
+  }
 
   updateLoop() {
     const run = this.playing && this.visible && this.clips.length > 0;

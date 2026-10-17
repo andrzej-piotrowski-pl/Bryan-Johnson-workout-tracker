@@ -435,12 +435,23 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .set-head span { text-align: center; }
 
 .videos { display: grid; gap: 10px; }
+.video-sub { display: grid; gap: 6px; padding: 10px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
+.video-sub-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.78rem; }
+.video-sub-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.video-sub-tabs button { flex: none; display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); border-radius: 8px; padding: 5px 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.video-sub-tabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
+.video-sub-tabs .sub-num { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+.video-sub-tabs button[aria-pressed="true"] .sub-num { color: var(--accent); }
+.video-sub-tabs .sub-cnt { font-family: var(--font-mono); font-size: 0.66rem; padding: 1px 5px; border-radius: 999px; background: var(--surface-3); color: var(--muted); }
 .video-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
 .video-tabs button { flex: none; display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); border-radius: 999px; padding: 5px 11px; font-size: 0.8rem; font-weight: 600; cursor: pointer; max-width: 260px; }
 .video-tabs button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .video-tabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
 .video-tabs button .tag { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--bryan); }
 .video-tabs button .tag.demo { color: var(--accent); }
+.video-look { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-2); line-height: 1.35; }
+.video-look .icon { flex: none; color: var(--accent); }
+.video-look b { font-family: var(--font-mono); color: var(--ink); font-weight: 700; }
 .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid var(--line); }
 .video-frame iframe, .video-frame .poster { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-frame .poster { display: grid; place-items: center; cursor: pointer; background-size: cover; background-position: center; color: #fff; }
