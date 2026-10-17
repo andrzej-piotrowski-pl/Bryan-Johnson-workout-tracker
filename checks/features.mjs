@@ -1,10 +1,12 @@
 // Run with node checks/features.mjs. All logs below are temporary in-memory fixtures.
 import assert from "node:assert/strict";
 import { EXERCISES } from "../public/js/data/exercises.js";
+import { ADDONS } from "../public/js/data/addons/index.js";
 import { defaultProfile } from "../public/js/personalize.js";
 import { state } from "../public/js/store.js";
-import { currentReadiness } from "../public/js/plan.js";
+import { addonsForDate, currentReadiness } from "../public/js/plan.js";
 import { nextTimeRecommendation } from "../public/js/components/logger.js";
+import { levelCheckHtml } from "../public/js/components/level-check.js";
 import { weekTargets } from "../public/js/week-targets.js";
 import { deskStreak } from "../public/js/components/desk.js";
 
@@ -108,6 +110,15 @@ const byId = Object.fromEntries(wt.targets.map((t) => [t.id, t]));
 assert.equal(byId.strength.value, 3, "Mon, Wed and Fri count as strength");
 assert.equal(byId.zone2.value, 30, "Zone 2 minutes add up");
 assert.equal(byId.hard.value, 6, "Vigorous minutes count as hard cardio");
+assert.equal(byId.zone2.target, 90, "Returning targets 90 Zone 2 minutes");
+assert.equal(byId.hard.target, 26, "Returning targets 26 hard minutes");
+const fullWt = weekTargets("2026-10-12", { level: 3 });
+assert.equal(fullWt.targets.find((t) => t.id === "zone2").target, 150, "Well trained targets 150 Zone 2 minutes");
+assert.equal(fullWt.targets.find((t) => t.id === "hard").target, 75, "Well trained targets 75 hard minutes");
+const newWt = weekTargets("2026-10-12", { level: 0 });
+assert.equal(newWt.targets.find((t) => t.id === "zone2").target, 60, "New to training targets 60 Zone 2 minutes");
+assert.equal(newWt.targets.find((t) => t.id === "hard").target, 0, "New to training has no hard-cardio target");
+assert.equal(newWt.targets.find((t) => t.id === "hard").met, true, "A zero target is met by doing none");
 assert.equal(byId.jumps.value, 2, "Pogo hops and Heidens are jump days");
 assert.deepEqual(byId.balance.value, 4, "Balance, stability, tree pose and side plank count");
 assert.equal(byId.mobility.value, 4, "Stretch and mobility days count");
@@ -130,11 +141,27 @@ for (let i = 0; i < 12; i++) {
 rd = currentReadiness();
 assert.equal(rd.sessions, 12);
 assert.equal(rd.ready, false, "Checkpoints still need ticking");
+const waiting = levelCheckHtml();
+assert.match(waiting, /The plan's two checks/);
+assert.match(waiting, /Move up to Active/);
+assert.match(waiting, /data-level-up="active"[^>]*disabled/, "Waiting button is disabled");
+assert.doesNotMatch(waiting, /Ready for Active/);
 state.profile.levelCheck = { level: "returning", checks: { "top-range": true, recovered: true } };
 rd = currentReadiness();
 assert.equal(rd.ready, true);
+const ready = levelCheckHtml();
+assert.match(ready, /Ready for Active/);
+assert.doesNotMatch(ready, /data-level-up="active"[^>]*disabled/, "Ready button is enabled");
 state.profile.level = "trained";
 assert.equal(currentReadiness(), null, "Well trained is the full plan");
+assert.match(levelCheckHtml(), /full plan/);
+
+// Desk breaks is its own add-on and only shows when enabled.
+assert(ADDONS.some((a) => a.id === "desk"), "Desk breaks is a registered add-on");
+state.profile = { ...baseProfile(), addons: { posture: true, desk: true } };
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks appears when enabled");
+state.profile.addons.desk = false;
+assert(!addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks stays off until enabled");
 
 // ---------- desk streak ----------
 state.days = {

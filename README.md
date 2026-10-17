@@ -12,12 +12,12 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4, hold and rest timers with beeps.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) using the plan's two-sessions-at-the-top rule. Tap **Use** to fill it in.
-- **Level check**: the plan's own move-up checkpoints (sessions at your level, plus the questions for that level), a gentle prompt when they are met, and a step-down reminder after a long break. You always change level yourself; past logs keep theirs.
-- **Bryan's weekly targets**: a scoreboard in **Activity → This week** for strength, Zone 2, hard cardio, jumps, balance, mobility and posture, with what is left and which days count.
+- **Level check**: the plan's own move-up checkpoints (sessions at your level, plus the two questions for that level) at the end of **Today** and again after a guided workout, with a step-down reminder after a long break. You always change level yourself; past logs keep theirs.
+- **Bryan's weekly targets**: two scoreboards in **Activity → This week**, one against your level's weekly targets and one against Bryan's full Well trained week, with what is left and which days count.
 - **Tough day, still on plan**: one tap on any exercise for the easier version already in the plan, the previous level's dose, or skipping it for today. Progression pauses after that until you repeat the session.
 - **Your equipment**: record what you own, with names and product links, during setup or any time in Settings. Add equivalent or extra equipment, including a separate Massage category. Exercise instructions keep generic equipment names.
 - **Personalised**: heart-rate zones from your age (or measured max), starting weights scaled to your weight, sex, age and level, metric or imperial.
-- **Optional add-ons** chosen on first run. The first one is a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session.
+- **Optional add-ons** chosen on first run: a daily **posture correction** block for tech neck and forward shoulders, tracked like the main session, and separate **desk breaks** for long sitting days.
 - **Nine themes** to pick from during setup or any time in Settings, each with its own layout, type and colours (not just a palette), in light or dark.
 - **Activity**: a weekly schedule, history calendar with skip reasons and progress charts with clear time intervals, including Last week, Last month and Since beginning.
 - An exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
@@ -149,7 +149,9 @@ Suggested weights are starting points. Use a weight that lets you finish with go
 
 Open **Activity** for three views: **This week**, **History** and **Progress**. The main navigation stays compact on desktop and mobile. Existing bookmarks to the old pages still open the right tab.
 
-**This week** also shows Bryan's weekly targets as one card: strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left. **Progress** holds the level check: the plan's session count for your current level, its two move-up questions and the buttons to change level when you are ready.
+**This week** ends with two scoreboards: one against the weekly targets of the level you picked, and one against Bryan's full Well trained week (150 Zone 2 and 75 hard-cardio minutes). Both cover strength sessions, Zone 2 and hard-cardio minutes, jump days, balance and stability days, mobility days and posture days. Each row opens to show which days counted and what is still left.
+
+The **level check** is at the end of Today, after the session and notes, and again at the end of a guided workout: the plan's session count for your current level, its two move-up questions and the button to change level when you are ready. It also lives in **Settings → Training level**, next to the manual level picker.
 
 In Progress, choose a time interval from two groups:
 
@@ -310,7 +312,7 @@ Add-ons are optional blocks shown after the main session, picked on first run (a
 
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
 
-**Desk mode**: from the posture block you can start two gentle countdowns for Bryan's sitting-day habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Tap **Done** to log a break; Today shows your daily count and streak. It is separate from the workout and adds no training volume.
+**Desk breaks** (separate add-on, off until you turn it on): two gentle countdowns from Bryan's posture habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Its own card sits below the posture block on **Today**. Tap **Done** to log a break; Today shows your daily count and streak. It is separate from the workout and adds no training volume.
 
 <details>
 <summary><b>Advanced: make your own add-on</b></summary>

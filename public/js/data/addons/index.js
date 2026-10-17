@@ -9,8 +9,9 @@
 // then import it below and add it to ADDONS. Logging, auto-save and history work automatically.
 
 import posture from "./posture.js";
+import desk from "./desk.js";
 
-export const ADDONS = [posture];
+export const ADDONS = [posture, desk];
 
 export function getAddon(id) {
   return ADDONS.find((a) => a.id === id) || null;

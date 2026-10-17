@@ -7,6 +7,7 @@ import { exportAll, importAll, resetAll, state, updateProfile } from "../store.j
 import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
 import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone } from "../plan.js";
 import { levelPickerHtml } from "../components/level-picker.js";
+import { mountLevelCheck } from "../components/level-check.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, openDialog, seg, switchHtml, toast } from "../components/ui.js";
@@ -81,8 +82,12 @@ export function render(el) {
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Training level</h3>
         <p class="muted" style="font-size:0.86rem">Your level sets the exercises, sets, reps and intervals. Your weight, sex and age adjust the suggested weights.</p>
-        ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
-        <p class="muted" style="font-size:0.86rem"><a href="#/activity/progress">Open the level check in Progress</a> to track the plan's move-up checkpoints and change level when you are ready.</p>
+        <div data-level-check-host></div>
+        <details class="level-manual">
+          <summary>Change level manually</summary>
+          <p class="muted" style="font-size:0.86rem">Use this if you want to move more than one level, or step down without waiting for a break. Past logs keep the level they were done at.</p>
+          ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
+        </details>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
@@ -345,6 +350,8 @@ export function render(el) {
     equipmentEditor?.destroy();
     drawPage();
     equipmentEditor = createEquipmentEditor(el.querySelector("[data-equipment-editor]"), { profile: p, save: updateProfile });
+    const lc = el.querySelector("[data-level-check-host]");
+    if (lc) mountLevelCheck(lc, { showStepDown: true, onChange: (type) => type === "level" && draw() });
     el.querySelector("[data-anim-preview]").replaceWith(previewEl);
     if (preview) fillAnimThumbs();
     else {

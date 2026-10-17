@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.18.0] - 2026-10-17
+
+### Added
+- Desk breaks is now its own add-on, off until you enable it, with a normal card below the posture block on Today.
+- A second weekly scoreboard: one against the targets for your level, one against Bryan's full Well trained week.
+
+### Changed
+- The level check now appears at the end of Today and at the end of a guided workout, with a progress ring, short explanations for each check and a clearer style. It also lives in Settings and no longer appears in Progress.
+- Both weekly scoreboards moved to the end of This week.
+- Ticking a level-check box updates quietly, without redrawing the page.
+
+### Fixed
+- Guided workouts no longer error if the last step is clicked again.
+
 ## [1.17.1] - 2026-10-17
 
 ### Changed

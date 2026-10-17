@@ -28,8 +28,8 @@ export const LEVEL_PLANS = [
       sessions: 18,
       next: "returning",
       questions: [
-        { id: "comfortable", label: "Every session felt comfortable" },
-        { id: "no-pain", label: "Nothing hurt the next day" },
+        { id: "comfortable", label: "Every session felt comfortable", detail: "You finished each one without needing to stop early." },
+        { id: "no-pain", label: "Nothing hurt the next day", detail: "No joint pain or soreness that lasted past the day after." },
       ],
     },
   },
@@ -48,8 +48,8 @@ export const LEVEL_PLANS = [
       sessions: 12,
       next: "active",
       questions: [
-        { id: "top-range", label: "You reached the top of every rep range with clean form" },
-        { id: "recovered", label: "Soreness was gone within a day" },
+        { id: "top-range", label: "You reached the top of every rep range", detail: "On every set, with clean form." },
+        { id: "recovered", label: "Soreness was gone within a day", detail: "No soreness still there the next day." },
       ],
     },
   },
@@ -67,8 +67,8 @@ export const LEVEL_PLANS = [
       sessions: 24,
       next: "trained",
       questions: [
-        { id: "four-by-four", label: "Four rounds of the 4×4 stayed controlled" },
-        { id: "progressing", label: "Your weights kept going up" },
+        { id: "four-by-four", label: "Four rounds of the 4×4 stayed controlled", detail: "You held the pace in the last round." },
+        { id: "progressing", label: "Your weights kept going up", detail: "The main lifts kept moving forward." },
       ],
     },
   },

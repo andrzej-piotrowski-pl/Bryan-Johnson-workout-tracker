@@ -1,6 +1,7 @@
 // One week at a glance: seven day cards, weekly totals against Bryan's targets.
 
 import { state } from "../store.js";
+import { LEVELS, levelIndex } from "../personalize.js";
 import { SKIP_REASONS, addonsForDate, dayDef, dayMins, isRestKey, levelFor, sessionKeyFor, weekStats } from "../plan.js";
 import { addDays, esc, fmtDate, fmtShort, isoWeekNumber, parseIso, todayIso, weekStart } from "../util.js";
 import { icon } from "../components/icons.js";
@@ -39,11 +40,10 @@ export function render(el, params) {
     </a>`;
   }).join("");
 
-  // One card for every target the plan asks for this week: strength, Zone 2,
-  // hard cardio, jumps, balance, mobility and posture. It only counts what the
-  // week already schedules or that you have ticked off.
-  function scoreboardHtml() {
-    const wt = weekTargets(start);
+  // Two scoreboards at the end of the week: one against the level you picked,
+  // one against Bryan's full Well trained week. They count the same completed
+  // work; only the cardio targets change.
+  function targetCard(wt, title, sub, className = "") {
     const dayLabel = (date) => parseIso(date).toLocaleDateString(undefined, { weekday: "short" });
     const rows = wt.targets
       .map((t) => {
@@ -58,11 +58,24 @@ export function render(el, params) {
         </details>`;
       })
       .join("");
-    return `<section class="card card-pad week-scoreboard">
-      <div class="section-title"><div><h3>Bryan's weekly targets</h3><p class="sub">Counted from the plan's own sessions; no extra work is added.</p></div><span class="chip ${wt.allMet ? "accent" : ""}">${wt.metCount}/${wt.total} met</span></div>
+    return `<section class="card card-pad week-scoreboard${className ? ` ${className}` : ""}">
+      <div class="section-title"><div><h3>${esc(title)}</h3><p class="sub">${esc(sub)}</p></div><span class="chip ${wt.allMet ? "accent" : ""}">${wt.metCount}/${wt.total} met</span></div>
       <div class="target-list">${rows}</div>
       <p class="muted" style="font-size:0.82rem">Zone 2 and hard minutes follow the same rules as the totals above. Jumps, balance, mobility and posture come from the exercises you tick off each day.</p>
     </section>`;
+  }
+
+  function scoreboardHtml() {
+    const lvl = levelIndex(state.profile);
+    const levelWt = weekTargets(start, { level: lvl });
+    const fullWt = weekTargets(start, { level: 3 });
+    if (lvl === 3) {
+      return `<div class="week-scoreboards">${targetCard(fullWt, "Bryan's full week · Well trained", "Your level is Well trained, so this is also your level's target.", "full")}</div>`;
+    }
+    return `<div class="week-scoreboards">
+      ${targetCard(levelWt, `Your level · ${LEVELS[lvl].name}`, "Against the weekly targets for the level you picked.", "level")}
+      ${targetCard(fullWt, "Bryan's full week · Well trained", "Against the full 150 Zone 2 and 75 hard-cardio targets.", "full")}
+    </div>`;
   }
 
   const zonePct = Math.min(100, Math.round((s.zone2 / 150) * 100));
@@ -81,8 +94,8 @@ export function render(el, params) {
       <div class="card kpi">${icon("bolt")}<b>${s.hard}<small class="muted" style="font-size:1rem"> / 75</small></b><span>hard-cardio minutes</span></div>
       <div class="card kpi">${icon("history")}<b>${s.extra}</b><span>minutes of extra activity</span></div>
     </div>
-    ${scoreboardHtml()}
     <div class="week-grid">${cards}</div>
     <p class="muted" style="font-size:0.85rem">Zone 2 includes scheduled Zone 2 blocks, easy recovery between 4×4 intervals and extra activity logged as "Easy / Zone 2". Hard cardio includes vigorous blocks and hard intervals. Brisk beginner intervals, warm-ups and cool-downs don't count toward these targets. Bryan's weekly targets are at least 150 minutes of Zone 2 and 75 minutes of hard cardio. Lower levels build toward those amounts.</p>
+    ${scoreboardHtml()}
   </div>`;
 }

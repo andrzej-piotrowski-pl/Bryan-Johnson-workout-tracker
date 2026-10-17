@@ -6,8 +6,16 @@
 import { EXERCISES } from "./data/exercises.js";
 import { state } from "./store.js";
 import { addDays } from "./util.js";
+import { levelIndex } from "./personalize.js";
 import { addonsForDate, countsAsSession, dayDef, dayLoad, sessionKeyFor } from "./plan.js";
 
+// Weekly cardio targets by training level (New, Returning, Active, Well trained).
+const LEVEL_TARGETS = [
+  { zone2: 60, hard: 0 },
+  { zone2: 90, hard: 26 },
+  { zone2: 120, hard: 51 },
+  { zone2: 150, hard: 75 },
+];
 const STRENGTH_KEYS = new Set(["mon", "wed", "fri"]);
 const JUMP_IDS = new Set(["pogo", "jumps", "powerskip", "heidens"]);
 const BALANCE_IDS = new Set(["tree"]);
@@ -46,8 +54,9 @@ function daysWith(days, predicate) {
   return days.filter(predicate).map((d) => d.date);
 }
 
-export function weekTargets(start) {
+export function weekTargets(start, { level = levelIndex(state.profile) } = {}) {
   const profile = state.profile || {};
+  const cfg = LEVEL_TARGETS[level] || LEVEL_TARGETS[LEVEL_TARGETS.length - 1];
   const postureOn = !!(profile.addons && profile.addons.posture);
   const days = [];
   for (let i = 0; i < 7; i++) {
@@ -87,10 +96,10 @@ export function weekTargets(start) {
     {
       id: "zone2",
       label: "Zone 2 minutes",
-      targetLabel: "150 min",
+      targetLabel: `${cfg.zone2} min`,
       value: zone2,
-      target: 150,
-      met: zone2 >= 150,
+      target: cfg.zone2,
+      met: zone2 >= cfg.zone2,
       unit: "min",
       minutes: byDay("zone2"),
       note: "Scheduled Zone 2 blocks, easy 4×4 recoveries and easy extra activity.",
@@ -98,10 +107,10 @@ export function weekTargets(start) {
     {
       id: "hard",
       label: "Hard-cardio minutes",
-      targetLabel: "75 min",
+      targetLabel: `${cfg.hard} min`,
       value: hard,
-      target: 75,
-      met: hard >= 75,
+      target: cfg.hard,
+      met: hard >= cfg.hard,
       unit: "min",
       minutes: byDay("hard"),
       note: "Controlled vigorous blocks and hard work intervals; brisk beginner intervals are excluded.",

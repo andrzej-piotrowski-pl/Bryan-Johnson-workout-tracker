@@ -174,17 +174,17 @@ export function hasUnsaved() {
 
 // ---------- profile ----------
 
-export function setProfile(p) {
+export function setProfile(p, { silent = false } = {}) {
   state.profile = p;
   if (p && p.settings && p.settings.theme) lsSet(LS.theme, p.settings.theme);
   schedule("profile", 300);
-  emit({ type: "profile" });
+  if (!silent) emit({ type: "profile" });
 }
 
-export function updateProfile(fn) {
+export function updateProfile(fn, opts) {
   const p = structuredClone(state.profile || {});
   fn(p);
-  setProfile(p);
+  setProfile(p, opts);
 }
 
 // ---------- days ----------

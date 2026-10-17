@@ -11,6 +11,7 @@ import { createStagePanel } from "../components/stage-panel.js";
 import { editItem, getItemLog, renderLogger } from "../components/logger.js";
 import { exerciseInfoHtml } from "../components/exercise-panel.js";
 import { renderVideos, videosFor } from "../components/video.js";
+import { mountLevelCheck } from "../components/level-check.js";
 import { stopRest } from "../components/timer.js";
 
 function buildSteps(date) {
@@ -60,10 +61,13 @@ export function startGuided(date, onExit) {
     stage.pause();
     side.innerHTML = `<span class="eyebrow">Finished</span><h2 class="display" style="font-size:2.2rem">Workout complete</h2>
       <p>${done} of ${steps.length} exercises done. You can record how it felt in the day's notes.</p>
-      <div class="btn-row"><button type="button" class="btn primary" data-g="close">${icon("check")} Back to the day</button></div>`;
+      <div class="btn-row"><button type="button" class="btn primary" data-g="close">${icon("check")} Back to the day</button></div>
+      <div data-level-check-host></div>`;
     bar.style.width = "100%";
     count.textContent = `${steps.length}/${steps.length}`;
     wrap.querySelector(".guided-bottom").hidden = true;
+    const lcHost = side.querySelector("[data-level-check-host]");
+    if (lcHost) mountLevelCheck(lcHost, { compact: true, showStepDown: false });
   }
 
   function show() {
@@ -122,6 +126,7 @@ export function startGuided(date, onExit) {
       i += 1;
       show();
     } else if (a === "next") {
+      if (i >= steps.length) return show();
       const s = steps[i];
       editItem(date, s.scope, s.item, (l) => (l.done = true));
       i += 1;

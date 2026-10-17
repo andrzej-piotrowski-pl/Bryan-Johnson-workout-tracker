@@ -2,14 +2,13 @@
 // targets, strength progression per exercise, posture stiffness and body weight.
 
 import { EXERCISES } from "../data/exercises.js";
-import { state, updateProfile } from "../store.js";
-import { countsAsSession, currentReadiness, liftHistory, logLevel, weekStats } from "../plan.js";
+import { state } from "../store.js";
+import { countsAsSession, liftHistory, logLevel, weekStats } from "../plan.js";
 import { LEVELS, kgUnit, levelIndex } from "../personalize.js";
 import { addDays, esc, fmtDate, fmtShort, parseIso, weekStart } from "../util.js";
 import { PROGRESS_RANGES, inProgressRange, progressBeginning, progressRange } from "../progress-ranges.js";
 import { icon } from "../components/icons.js";
 import { mountChart, tableHtml } from "../components/charts.js";
-import { toast } from "../components/ui.js";
 
 export function render(el) {
   let range = "12w";
@@ -53,37 +52,6 @@ export function render(el) {
     return `<section class="card chart-card" data-chart="${id}">
       <div class="section-title"><div><h3>${esc(title)}</h3><p class="sub">${esc(sub)}</p></div><button type="button" class="btn sm ghost" data-table="${id}">${icon(showTable ? "progress" : "list", "sm")} ${showTable ? "Chart" : "Table"}</button></div>
       ${showTable ? tableHtml(spec, headers) : `<div class="chart" data-host="${id}"></div>`}
-    </section>`;
-  }
-
-  // The plan's own move-up checkpoints, with the session count and the two
-  // questions from the level notes. Nothing changes level without a tap.
-  function levelCard() {
-    const rd = currentReadiness();
-    const lvl = levelIndex(state.profile);
-    const current = LEVELS[lvl];
-    if (!rd) {
-      const prev = lvl > 0 ? LEVELS[lvl - 1] : null;
-      return `<section class="card card-pad level-check">
-        <div class="section-title"><div><h3>Training level</h3><p class="sub">The plan's checkpoint card.</p></div><span class="chip accent">${esc(current.name)}</span></div>
-        <p class="muted">This is the full plan. There is no level above it; after illness, injury or a long break, the plan says step down for a while.</p>
-        ${prev ? `<div class="btn-row"><button type="button" class="btn" data-level-down="${esc(prev.id)}">Step down to ${esc(prev.name)}</button></div>` : ""}
-      </section>`;
-    }
-    const next = LEVELS.find((l) => l.id === rd.next);
-    const pct = Math.min(100, Math.round((rd.sessions / rd.target) * 100));
-    const remaining = Math.max(0, rd.target - rd.sessions);
-    const questions = rd.questions.map((q) => `<label class="check-line"><input type="checkbox" data-readiness="${esc(q.id)}" ${rd.checks[q.id] ? "checked" : ""}> <span>${esc(q.label)}</span></label>`).join("");
-    return `<section class="card card-pad level-check">
-      <div class="section-title"><div><h3>Training level</h3><p class="sub">The plan's own move-up checkpoints. You change level; nothing moves on by itself.</p></div><span class="chip accent">${esc(current.name)}</span></div>
-      <div class="level-meter"><div class="level-meter-bar"><i style="width:${pct}%"></i></div><span class="mono">${rd.sessions} / ${rd.target} sessions</span></div>
-      <p class="muted">About ${rd.weeks} weeks at this level${remaining ? `; ${remaining} more ${remaining === 1 ? "session" : "sessions"} to the checkpoint` : ""}. Past logs keep their level.</p>
-      <div class="check-list">${questions}</div>
-      <div class="btn-row">
-        <button type="button" class="btn primary" data-level-up="${esc(rd.next)}" ${rd.ready ? "" : "disabled"}>Move up to ${esc(next ? next.name : "next level")}</button>
-        ${lvl > 0 ? `<button type="button" class="btn ghost" data-level-down="${esc(LEVELS[lvl - 1].id)}">Step down to ${esc(LEVELS[lvl - 1].name)}</button>` : ""}
-      </div>
-      <p class="muted" data-level-hint>${rd.ready ? "Both checkpoints are ticked and the session count is met." : "The button unlocks when the session count is met and both checkpoints are ticked."}</p>
     </section>`;
   }
 
@@ -139,7 +107,6 @@ export function render(el) {
         <div class="card kpi"><span>Sessions a week</span><b>${avgSess}</b><span>${avgNote} · plan: 6</span></div>
         <div class="card kpi"><span>Zone 2 a week</span><b>${avgZ2} min</b><span>${avgNote} · Bryan: 150</span></div>
       </div>
-      ${levelCard()}
       <div class="charts">
         ${card("sessions", "Sessions per week", "Sessions count once at least half the exercises are done. The target is 6 a week.", sessions, ["Week", "Sessions"])}
         ${card("zone2", "Zone 2 minutes per week", "Includes Zone 2 blocks, easy recovery between 4×4 intervals and extra activity logged as Easy / Zone 2.", zone2, ["Week", "Minutes"])}
@@ -170,44 +137,12 @@ export function render(el) {
     } else if (b.dataset.table) {
       tables.has(b.dataset.table) ? tables.delete(b.dataset.table) : tables.add(b.dataset.table);
       draw();
-    } else if (b.dataset.levelUp) {
-      const id = b.dataset.levelUp;
-      const name = (LEVELS.find((l) => l.id === id) || {}).name || id;
-      updateProfile((p) => {
-        p.level = id;
-        p.levelCheck = null;
-      });
-      toast(`Level set to ${name}. Past logs keep the level they were done at.`);
-      draw();
-    } else if (b.dataset.levelDown) {
-      const id = b.dataset.levelDown;
-      const name = (LEVELS.find((l) => l.id === id) || {}).name || id;
-      updateProfile((p) => {
-        p.level = id;
-        p.levelCheck = null;
-      });
-      toast(`Level set to ${name}. Past logs keep the level they were done at.`);
-      draw();
     }
   });
   el.addEventListener("change", (e) => {
     if (e.target.matches("[data-lift]")) {
       lift = e.target.value;
       draw();
-    } else if (e.target.matches("[data-readiness]")) {
-      const checks = {};
-      el.querySelectorAll("[data-readiness]").forEach((c) => (checks[c.dataset.readiness] = c.checked));
-      const rd = currentReadiness();
-      updateProfile((p) => {
-        p.levelCheck = { ...(p.levelCheck || {}), level: rd ? rd.plan.id : p.level, checks };
-      });
-      // Update in place so ticking the second box does not re-render the page.
-      const ready = !!(rd && rd.sessions >= rd.target && rd.questions.every((q) => checks[q.id]));
-      const card = el.querySelector(".level-check");
-      const btn = card && card.querySelector("[data-level-up]");
-      if (btn) btn.disabled = !ready;
-      const hint = card && card.querySelector("[data-level-hint]");
-      if (hint) hint.textContent = ready ? "Both checkpoints are ticked and the session count is met." : "The button unlocks when the session count is met and both checkpoints are ticked.";
     }
   });
   draw();
