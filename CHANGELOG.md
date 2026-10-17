@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.22.2] - 2026-10-17
+
+### Changed
+- The README includes Activity and Progress screenshots using the Returning plan and sample logs.
+
 ## [1.22.1] - 2026-10-17
 
 ### Fixed

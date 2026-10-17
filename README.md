@@ -171,6 +171,13 @@ Last week means the previous Monday–Sunday; Last month means the previous cale
 <img src="docs/screenshots/mobile-progress.png" width="24%" alt="Progress on a phone with grouped time intervals and exact dates">
 </p>
 
+Activity and Progress with the **Returning** plan, using sample logs:
+
+<p>
+<img src="docs/screenshots/activity-returning.png" width="49%" alt="Activity at Returning, comparing its 90 Zone 2 and 26 hard-cardio minute targets with Bryan's full week">
+<img src="docs/screenshots/progress-returning.png" width="49%" alt="Progress with Returning selected, showing four weeks of sessions, Zone 2 and hard-cardio minutes">
+</p>
+
 ## The week
 
 | Day | Session |
