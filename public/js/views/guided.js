@@ -12,6 +12,7 @@ import { editItem, getItemLog, renderLogger } from "../components/logger.js";
 import { exerciseInfoHtml } from "../components/exercise-panel.js";
 import { renderVideos, videosFor } from "../components/video.js";
 import { mountLevelCheck } from "../components/level-check.js";
+import { pauseDesk, resumeDesk } from "../components/desk.js";
 import { stopRest } from "../components/timer.js";
 
 function buildSteps(date) {
@@ -34,6 +35,8 @@ function buildSteps(date) {
 export function startGuided(date, onExit) {
   const steps = buildSteps(date);
   if (!steps.length) return;
+  // Desk breaks stay quiet while the guided workout is open.
+  pauseDesk("guided");
   let i = steps.findIndex((s) => !(getItemLog(date, s.scope, s.item.id) || {}).done);
   if (i < 0) i = 0;
   const wrap = h(`<div class="guided" role="dialog" aria-modal="true" aria-label="Guided workout">
@@ -95,6 +98,7 @@ export function startGuided(date, onExit) {
 
   function close() {
     stopRest();
+    resumeDesk("guided");
     stage.dispose();
     wrap.remove();
     document.body.style.overflow = "";

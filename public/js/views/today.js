@@ -5,7 +5,7 @@ import { DAYS } from "../data/program.js";
 import { EXERCISES } from "../data/exercises.js";
 import { onChange, state, updateDay, updateProfile } from "../store.js";
 import {
-  EXTRA_TYPES, SKIP_REASONS, addonProgress, addonsForDate, blockItems, blockMins, countable, dayDef, dayMins,
+  EXTRA_TYPES, SKIP_REASONS, addonProgress, addonsForDate, blockItems, blockMins, countable, currentReadiness, dayDef, dayMins,
   editDay, isRestKey, lastSessionDate, levelFor, progressOf, rxFor, sessionKeyFor, visible,
 } from "../plan.js";
 import { LEVELS, fmtWeight, kgUnit, levelIndex, personalize } from "../personalize.js";
@@ -15,7 +15,7 @@ import { createExercisePanel } from "../components/exercise-panel.js";
 import { animBarOpen } from "../components/anim-bar.js";
 import { hasAnimStyles } from "../anim-styles.js";
 import { getItemLog, editItem, summarizeLog } from "../components/logger.js";
-import { deskState, deskStreak, doneDesk, startDesk, stopDesk, subscribeDesk } from "../components/desk.js";
+import { deskState, deskStreak, doneDesk, pauseDesk, resumeDesk, snoozeDesk, startDesk, stopDesk, subscribeDesk } from "../components/desk.js";
 import { mountLevelCheck } from "../components/level-check.js";
 import { weekTargets } from "../week-targets.js";
 import { confirmDialog, openDialog, ring, toast } from "../components/ui.js";
@@ -139,19 +139,23 @@ export function render(el, params) {
     const move = d.move || 0;
     const squats = d.squats || 0;
     const streak = deskStreak();
-    const dueMove = ds.due.includes("move");
-    const dueSquats = ds.due.includes("squats");
-    const timerRow = (kind, due, label, left, action) => `<div class="desk-timer${due ? " due" : ""}" data-desk-kind="${kind}">
-      <span class="grow" data-desk-label="${kind}">${due ? label + " now" : label}</span>
-      <b class="mono" data-desk-left="${kind}">${due ? "due" : left}</b>
-      <button type="button" class="btn sm" data-desk-${action}>${icon("check", "sm")} Done</button>
-    </div>`;
+    const due = (kind) => ds.due.includes(kind) && !ds.paused;
+    const timerRow = (kind, label, left, action) => {
+      const isDue = due(kind);
+      return `<div class="desk-timer${isDue ? " due" : ""}" data-desk-kind="${kind}">
+        <span class="grow" data-desk-label="${kind}">${ds.paused ? label : isDue ? `${label} now` : label}</span>
+        <b class="mono" data-desk-left="${kind}">${ds.paused ? "paused" : isDue ? "due" : left}</b>
+        ${isDue ? `<button type="button" class="btn sm ghost" data-desk-snooze="${action}">${icon("clock", "sm")} Not now, 5 min</button>` : ""}
+        <button type="button" class="btn sm" data-desk-${action}>${icon("check", "sm")} Done</button>
+      </div>`;
+    };
     return `<div class="desk-start">
+        ${ds.paused ? `<div class="banner hint desk-paused"><span>${icon("pause", "lg")}</span><div class="grow"><b>Paused during your workout</b><span>The countdowns resume when the session is done.</span></div></div>` : ""}
         ${
           ds.running
             ? `<div class="desk-timers">
-                ${timerRow("move", dueMove, "Next stand-up", ds.nextMoveInText, "move")}
-                ${timerRow("squats", dueSquats, "Next 10 squats", ds.nextSquatInText, "squats")}
+                ${timerRow("move", "Next stand-up", ds.nextMoveInText, "move")}
+                ${timerRow("squats", "Next 10 squats", ds.nextSquatInText, "squats")}
               </div>
               <div class="btn-row"><button type="button" class="btn sm ghost" data-desk-stop>${icon("pause", "sm")} Stop</button></div>`
             : `<div class="btn-row"><button type="button" class="btn sm" data-desk-start>${icon("play", "sm")} Start desk mode</button></div>`
@@ -161,25 +165,28 @@ export function render(el, params) {
   }
 
   // The countdown ticks every second, so update text in place: replacing the
-  // whole box would replace its buttons mid-click. `rebuild` is for start, stop
-  // and logging, when the structure or the counts change.
+  // whole box would replace its buttons mid-click. Rebuild only when the due,
+  // paused or running state changes, or when start/stop/log needs new counts.
   function refreshDesk(rebuild = false) {
     const ds = deskState();
     el.querySelectorAll("[data-desk]").forEach((box) => {
-      if (rebuild || !box.querySelector("[data-desk-left]")) {
+      const sig = `${[...ds.due].sort().join(",")}|${ds.paused ? "p" : ""}|${ds.running ? "r" : ""}`;
+      if (rebuild || box.dataset.sig !== sig || !box.querySelector("[data-desk-left]")) {
         box.innerHTML = deskBodyHtml();
+        box.dataset.sig = sig;
         return;
       }
-      const row = (kind, due, left, label) => {
+      const row = (kind, left, label) => {
+        const isDue = ds.due.includes(kind) && !ds.paused;
         const el2 = box.querySelector(`[data-desk-kind="${kind}"]`);
         const value = box.querySelector(`[data-desk-left="${kind}"]`);
         const name = box.querySelector(`[data-desk-label="${kind}"]`);
-        if (value) value.textContent = due ? "due" : left;
-        if (name) name.textContent = due ? `${label} now` : label;
-        if (el2) el2.classList.toggle("due", due);
+        if (value) value.textContent = ds.paused ? "paused" : isDue ? "due" : left;
+        if (name) name.textContent = ds.paused || !isDue ? label : `${label} now`;
+        if (el2) el2.classList.toggle("due", isDue);
       };
-      row("move", ds.due.includes("move"), ds.nextMoveInText, "Next stand-up");
-      row("squats", ds.due.includes("squats"), ds.nextSquatInText, "Next 10 squats");
+      row("move", ds.nextMoveInText, "Next stand-up");
+      row("squats", ds.nextSquatInText, "Next 10 squats");
     });
     const label = el.querySelector("[data-desk-count-label]");
     if (label) {
@@ -187,6 +194,15 @@ export function render(el, params) {
       const total = (d.move || 0) + (d.squats || 0);
       label.textContent = total ? `${total} logged today` : "Not started";
     }
+  }
+
+  // Desk countdowns stay quiet while today's session is under way, then
+  // resume once it is done (or skipped).
+  function syncDeskPause() {
+    if (date !== todayIso()) return;
+    const s = log() && log().status;
+    if (s === "partial") pauseDesk("session");
+    else resumeDesk("session");
   }
 
   // A periodic check shows until done, then hides for `every` days.
@@ -280,6 +296,7 @@ export function render(el, params) {
     // A day already logged keeps the level it was done at.
     const levelLine = level !== levelIndex(profile()) ? `Logged at ${LEVELS[level].name} level` : `${LEVELS[level].name} level`;
     const wt = isToday && !rest ? weekTargets(weekStart(todayIso())) : null;
+    const rd = isToday && !rest ? currentReadiness() : null;
     const swapOptions = DAYS.filter((d) => d.blocks.length)
       .map((d) => `<button type="button" data-swap-to="${esc(d.key)}" ${ctx.key === d.key ? 'aria-current="true"' : ""}>${esc(d.name)}: ${esc(d.title)}${ctx.key === d.key ? icon("check", "sm") : ""}</button>`)
       .join("");
@@ -293,6 +310,7 @@ export function render(el, params) {
             ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, level)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
             ${ctx.swapped ? `<span class="chip bryan">${icon("swap", "sm")} Doing ${esc(def.name)}'s session</span>` : ""}
             ${wt ? `<a class="chip link" href="#/activity/week" title="Weekly targets for your level; open This week for the full Bryan comparison">${icon("check", "sm")} ${wt.metCount}/${wt.total} weekly targets</a>` : ""}
+            ${rd && rd.ready ? `<button type="button" class="chip accent link" data-level-jump title="The plan's checks are done; see the level check at the end of the page">${icon("check", "sm")} Level check ready</button>` : ""}
             ${st ? `<span class="chip ${st === "skipped" ? "skip" : "accent"}" data-status>${esc(STATUS_TEXT[st] || st)}</span>` : `<span class="chip" data-status>${date > todayIso() ? "Planned" : isToday ? "Not started" : profile().startDate && date < profile().startDate ? "Before your start" : "Not logged"}</span>`}
           </div>
         </div>
@@ -358,6 +376,7 @@ export function render(el, params) {
     else autoselect();
     const lcHost = el.querySelector("[data-level-check-host]");
     if (lcHost) mountLevelCheck(lcHost, { showStepDown: false });
+    syncDeskPause();
     const r = el.querySelector("[data-ring] .ring-wrap");
     if (r) r.classList.add("intro");
   }
@@ -476,6 +495,7 @@ export function render(el, params) {
       const pr = addonProgress(l, a, ctx.level);
       if (pEl) pEl.textContent = pr.skipped ? "skipped" : `${pr.done}/${pr.total} · ≈${a.variant.mins} min`;
     }
+    syncDeskPause();
     if (l && l.status === "done" && lastStatus !== "done") toast("Workout complete.", { icon: "flame" });
     lastStatus = l && l.status;
   }
@@ -547,6 +567,15 @@ export function render(el, params) {
     }
     const b = t.closest("button");
     if (!b) return;
+    if (b.hasAttribute("data-level-jump")) {
+      const host = el.querySelector("[data-level-check-host]");
+      if (host) {
+        host.scrollIntoView({ behavior: "smooth", block: "center" });
+        host.classList.add("flash");
+        setTimeout(() => host.classList.remove("flash"), 1600);
+      }
+      return;
+    }
     if (b.hasAttribute("data-guided")) {
       const { startGuided } = await import("./guided.js");
       startGuided(date, () => {
@@ -582,6 +611,9 @@ export function render(el, params) {
       refreshDesk(true);
     } else if (b.hasAttribute("data-desk-stop")) {
       stopDesk();
+      refreshDesk(true);
+    } else if (b.hasAttribute("data-desk-snooze")) {
+      snoozeDesk(b.dataset.deskSnooze);
       refreshDesk(true);
     } else if (b.hasAttribute("data-desk-move") || b.hasAttribute("data-desk-squats")) {
       const kind = b.hasAttribute("data-desk-move") ? "move" : "squats";

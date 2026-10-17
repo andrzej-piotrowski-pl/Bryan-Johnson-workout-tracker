@@ -101,6 +101,7 @@ export function render(el) {
         <label class="field rest-custom" ${customRest ? "" : "hidden"}><span>Custom rest (seconds)</span><input class="input" type="number" data-f="restCustom" min="1" max="3600" step="1" required value="${esc(st.restSec || 75)}"><small>Enter 1 to 3,600 seconds.</small></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("autoRest", st.autoRest !== false, "Start the rest timer automatically")}<span>Start the rest timer automatically when you log a set</span></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
+        <label style="display:flex;gap:12px;align-items:center">${switchHtml("deskNotify", !!st.deskNotify, "Desk break notifications")}<span>Desk break notifications while this tab is in the background <small class="muted">(off by default; your browser asks for permission)</small></span></label>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:14px">
@@ -179,6 +180,14 @@ export function render(el) {
       fillAnimThumbs();
     } else if (t.dataset.switch) {
       const name = t.dataset.switch;
+      if (name === "deskNotify" && t.checked && typeof Notification !== "undefined") {
+        try {
+          const req = Notification.requestPermission();
+          if (req && req.then) req.then((permission) => { if (permission !== "granted") toast("Browser notifications are blocked for this site.", { icon: "info" }); });
+        } catch {
+          /* notifications are optional */
+        }
+      }
       updateProfile((pr) => {
         pr.settings = pr.settings || {};
         if (name.startsWith("addon:")) {

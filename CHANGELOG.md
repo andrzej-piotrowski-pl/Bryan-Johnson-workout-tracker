@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.19.0] - 2026-10-17
+
+### Added
+- The level check now shows a **Level check ready** chip in the day header when both checks are done, and explains what the next level changes before moving up.
+- The level check shows the plan's weeks alongside the session count.
+- The next-time suggestion shows progress toward the two-session rule ("1 of 2 sessions at the top") and starts the count fresh after a level change.
+- Desk breaks has **Not now, 5 min** to snooze a due break without logging it.
+- Desk breaks can send optional browser notifications while the app tab is in the background (off by default).
+
+### Changed
+- Desk countdowns pause while a workout is under way and resume afterwards.
+
 ## [1.18.0] - 2026-10-17
 
 ### Added

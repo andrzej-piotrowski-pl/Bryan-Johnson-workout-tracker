@@ -2,12 +2,13 @@
 // current level, in a card that can sit at the end of Today, at the end of a
 // guided workout, or in Settings. Nothing changes level without a tap.
 
+import { LEVEL_PLANS } from "../data/program.js";
 import { state, updateProfile } from "../store.js";
 import { currentReadiness } from "../plan.js";
-import { LEVELS, levelIndex } from "../personalize.js";
+import { LEVELS, levelIndex, personalize } from "../personalize.js";
 import { esc } from "../util.js";
 import { icon } from "./icons.js";
-import { ring, toast } from "./ui.js";
+import { openDialog, ring, toast } from "./ui.js";
 
 function statusText(rd) {
   if (rd.ready) return "Ready to move up";
@@ -19,7 +20,7 @@ function statusText(rd) {
 function hintText(rd) {
   if (rd.ready) return "Both checks are true and the session count is met. Move up when you want.";
   if (rd.sessions >= rd.target) return "The session count is met. Tick the two checks that are true for you.";
-  return `Keep going: ${rd.target - rd.sessions} more ${rd.target - rd.sessions === 1 ? "session" : "sessions"} to the checkpoint. Tick the checks when they are true.`;
+  return `Keep going: ${rd.target - rd.sessions} more ${rd.target - rd.sessions === 1 ? "session" : "sessions"}${rd.weeks ? ` (about ${rd.weeks} weeks)` : ""} to the checkpoint. Tick the checks when they are true.`;
 }
 
 export function levelCheckHtml({ showStepDown = false, compact = false } = {}) {
@@ -63,7 +64,7 @@ export function levelCheckHtml({ showStepDown = false, compact = false } = {}) {
       <div class="grow">
         <span class="eyebrow">Level check · ${esc(current.name)}</span>
         <h3 data-level-title>${rd.ready ? `Ready for ${esc(nextName)}` : `Next level: ${esc(nextName)}`}</h3>
-        <p class="muted">${rd.sessions} ${rd.sessions === 1 ? "session" : "sessions"} at ${esc(current.name)} · checkpoint about ${rd.target}.</p>
+        <p class="muted">${rd.sessions} ${rd.sessions === 1 ? "session" : "sessions"} at ${esc(current.name)} · checkpoint about ${rd.target} sessions${rd.weeks ? ` · about ${rd.weeks} weeks` : ""}.</p>
       </div>
       <span class="chip${rd.ready ? " accent" : ""}" data-level-status>${esc(statusText(rd))}</span>
     </div>
@@ -80,6 +81,42 @@ export function levelCheckHtml({ showStepDown = false, compact = false } = {}) {
     </div>
     <p class="muted level-check-note">Past sessions keep the level they were done at. ${reached && !rd.ready ? "The session count is met; only the two checks are left." : ""}</p>
   </section>`;
+}
+
+function applyLevel(id, name, render, onChange) {
+  updateProfile((p) => {
+    p.level = id;
+    p.levelCheck = null;
+  });
+  toast(`Level set to ${name}. Past logs keep the level they were done at.`);
+  if (render) render();
+  if (onChange) onChange("level");
+}
+
+// A short "what changes" step before the level switches, so Monday is not a
+// surprise. It stays a summary of the plan's own notes for the next level.
+function confirmMoveUp(apply) {
+  const nextIndex = levelIndex(state.profile) + 1;
+  const plan = LEVEL_PLANS[nextIndex];
+  const nextName = (LEVELS[nextIndex] || {}).name || "the next level";
+  const points = (plan && plan.points ? plan.points : []).slice(0, 3);
+  const content = document.createElement("div");
+  content.style.display = "grid";
+  content.style.gap = "12px";
+  const p = state.profile;
+  content.innerHTML = `<p>${esc(nextName)} keeps the same week but changes the work:</p>
+    ${plan && plan.effort ? `<p class="muted">${esc(personalize(plan.effort, p))}</p>` : ""}
+    <ul>${points.map((point) => `<li>${esc(personalize(point, p))}</li>`).join("")}</ul>
+    <p class="muted">Your past sessions keep the level they were done at.</p>
+    <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn" data-move-cancel>Not yet</button><button type="button" class="btn primary" data-move-confirm>Move up to ${esc(nextName)}</button></div>`;
+  const d = openDialog({ title: `Move up to ${nextName}?`, content, sheet: false });
+  content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-move-cancel]")) return d.close();
+    if (e.target.closest("[data-move-confirm]")) {
+      d.close();
+      apply();
+    }
+  });
 }
 
 export function mountLevelCheck(host, { showStepDown = false, compact = false, onChange } = {}) {
@@ -120,14 +157,13 @@ export function mountLevelCheck(host, { showStepDown = false, compact = false, o
     if (!b) return;
     // The host pages have their own level buttons; handle this one here only.
     e.stopPropagation();
-    const id = b.dataset.levelUp || b.dataset.levelDown;
+    if (b.dataset.levelUp) {
+      confirmMoveUp(() => applyLevel(b.dataset.levelUp, (LEVELS.find((l) => l.id === b.dataset.levelUp) || {}).name || b.dataset.levelUp, render, onChange));
+      return;
+    }
+    const id = b.dataset.levelDown;
+    if (!id) return;
     const name = (LEVELS.find((l) => l.id === id) || {}).name || id;
-    updateProfile((p) => {
-      p.level = id;
-      p.levelCheck = null;
-    });
-    toast(`Level set to ${name}. Past logs keep the level they were done at.`);
-    render();
-    if (onChange) onChange("level");
+    applyLevel(id, name, render, onChange);
   });
 }

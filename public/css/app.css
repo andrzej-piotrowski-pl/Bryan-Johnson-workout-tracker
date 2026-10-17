@@ -843,7 +843,7 @@ td.cur, th.cur { background: var(--accent-soft); }
 
 /* ---------- Next-time progression, easier days and the week scoreboard ---------- */
 
-.chip.link { text-decoration: none; color: var(--ink-2); }
+.chip.link { text-decoration: none; color: var(--ink-2); cursor: pointer; }
 .chip.link:hover { border-color: var(--accent); color: var(--accent); }
 
 .next-time { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: var(--r); background: var(--accent-soft); }
@@ -893,7 +893,12 @@ td.cur, th.cur { background: var(--accent-soft); }
 .day-chip { padding: 5px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font: 0.75rem var(--font-mono); }
 .day-chip.done { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: var(--accent); background: var(--accent-soft); }
 
-.level-check-host { margin-top: 18px; }
+.level-check-host { margin-top: 18px; scroll-margin-top: 90px; }
+.level-check-host.flash .level-check { animation: level-flash 1.6s ease; }
+@keyframes level-flash {
+  0%, 100% { box-shadow: none; }
+  35% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent); }
+}
 .level-check { display: grid; gap: 16px; background: linear-gradient(180deg, var(--accent-soft), var(--surface) 38%); border-color: color-mix(in srgb, var(--accent) 28%, var(--line)); }
 .level-check-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .level-check-head .grow { flex: 1; min-width: 0; display: grid; gap: 4px; }

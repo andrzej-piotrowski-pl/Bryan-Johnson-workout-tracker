@@ -8,7 +8,7 @@ import { addonsForDate, currentReadiness } from "../public/js/plan.js";
 import { nextTimeRecommendation } from "../public/js/components/logger.js";
 import { levelCheckHtml } from "../public/js/components/level-check.js";
 import { weekTargets } from "../public/js/week-targets.js";
-import { deskStreak } from "../public/js/components/desk.js";
+import { deskState, deskStreak, pauseDesk, resumeDesk, snoozeDesk, startDesk, stopDesk } from "../public/js/components/desk.js";
 
 const baseProfile = () => ({ ...defaultProfile(), level: "returning", weightKg: 75, sex: "male", age: 38, units: "metric", maxDumbbellKg: 24 });
 
@@ -30,6 +30,13 @@ state.days["2026-10-10"].items["mon-strength-gobletsquat"].sets = top(8, 12);
 const repeat = nextTimeRecommendation({ item: goblet, ex: EXERCISES.gobletsquat, level: 1, date: "2026-10-17" });
 assert.equal(repeat.kind, "repeat");
 assert.equal(repeat.kg, 12);
+assert.match(repeat.text, /0 of 2 sessions at the top/, "The rule shows progress toward the two-session rule");
+state.days["2026-10-10"].items["mon-strength-gobletsquat"].sets = top(10, 12);
+state.days["2026-10-08"].items["mon-strength-gobletsquat"].sets = top(8, 12);
+const oneOfTwo = nextTimeRecommendation({ item: goblet, ex: EXERCISES.gobletsquat, level: 1, date: "2026-10-17" });
+assert.equal(oneOfTwo.kind, "repeat");
+assert.match(oneOfTwo.text, /1 of 2 sessions at the top/, "One session at the top is shown as 1 of 2");
+state.days["2026-10-08"].items["mon-strength-gobletsquat"].sets = top(10, 12);
 
 state.days["2026-10-10"].items["mon-strength-gobletsquat"].sets = top(10, 12);
 state.days["2026-10-10"].items["mon-strength-gobletsquat"].holdProgress = true;
@@ -54,6 +61,14 @@ state.profile.maxDumbbellKg = 13;
 const capped = nextTimeRecommendation({ item: goblet, ex: EXERCISES.gobletsquat, level: 1, date: "2026-10-17" });
 assert.equal(capped.kg, 13);
 assert.match(capped.text, /heaviest/);
+state.profile.maxDumbbellKg = 24;
+
+// Sessions logged at another level do not count toward the new level's rule.
+state.days["2026-10-12"] = { date: "2026-10-12", level: "active", status: "done", items: { "mon-strength-gobletsquat": { ex: "gobletsquat", done: true, sets: top(8, 20) } }, addons: {} };
+const levelReset = nextTimeRecommendation({ item: goblet, ex: EXERCISES.gobletsquat, level: 1, date: "2026-10-17" });
+assert.equal(levelReset.kind, "add", "A newer session at another level is ignored for the Returning rule");
+assert.equal(levelReset.kg, 14);
+delete state.days["2026-10-12"];
 
 // Cardio and check exercises get no progression line.
 assert.equal(nextTimeRecommendation({ item: item("x", "zone2", ["5 min @ {hr:60-70}", "10 min", "15 min", "25 min"]), ex: EXERCISES.zone2, level: 1, date: "2026-10-17" }), null);
@@ -143,6 +158,7 @@ assert.equal(rd.sessions, 12);
 assert.equal(rd.ready, false, "Checkpoints still need ticking");
 const waiting = levelCheckHtml();
 assert.match(waiting, /The plan's two checks/);
+assert.match(waiting, /about 2 weeks/, "The checkpoint shows the plan's weeks as well as sessions");
 assert.match(waiting, /Move up to Active/);
 assert.match(waiting, /data-level-up="active"[^>]*disabled/, "Waiting button is disabled");
 assert.doesNotMatch(waiting, /Ready for Active/);
@@ -163,7 +179,7 @@ assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk bre
 state.profile.addons.desk = false;
 assert(!addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks stays off until enabled");
 
-// ---------- desk streak ----------
+// ---------- desk streak, snooze and workout pause ----------
 state.days = {
   "2026-10-15": { date: "2026-10-15", desk: { move: 2, squats: 0 } },
   "2026-10-16": { date: "2026-10-16", desk: { move: 1, squats: 1 } },
@@ -173,5 +189,18 @@ assert.equal(deskStreak("2026-10-17"), 3);
 assert.equal(deskStreak("2026-10-18"), 3, "A day with no breaks yet keeps yesterday's streak");
 state.days["2026-10-16"].desk = { move: 0, squats: 0 };
 assert.equal(deskStreak("2026-10-17"), 1);
+
+state.profile = { ...baseProfile(), settings: { sound: false } };
+startDesk();
+assert.equal(deskState().running, true);
+assert.equal(deskState().paused, false);
+pauseDesk("test");
+assert.equal(deskState().paused, true, "A workout pause freezes the countdowns");
+resumeDesk("test");
+assert.equal(deskState().paused, false, "The countdowns resume when the pause reason ends");
+snoozeDesk("move");
+assert(deskState().nextMoveIn <= 300 && deskState().nextMoveIn > 280, "Snooze returns in about 5 minutes");
+stopDesk();
+assert.equal(deskState().running, false);
 
 console.log("Progression rules, week scoreboard, level readiness and desk streaks passed.");

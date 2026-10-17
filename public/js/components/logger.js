@@ -2,7 +2,7 @@
 // cardio minutes and heart rate, or interval rounds. Everything auto-saves.
 
 import { state } from "../store.js";
-import { editDay, rxFor, timerPresets } from "../plan.js";
+import { editDay, logLevel, rxFor, timerPresets } from "../plan.js";
 import { LEVELS, bpmRange, fmtWeight, kgUnit, personalize, suggestedKg } from "../personalize.js";
 import { esc, fmtShort } from "../util.js";
 import { icon } from "./icons.js";
@@ -63,8 +63,10 @@ export function editItem(date, scope, item, fn) {
 }
 
 // Earlier logs of the same exercise, newest first, for "last time" and the
-// progression rule. Entries without any set values are ignored.
-export function performanceHistory(exId, beforeDate, limit = 4) {
+// progression rule. Entries without any set values are ignored. Pass a level to
+// compare only sessions done at that level: after a level change the count
+// starts fresh at the new range.
+export function performanceHistory(exId, beforeDate, limit = 4, { level = null } = {}) {
   const out = [];
   const dates = Object.keys(state.days).filter((d) => d < beforeDate).sort().reverse();
   for (const date of dates) {
@@ -72,10 +74,11 @@ export function performanceHistory(exId, beforeDate, limit = 4) {
     const bags = [day.items, ...Object.values(day.addons || {}).map((a) => a && a.items)];
     for (const bag of bags) {
       for (const l of Object.values(bag || {})) {
-        if (l.ex === exId && l.sets && l.sets.some((s) => s.reps != null || s.kg != null || s.sec != null)) {
-          out.push({ date, log: l });
-          if (out.length >= limit) return out;
-        }
+        if (l.ex !== exId || !l.sets || !l.sets.some((s) => s.reps != null || s.kg != null || s.sec != null)) continue;
+        const lvl = logLevel(day);
+        if (level != null && lvl != null && lvl !== level) continue;
+        out.push({ date, log: l });
+        if (out.length >= limit) return out;
       }
     }
   }
@@ -83,8 +86,8 @@ export function performanceHistory(exId, beforeDate, limit = 4) {
 }
 
 // Most recent earlier log of the same exercise, for "last time".
-export function lastPerformance(exId, beforeDate) {
-  return performanceHistory(exId, beforeDate, 1)[0] || null;
+export function lastPerformance(exId, beforeDate, opts) {
+  return performanceHistory(exId, beforeDate, 1, opts)[0] || null;
 }
 
 // Top of the rep range or the hold time, if the dose gives one.
@@ -107,6 +110,19 @@ function topKg(log) {
   return Math.max(0, ...((log && log.sets) || []).map((s) => Number(s.kg) || 0));
 }
 
+// Consecutive earlier sessions at the top of the range, capped at 2 for the
+// plan's "two sessions in a row" rule.
+function topCountFor(hist, target, key) {
+  let n = 0;
+  for (const h of hist) {
+    if (!hitTarget(h.log, target, key)) break;
+    n += 1;
+  }
+  return Math.min(2, n);
+}
+
+const topText = (n, what = "sessions") => `${n} of 2 ${what} at the top of the range`;
+
 const showKg = (p, kg) => fmtWeight(p, kg, 1);
 
 // The plan's own progression rule, turned into a suggestion for the next time:
@@ -117,29 +133,30 @@ export function nextTimeRecommendation({ item, ex, level, date }) {
   if (!ex || !["load", "reps", "hold", "carry"].includes(ex.log)) return null;
   const rx = rxFor(item, level);
   const target = parseRx(personalize(rx, p));
-  const hist = performanceHistory(item.ex, date, 4);
+  // Only sessions done at the same level count: a level change restarts the
+  // two-in-a-row comparison at the new level's range.
+  const hist = performanceHistory(item.ex, date, 6, { level });
   const last = hist[0] || null;
-  const prev = hist[1] || null;
 
   if (ex.log === "hold" || (ex.log === "carry" && !target.seconds && !topValue(target, "reps"))) {
     const top = topValue(target, "seconds");
     if (!top) return null;
+    const count = topCountFor(hist, target, "sec");
     if (!last) return { kind: "start", seconds: top, text: `Hold ${top} s and build from there.` };
-    const both = prev && hitTarget(last.log, target, "sec") && hitTarget(prev.log, target, "sec");
     if (last.log.holdProgress) return { kind: "repeat", seconds: top, text: `Repeat ${top} s — progression is paused after the easier session.` };
-    if (both) return { kind: "add", seconds: top + 5, text: `Try ${top + 5} s next time — you held the top of the range twice.` };
-    return { kind: "repeat", seconds: top, text: `Hold ${top} s again — two sessions at the top unlock more time.` };
+    if (count >= 2) return { kind: "add", seconds: top + 5, text: `Try ${top + 5} s next time — ${topText(count, "holds")}.` };
+    return { kind: "repeat", seconds: top, text: `Hold ${top} s again — ${topText(count, "holds")}; two in a row unlock more time.` };
   }
 
   if (ex.log === "carry") {
     const secs = topValue(target, "seconds");
     const lastKg = topKg(last && last.log);
     const suggested = suggestedKg(rx, p);
+    const count = topCountFor(hist, target, "sec");
     if (!last) return suggested != null ? { kind: "start", kg: suggested, seconds: secs, text: `Start around ${showKg(p, suggested)} for ${secs || 30} s.` } : null;
-    const both = prev && hitTarget(last.log, target, "sec") && hitTarget(prev.log, target, "sec");
     if (last.log.holdProgress) return { kind: "repeat", kg: lastKg || null, seconds: secs, text: lastKg ? `Repeat ${showKg(p, lastKg)} — progression is paused after the easier session.` : `Repeat the same hold — progression is paused after the easier session.` };
-    if (both && lastKg) return { kind: "add", kg: lastKg + 1, seconds: secs, text: `Try ${showKg(p, lastKg + 1)} next time — you held the top twice.` };
-    return { kind: "repeat", kg: lastKg || null, seconds: secs, text: lastKg ? `Repeat ${showKg(p, lastKg)} — two clean sessions at the top unlock the next step.` : "Repeat the same hold — two sessions at the top unlock the next step." };
+    if (count >= 2 && lastKg) return { kind: "add", kg: lastKg + 1, seconds: secs, text: `Try ${showKg(p, lastKg + 1)} next time — ${topText(count, "holds")}.` };
+    return { kind: "repeat", kg: lastKg || null, seconds: secs, text: lastKg ? `Repeat ${showKg(p, lastKg)} — ${topText(count, "holds")}; two in a row unlock the next step.` : `Repeat the same hold — ${topText(count, "holds")}; two in a row unlock the next step.` };
   }
 
   if (ex.log === "load") {
@@ -150,13 +167,13 @@ export function nextTimeRecommendation({ item, ex, level, date }) {
       return { kind: "start", kg: suggested, text: `Start around ${showKg(p, suggested)} — adjust so you finish with the reps your level recommends.` };
     }
     const lastKg = topKg(last.log);
+    const count = topCountFor(hist, target, "reps");
     if (!lastKg) {
-      if (top) return { kind: "repeat", reps: top, text: `Aim for ${top} reps and add reps before adding weight.` };
+      if (top) return { kind: "repeat", reps: top, text: `Aim for ${top} reps and add reps before adding weight — ${topText(count)}.` };
       return null;
     }
-    const both = top && prev && hitTarget(last.log, target, "reps") && hitTarget(prev.log, target, "reps");
     if (last.log.holdProgress) return { kind: "repeat", kg: lastKg, text: `Repeat ${showKg(p, lastKg)} — progression is paused after the easier session.` };
-    if (both) {
+    if (top && count >= 2) {
       const inc = ex.cat === "Legs & knees" ? 2 : 1;
       let kg = lastKg + inc;
       const max = Number(p && p.maxDumbbellKg) || null;
@@ -165,19 +182,19 @@ export function nextTimeRecommendation({ item, ex, level, date }) {
         kg = max;
         note = " You are at your heaviest dumbbell: aim for one more rep instead.";
       }
-      return { kind: "add", kg, text: `Try ${showKg(p, kg)} next time — you hit the top of the range twice.${note}` };
+      return { kind: "add", kg, text: `Try ${showKg(p, kg)} next time — ${topText(count)}.${note}` };
     }
-    return { kind: "repeat", kg: lastKg, text: `Repeat ${showKg(p, lastKg)} — two clean sessions at the top of the range unlock the next jump.` };
+    return { kind: "repeat", kg: lastKg, text: `Repeat ${showKg(p, lastKg)} — ${topText(count)}; two in a row unlock the next jump.` };
   }
 
   // Bodyweight reps.
   const top = topValue(target, "reps");
   if (!top) return null;
+  const count = topCountFor(hist, target, "reps");
   if (!last) return { kind: "start", reps: top, text: `Aim for ${top} reps.` };
-  const both = prev && hitTarget(last.log, target, "reps") && hitTarget(prev.log, target, "reps");
   if (last.log.holdProgress) return { kind: "repeat", reps: top, text: `Repeat ${top} reps — progression is paused after the easier session.` };
-  if (both) return { kind: "add", reps: top + 1, text: `Try ${top + 1} reps next time — you hit the top of the range twice.` };
-  return { kind: "repeat", reps: top, text: `Aim for ${top} reps again — two sessions at the top unlock the next step.` };
+  if (count >= 2) return { kind: "add", reps: top + 1, text: `Try ${top + 1} reps next time — ${topText(count)}.` };
+  return { kind: "repeat", reps: top, text: `Aim for ${top} reps again — ${topText(count)}; two in a row unlock the next step.` };
 }
 
 export function summarizeLog(l, logType) {
@@ -287,7 +304,7 @@ export function renderLogger(container, ctx) {
     }
     body += suggestionHtml(l.holdProgress ? { kind: "repeat", text: "Progression paused today after the easier choice. Repeat this session next time." } : suggestion);
     body += `<div class="btn-row"><button type="button" class="btn sm ghost" data-l="easier">${icon("info", "sm")} ${l.easier ? "Change easier choice" : "Something hurts or too hard?"}</button></div>`;
-    const last = type !== "check" && type !== "cardio" && type !== "intervals" ? lastPerformance(item.ex, date) : null;
+    const last = type !== "check" && type !== "cardio" && type !== "intervals" ? lastPerformance(item.ex, date, { level }) : null;
     body += last ? `<p class="muted" style="font-size:0.84rem">Last time (${esc(fmtShort(last.date))}): <span class="mono">${esc(summarizeLog(last.log, type))}</span></p>` : "";
     body += `<details ${l.note ? "open" : ""}><summary class="muted" style="cursor:pointer;font-size:0.86rem">${icon("note", "sm")} Note for this exercise</summary><textarea class="input" data-l="note" rows="2" placeholder="Note how it felt, any pain or a technique cue to remember." style="margin-top:8px;min-height:64px">${esc(l.note || "")}</textarea></details>`;
     container.innerHTML = `<div class="logger">${body}</div>`;
