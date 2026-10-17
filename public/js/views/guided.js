@@ -55,7 +55,7 @@ export function startGuided(date, onExit) {
     const done = steps.filter((s) => (getItemLog(date, s.scope, s.item.id) || {}).done).length;
     stage.pause();
     side.innerHTML = `<span class="eyebrow">Finished</span><h2 class="display" style="font-size:2.2rem">Workout complete</h2>
-      <p>${done} of ${steps.length} exercises done. Add how it felt in the notes on the day screen.</p>
+      <p>${done} of ${steps.length} exercises done. You can record how it felt in the day's notes.</p>
       <div class="btn-row"><button type="button" class="btn primary" data-g="close">${icon("check")} Back to the day</button></div>`;
     bar.style.width = "100%";
     count.textContent = `${steps.length}/${steps.length}`;

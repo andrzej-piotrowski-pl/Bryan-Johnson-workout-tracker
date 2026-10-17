@@ -99,7 +99,7 @@ export function render(el) {
       <section class="card card-pad progress-range" aria-label="Progress time interval">
         <div class="section-title"><h3>Time interval</h3><span class="range-dates" data-range-dates>${esc(dated(selected.start))} – ${esc(dated(selected.end))}</span></div>
         <div class="range-groups">${["Recent", "Longer"].map((group) => `<div class="range-group"><span class="label">${group}</span><div class="range-options${group === "Longer" ? " longer" : ""}" role="group" aria-label="${group} intervals">${PROGRESS_RANGES.filter((r) => r.group === group).map((r) => `<button type="button" data-range="${r.id}" aria-pressed="${range === r.id}">${r.name}</button>`).join("")}</div></div>`).join("")}</div>
-        <p class="muted range-note">Last week and last month mean the previous calendar period. All charts and totals use these dates; edge weeks may be partial.</p>
+        <p class="muted range-note">Last week runs from Monday to Sunday. Last month covers the previous calendar month. Charts and totals use the dates above, so the first and last weeks may be incomplete.</p>
       </section>
       <div class="kpis">
         <div class="card kpi"><span>Current level</span><b>${esc(LEVELS[lvl].name)}</b><span>${logged.filter((d) => logLevel(d) === lvl).length} sessions at this level in range</span></div>
@@ -108,15 +108,15 @@ export function render(el) {
         <div class="card kpi"><span>Zone 2 a week</span><b>${avgZ2} min</b><span>${avgNote} · Bryan: 150</span></div>
       </div>
       <div class="charts">
-        ${card("sessions", "Sessions per week", "Completed (or at least half-done) sessions; target 6.", sessions, ["Week", "Sessions"])}
-        ${card("zone2", "Zone 2 minutes per week", "Zone 2 blocks, the easy minutes of the 4×4 and easy extra activity.", zone2, ["Week", "Minutes"])}
-        ${card("hard", "Hard-cardio minutes per week", "Controlled vigorous blocks, hard work intervals and hard extra activity; brisk beginner intervals are excluded.", hard, ["Week", "Minutes"])}
+        ${card("sessions", "Sessions per week", "Sessions count once at least half the exercises are done. The target is 6 a week.", sessions, ["Week", "Sessions"])}
+        ${card("zone2", "Zone 2 minutes per week", "Includes Zone 2 blocks, easy recovery between 4×4 intervals and extra activity logged as Easy / Zone 2.", zone2, ["Week", "Minutes"])}
+        ${card("hard", "Hard-cardio minutes per week", "Includes controlled vigorous cardio, hard intervals and extra activity logged as Hard. Brisk beginner intervals don't count.", hard, ["Week", "Minutes"])}
       </div>
       <div class="section-title"><h2 style="font-size:1.25rem">Strength</h2>
         ${L.length ? `<select class="input" data-lift style="max-width:320px" aria-label="Exercise">${L.map((x) => `<option value="${x.id}" ${x.id === lift ? "selected" : ""}>${esc(x.name)} (${x.hist.length})</option>`).join("")}</select>` : ""}
       </div>
-      ${liftSpec ? `<div class="charts">${card("lift", liftSpec.title, useKg ? `Heaviest set each session (${u()}); the tooltip shows the reps.` : "Most reps in a set each session.", liftSpec, ["Date", useKg ? u() : "Reps"])}</div>` : `<div class="card empty">No strength sets in this interval. Choose a longer interval or log sets to see your progression.</div>`}
-      ${stiffness.length || bw.length ? `<div class="charts">${stiffness.length ? card("stiff", "Neck & upper-back stiffness", "From the posture add-on, 0 = none, 10 = very stiff. Lower is better.", stiffSpec, ["Date", "Stiffness"]) : ""}${bw.length ? card("bw", "Body weight", "From the notes card on each day.", bwSpec, ["Date", u()]) : ""}</div>` : ""}
+      ${liftSpec ? `<div class="charts">${card("lift", liftSpec.title, useKg ? `Heaviest set per session (${u()}). Point details include the reps.` : "Most reps in one set per session.", liftSpec, ["Date", useKg ? u() : "Reps"])}</div>` : `<div class="card empty">No strength sets logged in these dates. Choose a longer interval or record a set during your workout.</div>`}
+      ${stiffness.length || bw.length ? `<div class="charts">${stiffness.length ? card("stiff", "Neck & upper-back stiffness", "Your posture add-on ratings: 0 means no stiffness, 10 means very stiff. Lower scores mean less stiffness.", stiffSpec, ["Date", "Stiffness"]) : ""}${bw.length ? card("bw", "Body weight", "Weights recorded in each day's notes section.", bwSpec, ["Date", u()]) : ""}</div>` : ""}
     </div>`;
 
     const specs = { sessions, zone2, hard, lift: liftSpec, stiff: stiffSpec, bw: bwSpec };

@@ -240,7 +240,7 @@ export default {
         keys: [
           // A key's cue shows while the move that starts at that key plays.
           { t: 0, p: slouched(), cue: "Slumped: head forward, back rounded" },
-          { t: 0.8, p: slouched(), cue: "The string lifts the crown: chin level, neck long" },
+          { t: 0.8, p: slouched(), cue: "Imagine a string lifting the top of your head; chin level, neck long" },
           { t: 2.6, p: tall(0, 0), cue: "Shoulders settle down and back" },
           { t: 3.6, p: tall(0), cue: "Slow breath in…" },
           { t: 5.2, p: tall(1), cue: "…and out (1 of 3)" },
@@ -263,7 +263,7 @@ export default {
         camera: { view: [1, 0.1, 0.06], target: [0, 1.52, 0.0], dist: 1.75 },
         keys: [
           { t: 0, p: chinTuck(0), cue: "Stand tall, eyes level" },
-          { t: 0.6, p: chinTuck(0), cue: "Glide the head straight back: slight double chin" },
+          { t: 0.6, p: chinTuck(0), cue: "Slide your head straight back to make a slight double chin" },
           { t: 1.8, p: chinTuck(1), cue: "Hold 3 s; don't nod down" },
           { t: 4.8, p: chinTuck(1), cue: "Release slowly" },
           { t: 6.4, p: chinTuck(0) },
@@ -300,7 +300,7 @@ export default {
         camera: { view: [0.5, 0.45, 1], target: [0, 1.25, 0.1], dist: 3.5 },
         keys: [
           { t: 0, p: pullApart(0), cue: "Arms straight at shoulder height, hands shoulder-width" },
-          { t: 0.5, p: pullApart(0), cue: "Pull the band to your chest: squeeze the blades" },
+          { t: 0.5, p: pullApart(0), cue: "Pull the band to your chest and squeeze your shoulder blades" },
           { t: 1.8, p: pullApart(1), cue: "Shoulders down, away from the ears; pause 1 s" },
           { t: 2.8, p: pullApart(1), cue: "Return slowly" },
           { t: 4.4, p: pullApart(0) },
@@ -338,7 +338,7 @@ export default {
         keys: [
           { t: 0, p: faceReach(), cue: "Band at face height, arms long, stand tall" },
           { t: 0.5, p: faceReach(), cue: "Pull toward your eyes, elbows high" },
-          { t: 1.7, p: faceFinish(), cue: "Thumbs back, squeeze the shoulder blades: 1 s" },
+          { t: 1.7, p: faceFinish(), cue: "Point your thumbs back; squeeze your shoulder blades for 1 s" },
           { t: 2.7, p: faceFinish(), cue: "Slow return; stay tall" },
           { t: 4.7, p: faceReach() },
         ],
@@ -401,7 +401,7 @@ export default {
           { t: 5.6, p: neckPose(1), cue: "About 30° back; return to level" },
           { t: 6.8, p: neckPose(0.5), e: "in" },
           { t: 8.0, p: neckPose(0), e: "out" },
-          { t: 8.3, p: neckPose(0), cue: "Be patient and gentle; repeat to fatigue" },
+          { t: 8.3, p: neckPose(0), cue: "Repeat gently until your neck muscles tire" },
           { t: 8.75, p: neckPose(0, 0.5), e: "in" },
           { t: 9.2, p: neckPose(0, 0), e: "out" },
         ],

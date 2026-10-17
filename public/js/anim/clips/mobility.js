@@ -455,9 +455,9 @@ export default {
         camera: { view: [1, 0.22, 0.3], target: [0, 0.55, -0.55], dist: 4.0 },
         alternate: true,
         keys: [
-          { t: 0, p: couch(COUCH_SET, 0.85), cue: "Back shin up the sofa, other foot forward" },
+          { t: 0, p: couch(COUCH_SET, 0.85), cue: "Rest your back shin against the sofa, other foot forward" },
           // 1 ms "hold" segment: switching sides is an instant cut, not a blend.
-          { t: 0.001, p: couch(COUCH_SET, 0.85), e: "hold", cue: "Back shin up the sofa, other foot forward" },
+          { t: 0.001, p: couch(COUCH_SET, 0.85), e: "hold", cue: "Rest your back shin against the sofa, other foot forward" },
           { t: 0.6, p: couch(COUCH_SET, 0.85), cue: "Squeeze the back glute, tuck the pelvis" },
           { t: 2.6, p: couch(COUCH_UP, 0.45), cue: "Stay upright and breathe" },
           { t: 4.4, p: couch({ ...COUCH_UP, breath: 2 }, 0.45) },
@@ -522,9 +522,9 @@ export default {
         camera: { view: [1, 0.25, 0.45], target: [0, 0.62, 0.08], dist: 3.6 },
         keys: [
           { t: 0, p: toeHandsDown({}), cue: "Kneel with your toes tucked under" },
-          { t: 0.5, p: toeHandsDown({}), cue: "Hands on the floor to take some weight" },
+          { t: 0.5, p: toeHandsDown({}), cue: "Support some of your weight with your hands on the floor" },
           ...move(toeHandsDown, {}, TOE_ON_HANDS, 0.5, 1.9, { n: 3, after: "Sit back gently toward your heels" }),
-          ...move(toeHandsDown, TOE_ON_HANDS, TOE_SIT_BACK, 1.9, 4.1, { after: "Lift your hands off as you build tolerance" }),
+          ...move(toeHandsDown, TOE_ON_HANDS, TOE_SIT_BACK, 1.9, 4.1, { after: "As the stretch gets easier, lift your hands off the floor" }),
           ...move(toeHandsUp, { ...TOE_SIT_BACK, reach: 0 }, { sit: 54, lean: 4, reach: 1 }, 4.1, 5.9, { after: "Breathe; stay as long as it feels OK" }),
           { t: 7.3, p: toeHandsUp({ sit: 54, lean: 4, reach: 1, breath: 2 }), cue: "Rise back up to kneeling" },
           ...move(toeHandsUp, { sit: 54, lean: 4, reach: 1 }, { reach: 1 }, 7.3, 9.1),

@@ -5,9 +5,9 @@
 // Separate Zone 2 top-ups preserve the implied durations of older logs.
 
 export const PROGRAM = {
-  name: "Bryan Johnson–inspired home program",
+  name: "Home program inspired by Bryan Johnson",
   version: "v2 · October 2026",
-  summary: "Strength Monday, Wednesday and Friday, short intervals Tuesday, the Norwegian 4×4 Thursday, mixed cardio Saturday, rest Sunday. Scheduled Zone 2 and controlled vigorous blocks build toward his weekly cardio targets. Built from Bryan Johnson's public protocol and rebuilt for a home with bodyweight, adjustable dumbbells, a pull-up bar and bands.",
+  summary: "Train strength on Monday, Wednesday and Friday, do short intervals on Tuesday and the Norwegian 4×4 on Thursday, then mixed cardio on Saturday. Rest on Sunday. Zone 2 and controlled vigorous blocks build toward Bryan Johnson's weekly cardio targets. His public protocol is adapted here for bodyweight, adjustable dumbbells, a pull-up bar and bands.",
 };
 
 // What each training level means for the workouts, in the same order as LEVELS in
@@ -17,7 +17,7 @@ export const LEVEL_PLANS = [
     id: "new",
     effort: "Effort 4–5 out of 10: stop each set with 5 or more easy reps left.",
     points: [
-      "1–2 sets, with supported or smaller-range versions (a hand on a chair or wall). Learn the positions first.",
+      "Start with 1–2 sets. Use a chair or wall for support, or a smaller range of motion, while you learn the positions.",
       "No jumps, swings, power skips or Nordics yet; hops stay tiny.",
       "Tuesday: 4 brisk 20 s bursts. Thursday: 2 rounds of 2 min brisk, well below all-out.",
       "60 min of scheduled Zone 2 a week across five days. Intervals stay brisk, below vigorous effort. Mild muscle soreness is normal; joint pain is not.",
@@ -29,8 +29,8 @@ export const LEVEL_PLANS = [
     effort: "Effort 5–6 out of 10: stop each set with about 4 good reps left.",
     points: [
       "2 sets on main lifts, 1 set on Bryan’s high-rep accessories. Relearn the positions.",
-      "Jumps are landing drills only (snap-downs). Nordics are slow lowers only.",
-      "Tuesday: 20 s brisk bursts with long recoveries. Thursday: 2 rounds of 3 min, then 3, controlled.",
+      "Practise landings with snap-downs before starting jumps. For Nordics, do only the slow lowering part.",
+      "Tuesday: brisk 20 s bursts with long recoveries. Thursday: 2 controlled rounds of 3 min, building to 3 rounds.",
       "90 min of scheduled Zone 2 and about 26 min of vigorous work a week. Some muscle soreness is expected; joint pain is not. Still sore after 48 hours? Repeat sessions before moving up.",
     ],
     moveUp: "Move up to Active after about 2 weeks (around 12 sessions) when you reach the top of every rep range with clean form and soreness is gone within a day.",
@@ -39,9 +39,9 @@ export const LEVEL_PLANS = [
     id: "active",
     effort: "Effort about 7 out of 10: 2–3 reps left in each set.",
     points: [
-      "3 sets on most strength work. Real jumps start; stick every landing.",
+      "Do 3 sets for most strength exercises. Start jumping and hold each landing steady.",
       "Tuesday: 8 × 20 s hard. Thursday: 3 rounds of 4 min, then 4.",
-      "At least 120 min of scheduled Zone 2 and about 51 min of hard cardio a week; controlled vigorous blocks on Tue/Thu/Sat.",
+      "At least 120 min of scheduled Zone 2 and about 51 min of hard cardio a week; controlled vigorous blocks on Tuesday, Thursday and Saturday.",
     ],
     moveUp: "Move up to Well trained after about 4 weeks (around 24 sessions) when 4 rounds of the 4×4 stay controlled and your weights keep going up.",
   },
@@ -49,32 +49,32 @@ export const LEVEL_PLANS = [
     id: "trained",
     effort: "Effort 8 out of 10 on the main lifts (1–2 reps left); Bryan’s 1 × 25-style accessories go close to fatigue.",
     points: [
-      "Galpin-style heavy work on the big lifts, with jump contrast after Friday’s RDL.",
+      "Use Galpin-style heavy work for the main lifts and follow Friday’s RDL sets with jumps.",
       "Tuesday: two blocks of 8 × 20 s all-out. Thursday: the full Norwegian 4×4 at {hr:85-95}.",
       "150 min of scheduled Zone 2 and about 75 min of hard cardio a week, including 18 controlled vigorous minutes on Tue/Thu/Sat. A weighted vest is optional for Zone 2.",
     ],
-    moveUp: "This is the full plan. Keep adding weight with the rules below; after illness, injury or a long break, step down a level for a while.",
+    moveUp: "Keep adding weight using the rules below. After illness, injury or a long break, step down a level for a while.",
   },
 ];
 
 export const RULES = [
-  "Add weight only when you hit the top of the rep range on every set with clean form, two sessions in a row: about +{kg:1-2} per dumbbell for upper body, +{kg:2-4} for legs. Bryan’s protocol calls progressive overload the key, raised gradually.",
-  "Injury prevention is Bryan’s priority #1. Swap to the easier variant (open the exercise) whenever a joint complains.",
+  "Add weight only when you hit the top of the rep range on every set with clean form, two sessions in a row: about +{kg:1-2} per dumbbell for upper body, +{kg:2-4} for legs. Bryan’s protocol stresses progressive overload: increase the load gradually.",
+  "Bryan puts injury prevention first. If a joint hurts, open the exercise and switch to its easier version.",
   "The 4×4 is hard but controlled. If you can’t hold the pace in the last round, start slower next time.",
-  "Rough week (bad sleep, stress, sickness): repeat sessions or step down a level for a while instead of pushing on.",
+  "During a week of poor sleep, stress or sickness, repeat sessions or step down a level for a while.",
   "If you have been inactive for a while, are over 50 or have any heart condition, get a basic check-up (blood pressure, resting ECG) before your first all-out intervals.",
 ];
 
 // Heart-rate zones as % of max heart rate; bpm are computed from the user's profile.
 export const ZONES = [
   { zone: "Zone 1", pct: [50, 60], feel: "Very easy: warm-ups, easy walking" },
-  { zone: "Zone 2", pct: [60, 70], feel: "Full sentences possible: Bryan’s 150 min/week" },
+  { zone: "Zone 2", pct: [60, 70], feel: "You can speak in full sentences: Bryan’s 150 min/week" },
   { zone: "Zone 3", pct: [70, 80], feel: "Short phrases only" },
   { zone: "Zone 4", pct: [80, 90], feel: "Hard; a few words" },
   {
     zone: "Zone 5",
     pct: [90, 100],
-    feel: "Can’t talk: end of the 20 s bursts and of each 4×4 round",
+    feel: "You cannot talk: the end of 20 s bursts and each 4×4 round",
   },
 ];
 
@@ -90,7 +90,7 @@ export const DAYS = [
       {
         name: "Warm-up",
         mins: [8, 9, 9, 10],
-        note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
+        note: "Start with a few minutes of easy movement, then dynamic exercises, as in Bryan’s official warm-up. Hops and balance come from his bone protocol and five exercise pillars.",
         items: [
           {
             id: "mon-warm-up-backwalk",
@@ -125,7 +125,7 @@ export const DAYS = [
       {
         name: "Jumps",
         mins: [0, 3, 4, 4],
-        note: "Max intent, 45–60 s rest. Stop the set if landings get loud.",
+        note: "Give each jump your best effort and rest 45–60 s. Stop the set if landings get loud.",
         items: [
           {
             id: "mon-jumps-jumps",
@@ -191,7 +191,7 @@ export const DAYS = [
       {
         name: "Core & knees",
         mins: [5, 6, 8, 8],
-        note: "Back to back, minimal rest.",
+        note: "Move from one exercise to the next with little rest.",
         items: [
           {
             id: "mon-core-knees-tibraise",
@@ -260,12 +260,12 @@ export const DAYS = [
     short: "Tue",
     tag: "Bursts",
     title: "Intervals 1 · 20-second bursts + Zone 2 + back & core",
-    focus: "Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished with the back and oblique work from his list and the Pallof press from his Galpin session.",
+    focus: "Follow Bryan’s Tuesday template with short, hard bursts and steady Zone 2. Finish with his back and oblique exercises and the Pallof press from his Galpin session.",
     blocks: [
       {
         name: "Warm-up",
         mins: [8, 9, 9, 10],
-        note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
+        note: "Start with a few minutes of easy movement, then dynamic exercises, as in Bryan’s official warm-up. Hops and balance come from his bone protocol and five exercise pillars.",
         items: [
           {
             id: "tue-warm-up-backwalk",
@@ -300,7 +300,7 @@ export const DAYS = [
       {
         name: "Short intervals",
         mins: [5, 7, 9, 14],
-        note: "Use the indoor interval moves. Quiet options exist for every move.",
+        note: "Choose from the indoor interval moves. Each has a quieter version.",
         items: [
           {
             id: "tue-short-intervals-shortint",
@@ -330,7 +330,7 @@ export const DAYS = [
       {
         name: "Controlled vigorous cardio",
         mins: [0, 6, 12, 18],
-        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        note: "This block builds toward Bryan’s 75 min/week of vigorous cardio. Keep the effort controlled and below all-out. Log only vigorous minutes; allow extra time for recoveries.",
         items: [
           {
             id: "tue-vigorous-cardio",
@@ -391,7 +391,7 @@ export const DAYS = [
     short: "Wed",
     tag: "Lift B",
     title: "Strength B · Pull, knees & mobility",
-    focus: "Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes and high-rep arm work, plus scheduled Zone 2 toward his weekly target. First posture-strength day.",
+    focus: "Bryan’s mobility and strength exercises, including pulling, Knees-Over-Toes work and high-rep arm work, followed by Zone 2 toward his weekly target. This is the first of two posture strength days.",
     blocks: [
       {
         name: "Dynamic mobility",
@@ -413,7 +413,7 @@ export const DAYS = [
       {
         name: "Strength",
         mins: [20, 24, 28, 30],
-        note: "Rest 60–90 s on the first three, 30–45 s on the rest.",
+        note: "Rest 60–90 s between sets for the first three exercises, then 30–45 s for the rest.",
         items: [
           {
             id: "wed-strength-chinup",
@@ -469,7 +469,7 @@ export const DAYS = [
       {
         name: "Beginner yoga & balance",
         mins: 10,
-        note: "Bryan’s official list: cat-cow, cobbler’s pose, tree pose, cobra. Stay longer when you have time (his version is 15 min).",
+        note: "Bryan’s official yoga block includes cat-cow, cobbler’s pose, tree pose and cobra. Stay longer when you have time; his version lasts 15 min.",
         items: [
           {
             id: "wed-beginner-yoga-balance-catcow",
@@ -498,7 +498,7 @@ export const DAYS = [
       {
         name: "Zone 2",
         mins: [5, 10, 15, 25],
-        note: "Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.",
+        note: "This cardio counts toward Bryan’s 150 min/week target. Outdoor activity is optional.",
         items: [{ id: "wed-zone-2-zone2", ex: "zone2", rx: ["5 min @ {hr:60-70}", "10 min @ {hr:60-70}", "15 min @ {hr:60-70}", "25 min @ {hr:60-70}"] }],
       },
       {
@@ -522,7 +522,7 @@ export const DAYS = [
     short: "Thu",
     tag: "4×4",
     title: "Intervals 2 · Norwegian 4×4 + stability",
-    focus: "Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his official stability menu.",
+    focus: "Do Bryan’s Thursday Norwegian 4×4 indoors, then the stability exercises from his official protocol.",
     blocks: [
       {
         name: "Warm-up",
@@ -546,7 +546,7 @@ export const DAYS = [
       {
         name: "Norwegian 4×4",
         mins: [12, 15, 25, 25],
-        note: "Hard but controlled. Rotate the indoor moves every minute.",
+        note: "Keep a hard, controlled pace. Change the indoor move every minute.",
         items: [
           {
             id: "thu-norwegian-4-4-norwegian",
@@ -610,7 +610,7 @@ export const DAYS = [
       {
         name: "Controlled vigorous cardio",
         mins: [0, 6, 12, 18],
-        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        note: "This block builds toward Bryan’s 75 min/week of vigorous cardio. Keep the effort controlled and below all-out. Log only vigorous minutes; allow extra time for recoveries.",
         items: [
           {
             id: "thu-vigorous-cardio",
@@ -635,7 +635,7 @@ export const DAYS = [
       {
         name: "Stability",
         mins: [9, 11, 13, 14],
-        note: "Bryan’s official stability menu.",
+        note: "Stability exercises from Bryan’s official protocol.",
         items: [
           {
             id: "thu-stability-slrdl",
@@ -664,12 +664,12 @@ export const DAYS = [
     short: "Fri",
     tag: "Lift C",
     title: "Strength C · Power, lunge, press + tendons",
-    focus: "Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side plank), preceded by power work in the order Galpin uses and his 2026 heavy-hinge-then-jumps pairing.",
+    focus: "Bryan’s Friday template: lunges, overhead press, chest press, step-ups and side planks. Start with power work in Galpin’s order, then use Bryan’s 2026 pairing of heavy hip hinges followed by jumps.",
     blocks: [
       {
         name: "Warm-up",
         mins: [8, 9, 9, 10],
-        note: "Bryan’s official warm-up: a few minutes of easy movement, then dynamic moves. Hops and balance come from his bone protocol and his five pillars.",
+        note: "Start with a few minutes of easy movement, then dynamic exercises, as in Bryan’s official warm-up. Hops and balance come from his bone protocol and five exercise pillars.",
         items: [
           {
             id: "fri-warm-up-backwalk",
@@ -704,7 +704,7 @@ export const DAYS = [
       {
         name: "Speed & power",
         mins: [4, 5, 7, 8],
-        note: "Max intent, 30–60 s rest. Quality over quantity.",
+        note: "Give each rep your best effort and rest 30–60 s. Keep every rep controlled.",
         items: [
           {
             id: "fri-speed-power-powerskip",
@@ -803,7 +803,7 @@ export const DAYS = [
       {
         name: "Zone 2",
         mins: [5, 10, 20, 30],
-        note: "Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.",
+        note: "This cardio counts toward Bryan’s 150 min/week target. Outdoor activity is optional.",
         items: [{ id: "fri-zone-2-zone2", ex: "zone2", rx: ["5 min @ {hr:60-70}", "10 min @ {hr:60-70}", "20 min @ {hr:60-70}", "30 min @ {hr:60-70}"] }],
       },
       {
@@ -822,7 +822,7 @@ export const DAYS = [
     short: "Sat",
     tag: "Zone 2",
     title: "Cardio + long stretch",
-    focus: "Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, plays pickleball). Your indoor version: level-scaled controlled vigorous cardio, a long Zone 2 block and 20 min of stretching. Second posture-strength day.",
+    focus: "Bryan spends weekends hiking, biking, climbing or playing pickleball at an easy pace. Your indoor session combines controlled vigorous cardio at your level, a long Zone 2 block and 20 min of stretching. This is the second posture strength day.",
     note: "When you feel like going outside, swap the Zone 2 block for a brisk walk, hike or bike ride of the same length or longer.",
     blocks: [
       {
@@ -840,7 +840,7 @@ export const DAYS = [
       {
         name: "Controlled vigorous cardio",
         mins: [0, 6, 12, 18],
-        note: "Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.",
+        note: "This block builds toward Bryan’s 75 min/week of vigorous cardio. Keep the effort controlled and below all-out. Log only vigorous minutes; allow extra time for recoveries.",
         items: [
           {
             id: "sat-vigorous-cardio",
@@ -922,7 +922,7 @@ export const EQUIPMENT = {
       d: "Ideally up to 20–24 kg each, so the RDL, goblet squat and carries keep progressing.",
       icon: "dumbbell",
       ex: "ohpress",
-      use: "one in each hand, pressed from the shoulders to straight arms.",
+      use: "hold one in each hand and press from your shoulders until your arms are straight.",
     },
     {
       i: "Doorway pull-up bar",
@@ -945,7 +945,7 @@ export const EQUIPMENT = {
       d: "For kneeling work, stretches and quieter landings.",
       icon: "mat",
       ex: "pushup",
-      use: "hands on the mat; planks, floor work and stretches happen on it too.",
+      use: "place your hands on the mat. Use it for planks, floor work and stretches too.",
     },
     {
       i: "Slant board or 2 small plates",
@@ -956,7 +956,7 @@ export const EQUIPMENT = {
     },
     {
       i: "Adjustable aerobic step",
-      d: "A stable low step for cardio, strength step-ups and calf raises. Use the lowest secure height first; progress with control or dumbbells, not stacked furniture.",
+      d: "A stable low step for cardio, strength step-ups and calf raises. Start at the lowest secure height. Progress with control or dumbbells; never stack furniture.",
       icon: "step",
       ex: "stepup",
       use: "drive up onto a low stable step, with bodyweight or dumbbells.",
@@ -1007,7 +1007,7 @@ export const TIMELINE = [
   {
     d: "14 Oct 2026",
     t: "Bryan’s Workout Protocol: direct published update",
-    s: "The official workout page confirms strength Monday/Wednesday/Friday, short intervals Tuesday and Norwegian 4×4 Thursday, plus weekend activity and recovery. This home plan keeps its level-scaled doses and substitutes compact equipment; owning extra gear does not add exercise volume.",
+    s: "The official workout page lists strength on Monday, Wednesday and Friday, short intervals on Tuesday and the Norwegian 4×4 on Thursday, plus weekend activity and recovery. This home plan adjusts doses to your level and uses compact equipment. Buying extra gear does not add exercises or sets.",
     date: "2026-10-14",
     links: [
       {
@@ -1063,7 +1063,7 @@ export const TIMELINE = [
   {
     d: "2025",
     t: "Session rebuilt with Dr. Andy Galpin",
-    s: "Warm-up → speed & power (2 × 5) → strength (2 × 5–8) → posture → conditioning → flexibility (5 × 30 s). Feb 2025: VO2 max personal best 64.29.",
+    s: "Warm-up, then speed and power (2 × 5), strength (2 × 5–8), posture, conditioning and flexibility (5 × 30 s). In Feb 2025, he reported a VO2 max personal best of 64.29.",
     date: "2025-02-19",
     links: [
       {
@@ -1184,20 +1184,11 @@ export const TIMELINE = [
 ];
 
 export const TAKEAWAYS = [
-  "The week follows Bryan’s newest template: strength Mon/Wed/Fri, short intervals Tue, Norwegian 4×4 Thu, mixed cardio Sat, rest Sun. Everything is indoors; scheduled cardio scales by level toward 150 min Zone 2 and 75 min hard work, without relying on extras.",
+  "The week follows Bryan’s newest template: strength on Monday, Wednesday and Friday, short intervals on Tuesday, the Norwegian 4×4 on Thursday, mixed cardio on Saturday and rest on Sunday. All sessions are indoors. Scheduled cardio increases by level toward 150 min of Zone 2 and 75 min of hard work, without relying on extra activity.",
   "Strength days take the template’s basics (squat, push-up, row, swing, lunge, presses, step-up, carry, planks) and add his signature Knees-Over-Toes and high-rep posture work.",
   "From his 2026 training: hops in every warm-up, a few jumps, a heavy hinge followed by jumps, and ankle and Achilles work, because he named those as his own weak points.",
-  "His official stability menu and balance work run through the week, and flexibility closes every session.",
+  "Balance and the stability exercises from his official protocol run through the week. Every session ends with flexibility work.",
   "Posture uses his 5 habits, his 10-squat tip and his posture exercises, plus chin tucks and a doorway stretch as classic extras.",
-];
-
-export const CHANGES = [
-  "Week reorganised to Bryan’s newest template (4 Oct 2026 newsletter), with every session indoors.",
-  "Strength days now include the template’s basics (lunge, overhead press, floor press, step-up, swing, carries) next to his signature moves.",
-  "Added his official stability menu (single-leg RDL/toe touch, bird dog, dead bug, plank shoulder taps) and the Pallof press from his Galpin session.",
-  "Exercise links now jump to the minute where Bryan does the move in his own videos (where one exists), plus his May 2026 exercise video.",
-  "Posture block: added shoulder external rotation from his routine, his April 2026 squat-break tip, and chin tucks and a doorway stretch (marked as not Bryan’s).",
-  "4×4 advice from the newsletter: hard but controlled, starting with 2–3 rounds.",
 ];
 
 export const SOURCES = [

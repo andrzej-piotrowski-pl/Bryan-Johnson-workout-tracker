@@ -8,12 +8,12 @@ export const RECOMMENDED_EQUIPMENT = [
     type: g.icon, name: g.i, description: g.d,
     category: ["mat", "slant", "step"].includes(g.icon) ? "Mobility & floor work" : "Strength",
   })),
-  { type: "handles", name: "Push-up handles", category: "Strength", description: "Optional accessory. The plan keeps its existing push-ups; no handle-specific exercise or extra sets." },
-  { type: "gripper", name: "Adjustable hand gripper", category: "Strength", description: "Optional extra. Carries and hangs already train grip; no extra gripper sets are prescribed by this plan." },
-  { type: "rope", name: "Skipping rope", category: "Cardio & monitoring", description: "Optional accessory. No rope drills or additional cardio are prescribed by this plan." },
-  { type: "hr", name: "Heart-rate chest strap", category: "Cardio & monitoring", description: "Read heart rate in your strap's compatible app, then log it here. No automatic connection." },
-  { type: "massagegun", name: "Massage gun", category: "Massage", description: "Optional comfort and recovery equipment, outside Bryan's exercise prescription. Follow its manual." },
-  { type: "footmassager", name: "Foot massager", category: "Massage", description: "Optional comfort equipment, outside Bryan's exercise prescription. Follow its manual." },
+  { type: "handles", name: "Push-up handles", category: "Strength", description: "Optional for your existing push-ups. Using handles does not add exercises or sets to the plan." },
+  { type: "gripper", name: "Adjustable hand gripper", category: "Strength", description: "Optional. Carries and hangs already train grip, so this plan has no extra gripper sets." },
+  { type: "rope", name: "Skipping rope", category: "Cardio & monitoring", description: "Optional. The plan does not add rope drills or extra cardio if you own one." },
+  { type: "hr", name: "Heart-rate chest strap", category: "Cardio & monitoring", description: "Check your heart rate in your strap's compatible app, then enter it here. The strap does not connect to this app." },
+  { type: "massagegun", name: "Massage gun", category: "Massage", description: "Optional for comfort and recovery. It is outside Bryan's exercise prescription. Follow the manual." },
+  { type: "footmassager", name: "Foot massager", category: "Massage", description: "Optional for comfort. It is outside Bryan's exercise prescription. Follow the manual." },
 ];
 
 export function equipmentUrl(value) {

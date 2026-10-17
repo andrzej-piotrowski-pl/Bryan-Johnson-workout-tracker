@@ -34,6 +34,7 @@ Each time a change is committed and pushed to `main`:
    ```
 
    Use only the headings you need (`Added`, `Changed`, `Fixed`, `Removed`). Keep each line short and say what changed for the user, not which files moved.
+   When exercises, sets, reps, cardio doses, scheduling or other workout instructions change, start the relevant bullet with `**Plan change:**`. Settings uses this marker to flag the release and highlight what changed in the plan. Wording and layout changes alone do not need it.
 3. **Commit** the version bump and the changelog together with the change (or as the last commit before the push).
 
 Don't create git tags or GitHub releases; the user handles those. If a version shipped with a mistake, fix it in a new patch version.

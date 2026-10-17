@@ -35,14 +35,14 @@ export const EXERCISES = {
     log: "check",
     equipment: ["dumbbell"],
     muscles: ["quads", "calves"],
-    bryan: "Bryan opens his workouts with a backward sled drag (about 2 min in his 2023 routine, still first in his 2025 warm-up with Dr. Andy Galpin). It loads the knees and quads the Knees-Over-Toes way.",
+    bryan: "Bryan opens his workouts with a backward sled drag (about 2 min in his 2023 routine, still first in his 2025 warm-up with Dr. Andy Galpin). It works the knees and quads using the Knees-Over-Toes approach.",
     how: [
-      "Walk backward for 2 min along your longest clear line indoors (hallway or living room), turning around at the wall.",
-      "Short steps; land on the ball of the foot and let the heel follow.",
+      "Walk backward for 2 min along a clear stretch of hallway or living room. Turn around when you reach the wall.",
+      "Take short steps, landing on the ball of your foot before lowering the heel.",
       "Keep the knees bent so they travel forward over the toes, and push the floor away in front of you.",
-      "From Returning up: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.",
+      "At Returning and above, hold a dumbbell in each hand, or loop a band around your waist with its anchor in front of you. The band should pull you forward, like a sled.",
     ],
-    tips: ["It should burn in the front of the thighs, never hurt inside the knee."],
+    tips: ["You should feel the front of your thighs working. Stop if you feel pain inside the knee."],
     bryanVideos: [{ k: "w23", s: 96 }],
     videos: [
       { t: "At-home sled pull alternative", u: "https://www.youtube.com/watch?v=47XXOSCVUlg" },
@@ -58,7 +58,7 @@ export const EXERCISES = {
     log: "check",
     equipment: ["wall"],
     muscles: ["hips", "shoulders"],
-    bryan: "Arm circles, leg swings, high knees and lateral lunges are the dynamic warm-up in Bryan’s official protocol; hip CARs and lunge with twist come from his mobility day and his 2025 warm-up with Dr. Andy Galpin.",
+    bryan: "Bryan’s official warm-up uses arm circles, leg swings, high knees and lateral lunges. Hip CARs and the lunge with twist come from his mobility day and his 2025 warm-up with Dr. Andy Galpin.",
     how: [
       "Arm circles: 10 forward, 10 back.",
       "Leg swings: 10 front-to-back and 10 side-to-side per leg, one hand on a wall.",
@@ -80,13 +80,13 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat"],
     muscles: ["calves", "ankles"],
-    bryan: "Bryan’s Bone Density protocol (Apr 2026) puts jumping and hopping into the warm-up 4–7 times a week. In his 2026 dunk training he lists stiff tendons and Achilles risk as weak points, so the tendons get a small daily dose.",
+    bryan: "Bryan’s Bone Density protocol (Apr 2026) puts jumping and hopping into the warm-up 4–7 times a week. He mentions stiff tendons and Achilles risk in his 2026 dunk training notes. This plan gives the tendons a small daily dose of work.",
     how: [
       "Stand tall, feet hip-width, hands on hips, on a mat.",
-      "Bounce on the balls of your feet with almost straight knees; heels kiss the floor.",
-      "Quick, quiet, springy contacts. Height comes later.",
+      "Bounce on the balls of your feet with almost straight knees. Let your heels touch the floor lightly.",
+      "Keep each bounce quick, quiet and springy. Build height later.",
     ],
-    easier: "Quiet version for neighbours below: fast heel raises without leaving the floor.",
+    easier: "For less noise, do fast heel raises without leaving the floor.",
     videos: [
       { t: "Stationary pogo jumps (progression)", u: "https://www.youtube.com/watch?v=jj-0qlVuM3w" },
       { t: "Pogo hops", u: "https://www.youtube.com/watch?v=7SIfCcfP4g0" },
@@ -98,7 +98,7 @@ export const EXERCISES = {
     log: "hold",
     equipment: ["wall"],
     muscles: ["ankles", "glutes", "core"],
-    bryan: "Balance is one of Bryan’s five exercise pillars (his May 2026 video). His free biological-age check is a one-leg stand with eyes closed; being able to stand 10 s on one leg is linked with lower all-cause mortality.",
+    bryan: "Balance is one of Bryan’s five exercise pillars (his May 2026 video). His free biological-age check uses a one-leg stand with eyes closed. Being able to stand on one leg for 10 s is linked with lower all-cause mortality.",
     how: [
       "Stand on one leg next to a wall, hands on hips, other foot off the floor.",
       "Hold 30 s, then progress to eyes closed.",
@@ -116,14 +116,14 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat"],
     muscles: ["quads", "glutes", "calves"],
-    bryan: "Since July 2026 Bryan trains to dunk at 49: heavy lifts with jumps between sets, aimed at the fast-twitch fibres and force development he says he lacks. He also flags Achilles risk from landing forces, so you learn to land before you jump high.",
+    bryan: "Bryan has been training to dunk at 49 since July 2026, using heavy lifts with jumps between sets. He says he needs more fast-twitch fibres and faster force development, and warns about Achilles risk from landing forces. Learn to land before working on height.",
     how: [
       "Snap-down (Returning): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.",
       "Squat jump (Active): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.",
       "Countermovement jump (Well trained): quick dip with an arm swing, then a max-height jump; stick the landing.",
-      "Knees track over the toes on landing and never cave in. Full rest; every rep at max intent.",
+      "Land with your knees over your toes, without letting them cave in. Rest fully between reps and give each one your best effort.",
     ],
-    tips: ["Shoes on, land on a mat. Loud landings mean the set is over."],
+    tips: ["Wear shoes and land on a mat. Stop the set if your landings get loud."],
     easier: "Quiet version: explosive squat to calf raise without leaving the floor.",
     videos: [
       { t: "Snap-downs: introduction to landings", u: "https://www.youtube.com/watch?v=4BkMWe3au9w" },
@@ -140,10 +140,10 @@ export const EXERCISES = {
     bryan: "Power skips are in the speed and power block of Bryan’s 2025 session with Dr. Andy Galpin (2 × 5). Indoors you do them on the spot.",
     how: [
       "Skip on the spot, driving one knee up hard and the opposite arm high.",
-      "Push the floor away to go up, not forward.",
-      "Land softly and flow into the next skip; 5 per leg.",
+      "Push against the floor to lift yourself straight up.",
+      "Land softly, then move into the next skip. Do 5 per leg.",
     ],
-    easier: "Quiet version: fast knee drive with a calf raise, no flight.",
+    easier: "For less noise, drive the knee up quickly with a calf raise, keeping the supporting foot on the floor.",
     videos: [
       { t: "Alternating stationary power skips", u: "https://www.youtube.com/watch?v=_J-HVW83W9Y" },
       { t: "Power skips tutorial", u: "https://www.youtube.com/watch?v=Hec1yEEOPYU" },
@@ -155,14 +155,14 @@ export const EXERCISES = {
     log: "reps",
     equipment: [],
     muscles: ["glutes", "adductors", "ankles"],
-    bryan: "Named in the speed and power block of Bryan’s 2025 Galpin session (2 × 5). Needs about 2 m of floor to the side.",
+    bryan: "Bryan’s 2025 Galpin session includes these in the speed and power block (2 × 5). You need about 2 m of clear floor to move sideways.",
     how: [
       "Stand on your right leg, knee slightly bent.",
       "Bound sideways to the left and land on the left leg only.",
       "Stick the landing for 1–2 s: hips back, knee over the toes.",
-      "Bound back. Distance before speed.",
+      "Bound back. Build distance before adding speed.",
     ],
-    easier: "Easier levels and quiet version: step sideways onto one leg and hold, no hop.",
+    easier: "For an easier, quieter version, step sideways onto one leg and hold without hopping.",
     videos: [
       { t: "How to lateral bound", u: "https://www.youtube.com/watch?v=niEGdFUQ6sY" },
       { t: "Lateral bound (Heiden)", u: "https://www.youtube.com/watch?v=Hc9_FQgIeeg" },
@@ -174,14 +174,14 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["band", "door"],
     muscles: ["obliques", "core", "shoulders"],
-    bryan: "Bryan’s 2025 session has a rotational power slot (2 × 5), and his Bone Density protocol lists medicine-ball throws. A fast band chop is the apartment version.",
+    bryan: "Bryan’s 2025 session has a rotational power slot (2 × 5), and his Bone Density protocol lists medicine-ball throws. Use a fast band chop at home.",
     how: [
       "Anchor a band high on the hinge side of a closed door; stand side-on, an arm’s length away.",
       "Grab with both hands, arms long, and pull diagonally down across your body to the opposite hip.",
-      "Turn from the hips and pivot the back foot; the arms only transmit the force.",
-      "Fast on the way down, 2–3 s back up. Same reps on both sides.",
+      "Turn from your hips and pivot your back foot. Let the turn drive the movement through your arms.",
+      "Pull down quickly, then return over 2–3 s. Do the same number of reps on both sides.",
     ],
-    easier: "Easier levels: slow and controlled to learn the pattern.",
+    easier: "At easier levels, move slowly until you learn the movement.",
     videos: [
       { t: "Band woodchop", u: "https://www.youtube.com/watch?v=73Zyu5g3GQg" },
       { t: "Attaching a band to a door safely", u: "https://www.youtube.com/watch?v=fXncsqemFcQ" },
@@ -197,10 +197,10 @@ export const EXERCISES = {
     how: [
       "Heels on a slant board or on two small plates or books, feet hip-width.",
       "Hold one dumbbell vertically against your chest.",
-      "Sit straight down, letting the knees travel well past the toes; torso upright, full depth.",
-      "3 s down, stand up strongly.",
+      "Sit straight down to full depth with your torso upright. Let your knees travel well past your toes.",
+      "Lower over 3 s, then push up to standing.",
     ],
-    tips: ["Elbows inside the knees at the bottom.", "Full range beats extra weight."],
+    tips: ["Elbows inside the knees at the bottom.", "Use a full range of motion before adding weight."],
     bryanVideos: [{ k: "w23", s: 866 }, { k: "galpin", s: 2784 }],
     videos: [
       { t: "Heels-elevated goblet squat", u: "https://www.youtube.com/watch?v=nfTnWMX4U3I" },
@@ -213,7 +213,7 @@ export const EXERCISES = {
     log: "load",
     equipment: ["step", "slant"],
     muscles: ["quads"],
-    bryan: "A Bryan staple (3 × 10 per leg) learned from Ben Patrick, the Knees-Over-Toes coach now behind his 2026 dunk project. Builds the inner quad (VMO) and knee resilience.",
+    bryan: "Bryan does 3 × 10 per leg, learned from Ben Patrick, the Knees-Over-Toes coach working with him on his 2026 dunk project. It builds the inner quad (VMO) and knee resilience.",
     how: [
       "Start on a slant board on the floor, working heel elevated, with the other leg reaching forward. The board alone gives a small heel tap; do not balance a large board on a narrow aerobic step.",
       "Lower the other heel slowly to the floor in front by bending the working knee far over the toes.",
@@ -238,7 +238,7 @@ export const EXERCISES = {
     log: "load",
     equipment: ["mat", "chair"],
     muscles: ["quads", "hips"],
-    bryan: "In Bryan’s routine at 3 × 10. The Knees-Over-Toes signature move: deep knee bend in front, hip-flexor stretch behind.",
+    bryan: "In Bryan’s routine at 3 × 10. This Knees-Over-Toes exercise combines a deep bend of the front knee with a stretch of the back hip flexor.",
     how: [
       "Long split stance, front foot flat, back knee on a cushion to start.",
       "Slide forward until your hamstring covers your calf and the front knee is well past the toes; front heel stays down.",
@@ -263,12 +263,12 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat", "anchor"],
     muscles: ["hamstrings"],
-    bryan: "Bryan did 1 × 10 in 2023; Nordic curls sit in the strength block of his 2025 Galpin session. They protect against hamstring strains.",
+    bryan: "Bryan did 1 × 10 in 2023. His 2025 Galpin session includes Nordic curls in the strength block. They protect against hamstring strains.",
     how: [
       "Kneel on a folded mat and hook your heels under a heavy sofa or bed, or use a door Nordic strap.",
-      "Body straight from knees to head, glutes squeezed.",
+      "Keep your body straight from knees to head and squeeze your glutes.",
       "Lower forward as slowly as you can and catch yourself with your hands, like a push-up.",
-      "Push back up with your hands (Returning) or pull back with the hamstrings (later).",
+      "At Returning, push back up with your hands. At higher levels, pull yourself back with your hamstrings.",
     ],
     easier: "Lowering only, over a small range.",
     bryanVideos: [{ k: "w23", s: 904 }],
@@ -288,7 +288,7 @@ export const EXERCISES = {
       "Kneel upright on a mat, knees hip-width.",
       "Squeeze the glutes so you form one straight line from knees to head.",
       "Lean back as far as you can control, then return.",
-      "Start with a small range and grow it week by week.",
+      "Start with a small range of motion and increase it each week.",
     ],
     bryanVideos: [{ k: "w23", s: 940 }],
     videos: [
@@ -305,7 +305,7 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["wall"],
     muscles: ["shins"],
-    bryan: "Bryan does tibialis raises (1 × 25, single-leg in his list). In his 2026 dunk notes he names limited ankle dorsiflexion as a weak point; this is the fix.",
+    bryan: "Bryan does tibialis raises (1 × 25, single-leg in his list). His 2026 dunk notes mention limited ankle dorsiflexion. This exercise works on that movement.",
     how: [
       "Lean your back and hips on a wall, feet 30–60 cm in front, legs straight.",
       "Lift your toes and the fronts of your feet as high as possible.",
@@ -340,9 +340,9 @@ export const EXERCISES = {
     log: "load",
     equipment: ["dumbbell"],
     muscles: ["hamstrings", "glutes", "lowerBack"],
-    bryan: "Bryan’s 2026 dunk training is built on heavy pulls (a 385 lb, about 175 kg, PR on 4 Sep 2026, followed straight away by jumps), and his bone protocol names deadlifts. With dumbbells, the Romanian deadlift is your heavy hinge.",
+    bryan: "Bryan’s 2026 dunk training is built on heavy pulls (a 385 lb, about 175 kg, PR on 4 Sep 2026, followed straight away by jumps), and his bone protocol names deadlifts. The dumbbell Romanian deadlift provides the heavy hip-hinge work in this plan.",
     how: [
-      "Dumbbells in front of the thighs, knees soft.",
+      "Hold the dumbbells in front of your thighs with your knees slightly bent.",
       "Push the hips back with a flat back, dumbbells sliding close to the legs.",
       "Stop at a strong hamstring stretch, around mid-shin.",
       "Drive the hips forward to stand tall.",
@@ -366,7 +366,7 @@ export const EXERCISES = {
       "Use one dumbbell with a secure two-handed grip, feet a bit wider than the hips. With an adjustable kit, use swings only if its manual permits dynamic use and all fasteners are locked.",
       "Hinge back so the dumbbell passes between your thighs.",
       "Snap the hips forward to float it to chest height; arms stay relaxed.",
-      "A hip snap, not a squat and not a front raise. If the kit is not rated for swings, use the farmer’s carry already in this session; Bryan’s template allows either.",
+      "Drive the movement by snapping your hips forward. Avoid squatting or lifting the weight with your arms. If the kit is not rated for swings, use the farmer’s carry already in this session; Bryan’s template allows either.",
     ],
     videos: [
       { t: "How to: dumbbell swing", u: "https://www.youtube.com/watch?v=Y30kFfgW-bY" },
@@ -400,10 +400,10 @@ export const EXERCISES = {
     log: "load",
     equipment: ["step", "dumbbell"],
     muscles: ["quads", "glutes"],
-    bryan: "Step-ups are in the Friday session of Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026) (3 × 10 per leg), and box step-ups are part of the power training in his bone protocol.",
+    bryan: "Bryan’s Friday session in his newest weekly template (exercise newsletter, 4 Oct 2026) includes step-ups at 3 × 10 per leg. His bone protocol also uses box step-ups for power training.",
     how: [
       "Use a stable aerobic step or stair, starting at its lowest secure height. A low step is the home adaptation of Bryan’s step-up.",
-      "Whole foot on the step; drive up through that leg until you stand tall.",
+      "Place your whole foot on the step. Push through that leg until you stand tall.",
       "Don’t push off the back foot.",
       "Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.",
     ],
@@ -418,12 +418,12 @@ export const EXERCISES = {
     log: "load",
     equipment: ["bar", "band"],
     muscles: ["back", "biceps", "grip"],
-    bryan: "Bryan does both. In his 2025 Galpin session they sit in the strength block at 2 × 5–8; his official beginner list uses assisted pull-ups.",
+    bryan: "Bryan does both. His 2025 Galpin session includes them in the strength block at 2 × 5–8. His official beginner list uses assisted pull-ups.",
     how: [
       "Pull-up: palms away, slightly wider than shoulders. Chin-up: palms facing you, shoulder-width.",
       "Start from a full hang; pull your chest to the bar, elbows driving down toward the ribs.",
       "Lower in 2–3 s to a full hang.",
-      "Fewer than 5 clean reps? Use a band for assistance, or jump up and lower in 5 s (negatives).",
+      "If you cannot do 5 clean reps, use a band for assistance, or jump up and lower over 5 s (negatives).",
     ],
     bryanVideos: [{ k: "w23", s: 1007, n: "pull-ups" }, { k: "w23", s: 1033, n: "chin-ups" }],
     videos: [
@@ -457,10 +457,10 @@ export const EXERCISES = {
     muscles: ["back", "biceps"],
     bryan: "Day 1 of Bryan’s official protocol (3 × 10–12). In the Galpin session he does a harder version balancing on one leg; keep both feet down for now.",
     how: [
-      "One hand and one knee on a chair or bed, back flat, dumbbell hanging.",
+      "Rest one hand and one knee on a chair or bed. Keep your back flat and let the dumbbell hang.",
       "Pull the dumbbell toward your hip, elbow close to the body.",
-      "Squeeze 1 s, lower to a full stretch.",
-      "No twisting of the torso.",
+      "Squeeze for 1 s, then lower to a full stretch.",
+      "Keep your torso still.",
     ],
     bryanVideos: [{ k: "galpin", s: 2898 }],
     videos: [
@@ -500,7 +500,7 @@ export const EXERCISES = {
       "Lie on your back, knees bent, a dumbbell in each hand beside your chest.",
       "Elbows about 45° from the body.",
       "Press up until the arms are straight; lower until the upper arms touch the floor lightly.",
-      "Pause on the floor 1 s, no bouncing.",
+      "Pause on the floor for 1 s without bouncing.",
     ],
     videos: [
       { t: "How to do a dumbbell floor press", u: "https://www.youtube.com/watch?v=T0Y3OBF1bNI" },
@@ -539,7 +539,7 @@ export const EXERCISES = {
     how: [
       "Stand tall, elbows pinned at your sides.",
       "Curl up while turning the palms up; squeeze at the top.",
-      "Lower in 2–3 s, no swinging.",
+      "Lower over 2–3 s and keep your body still.",
     ],
     bryanVideos: [{ k: "w23", s: 1042 }],
     videos: [{ t: "How to do a dumbbell biceps curl", u: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo" }],
@@ -571,8 +571,8 @@ export const EXERCISES = {
     muscles: ["grip", "core", "upperBack"],
     bryan: "Farmer’s walks are in Day 1 of Bryan’s official protocol (3 × 30 s), and in Sep 2025 he posted that grip strength predicts longevity better than being jacked.",
     how: [
-      "A heavy dumbbell in each hand, stand tall (string cue), shoulders down and back.",
-      "Walk slow, steady steps around the flat for 30–40 s.",
+      "Hold a heavy dumbbell in each hand and stand tall using the string cue. Keep your shoulders down and back.",
+      "Walk around the room with slow, steady steps for 30–40 s.",
       "Don’t let the dumbbells bang your legs or the shoulders roll forward.",
     ],
     videos: [
@@ -632,7 +632,7 @@ export const EXERCISES = {
     how: [
       "One dumbbell in one hand, the other hand on your waist.",
       "Bend straight to the side, without twisting or leaning forward.",
-      "Come back up by squeezing the opposite side. All reps, then switch.",
+      "Squeeze the opposite side to return upright. Finish all reps, then switch sides.",
     ],
     bryanVideos: [{ k: "w23", s: 457 }],
     videos: [
@@ -653,7 +653,7 @@ export const EXERCISES = {
       "Anchor a band at chest height on the hinge side of a closed door; stand side-on, a step away.",
       "Hold the band at your sternum with both hands, knees soft.",
       "Press the hands straight out and hold 2 s without letting the band turn you.",
-      "Bring the hands back slowly. Same reps on both sides.",
+      "Bring your hands back slowly. Do the same number of reps on both sides.",
     ],
     bryanVideos: [{ k: "galpin", s: 2824 }],
     videos: [
@@ -694,7 +694,7 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["wall"],
     muscles: ["hamstrings", "glutes", "ankles"],
-    bryan: "Both versions are on the stability menu of Bryan’s official protocol (single-leg RDL, single-leg toe touch).",
+    bryan: "Bryan’s official protocol includes both versions in its stability exercises: the single-leg RDL and single-leg toe touch.",
     how: [
       "Stand on one leg, knee soft, other leg straight behind you with the toe just off the floor.",
       "Hinge forward, reaching the opposite hand toward the standing foot; the back leg rises as a counterweight.",
@@ -715,11 +715,11 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat"],
     muscles: ["core", "lowerBack"],
-    bryan: "On the stability menu of Bryan’s official protocol.",
+    bryan: "One of the stability exercises in Bryan’s official protocol.",
     how: [
       "On hands and knees, hands under the shoulders, knees under the hips, back flat.",
       "Reach one arm forward and the opposite leg back until both are level with the body.",
-      "Hold 2 s without the hips tilting, return, switch sides.",
+      "Hold for 2 s without tilting your hips, then return and switch sides.",
     ],
     videos: [
       { t: "How to do a bird dog", u: "https://www.youtube.com/watch?v=KA0ekfSePrQ" },
@@ -732,7 +732,7 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat"],
     muscles: ["core"],
-    bryan: "On the stability menu of Bryan’s official protocol.",
+    bryan: "One of the stability exercises in Bryan’s official protocol.",
     how: [
       "Lie on your back, arms pointing at the ceiling, hips and knees bent at 90°.",
       "Press the lower back gently into the floor and keep it there.",
@@ -750,7 +750,7 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["mat"],
     muscles: ["core", "shoulders"],
-    bryan: "On the stability menu of Bryan’s official protocol.",
+    bryan: "One of the stability exercises in Bryan’s official protocol.",
     how: [
       "High plank, hands under the shoulders, feet a bit wider than the hips.",
       "Lift one hand and tap the opposite shoulder without the hips rocking.",
@@ -775,7 +775,7 @@ export const EXERCISES = {
       "Stand on a step, legs straight, with a light weight (none at New to training).",
       "Tuck your chin and roll down one vertebra at a time toward your toes.",
       "Hang 2–3 s, then roll up from the bottom, head last.",
-      "Slow and light. Never chase load on this one.",
+      "Move slowly and keep the weight light. Do not try to lift heavy on this exercise.",
     ],
     videos: [
       { t: "Jefferson curl progressions", u: "https://www.youtube.com/watch?v=CscPML4QWfU" },
@@ -791,8 +791,8 @@ export const EXERCISES = {
     bryan: "Tuesday in Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026): 8 rounds of 20 s efforts with 40 s rest for beginners, then moderate cardio. Day 2 of his official protocol uses 20 s all-out with 20 s rest. These bursts are where most of your near-max minutes come from.",
     how: [
       "Pick one or two moves from “Indoor interval moves”.",
-      "20 s hard, then easy marching for the rest time. Count rounds, not minutes.",
-      "New to training and Returning: brisk, not all-out. Active: hard. Well trained: truly all-out.",
+      "Work hard for 20 s, then march gently during the rest. Record the number of rounds.",
+      "At New to training and Returning, keep the pace brisk and below all-out effort. At Active, work hard. At Well trained, use all-out effort.",
     ],
     videos: [
       {
@@ -807,9 +807,9 @@ export const EXERCISES = {
     log: "intervals",
     equipment: ["step"],
     muscles: ["heart", "quads"],
-    bryan: "Thursday in Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026): 4 rounds of 4 min at 85–95% of max heart rate with 3 min at 60–70% between, hard but controlled rather than an all-out sprint, starting with 2–3 rounds if four is too much. Bryan’s own variant (X, Dec 2024) is 4 min all-out with 4 min rest.",
+    bryan: "Thursday in Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026): 4 rounds of 4 min at 85–95% of max heart rate with 3 min at 60–70% between, at a hard, controlled pace below an all-out sprint, starting with 2–3 rounds if four is too much. Bryan’s own variant (X, Dec 2024) is 4 min all-out with 4 min rest.",
     how: [
-      "10 min easy warm-up that builds to about {hr:71}.",
+      "Warm up gently for 10 min, building to about {hr:71}.",
       "4 min hard: reach {hr:85-95} and hold an even pace you could repeat four times.",
       "3 min easy: march or step slowly ({hr:60-70}). Keep moving.",
       "Repeat, then 5 min easy. Indoors, change the move every minute so the legs don’t fail before the heart and lungs.",
@@ -828,7 +828,7 @@ export const EXERCISES = {
     muscles: ["heart"],
     bryan: "Bryan’s published options for bodyweight HIIT: jumping jacks, high knees, mountain climbers, burpees without the push-up, jump squats, plus marching and bodyweight squats for beginners.",
     how: [
-      "Fast step-ups on a stair or step: quietest and easiest to keep for 4 minutes.",
+      "Fast step-ups on a stair or step are the quietest option and easiest to sustain for 4 minutes.",
       "High knees on the spot, driving the arms.",
       "Mountain climbers, hips level.",
       "Jumping jacks, or side-step jacks for a quiet version.",
@@ -851,14 +851,14 @@ export const EXERCISES = {
     intensity: "hard",
     equipment: ["step"],
     muscles: ["heart", "quads"],
-    bryan: "Bryan targets at least 75 min of high-intensity cardio a week, with only about 10 min near maximum effort. This home block supplies controlled vigorous minutes alongside his Tuesday bursts and Thursday 4×4; its duration is a home-plan adaptation, not a session copied from his sample week.",
+    bryan: "Bryan targets at least 75 min of high-intensity cardio a week, with only about 10 min near maximum effort. This home block supplies controlled vigorous minutes alongside his Tuesday bursts and Thursday 4×4; its duration is set for this home plan and differs from the sessions in his sample week.",
     how: [
       "Warm up first. Use continuous low-step step-ups, fast marching, high knees or step jacks, changing the move before local muscle fatigue spoils your form.",
-      "Follow your level’s heart-rate target, roughly {hr:80-90} at the higher levels. Breathing is hard and you can manage only a few words; keep an even pace rather than sprinting.",
+      "Follow your level’s heart-rate target, roughly {hr:80-90} at the higher levels. You should be breathing hard and able to say only a few words. Hold an even pace without sprinting.",
       "Log only the minutes at the prescribed effort. Pause or slow down when needed; easy recovery does not count as vigorous time.",
       "Finish with the scheduled Zone 2 or cool-down. Use the quiet versions of the indoor interval moves when needed.",
     ],
-    tips: ["This is controlled conditioning. Save near-max efforts for the short bursts and the ends of the 4×4 rounds."],
+    tips: ["Keep the effort controlled. Save near-max efforts for the short bursts and the ends of the 4×4 rounds."],
     videos: [{ t: "Low-impact indoor cardio moves", u: "https://www.youtube.com/watch?v=gi7pZ8CYzvk" }],
   },
   zone2: {
@@ -886,7 +886,7 @@ export const EXERCISES = {
     log: "check",
     equipment: ["mat", "sofa"],
     muscles: ["quads", "hips"],
-    bryan: "On Bryan’s stretch list (about 30 s per side) and in his 2025 flexibility set. Undoes hours of sitting.",
+    bryan: "On Bryan’s stretch list (about 30 s per side) and in his 2025 flexibility set. Stretches the muscles tightened by hours of sitting.",
     how: [
       "Kneel with your back knee against a sofa or wall, shin running up it.",
       "Other foot forward in a lunge.",
@@ -974,7 +974,7 @@ export const EXERCISES = {
     muscles: ["hamstrings"],
     bryan: "On Bryan’s stretch list (30–60 s hold).",
     how: [
-      "Heel on a step or chair, leg straight, toes up.",
+      "Rest your heel on a step or chair with your leg straight and toes up.",
       "Hinge forward with a flat back until you feel the stretch.",
     ],
     bryanVideos: [{ k: "w23", s: 363 }],
@@ -990,7 +990,7 @@ export const EXERCISES = {
     how: [
       "On hands and knees, hands under the shoulders.",
       "Breathe out: round the back, tuck chin and tailbone.",
-      "Breathe in: lift chest and tailbone. Slow breaths.",
+      "Breathe in slowly as you lift your chest and tailbone.",
     ],
     videos: [{ t: "Cat-cow with good form", u: "https://www.youtube.com/watch?v=KT6Fk7FWYfM" }],
   },
@@ -1004,7 +1004,7 @@ export const EXERCISES = {
     how: [
       "Lie face down, hands under the shoulders, elbows in.",
       "Press up to lift the chest; hips stay on the floor.",
-      "Neck long, gaze forward and down.",
+      "Keep your neck long and look forward and down.",
     ],
     videos: [
       { t: "Cobra pose for beginners", u: "https://www.youtube.com/watch?v=fNW64R1zJsU" },
@@ -1032,7 +1032,7 @@ export const EXERCISES = {
     muscles: ["upperBack"],
     bryan: "In the dynamic stretching of Bryan’s official mobility day.",
     how: [
-      "On hands and knees.",
+      "Start on your hands and knees.",
       "Reach one arm under your body to the opposite side, shoulder toward the floor.",
       "Then open it up to the ceiling, eyes following the hand.",
     ],
@@ -1051,7 +1051,7 @@ export const EXERCISES = {
       "Stand or sit with the feet grounded.",
       "Imagine the string lifting the crown of your head: chin level, neck long.",
       "Let the shoulders settle down and back without forcing them.",
-      "3 slow breaths. Repeat every time you sit down at the desk.",
+      "Take 3 slow breaths. Repeat every time you sit down at your desk.",
     ],
     bryanVideos: [{ k: "posture", s: 104 }, { k: "coach", s: 513 }],
     videos: [],
@@ -1063,13 +1063,13 @@ export const EXERCISES = {
     equipment: [],
     muscles: ["neck"],
     classic: true,
-    bryan: "Not one of Bryan’s exercises. A standard physiotherapy drill for forward head posture, added to the posture block as an extra.",
+    bryan: "A standard physiotherapy drill for forward head posture. It is an extra in this posture block and is not one of Bryan’s exercises.",
     how: [
       "Sit or stand tall, eyes level.",
       "Glide your head straight back, making a slight double chin. Don’t nod down.",
       "Hold 3 s, release slowly.",
     ],
-    tips: ["Back against a wall makes it easier to feel the right direction."],
+    tips: ["Rest your back against a wall to help you feel the right direction."],
     videos: [
       {
         t: "Physical therapist: how to do chin tucks",
@@ -1084,7 +1084,7 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["wall"],
     muscles: ["upperBack", "shoulders"],
-    bryan: "In the dynamic stretching of Bryan’s official mobility day. Trains the shoulder blades to move up and back instead of forward.",
+    bryan: "Part of the dynamic stretching in Bryan’s official mobility day. It trains your shoulder blades to move up and back instead of forward.",
     how: [
       "Head, upper back and buttocks on a wall, feet a small step out.",
       "Forearms on the wall in a W shape.",
@@ -1123,12 +1123,12 @@ export const EXERCISES = {
     log: "reps",
     equipment: ["band", "door"],
     muscles: ["upperBack", "rotatorCuff"],
-    bryan: "Bryan: 1 × 15–25. His notes on this one stress good posture and a full range of motion.",
+    bryan: "Bryan: 1 × 15–25. He stresses good posture and a full range of motion.",
     how: [
       "Anchor the band at face height on the hinge side of a closed door.",
       "Pull toward your eyes with elbows high and hands splitting apart.",
       "Finish with thumbs pointing back and shoulder blades squeezed; hold 1 s.",
-      "Slow return; stay tall.",
+      "Return slowly and stay tall.",
     ],
     bryanVideos: [{ k: "w23", s: 217 }],
     videos: [
@@ -1188,7 +1188,7 @@ export const EXERCISES = {
       "Stand tall with a light dumbbell in each hand, neck long, shoulders set back and down first.",
       "Bend the elbows slightly and keep them pulled back, slightly behind the body.",
       "Lift the shoulders up and out in a small arc, toward the ears and slightly forward.",
-      "Pause 1 s at the top, lower slowly. Learn it light: Bryan says it took him time to get the technique.",
+      "Pause for 1 s at the top, then lower slowly. Start light while you learn it; Bryan says the technique took him time.",
     ],
     bryanVideos: [{ k: "posture", s: 158 }, { k: "w23", s: 140 }, { k: "coach", s: 703 }],
     videos: [],
@@ -1200,11 +1200,11 @@ export const EXERCISES = {
     equipment: ["door"],
     muscles: ["chest", "shoulders"],
     classic: true,
-    bryan: "Not one of Bryan’s exercises. A standard stretch for tight chest muscles that pull the shoulders forward, added to the posture block as an extra.",
+    bryan: "A standard stretch for tight chest muscles that pull the shoulders forward. It is an extra in this posture block and is not one of Bryan’s exercises.",
     how: [
       "Forearms on the door frame, elbows at shoulder height and bent 90°.",
       "Step one foot through and lean gently until you feel the stretch across the chest.",
-      "Ribs down, no low-back arch, no pinching in the shoulder.",
+      "Keep your ribs down without arching your lower back. Stop if you feel pinching in the shoulder.",
     ],
     videos: [
       {

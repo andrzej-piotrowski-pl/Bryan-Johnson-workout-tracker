@@ -233,7 +233,7 @@ export function exportAll() {
 }
 
 export async function importAll(payload, mode = "merge") {
-  if (!payload || typeof payload !== "object") throw new Error("Not a backup file");
+  if (!payload || typeof payload !== "object") throw new Error("This file isn't a workout backup.");
   const days = payload.days && typeof payload.days === "object" ? payload.days : {};
   if (state.mode === "server") {
     const res = await fetch("/api/import", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, profile: payload.profile, days }) });

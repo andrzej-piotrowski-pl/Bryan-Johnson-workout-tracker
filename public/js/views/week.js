@@ -55,6 +55,6 @@ export function render(el, params) {
       <div class="card kpi">${icon("history")}<b>${s.extra}</b><span>minutes of extra activity</span></div>
     </div>
     <div class="week-grid">${cards}</div>
-    <p class="muted" style="font-size:0.85rem">Zone 2 counts scheduled Zone 2 blocks, the easy minutes between 4×4 rounds and extra activity marked "Easy / Zone 2". Hard cardio counts vigorous blocks and hard work intervals, excluding the brisk beginner intervals. Warm-ups and cool-downs are excluded. Bryan's full targets: at least 150 min of Zone 2 and 75 min of hard cardio a week; lower levels build toward them.</p>
+    <p class="muted" style="font-size:0.85rem">Zone 2 includes scheduled Zone 2 blocks, easy recovery between 4×4 intervals and extra activity logged as "Easy / Zone 2". Hard cardio includes vigorous blocks and hard intervals. Brisk beginner intervals, warm-ups and cool-downs don't count toward these targets. Bryan's weekly targets are at least 150 minutes of Zone 2 and 75 minutes of hard cardio. Lower levels build toward those amounts.</p>
   </div>`;
 }

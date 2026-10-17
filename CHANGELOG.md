@@ -1,13 +1,24 @@
 # Changelog
 
+## [1.16.0] - 2026-10-17
+
+### Changed
+- Theme cards show real Today screenshots with a different exercise and animation style for each theme.
+- App wording is clearer across setup, workouts, exercise instructions, tracking and Settings.
+- Latest changes shows the newest 20 releases and marks workout updates with a red Plan changed badge and highlighted details.
+- Plan change history now lives in Settings instead of the Plan page.
+
+### Removed
+- Duplicate Plan and Activity shortcuts from Settings.
+
 ## [1.15.0] - 2026-10-16
 
 ### Added
-- Scheduled Zone 2 and controlled vigorous cardio scale by level toward Bryan’s 150/75-minute weekly targets.
+- **Plan change:** Scheduled Zone 2 and controlled vigorous cardio scale by level toward Bryan’s weekly targets of 150 minutes of Zone 2 and 75 minutes of hard cardio.
 - Vigorous cardio has its own instructions, animation, minute logger and timer.
 
 ### Changed
-- Well trained includes all target cardio without extra walks; keeping the strength work makes sessions 72–93 minutes.
+- **Plan change:** Well trained includes all target cardio without extra walks; keeping the strength work makes sessions 72 to 93 minutes.
 - The plan, weekly durations and readable guide explain the added cardio and gradual lower-level doses.
 
 ### Fixed
@@ -57,7 +68,7 @@
 - Optional equipment names, links and ownership in setup and Settings, with custom items, a Massage category and a skip option.
 
 ### Changed
-- Step-ups use a low aerobic step; Poliquin heel taps start on a slant board on the floor, with matching animations.
+- **Plan change:** Step-ups use a low aerobic step; Poliquin heel taps start on a slant board on the floor, with matching animations.
 - Checked the plan against Bryan’s workout protocol updated on 14 October 2026.
 
 ### Removed
@@ -170,17 +181,17 @@ Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 ## [1.5.0] - 2026-10-15
 
 ### Changed
-- **Your training level alone now sets the workouts.** Each of the four levels (New to training, Returning, Active, Well trained) has its own sets, reps, intervals and Zone 2 minutes; nothing moves on by itself. Your weight, sex and age still scale the suggested weights.
+- **Plan change:** Your training level alone now sets the workouts. Each of the four levels (New to training, Returning, Active, Well trained) has its own sets, reps, intervals and Zone 2 minutes; nothing moves on by itself. Your weight, sex and age still scale the suggested weights.
 - Choosing the level in Settings now uses the same chips as setup, with what the level means and when to move up or step down.
 - Today, This week, the guided workout, Progress, the exercise pages and The plan show your level instead of a phase; The plan and each exercise compare all four levels.
 - Days you already logged keep the level they were done at.
 - Your data keeps working: if you were past Re-entry, your level is set to match what you were doing (Build → Active, Blueprint → Well trained), and older logged days show the matching level.
 
 ### Added
-- A new, gentler set of workouts for New to training: supported or smaller-range moves, 1–2 sets, no jumps, swings or Nordics, shorter intervals and Zone 2.
+- **Plan change:** A new, gentler set of workouts for New to training: supported or smaller-range moves, 1 to 2 sets, no jumps, swings or Nordics, shorter intervals and Zone 2.
 
 ### Removed
-- Phases (Re-entry, Build, Blueprint), their automatic advance after 12 and 24 sessions, the phase lock and the starting-phase setting.
+- **Plan change:** Phases (Re-entry, Build, Blueprint), their automatic advance after 12 and 24 sessions, the phase lock and the starting-phase setting.
 
 ## [1.4.0] - 2026-10-15
 
@@ -191,10 +202,10 @@ Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
 ### Added
 - Setup has a new **Accessories** step: what you need at home (dumbbells, pull-up bar, bands, mat, slant board, step or box, Nordic anchor), each shown in a 3D example exercise.
-- Changing your training level in Settings now switches you to that level's workouts: weights rescale and your phase restarts from the level's starting point.
+- **Plan change:** Changing your training level in Settings now switches you to that level's workouts: weights rescale and your phase restarts from the level's starting point.
 
 ### Changed
-- Setup no longer asks you to pick a starting phase: your training level decides it. "Well trained" now starts in Blueprint (was Build).
+- **Plan change:** Setup no longer asks you to pick a starting phase: your training level decides it. "Well trained" now starts in Blueprint (was Build).
 - The four training levels sit on one row in setup (two rows on a phone), with a note that you can change your level any time.
 - New default values in setup (age 30, 70 kg, 170 cm, "Prefer not to say", New to training, 20 kg heaviest dumbbell) instead of one person's details.
 
@@ -229,3 +240,9 @@ Versions follow [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
 ### Added
 - First version of Home Protocol: a local, Bryan Johnson–inspired six-day home workout planner and tracker, with 3D exercise animations, video demos, auto-saved tracking, progress charts and an optional posture add-on.
+- The initial plan follows Bryan's 4 October 2026 weekly template, with every session indoors.
+- Strength includes lunges, overhead and floor presses, step-ups, swings and carries alongside his signature exercises.
+- Stability includes single-leg RDLs and toe touches, bird dogs, dead bugs, plank shoulder taps and the Pallof press from his Galpin session.
+- Exercise videos link to the moment Bryan demonstrates each move, where available, including his May 2026 video.
+- The posture add-on includes shoulder external rotation and his squat-break tip, plus chin tucks and a doorway stretch labelled as extra exercises.
+- Thursday's 4×4 intervals start with 2 to 3 rounds at a hard but controlled pace.

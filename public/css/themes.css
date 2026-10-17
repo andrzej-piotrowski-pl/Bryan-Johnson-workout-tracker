@@ -1831,7 +1831,3 @@
   [data-skin="journal"] .inline-panel .detail { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
   [data-skin="journal"] .inline-panel .stage { aspect-ratio: 1 / 1; position: sticky; top: calc(110px + var(--skinbar-space)); }
 }
-.skin-pv[data-layout="journal"] .pv-main { grid-template-columns: 1fr; grid-template-areas: "head" "list"; }
-.skin-pv[data-layout="journal"] .pv-head { background: transparent; border-bottom: 2px solid var(--pv-ink); border-radius: 0; }
-.skin-pv[data-layout="journal"] .pv-list { grid-template-columns: 1fr 1fr; }
-.skin-pv[data-layout="journal"] .pv-detail { display: none; }

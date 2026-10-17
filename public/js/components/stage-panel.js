@@ -67,7 +67,7 @@ export function createStagePanel(container) {
   }
 
   if (!webglAvailable()) {
-    fail("3D animations need WebGL, which this browser has turned off. The steps and videos below still work.");
+    fail("This browser can't display the 3D animation because WebGL is unavailable. Use the instructions and videos below.");
   } else {
     loadEngine()
       .then(({ Stage }) => {
@@ -79,7 +79,7 @@ export function createStagePanel(container) {
       })
       .catch((err) => {
         console.error(err);
-        fail("The 3D engine didn't load. Run `npm install` in the project folder, then reload.");
+        fail("The animation couldn't load. Run npm install in the project folder, then reload this page.");
       });
   }
 
@@ -90,7 +90,7 @@ export function createStagePanel(container) {
     container.querySelectorAll(".ctrls, .views, .cue").forEach((el) => (el.hidden = false));
     const ok = stage.load(id);
     if (!ok) {
-      cueEl.textContent = "No animation for this one yet — see the steps and videos.";
+      cueEl.textContent = "No animation available. Use the instructions and videos.";
       titleEl.textContent = "";
       navEl.innerHTML = "";
     }

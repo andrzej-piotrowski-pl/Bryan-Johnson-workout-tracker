@@ -188,7 +188,7 @@ export default {
         alternate: true,
         keys: [
           { t: 0, p: slrdl(0), cue: "Stand tall, then shift onto one leg" },
-          { t: 0.8, p: slrdl(1), cue: "Hinge, reaching toward the standing foot" },
+          { t: 0.8, p: slrdl(1), cue: "Hinge at your hips and reach toward the foot on the floor" },
           { t: 3.0, p: slrdl(2), cue: "Back leg rises; hips stay square" },
           { t: 3.5, p: slrdl(2), cue: "Squeeze the glute to stand back up" },
           { t: 5.5, p: slrdl(1) },
@@ -212,7 +212,7 @@ export default {
           { t: 1.7, p: jefferson(38, 14, 0), e: "in" },
           { t: 2.8, p: jefferson(40, 52, 8, 0.04), e: "lin" },
           { t: 4.0, p: jefferson(42, 90, 66, 0.2), e: "out", cue: "Hang 2–3 s, let the weight pull you down" },
-          { t: 6.5, p: jefferson(42, 90, 66, 0.2), cue: "Roll up from the bottom, head last" },
+          { t: 6.5, p: jefferson(42, 90, 66, 0.2), cue: "Roll up slowly from your lower back, lifting your head last" },
           { t: 7.6, p: jefferson(42, 74, 22, 0.08), e: "in" },
           { t: 8.7, p: jefferson(38, 26, 0), e: "lin" },
           { t: 9.8, p: jefferson(0, 0, 0), e: "out" },

@@ -194,20 +194,20 @@ export default {
     // hands below ~8 m/s like a real arm swing.
     clips: [
       {
-        title: "Snap-down (Phase 1)",
+        title: "Snap-down (phase 1)",
         highlight: ["quads", "glutes", "calves"],
         camera: { view: [0.8, 0.22, 0.75], target: [0, 1.05, 0], dist: 4.7 },
         keys: [
           { t: 0, p: tall("down"), cue: "Rise onto your toes, arms up" },
           { t: 0.9, p: tall("up", 30) },
           { t: 1.3, p: tall("up", 30), cue: "Drop fast into a quarter squat, arms back" },
-          { t: 1.65, p: crouch(20, 46, "back"), e: "lin", cue: "Freeze 2 s: knees over the toes" },
+          { t: 1.65, p: crouch(20, 46, "back"), e: "lin", cue: "Hold the landing for 2 s, knees over your toes" },
           { t: 3.65, p: crouch(20, 46, "back"), cue: "Stand up and reset" },
           { t: 4.8, p: tall("down") },
         ],
       },
       {
-        title: "Squat jump (Phase 2)",
+        title: "Squat jump (phase 2)",
         highlight: ["quads", "glutes", "calves"],
         camera: { view: [0.8, 0.22, 0.75], target: [0, 1.22, 0], dist: 5.7 },
         keys: [
@@ -224,7 +224,7 @@ export default {
         ],
       },
       {
-        title: "Countermovement jump (Phase 3)",
+        title: "Countermovement jump (phase 3)",
         highlight: ["quads", "glutes", "calves"],
         camera: { view: [0.8, 0.22, 0.75], target: [0, 1.28, 0], dist: 6.0 },
         keys: [
@@ -271,13 +271,13 @@ export default {
         alternate: true,
         close: false,
         keys: [
-          { t: 0, p: SKATE_STICK, cue: "Stick it 1–2 s: hips back, knee over the toes" },
+          { t: 0, p: SKATE_STICK, cue: "Hold the landing for 1 to 2 s: hips back, knee over your toes" },
           { t: 1.2, p: SKATE_STICK, cue: "Bound sideways, land on the other leg only" },
           { t: 1.45, p: skater("load") },
           { t: 1.7, p: skater("push"), e: "in" },
           ...flight(skater("push"), skater("land"), 1.7, 0.36, 0.14),
           // the next segment is the hold on the other leg (mirrored half)
-          { t: 2.36, p: mirrorPose(makePose(SKATE_STICK)), e: "out", cue: "Stick it 1–2 s: hips back, knee over the toes" },
+          { t: 2.36, p: mirrorPose(makePose(SKATE_STICK)), e: "out", cue: "Hold the landing for 1 to 2 s: hips back, knee over your toes" },
         ],
       },
     ],
@@ -302,7 +302,7 @@ export default {
           { t: 2.8, p: chop(0.67), e: "in" },
           { t: 3.6, p: chop(0.33), e: "lin" },
           { t: 4.4, p: chop(0), e: "out" },
-          { t: 5.1, p: chop(0, true), cue: "Same reps on the other side" },
+          { t: 5.1, p: chop(0, true), cue: "Repeat the same number of reps on the other side" },
         ],
       },
     ],

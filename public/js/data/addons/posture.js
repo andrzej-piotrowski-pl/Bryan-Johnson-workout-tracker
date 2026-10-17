@@ -7,14 +7,14 @@ export default {
   short: "Posture",
   icon: "posture",
   color: "violet",
-  description: "8–10 minutes after each session for tech neck and forward shoulders: Bryan's posture habits and exercises (string cue, band pull-aparts, face pulls, external rotation, his two physical-therapist exercises twice a week), plus chin tucks and a doorway stretch.",
+  description: "Spend 8–10 minutes after each session on tech neck and forward shoulders. Use Bryan's string cue, band pull-aparts, face pulls and external rotation, plus his two physical-therapist exercises twice a week. Chin tucks and a doorway stretch are included as extras.",
   // Which variant to show on each day ("optional" = shown, but not expected).
   schedule: { mon: "daily", tue: "daily", wed: "strength", thu: "daily", fri: "daily", sat: "strength", sun: "optional" },
   variants: {
     daily: {
       name: "Daily posture block",
       mins: 8,
-      note: "Gentle effort; quality over load. Chin tucks and the doorway stretch are classics, not Bryan's.",
+      note: "Keep the effort gentle and focus on form before adding weight. Chin tucks and the doorway stretch are standard exercises outside Bryan's routine.",
       items: [
         { id: "posture-string", ex: "string", rx: ["30 s", "30 s", "30 s", "30 s"] },
         {
@@ -57,9 +57,9 @@ export default {
       ],
     },
     strength: {
-      name: "Posture block, strength version",
+      name: "Posture strength block",
       mins: 10,
-      note: "Bryan's two physical-therapist exercises go to fatigue today (he does them twice a week).",
+      note: "Do Bryan's two physical-therapist exercises to fatigue today. He does them twice a week.",
       items: [
         { id: "posture-string", ex: "string", rx: ["30 s", "30 s", "30 s", "30 s"] },
         {
@@ -116,43 +116,43 @@ export default {
   },
   // Extra things tracked once per day for this add-on.
   metrics: [
-    { id: "stiffness", type: "scale", min: 0, max: 10, label: "Neck and upper-back stiffness today", low: "none", high: "very stiff" },
+    { id: "stiffness", type: "scale", min: 0, max: 10, label: "Neck and upper back stiffness today", low: "none", high: "very stiff" },
   ],
   // Reminders that come back every N days.
   periodic: [
-    { id: "photo", every: 14, label: "Side photo in the same spot: is your ear over your shoulder?" },
-    { id: "wall", every: 14, label: "Wall check: heels 5 cm from the wall, can the back of your head touch it with your eyes level?" },
+    { id: "photo", every: 14, label: "Take a side photo in the same spot. Is your ear over your shoulder?" },
+    { id: "wall", every: 14, label: "Stand with your heels 5 cm from the wall. Can the back of your head touch it while your eyes stay level?" },
   ],
   habits: [
   {
     h: "String cue",
-    d: "Every time you sit down or stand up, imagine the string pulling the crown of your head up.",
+    d: "When you sit down or stand up, imagine a string lifting the crown of your head.",
   },
   {
     h: "Phone at eye level",
-    d: "Bryan calls the phone the worst trigger for bad posture. Lift it to eye level instead of looking down; put the top of your monitor at eye level too.",
+    d: "Bryan calls the phone the worst trigger for bad posture. Hold it at eye level and put the top of your monitor at eye level too.",
   },
   {
     h: "Move every 30 minutes",
-    d: "Get up for 2–3 minutes every 30 minutes and rotate between sitting and standing, as Bryan does at his desk. An under-desk treadmill is ideal for this.",
+    d: "Get up for 2–3 minutes every 30 minutes. Switch between sitting and standing, as Bryan does at his desk. An under-desk treadmill works well for these breaks.",
   },
   {
     h: "10 squats every ~45 minutes",
-    d: "Bryan’s April 2026 tip for long sitting days, from a study where it beat one 30-minute walk for blood sugar. He stressed that breaking up the sitting is what matters.",
+    d: "Bryan shared this tip in April 2026 for days spent sitting. In the study he cited, squat breaks improved blood sugar more than one 30-minute walk. He stressed taking breaks from sitting.",
   },
   {
     h: "Two strength exercises, twice a week",
-    d: "Shoulders up and out + neck forehead resistance, 1 set to fatigue each, on Wednesday and Saturday.",
+    d: "On Wednesday and Saturday, do shoulders up and out and neck forehead resistance, 1 set each to fatigue.",
   },
   {
     h: "Expect soreness",
-    d: "Bryan’s guide: holding good posture takes muscle, and feeling sore at first is normal. Keep going. Sharp pain, tingling or headaches are different: stop and get it checked.",
+    d: "Bryan’s guide says holding good posture uses muscles that may feel sore at first. Sharp pain, tingling or headaches are reasons to stop and get checked.",
   },
 ],
   checks: [
-  "Every 2 weeks, take a relaxed side photo in the same spot. The ear should sit over the shoulder, not in front of it.",
+  "Every 2 weeks, take a relaxed side photo in the same spot. Check that your ear sits over your shoulder.",
   "Wall check: heels about 5 cm from a wall, buttocks and shoulder blades touching. The back of your head should reach the wall with your eyes level, without straining.",
-  "Each evening, rate neck and upper-back stiffness from 0 to 10.",
-  "When the photo and wall check look right and stiffness stays at 2 or below for 4 weeks, switch to maintenance: keep the two strength exercises twice a week and the habits (that is what Bryan keeps doing), and cut the daily block to 2–3 times a week.",
+  "Each evening, rate neck and upper back stiffness from 0 to 10.",
+  "When your photo and wall check look right and stiffness stays at 2 or below for 4 weeks, switch to maintenance. Keep the two strength exercises twice a week and the daily habits, as Bryan does. Reduce the daily block to 2–3 times a week.",
 ],
 };

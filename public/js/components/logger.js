@@ -111,7 +111,7 @@ export function renderLogger(container, ctx) {
     const done = !!l.done;
     let body = "";
     if (type === "none") {
-      container.innerHTML = `<p class="muted">Pick moves from this list for the intervals; log the intervals themselves.</p>`;
+      container.innerHTML = `<p class="muted">Choose movements from this list for your intervals, then record them in the interval block.</p>`;
       return;
     }
     const doneBtn = `<button type="button" class="btn ${done ? "primary" : ""}" data-l="done">${icon("check")} ${done ? "Done" : "Mark done"}</button>`;
@@ -170,7 +170,7 @@ export function renderLogger(container, ctx) {
 
     const last = type !== "check" && type !== "cardio" && type !== "intervals" ? lastPerformance(item.ex, date) : null;
     body += last ? `<p class="muted" style="font-size:0.84rem">Last time (${esc(fmtShort(last.date))}): <span class="mono">${esc(summarizeLog(last.log, type))}</span></p>` : "";
-    body += `<details ${l.note ? "open" : ""}><summary class="muted" style="cursor:pointer;font-size:0.86rem">${icon("note", "sm")} Note for this exercise</summary><textarea class="input" data-l="note" rows="2" placeholder="How it felt, form cues, pain…" style="margin-top:8px;min-height:64px">${esc(l.note || "")}</textarea></details>`;
+    body += `<details ${l.note ? "open" : ""}><summary class="muted" style="cursor:pointer;font-size:0.86rem">${icon("note", "sm")} Note for this exercise</summary><textarea class="input" data-l="note" rows="2" placeholder="Note how it felt, any pain or a technique cue to remember." style="margin-top:8px;min-height:64px">${esc(l.note || "")}</textarea></details>`;
     container.innerHTML = `<div class="logger">${body}</div>`;
   }
 

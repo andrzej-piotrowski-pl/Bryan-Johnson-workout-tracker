@@ -271,7 +271,7 @@ export default {
         highlight: ["heart"],
         camera: CAM.spot,
         loops: 3,
-        keys: cycle((ph) => onTheSpot(ph, MARCH), MARCH.T, 10, "Easy marching for the rest; count rounds, not minutes"),
+        keys: cycle((ph) => onTheSpot(ph, MARCH), MARCH.T, 10, "March gently during the rest; count each round"),
       },
     ],
   },
@@ -279,7 +279,7 @@ export default {
   norwegian: {
     clips: [
       fastStepClip("4×4 hard, minute 1: fast step-ups", "4 min hard at 85–95% of max HR; new move each minute"),
-      highKneesClip("Minute 2: high knees", "Minute 2: high knees, a pace you could repeat 4×"),
+      highKneesClip("Minute 2: high knees", "Minute 2: high knees at a pace you can repeat for all 4 rounds"),
       jacksClip("Minute 3: jumping jacks", "Minute 3: jumping jacks; hard but controlled"),
       climbersClip("Minute 4: mountain climbers", "Minute 4: climbers, then 3 min easy marching"),
     ],
@@ -287,7 +287,7 @@ export default {
 
   indoorhiit: {
     clips: [
-      fastStepClip("Fast step-ups", "Fast step-ups: the quietest move to keep going"),
+      fastStepClip("Fast step-ups", "Keep going with fast, quiet step-ups"),
       highKneesClip("High knees", "High knees on the spot, drive the arms"),
       climbersClip("Mountain climbers", "Mountain climbers: hips level, knees to the chest"),
       jacksClip("Jumping jacks", "Jumping jacks; side-step jacks for a quiet version"),

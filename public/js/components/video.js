@@ -33,7 +33,7 @@ export function watchUrl(v) {
 
 export function renderVideos(container, list) {
   if (!list.length) {
-    container.innerHTML = `<p class="muted">No video for this one. Follow the steps and the animation.</p>`;
+    container.innerHTML = `<p class="muted">No video available. Follow the instructions and animation.</p>`;
     return;
   }
   let active = 0;
@@ -52,9 +52,9 @@ export function renderVideos(container, list) {
         ${
           v.id
             ? `<div class="video-frame"><div class="poster" role="button" tabindex="0" aria-label="Play ${esc(v.title)}" style="background-image:url('https://i.ytimg.com/vi/${v.id}/hqdefault.jpg')"><span class="play">${icon("play")}</span><span class="vt">${esc(v.title)}${v.start ? ` · from ${fmtSecs(v.start)}` : ""}</span></div></div>`
-            : `<div class="banner"><div class="grow"><b>${esc(v.title)}</b><span class="muted">This one is a post on X with a short clip.</span></div></div>`
+            : `<div class="banner"><div class="grow"><b>${esc(v.title)}</b><span class="muted">Open this post on X to watch the clip.</span></div></div>`
         }
-        <div class="video-meta"><span>${v.kind === "bryan" ? (v.start ? `Bryan does it at ≈${fmtSecs(v.start)} (times are approximate)` : "Bryan's own video or post") : "Technique demo by another coach"}</span><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
+        <div class="video-meta"><span>${v.kind === "bryan" ? (v.start ? `Bryan demonstrates it around ${fmtSecs(v.start)}` : "Bryan's video or post") : "Technique demonstration by another coach"}</span><a href="${esc(watchUrl(v))}" target="_blank" rel="noopener">Open ${icon("external", "sm")}</a></div>
       </div>`;
   }
   function play() {

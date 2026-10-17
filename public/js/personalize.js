@@ -14,10 +14,10 @@ import { iso } from "./util.js";
 // Each level has its own workouts (index into the dose arrays of data/program.js)
 // and scales the starting weights. Weight, sex and age scale the weights too.
 export const LEVELS = [
-  { id: "new", name: "New to training", detail: "Little or no strength training before.", load: 0.7, plan: "The gentlest workouts: supported moves, 1–2 sets, no jumps, the lightest weights." },
-  { id: "returning", name: "Returning", detail: "Trained before, but out of practice for months or years.", load: 1.0, plan: "Relearn the moves: 2 sets, landing drills instead of jumps, short controlled intervals." },
-  { id: "active", name: "Active", detail: "Training regularly over the last few months.", load: 1.15, plan: "3 sets, real jumps and longer intervals and Zone 2." },
-  { id: "trained", name: "Well trained", detail: "Lifting and doing hard cardio consistently for a year or more.", load: 1.3, plan: "The full plan: heavy main lifts, all-out intervals, the full Norwegian 4×4." },
+  { id: "new", name: "New to training", detail: "You have little or no strength training experience.", load: 0.7, plan: "Start with supported exercises, 1–2 sets and light weights. There are no jumps." },
+  { id: "returning", name: "Returning", detail: "You trained before and have taken months or years off.", load: 1.0, plan: "Practise the movements with 2 sets, landing drills in place of jumps and short, controlled intervals." },
+  { id: "active", name: "Active", detail: "You have trained regularly for the last few months.", load: 1.15, plan: "Do 3 sets, add jumps and spend longer on intervals and Zone 2." },
+  { id: "trained", name: "Well trained", detail: "You have lifted and done hard cardio regularly for at least a year.", load: 1.3, plan: "Follow the full plan with heavy main lifts, all-out intervals and the full Norwegian 4×4." },
 ];
 
 export function levelIndex(p) {

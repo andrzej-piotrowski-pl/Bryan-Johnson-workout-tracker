@@ -13,7 +13,7 @@ export function createEquipmentEditor(host, { profile, save }) {
 
   function draw() {
     host.innerHTML = `<div class="equipment-editor">
-      <p class="muted">This inventory is optional. Tick what you want to record and enter its name and product link. Equivalent equipment works too. Names and product links stay in this inventory. Exercises use generic equipment labels.</p>
+      <p class="muted">Your equipment list is optional. Tick what you own, then add a name and optional product link. You can add equivalent equipment below. These details stay in your inventory; exercise instructions use generic names.</p>
       ${EQUIPMENT_CATEGORIES.map((category) => `<details class="equipment-category" open><summary>${esc(category)}</summary><div class="equipment-grid">${rows().filter((g) => (EQUIPMENT_CATEGORIES.includes(g.category) ? g.category : "Other") === category).map((g) => `<article class="equipment-row" data-equipment-id="${esc(g.id)}">
         <label class="equipment-owned"><input type="checkbox" data-equipment-field="owned" ${g.owned ? "checked" : ""}> <b>${esc(RECOMMENDED_EQUIPMENT.find((r) => r.type === g.type)?.name || "Extra equipment")}</b><span class="muted">I have this</span></label>
         ${g.description ? `<p class="muted">${esc(g.description)}</p>` : ""}

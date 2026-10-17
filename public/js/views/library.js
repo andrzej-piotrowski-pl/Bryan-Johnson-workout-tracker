@@ -33,7 +33,7 @@ export function render(el, params) {
 
   function cards() {
     const list = filterExercises(filters);
-    if (!list.length) return '<div class="card empty">No exercises match these filters. Try clearing a filter or using a shorter search.</div>';
+    if (!list.length) return '<div class="card empty">No exercises match. Clear a filter or try a shorter search.</div>';
     return `<div class="lib-grid">${list
       .map(
         ([id, e]) => `<a class="card ex-card" href="#/library/${id}">
@@ -48,9 +48,9 @@ export function render(el, params) {
 
   function draw() {
     el.innerHTML = `<div class="page">
-      <div class="section-title"><h2>Exercises</h2><span class="muted">${Object.keys(EXERCISES).length} exercises, each with a 3D animation, steps and videos</span></div>
+      <div class="section-title"><h2>Exercises</h2><span class="muted">${Object.keys(EXERCISES).length} exercises with animations, instructions and videos</span></div>
       <details class="card card-pad">
-        <summary style="cursor:pointer;font-weight:650;display:flex;gap:8px;align-items:center">${icon("video")} Watch Bryan first</summary>
+        <summary style="cursor:pointer;font-weight:650;display:flex;gap:8px;align-items:center">${icon("video")} Bryan's workout videos</summary>
         <div style="display:grid;gap:12px;margin-top:12px">
           ${sourceListHtml(WATCH.map(([k, note]) => ({ ...BRYAN_VIDEOS[k], t: BRYAN_VIDEOS[k].t.replace(/^Bryan( on X)?: /, ""), note })))}
           <div data-watch></div>
@@ -64,8 +64,8 @@ export function render(el, params) {
         ["category", "Category", [["all", "All categories"], ...CATEGORIES.map((c) => [c, c])]],
         ["equipment", "Equipment", [["all", "All equipment"], ["none", "No equipment"], ...equipment.map((g) => [g, EQUIPMENT_NAMES[g] || g])]],
         ["muscle", "Muscle", [["all", "All muscles"], ...muscles.map((m) => [m, muscleName(m)])]],
-        ["origin", "Source", [["all", "All sources"], ["bryan", "Bryan’s protocol / home swaps"], ["classic", "Classic additions"], ["video", "Bryan video at a timestamp"]]],
-        ["sort", "Sort", [["original", "Original order"], ["name", "Name: A–Z"], ["reverse", "Name: Z–A"], ["category", "Category, then name"]]],
+        ["origin", "Source", [["all", "All sources"], ["bryan", "Bryan's protocol and home alternatives"], ["classic", "Classic additions"], ["video", "Bryan demo with timestamp"]]],
+        ["sort", "Sort", [["original", "Original order"], ["name", "Name: A to Z"], ["reverse", "Name: Z to A"], ["category", "Category, then name"]]],
       ].map(([key, title, options]) => `<label class="field"><span>${title}</span><select class="input" data-filter="${key}">${options.map(([id, name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join("")}</select></label>`).join("")}</div>
       <p class="muted library-count" data-library-count role="status">${filterExercises(filters).length} of ${Object.keys(EXERCISES).length} exercises</p>
       <div data-cards>${cards()}</div>

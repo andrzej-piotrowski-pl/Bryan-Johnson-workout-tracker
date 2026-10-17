@@ -92,6 +92,8 @@ To update later: stop the app, run `git pull`, then `npm install` in the project
 
 Your details and workouts save automatically on your computer. They are not uploaded to GitHub.
 
+Open **Settings → Latest changes** for the newest 20 releases, with a link to the full changelog. A red **Plan changed** badge marks updates to exercises or workout doses, with the details highlighted in that release.
+
 - **Back up** in **Settings → Export backup**. Keep the downloaded file somewhere safe.
 - **Restore a backup** in **Settings → Import backup**. Choose merge to combine it with your existing logs, or replace to overwrite your current logs.
 
@@ -210,6 +212,8 @@ The inventory is collapsed by default in Settings. Open **Your equipment** when 
 
 Choose one of nine themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
 
+Theme cards show real Today screenshots, each with a different exercise and animation style. Pick a theme from the screenshots, then choose any animation style you like.
+
 <p>
 <img src="docs/screenshots/theme-chapters.png" width="32%" alt="Chapters theme with Anime animation: top navigation, a black hero with huge type, blocks as colour fields">
 <img src="docs/screenshots/theme-darkroom.png" width="32%" alt="Dark room theme with Stardust animation: the figure on the left, the session in the middle, navigation on the right">
@@ -312,6 +316,7 @@ Add-ons are optional blocks shown after the main session, picked on first run (a
 
 ## Changing the plan
 
+- Record workout changes in `CHANGELOG.md` with a `**Plan change:**` prefix on each relevant bullet. **Settings → Latest changes** shows the newest 20 releases, marks workout updates with a red **Plan changed** badge and highlights the details. The Plan page shows the current routine and its sources.
 - `public/js/data/program.js` — the days, blocks and doses per training level, what each level means, rules, sources.
 - `public/js/data/exercises.js` — every exercise: how-to steps, Bryan's notes, videos (with timestamps into his videos), equipment, what it's logged as.
 - `public/js/data/addons/` — optional blocks.

@@ -10,7 +10,7 @@ import { levelPickerHtml } from "../components/level-picker.js";
 import { esc, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, openDialog, seg, switchHtml, toast } from "../components/ui.js";
-import { SKINS, applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
+import { applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
 import { openSkinBar } from "../components/skin-bar.js";
 import { ANIM_STYLES, PREVIEW_EXERCISE, animStylePickerHtml, applyAnimStyle, currentAnimStyle, hasAnimStyles } from "../anim-styles.js";
 import { openAnimBar } from "../components/anim-bar.js";
@@ -55,11 +55,9 @@ export function render(el) {
     el.innerHTML = `<div class="page narrow">
       <div class="section-title"><h2>Settings</h2><span class="muted">Changes save automatically</span></div>
 
-      <div class="btn-row"><a class="btn" href="#/plan">${icon("plan")} The plan</a><a class="btn" href="#/activity">${icon("progress")} Activity</a></div>
-
       <section class="card card-pad" style="display:grid;gap:16px">
-        <h3>You</h3>
-        <p class="muted" style="font-size:0.86rem">Used for heart-rate zones (max ${hrMax(pr)} bpm, Zone 2 ${bpmRange(pr, 60, 70)}) and to scale the starting weights.</p>
+        <h3>Your details</h3>
+        <p class="muted" style="font-size:0.86rem">Your details set your suggested starting weights and heart-rate zones: max ${hrMax(pr)} bpm, Zone 2 ${bpmRange(pr, 60, 70)}.</p>
         <div class="grid-form">
           <label class="field"><span>Name</span><input class="input" data-f="name" value="${esc(pr.name || "")}"></label>
           <label class="field"><span>Age</span><input class="input" data-f="age" inputmode="numeric" value="${esc(pr.age)}"></label>
@@ -82,7 +80,7 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Training level</h3>
-        <p class="muted" style="font-size:0.86rem">Your level alone decides the workouts: sets, reps, intervals and which exercises you do. Your weight, sex and age (above) scale the suggested weights.</p>
+        <p class="muted" style="font-size:0.86rem">Your level sets the exercises, sets, reps and intervals. Your weight, sex and age adjust the suggested weights.</p>
         ${levelPickerHtml(pr.level, { sessions: sessionsDone(levelIndex(pr)) })}
       </section>
 
@@ -94,37 +92,37 @@ export function render(el) {
       <section class="card card-pad" style="display:grid;gap:14px">
         <h3>During workouts</h3>
         <div class="field"><span>Rest timer after a set</span>${seg("rest", [...REST_PRESETS.map((s) => ({ id: String(s), name: `${s} s` })), { id: "custom", name: "Custom" }], customRest ? "custom" : String(st.restSec || 75))}</div>
-        <label class="field rest-custom" ${customRest ? "" : "hidden"}><span>Custom rest (seconds)</span><input class="input" type="number" data-f="restCustom" min="1" max="3600" step="1" required value="${esc(st.restSec || 75)}"><small>1–3,600 seconds. Saves automatically.</small></label>
+        <label class="field rest-custom" ${customRest ? "" : "hidden"}><span>Custom rest (seconds)</span><input class="input" type="number" data-f="restCustom" min="1" max="3600" step="1" required value="${esc(st.restSec || 75)}"><small>Enter 1 to 3,600 seconds.</small></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("autoRest", st.autoRest !== false, "Start the rest timer automatically")}<span>Start the rest timer automatically when you log a set</span></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:14px">
         <h3>Appearance</h3>
-        <p class="muted" style="font-size:0.86rem">Each theme changes the layout, type and colours, not just the palette. Your data and settings stay the same.</p>
+        <p class="muted" style="font-size:0.86rem">Choose a theme from these Today screenshots. Each shows a different exercise and animation style; you can choose your animation style below.</p>
         ${skinPickerHtml(st.skin)}
         <div class="live-row">
           <button type="button" class="btn" data-live>${icon("eye")} Try themes live</button>
-          <small class="muted">Opens Today with a switcher at the top of the screen: ${esc(SKINS.map((s, i) => `${String.fromCharCode(65 + i)} ${s.name}`).join(", "))}. Hover a letter for its name, move between pages as you like, and close it with ×.</small>
+          <small class="muted">Compare themes on Today with the switcher at the top. Hover a letter to see the theme name. Close it with ×.</small>
         </div>
         <div class="field"><span>Light or dark</span>${skinById(st.skin).modes.length > 1 ? seg("theme", [{ id: "system", name: "Follow the system" }, { id: "light", name: "Light" }, { id: "dark", name: "Dark" }], st.theme || "system") : `<small>${esc(skinById(st.skin).name)} is always dark.</small>`}</div>
       </section>
 
       <section class="card card-pad" data-anim-settings style="display:grid;gap:14px">
         <h3>Animation style</h3>
-        <p class="muted" style="font-size:0.86rem">Choose a 3D scene, an SVG illustration, a 2D canvas or a text style. Each one shows the same exercise movement.</p>
+        <p class="muted" style="font-size:0.86rem">Pick how the demonstrations look. Every style shows the same movement.</p>
         <div data-anim-preview></div>
         <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
         ${animStylePickerHtml(st.animStyle)}
         <div class="live-row">
           <button type="button" class="btn" data-anim-live>${icon("eye")} Try styles live</button>
-          <small class="muted">Opens today's session (or the exercise above, on a phone or a rest day) with a switcher at the top of the screen, one number per style (${ANIM_STYLES.length}; hover for the name, or ‹ › on a phone). Close it with ×.</small>
+          <small class="muted">Compare ${ANIM_STYLES.length} styles during today's session. On a phone or rest day, the exercise above opens instead. Hover a number for the style name, or use ‹ › on a phone. Close the switcher with ×.</small>
         </div>
       </section>
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Your data</h3>
-        <p class="muted" style="font-size:0.88rem">${state.mode === "server" ? `Saved as JSON files in <code>${esc(state.dataDir)}/</code> on this computer (git-ignored). Back it up by copying that folder or exporting below.` : "No local server found: data lives in this browser only. Export regularly, or run <code>npm start</code> to save to files."}</p>
+        <p class="muted" style="font-size:0.88rem">${state.mode === "server" ? `Your data saves to <code>${esc(state.dataDir)}/</code> on this computer. Git ignores this folder. Copy it or export a backup below to keep a spare copy.` : "The local server is unavailable, so your data saves only in this browser. Export a backup regularly, or run <code>npm start</code> to save to files on your computer."}</p>
         <div class="btn-row">
           <button type="button" class="btn" data-export>${icon("download")} Export backup</button>
           <label class="btn">${icon("upload")} Import backup<input type="file" accept="application/json,.json" data-import hidden></label>
@@ -133,7 +131,7 @@ export function render(el) {
         </div>
       </section>
 
-      <p class="muted" style="font-size:0.82rem">Home Protocol · open source · unofficial, not affiliated with Bryan Johnson or Blueprint · not medical advice.</p>
+      <p class="muted" style="font-size:0.82rem">Home Protocol is open source and unaffiliated with Bryan Johnson or Blueprint. It provides a training plan, not medical advice.</p>
       <div class="settings-footer"><button type="button" class="btn ghost sm" data-changelog>Version ${esc(state.version || "unavailable")} · Latest changes</button><a href="${REPO}" target="_blank" rel="noopener noreferrer">GitHub repository ${icon("external", "sm")}</a></div>
     </div>`;
   }
@@ -186,7 +184,7 @@ export function render(el) {
       try {
         const data = JSON.parse(await t.files[0].text());
         const days = Object.keys(data.days || {}).length;
-        const replace = await confirmDialog({ title: "Import backup", message: `The file has ${days} logged days${data.profile ? " and a profile" : ""}. Replace everything you have now? (Cancel merges instead: days in the file overwrite the same dates.)`, confirm: "Replace all", danger: true });
+        const replace = await confirmDialog({ title: "Import backup", message: `This backup has ${days} logged days${data.profile ? " and a profile" : ""}. Choose Replace all to overwrite your current data. Cancel merges the backup instead; its days overwrite matching dates.`, confirm: "Replace all", danger: true });
         await importAll(data, replace ? "replace" : "merge");
         customRest = !REST_PRESETS.includes(p().settings?.restSec || 75);
         applyLook(state.profile && state.profile.settings);
@@ -207,19 +205,24 @@ export function render(el) {
       try {
         const res = await fetch("/api/changelog", { cache: "no-store" });
         if (!res.ok) throw new Error("Changelog unavailable");
-        const releases = (await res.text()).split(/(?=^## \[)/m).filter((section) => section.startsWith("## [")).slice(0, 5);
+        const releases = (await res.text()).split(/(?=^## \[)/m).filter((section) => section.startsWith("## [")).slice(0, 20);
         if (!releases.length) throw new Error("Changelog is empty");
         const content = `<div class="release-list">${releases.map((release) => {
           const [heading, ...lines] = release.trim().split("\n");
           const [, version, date] = heading.match(/^## \[(.+?)\] - (.+)$/) || [];
+          const planChanged = lines.some((line) => /^- \*\*Plan change:\*\*/.test(line));
           const changes = lines.map((line) => {
             const category = line.match(/^### (.+)$/);
             const item = line.match(/^(\s*)- (.+)$/);
             if (category) return `<h4>${esc(category[1])}</h4>`;
-            if (item) return `<p class="release-bullet${item[1] ? " nested" : ""}">${esc(item[2])}</p>`;
+            if (item) {
+              const planChange = item[2].startsWith("**Plan change:**");
+              const text = esc(item[2]).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>");
+              return `<p class="release-bullet${item[1] ? " nested" : ""}${planChange ? " release-plan-change" : ""}">${text}</p>`;
+            }
             return "";
           }).join("");
-          return `<section class="release-entry"><h3>v${esc(version || "?")}<small>${esc(date || "")}</small></h3>${changes}</section>`;
+          return `<section class="release-entry"><h3><span>v${esc(version || "?")}${planChanged ? ' <span class="plan-change-badge">Plan changed</span>' : ""}</span><small>${esc(date || "")}</small></h3>${changes}</section>`;
         }).join("")}<p><a href="${REPO}/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Read the full changelog</a></p></div>`;
         openDialog({ title: "Latest changes", content, wide: true });
       } catch {

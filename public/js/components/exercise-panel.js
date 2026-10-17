@@ -22,7 +22,7 @@ export function exerciseInfoHtml(ex) {
   const p = state.profile;
   const steps = ex.how.map((s) => `<li>${esc(personalize(s, p))}</li>`).join("");
   return `<div class="how">
-      <div class="from-bryan${ex.classic ? " classic" : ""}"><span class="eyebrow">${ex.classic ? "Not Bryan's · classic" : "From Bryan"}</span><p>${esc(personalize(ex.bryan, p))}</p></div>
+      <div class="from-bryan${ex.classic ? " classic" : ""}"><span class="eyebrow">${ex.classic ? "Classic exercise outside Bryan's protocol" : "From Bryan's protocol"}</span><p>${esc(personalize(ex.bryan, p))}</p></div>
       <h4>How to do it</h4><ol>${steps}</ol>
       ${ex.tips && ex.tips.length ? `<h4>Tips</h4><ul>${ex.tips.map((s) => `<li>${esc(personalize(s, p))}</li>`).join("")}</ul>` : ""}
       ${ex.easier ? `<h4>Easier version</h4><p>${esc(personalize(ex.easier, p))}</p>` : ""}

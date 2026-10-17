@@ -96,13 +96,13 @@ function drawStatus(s) {
     pending: "Saving…",
     saving: "Saving…",
     saved: local ? "Saved in this browser" : "All changes saved",
-    offline: "Can't reach the server — will retry",
+    offline: "Can't reach the server. Retrying…",
   }[s];
   for (const id of ["save-status", "save-status-top"]) {
     const el = document.getElementById(id);
     el.dataset.s = s;
     el.innerHTML = `<span class="dot"></span><span>${esc(text)}</span>`;
-    el.title = local ? "No local server found: data is kept in this browser only. Run `npm start` to save to files." : `Saved to ${store.state.dataDir}/ on this computer`;
+    el.title = local ? "Saved only in this browser. Run npm start to save as files on this computer." : `Saved to ${store.state.dataDir}/ on this computer`;
   }
 }
 

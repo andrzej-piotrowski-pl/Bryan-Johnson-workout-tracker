@@ -15,16 +15,16 @@ const INK = "#22409a";
 const RED = "#d8332f";
 const HAND = `font-family="'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Segoe Print', 'Bradley Hand', cursive"`;
 // Opinions, by the exercise's category; a few of the general ones join every list.
-const GENERAL = ["I'm not sweating. I'm sparkling.", "Form first. Ego later.", "My future self better say thanks.", "Remind me why I signed up?"];
+const GENERAL = ["I should have brought a towel.", "The tiny weights count too.", "My future self better say thanks.", "Remind me why I signed up?"];
 const QUOTES = {
-  "Cardio (indoor)": ["Step up. Step down. Repeat until enlightened.", "Zone 2 means I can still talk. Barely.", "Heart rate: yes.", "Talking pace. Talking. Pace. Pace.", "Up, up, down, down... no cheat codes?", "Somewhere, a staircase is proud of me."],
+  "Cardio (indoor)": ["I know this step pretty well now.", "Zone 2: still enough breath for a chat.", "Heart rate: yes.", "Anyone up for a chat?", "Up, up, down, down... no cheat codes?", "Somewhere, a staircase is proud of me."],
   "Legs & knees": ["My legs just filed a complaint.", "Knees over toes. Dignity... pending.", "Every day is leg day now.", "Stairs will fear me.", "Squat like nobody's watching. Someone is."],
-  "Upper body": ["Arms: please clap.", "These dumbbells are heavier than they look.", "Building shoulders for carrying groceries.", "One more. Then one more. Then one more.", "My T-shirt sleeves are nervous."],
-  "Core & stability": ["Hold still. Hold. Still. Wobble.", "My core has entered the chat.", "A plank minute lasts about a week.", "Stability is a state of mind. Not mine.", "Abs: under construction."],
-  "Mobility & stretching": ["Stretching! Lying down with intent.", "Breathe in... ow... breathe out.", "Somewhere a yoga teacher just sighed.", "My hips don't lie. They complain.", "Flexible schedule, flexible hamstrings."],
-  Posture: ["Chin tucked. Dignity intact.", "Phone, it's not you, it's my neck.", "Shoulders back, like I own the place.", "Slightly taller than yesterday.", "My spine sends its regards."],
+  "Upper body": ["Arms: please clap.", "These dumbbells are heavier than they look.", "Building shoulders for carrying groceries.", "I miss when these were on the floor.", "My T-shirt sleeves are nervous."],
+  "Core & stability": ["That wobble was me saying hello.", "My core has entered the chat.", "A plank minute lasts about a week.", "Apparently my balance needs practice.", "Abs: under construction."],
+  "Mobility & stretching": ["Stretching! Lying down with intent.", "Does getting off the mat count as a rep?", "Somewhere a yoga teacher just sighed.", "My hips don't lie. They complain.", "Flexible schedule, flexible hamstrings."],
+  Posture: ["Chin tucked. Dignity intact.", "My neck would like a word with my phone.", "Shoulders back, like I own the place.", "I remembered where my shoulders go.", "My spine sends its regards."],
   Power: ["Boing.", "Jump like the floor owes you money.", "Gravity: 1. Me: also 1.", "Land soft. Look cool.", "My calves just turned into springs."],
-  "Warm-up & balance": ["Just warming up. Spiritually.", "Balance is easy. Watch this. Wait—", "Flamingo mode: on.", "Loosening the hinges.", "Small circles. Big circles. Then lunch."],
+  "Warm-up & balance": ["My joints are still clocking in.", "Watch me balance. Wait, hang on...", "Flamingo mode: on.", "Loosening the hinges.", "Do we get lunch after the big circles?"],
 };
 const n = (v) => v.toFixed(1);
 

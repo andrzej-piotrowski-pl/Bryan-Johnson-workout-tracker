@@ -15,11 +15,11 @@ export function levelPickerHtml(selected, { sessions = null } = {}) {
   const chips = LEVELS.map(
     (l) => `<button type="button" class="choice" data-level="${l.id}" aria-pressed="${l.id === lvl.id}"><b>${esc(l.name)}</b><small>${esc(l.detail)}</small></button>`
   ).join("");
-  const down = i > 0 ? ` Too hard, or coming back from a break? Step down to ${esc(LEVELS[i - 1].name)} any time.` : "";
+  const down = i > 0 ? ` If workouts feel too hard or you're returning after a break, you can switch to ${esc(LEVELS[i - 1].name)}.` : "";
   const after =
     sessions != null
-      ? `<br><span class="muted">You've completed ${sessions} ${sessions === 1 ? "session" : "sessions"} at this level. Days you already logged keep the level they were done at.</span>`
-      : `<br><span class="muted">You can change your level any time in Settings, when you feel ready for harder exercises or want easier ones.</span>`;
+      ? `<br><span class="muted">You've completed ${sessions} ${sessions === 1 ? "session" : "sessions"} at this level. Past workouts keep the level you logged them at.</span>`
+      : `<br><span class="muted">Change your level in Settings whenever you need easier workouts or feel ready for harder ones.</span>`;
   return `<div class="choice-grid levels" role="group" aria-label="Training level">${chips}</div>
     <p class="level-note">${icon("info")}<span><b>${esc(lvl.name)}:</b> ${esc(lvl.plan)} ${esc(lp.effort)}
       <br><b>When to change:</b> ${esc(lp.moveUp)}${down}${after}</span></p>`;

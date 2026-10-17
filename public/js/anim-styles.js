@@ -12,23 +12,23 @@ import { esc } from "./util.js";
 // three.js: "svg" vector shapes, "canvas" 2D canvas, "text" characters.
 // fun: one of the funny ones.
 export const ANIM_STYLES = [
-  { id: "athlete", name: "Athlete", tech: "3d", after: "Semi-realistic, like Mixamo characters", blurb: "Skin, a T-shirt, shorts and trainers under soft studio light. The closest to a real person to copy." },
-  { id: "mannequin", name: "Mannequin", tech: "3d", after: "The original", blurb: "Smooth grey figure; the muscles being worked light up. The look the app started with." },
-  { id: "anime", name: "Anime", tech: "3d", after: "VRM avatars with MToon shading", blurb: "Soft cel shading with tinted shadows, a rim light, thin outlines, big eyes and spiky hair." },
-  { id: "lowpoly", name: "Low poly", tech: "3d", after: "Quaternius' free game characters", blurb: "Faceted shapes and flat colours. Light to draw and very clear to read." },
-  { id: "cartoon", name: "Cartoon", tech: "3d", after: "Classic cel shading with ink outlines", blurb: "Two hard tones, thick black outlines and bold colours; the worked muscles get a yellow outline." },
-  { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "Built from blocks with pixel-art faces and clothes, on grass, with pixel-textured props." },
-  { id: "robot", name: "Robot", tech: "3d", after: "Friendly service robots", blurb: "Ceramic armour, exposed mechanical joints and a glowing visor. Amber shells mark the muscles being worked, with the same exercise movement." },
-  { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sign figure on a blue tile: even bars for limbs, a floating round head, the worked muscles in orange. Drawn as SVG." },
-  { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "Brush strokes on rice paper that leave fading ink trails, an ensō circle for the head and red washes on the worked muscles. Drawn on a 2D canvas." },
-  { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "The figure typed out in characters on a glowing CRT, with a floor grid; the worked muscles in amber. Drawn as text." },
-  { id: "synthwave", name: "Synthwave", tech: "canvas", after: "1980s retro-futurism", blurb: "Neon tubes on a scrolling grid under a striped sunset, mirrored on a wet floor; the worked muscles in hot pink. Drawn on a 2D canvas." },
-  { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing that measures you: live knee, hip and elbow angles, centre lines, hatched muscles, steps and boxes dimensioned and a title block naming the exercise. Drawn as SVG." },
-  { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "A body of about 1,800 particles drifting in deep space, trailing light as they move; golden where the muscles work. Drawn on a 2D canvas." },
-  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly biro stick figure on lined paper with highlighter on the worked muscles, sweat drops and opinions about every exercise. Drawn as SVG." },
-  { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in huge trainers whose googly eyes rattle with real physics on every move. Drawn on a 2D canvas." },
-  { id: "paper", name: "Paper cutouts", tech: "svg", after: "Folded paper collage", blurb: "Cut polygon limbs, visible folds and soft offset shadows on warm paper. Coral pieces mark the worked muscles. Drawn as SVG." },
-  { id: "halftone", name: "Halftone", tech: "canvas", after: "Two-colour printed comics", blurb: "Newsprint dots, bold ink outlines and vermilion muscle highlights. A moving comic panel, drawn on a 2D canvas." },
+  { id: "athlete", name: "Athlete", tech: "3d", after: "Semi-realistic, like Mixamo characters", blurb: "A person in a T-shirt, shorts and trainers, lit by soft studio light." },
+  { id: "mannequin", name: "Mannequin", tech: "3d", after: "the app's original figure", blurb: "A smooth grey figure with lights showing which muscles are working." },
+  { id: "anime", name: "Anime", tech: "3d", after: "VRM avatars with MToon shading", blurb: "An anime figure with big eyes and spiky hair. Soft shading and thin outlines define the body." },
+  { id: "lowpoly", name: "Low poly", tech: "3d", after: "Quaternius' free game characters", blurb: "Flat colours and angular shapes give the figure a simple game character look." },
+  { id: "cartoon", name: "Cartoon", tech: "3d", after: "Classic cel shading with ink outlines", blurb: "A brightly coloured cartoon with thick black outlines. Working muscles have yellow outlines." },
+  { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "A block figure with pixel-art clothes and equipment, standing on grass." },
+  { id: "robot", name: "Robot", tech: "3d", after: "Friendly service robots", blurb: "A robot with ceramic armour, visible joints and a glowing visor. Amber panels show the working muscles." },
+  { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sports sign figure on a blue tile. Orange bars show which muscles are working." },
+  { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "A brush-painted figure on rice paper with a circular head and fading ink trails. Red washes show the working muscles." },
+  { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "A figure made from text on a glowing green screen, with a floor grid and amber working muscles." },
+  { id: "synthwave", name: "Synthwave", tech: "canvas", after: "1980s retro-futurism", blurb: "Neon limbs move across a scrolling grid beneath a striped sunset. A wet floor reflects the figure; working muscles glow pink." },
+  { id: "blueprint", name: "Blueprint", tech: "svg", after: "Engineering drawings", blurb: "A technical drawing with live joint angles, centre lines and hatched working muscles. Labels name the exercise and show equipment dimensions." },
+  { id: "stardust", name: "Stardust", tech: "canvas", after: "Long-exposure light painting", blurb: "About 1,800 particles form a body and leave light trails in space. Working muscles turn gold." },
+  { id: "doodle", name: "Doodle", tech: "svg", fun: true, after: "Margin doodles in a school notebook", blurb: "A wobbly pen drawing on notebook paper, with sweat drops and comments about the exercise. Highlighter marks the working muscles." },
+  { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in oversized trainers. Its googly eyes bounce as it moves." },
+  { id: "paper", name: "Paper cutouts", tech: "svg", after: "Folded paper collage", blurb: "A figure cut from folded paper, with soft shadows and coral pieces showing the working muscles." },
+  { id: "halftone", name: "Halftone", tech: "canvas", after: "Two-colour printed comics", blurb: "A moving comic figure with newsprint dots and bold ink outlines. Working muscles are vermilion." },
 ];
 
 // The style until you pick one.
@@ -69,7 +69,7 @@ export function applyAnimStyle(settings = {}) {
 }
 
 // How each kind of style is drawn, for the badges on the cards.
-export const TECH_NAMES = { "3d": "three.js", svg: "SVG", canvas: "2D canvas", text: "Text" };
+export const TECH_NAMES = { "3d": "3D", svg: "Illustration", canvas: "Illustration", text: "Text" };
 
 // The picker in Settings: one card per style, with a still of the styled exercise
 // filled in by the settings view; the three.js styles first, then the others.
@@ -78,13 +78,13 @@ export function animStylePickerHtml(current) {
   const card = (s) => `<button type="button" class="skin-card anim-card" data-anim-style="${s.id}" aria-pressed="${s.id === cur}">
       <span class="anim-thumb"><span class="anim-num mono">${ANIM_STYLES.indexOf(s) + 1}</span><img alt="" data-anim-thumb="${s.id}" hidden></span>
       <span class="anim-badges"><span class="anim-badge">${TECH_NAMES[s.tech]}</span>${s.fun ? '<span class="anim-badge fun">Funny</span>' : ""}</span>
-      <span class="skin-meta"><b>${esc(s.name)}</b><small>${esc(s.blurb)}</small><small class="skin-src">After: ${esc(s.after)}</small></span>
+      <span class="skin-meta"><b>${esc(s.name)}</b><small>${esc(s.blurb)}</small><small class="skin-src">Inspired by ${esc(s.after)}</small></span>
     </button>`;
   const group = (title, note, list) => `<div class="anim-group"><h4>${esc(title)} <small class="muted">${esc(note)}</small></h4>
     <div class="skin-grid anim-grid">${list.map(card).join("")}</div></div>`;
   const three = ANIM_STYLES.filter((s) => s.tech === "3d"), flat = ANIM_STYLES.filter((s) => s.tech !== "3d");
   return `<div class="anim-groups" role="group" aria-label="Animation style">
-    ${group("3D scenes", `three.js · ${three.length} styles`, three)}
-    ${group("Drawn without three.js", `SVG, 2D canvas and text · ${flat.length} styles`, flat)}
+    ${group("3D figures", `${three.length} styles`, three)}
+    ${group("Illustrations and text", `${flat.length} styles`, flat)}
   </div>`;
 }

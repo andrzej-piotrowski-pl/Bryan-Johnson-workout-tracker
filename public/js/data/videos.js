@@ -61,16 +61,16 @@ export const WATCH = [
   ],
   [
     "w23",
-    "His full 2023 routine: backward sled, posture work, step-ups, slant squats, Nordics, tib raises, arms, core and stretches. The exercise links jump to the right minute.",
+    "His full 2023 routine: backward sled, posture work, step-ups, slant squats, Nordics, tibialis raises, arms, core and stretches. Each exercise link opens at the relevant moment.",
   ],
   [
     "galpin",
     "Warm-up order, posture, stability, speed, power, strength and HIIT, coached by Dr. Andy Galpin.",
   ],
-  ["posture", "The string cue, the phone, moving often and the two physical-therapist exercises."],
+  ["posture", "How to use the string cue, hold your phone and move more often, plus his two physical-therapist exercises."],
   ["coach", "His posture coach walks him through the neck and shoulder exercises."],
   ["ptx", "Short clips of the two posture exercises."],
-  ["hiitx", "How he runs his own 4×4 intervals."],
+  ["hiitx", "How he does his own 4×4 intervals."],
   ["squatsx", "April 2026: 10 squats every 45 minutes of sitting."],
   ["jumpsets", "2026: jumps between heavy sets in his dunk training."],
 ];

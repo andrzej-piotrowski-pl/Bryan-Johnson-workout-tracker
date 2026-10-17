@@ -84,7 +84,7 @@ export function render(el, params) {
     if (filter === "done") list = list.filter((l) => l.status === "done" || l.status === "partial");
     if (filter === "skipped") list = list.filter((l) => l.skip);
     if (filter === "notes") list = list.filter((l) => l.notes || l.skip?.note);
-    if (!list.length) return `<div class="card empty">Nothing logged here yet. Your days show up once you tick something off.</div>`;
+    if (!list.length) return `<div class="card empty">No logged days match this filter. Completed exercises, notes and activities appear here as you record them.</div>`;
     return (
       list
         .slice(0, limit)

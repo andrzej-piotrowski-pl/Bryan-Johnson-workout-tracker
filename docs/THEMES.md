@@ -35,7 +35,7 @@ The app ships with nine looks: the Original one and eight themes that each chang
 
 ## Adding a theme
 
-1. Add an entry to `SKINS` in `public/js/themes.js` (its position decides its letter in the live switcher): an `id`, a `name`, a one-line `blurb`, `modes` (`["light", "dark"]`, or one of them if the theme only works in one) and a `preview` (the colours and arrangement of its card in the picker; see the existing entries and the `.skin-pv` styles at the end of `app.css`).
+1. Add an entry to `SKINS` in `public/js/themes.js` (its position decides its letter in the live switcher): an `id`, a `name`, a one-line `blurb`, `modes` (`["light", "dark"]`, or one of them if the theme only works in one), and a `preview` description naming the pictured exercise and animation style for the image's alt text. Capture a real Today screen with a different exercise and animation style from the other previews, using a demo profile. Save the full screenshot in `docs/screenshots/theme-{id}.png` and a smaller JPEG in `public/images/themes/{id}.jpg`. The shared setup and Settings picker loads this image by theme id.
 2. If it only has one mode, add the forced mode to the inline script in `public/index.html` too (it mirrors `applyLook`, as it does for Dark room).
 3. Add a section to `public/css/themes.css`: tokens under `:root[data-skin="yours"]`, dark tokens under `:root[data-skin="yours"][data-scheme="dark"]`, then the shell (inside `@media (min-width: 901px)`), Today's arrangement and anything else you want to change. Prefix every rule with `[data-skin="yours"]` so it never leaks into other themes.
 4. Check every page in light and dark, on a wide screen and a phone, and keep text contrast at 4.5:1 or more.

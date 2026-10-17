@@ -231,7 +231,7 @@ export default {
         alternate: true,
         keys: [
           { t: 0, p: stand(ARMS.hips), cue: "Hands on hips by a wall; lift one foot" },
-          { t: 0.8, p: oneLeg(0), cue: "Hold 30 s; eyes closed when that is easy" },
+          { t: 0.8, p: oneLeg(0), cue: "Hold for 30 s; close your eyes once this feels easy" },
           { t: 2.2, p: oneLeg(1) },
           { t: 3.6, p: oneLeg(-1) },
           { t: 4.6, p: oneLeg(0), cue: "Lower the foot" },
@@ -371,7 +371,7 @@ export default {
         highlight: ["calves", "ankles"],
         camera: { view: [1, 0.18, 0.55], target: [0, 0.92, 0], dist: 4.1 },
         keys: [
-          { t: 0, p: pogo("bottom"), cue: "Quick bounces on the balls of the feet, heels kiss" },
+          { t: 0, p: pogo("bottom"), cue: "Bounce quickly on the balls of your feet, letting your heels touch lightly" },
           { t: 0.11, p: pogo("push"), e: "in" },
           { t: 0.22, p: pogo("air"), e: "out" },
           { t: 0.33, p: pogo("push"), e: "in" },

@@ -145,7 +145,7 @@ export function render(el, params) {
         <div class="rating-line"><span class="label" title="1 = very easy, 10 = maximum">Session effort <small>(1–10)</small></span><div class="scale" role="group" aria-label="Session effort, 1 very easy to 10 maximum">${rpe}</div></div>
         <div class="rating-line"><span class="label">Energy today</span><div class="seg" role="group" aria-label="Energy today">${energy}</div></div>
       </div>
-      <label class="field"><span>Notes</span><textarea class="input" data-notes rows="3" placeholder="How did it go? Anything sore, any wins, what to change next time…">${esc(l.notes || "")}</textarea></label>
+      <label class="field"><span>Notes</span><textarea class="input" data-notes rows="3" placeholder="How did the workout feel? Note soreness or anything to change next time.">${esc(l.notes || "")}</textarea></label>
       <div class="field"><span>Extra activity <small>· counts toward your weekly minutes</small></span>
         <div class="extras">${extras}</div>
         <div><button type="button" class="btn sm" data-x-add>${icon("plus", "sm")} Add activity</button></div>
@@ -169,7 +169,7 @@ export function render(el, params) {
       const prev = state.days[d];
       if (prev && (prev.status === "done" || prev.status === "partial")) break;
       const def = dayDef(key);
-      return `<div class="banner hint"><span>${icon("info")}</span><div class="grow"><b>You missed ${esc(def.name)}'s session (${esc(def.title)}).</b><span>You can do it today instead of today's session — don't do both in one day.</span></div><div class="btn-row"><button type="button" class="btn sm" data-swap-to="${esc(key)}">Do ${esc(def.short)}'s session</button><button type="button" class="btn sm ghost" data-hint-off aria-label="Dismiss">${icon("x", "sm")}</button></div></div>`;
+      return `<div class="banner hint"><span>${icon("info")}</span><div class="grow"><b>No workout logged for ${esc(def.name)} (${esc(def.title)}).</b><span>You can do that session today. Choose one session; don't do both in one day.</span></div><div class="btn-row"><button type="button" class="btn sm" data-swap-to="${esc(key)}">Do ${esc(def.short)}'s session</button><button type="button" class="btn sm ghost" data-hint-off aria-label="Dismiss">${icon("x", "sm")}</button></div></div>`;
     }
     return "";
   }
@@ -193,7 +193,7 @@ export function render(el, params) {
         <div style="display:grid;gap:10px;min-width:0">
           <span class="eyebrow">${esc(levelLine)}</span>
           <h1>${esc(rest ? "Rest day" : def.title)}</h1>
-          <p class="focus">${esc(rest ? "No training today. Keep the posture habits; an easy walk is welcome. You can still log extra activity and notes below." : def.focus)}</p>
+          <p class="focus">${esc(rest ? "Take a rest day. Keep up your posture habits or go for an easy walk. You can log activity and notes below." : def.focus)}</p>
           <div class="chips">
             ${rest ? "" : `<span class="chip mono">${icon("clock", "sm")} ≈${dayMins(def, level)} min${addonMins ? ` + ${addonMins} min add-ons` : ""}</span>`}
             ${ctx.swapped ? `<span class="chip bryan">${icon("swap", "sm")} Doing ${esc(def.name)}'s session</span>` : ""}
@@ -206,7 +206,7 @@ export function render(el, params) {
         ${rest || (l && l.skip) ? "" : `<button type="button" class="btn primary" data-guided>${icon("play")} Start guided workout</button><button type="button" class="btn" data-all>${icon("check")} Mark all done</button>`}
         ${rest ? "" : l && l.skip ? "" : `<button type="button" class="btn ghost skip" data-skip>${icon("skip")} Skip day</button>`}
         <label class="btn" style="position:relative">${icon("swap")} <span>${rest ? "Train anyway" : "Swap session"}</span>
-          <select data-swap aria-label="Swap session" style="position:absolute;inset:0;opacity:0;cursor:pointer"><option value="">${rest ? "Choose a session…" : "Today's own session"}</option>${swapOptions}</select>
+          <select data-swap aria-label="Swap session" style="position:absolute;inset:0;opacity:0;cursor:pointer"><option value="">${rest ? "Choose a session…" : "Scheduled session"}</option>${swapOptions}</select>
         </label>
       </div>
     </section>`;
@@ -240,7 +240,7 @@ export function render(el, params) {
           ${heroHtml(ctx)}
           ${skipBanner()}
           ${missedHint(ctx)}
-          ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} the session anyway</button></div>` : ""}
+          ${l && l.skip && !ctx.rest ? `<div><button type="button" class="btn sm ghost" data-show-skipped>${showSkipped ? "Hide" : "Show"} skipped session</button></div>` : ""}
         </div>
         <div class="day-list">
           ${showBlocks ? blocksHtml(ctx.def, ctx.level) : ""}
@@ -361,7 +361,7 @@ export function render(el, params) {
       const pr = addonProgress(l, a, ctx.level);
       if (pEl) pEl.textContent = pr.skipped ? "skipped" : `${pr.done}/${pr.total} · ≈${a.variant.mins} min`;
     }
-    if (l && l.status === "done" && lastStatus !== "done") toast("Session complete. Nice work!", { icon: "flame" });
+    if (l && l.status === "done" && lastStatus !== "done") toast("Workout complete.", { icon: "flame" });
     lastStatus = l && l.status;
   }
 
@@ -373,7 +373,7 @@ export function render(el, params) {
     const content = document.createElement("div");
     content.style.display = "grid";
     content.style.gap = "14px";
-    content.innerHTML = `<p class="muted">Life happens. Logging why you skipped helps you spot patterns later; skipped days never count against you.</p>
+    content.innerHTML = `<p class="muted">Choose a reason so you can see it later in History. You can return to your usual schedule or swap sessions when you're ready.</p>
       <div class="reason-grid">${SKIP_REASONS.map((r) => `<button type="button" data-reason="${r.id}" aria-pressed="${cur.reason === r.id}">${icon(r.icon)} ${esc(r.name)}</button>`).join("")}</div>
       <label class="field"><span>Note (optional)</span><textarea class="input" rows="3" data-skip-note placeholder="e.g. flight at 7 am, will do Tuesday's session tomorrow">${esc(cur.note || "")}</textarea></label>
       <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn" data-cancel>Cancel</button><button type="button" class="btn primary" data-confirm>${icon("skip")} Skip ${date === todayIso() ? "today" : "this day"}</button></div>`;
@@ -395,7 +395,7 @@ export function render(el, params) {
         showSkipped = false;
         selected = null;
         draw();
-        toast("Day skipped. Rest well.", { icon: "skip" });
+        toast("Day marked as skipped.", { icon: "skip" });
       }
     });
   }
