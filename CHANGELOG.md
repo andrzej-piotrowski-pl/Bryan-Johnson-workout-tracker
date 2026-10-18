@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.25.0] - 2026-10-18
+
+### Added
+- Female athlete, a 3D cartoon style for every exercise, available in Settings and the live style switcher.
+
 ## [1.24.4] - 2026-10-18
 
 ### Changed

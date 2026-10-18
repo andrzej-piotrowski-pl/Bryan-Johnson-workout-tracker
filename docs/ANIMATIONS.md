@@ -235,7 +235,8 @@ public/js/anim/styles/
   flat.js       shared parts for the flat styles: body pieces on screen, prop faces,
                 dumbbell heads, lit regions, curves, depth, segments clipped at the
                 camera, the horizon
-  athlete.js  anime.js  lowpoly.js  cartoon.js  voxel.js  robot.js   three.js figures
+  athlete.js  female.js  anime.js  lowpoly.js  cartoon.js  voxel.js  robot.js
+                                                                   three.js figures
   pictogram.js  blueprint.js  doodle.js  paper.js                    SVG
   ink.js  synthwave.js  stardust.js  googly.js  halftone.js          2D canvas
   ascii.js                                                           text
@@ -322,6 +323,12 @@ band ends determine which hands close. Hand-oriented dumbbell handles run across
 the palm. Blinking and breathing use clip time, so pausing and snapshots are repeatable.
 
 Robot uses ordinary standard materials and the shared three.js rig. Paper cutouts uses SVG polygons with folds and small offset shadows. Halftone uses a cached canvas dot pattern and bold outlines. All three reuse the existing joints, props and held-equipment helpers.
+
+Female athlete uses the same skinned torso, limbs, hands and trainers as Athlete,
+with its own torso profile, face, tied-back hair and toon materials. The slimmer arms
+keep their original joint lengths. Full-length leggings and a turquoise training top
+follow the spine and limb bones. Blinking uses clip time, and the hands use the same
+grip and support frames as Athlete. Equipment clearance checks cover both figures.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with

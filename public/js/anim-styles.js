@@ -13,6 +13,7 @@ import { esc } from "./util.js";
 // fun: one of the funny ones.
 export const ANIM_STYLES = [
   { id: "athlete", name: "Athlete", tech: "3d", after: "Semi-realistic, like Mixamo characters", blurb: "A person in a T-shirt, shorts and trainers, lit by soft studio light." },
+  { id: "female", name: "Female athlete", tech: "3d", after: "Modern sports cartoons", blurb: "A cartoon athlete with tied-back hair, a turquoise training top and violet leggings. Hands grip equipment and plant on the floor." },
   { id: "mannequin", name: "Mannequin", tech: "3d", after: "the app's original figure", blurb: "A smooth grey figure with lights showing which muscles are working." },
   { id: "anime", name: "Anime", tech: "3d", after: "VRM avatars with MToon shading", blurb: "An anime figure with big eyes and spiky hair. Soft shading and thin outlines define the body." },
   { id: "lowpoly", name: "Low poly", tech: "3d", after: "Quaternius' free game characters", blurb: "Flat colours and angular shapes give the figure a simple game character look." },

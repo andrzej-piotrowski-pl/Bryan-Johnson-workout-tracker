@@ -52,8 +52,7 @@ function skinned(geometry, materials, bones, name) {
   return mesh;
 }
 
-export function createTorso(materials) {
-  const profile = [
+export function createTorso(materials, profile = [
     [-0.12, 0.065, 0.06], [-0.1, 0.114, 0.085], [-0.07, 0.145, 0.105],
     [-0.03, 0.163, 0.114], [0.02, 0.162, 0.112], [0.045, 0.158, 0.109], [0.065, 0.153, 0.106],
     [0.11, 0.144, 0.1], [0.16, 0.141, 0.098], [0.21, 0.146, 0.103],
@@ -61,7 +60,7 @@ export function createTorso(materials) {
     [0.41, 0.185, 0.124], [0.455, 0.182, 0.12], [0.49, 0.17, 0.108],
     [0.515, 0.145, 0.097], [0.535, 0.125, 0.084], [0.55, 0.1, 0.071],
     [0.56, 0.071, 0.055], [0.565, 0.054, 0.05], [0.57, 0.053, 0.049],
-  ];
+  ]) {
   const sections = profile.map(([y, width, depth]) => {
     const forward = 0.008 * THREE.MathUtils.smoothstep(y, 0.12, 0.3) * (1 - THREE.MathUtils.smoothstep(y, 0.48, 0.56));
     return [y, width, depth - forward, forward];

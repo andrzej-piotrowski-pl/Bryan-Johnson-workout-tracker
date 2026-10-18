@@ -6,7 +6,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the exact timestamp and focused single-exercise demo videos, with a `min X sec Y` timestamp guide above the player and per-movement video sets that switch automatically with multi-movement animations.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
 - **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History, Progress and Benchmarks into four tabs.
-- **Seventeen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
+- **Eighteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -273,7 +273,7 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 ## Animation styles
 
-Choose one of seventeen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+Choose one of eighteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
 
 All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
 
@@ -285,13 +285,17 @@ High knees and marching roll through take-off and landing. Jumping jacks carry t
 
 ![The Athlete's face from three angles and its trainers](docs/screenshots/animation-details.png)
 
+**Female athlete** is a 3D cartoon character with tied-back hair, a turquoise training top and violet leggings. She plays all 65 exercises with jointed limbs, articulated fingers and muscle highlights. Choose her in Settings or the live style switcher.
+
+![Female athlete from the front and side, curling weights, squatting and doing a push-up](docs/screenshots/animation-female.png)
+
 ![Squats, presses and floor exercises shown at several points in their movement](docs/screenshots/animation-motion.png)
 
 Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
-![The seventeen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+![The eighteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
 
 ![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
 
@@ -300,27 +304,28 @@ The speed button goes up to **2×**. For demonstrations with several movements, 
 
 Other ways to draw the exercise animations, on all 65 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
-Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Seven are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
+Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Eight are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
 | 1 | **Athlete** (default) | three.js | Semi-realistic, like Mixamo characters: skin, muscle-shaped limbs, T-shirt, shorts, trainers, hair and a face, under warm studio light; the worked muscles glow. |
-| 2 | **Mannequin** | three.js | The original smooth grey figure the app started with. |
-| 3 | **Anime** | three.js | Cel shading after VRM avatars and their MToon shader: soft bands with violet shadows, a rim light, thin outlines, a big head with painted eyes and spiky pink hair. |
-| 4 | **Low poly** | three.js | Faceted, flat-coloured shapes like Quaternius' free game characters. |
-| 5 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
-| 6 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass; the props get a pixel texture in their own colour. |
-| 7 | **Robot** | three.js | Ceramic armour, exposed mechanical joints, a glowing visor and amber highlights on the muscles being worked. |
-| 8 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
-| 9 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
-| 10 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
-| 11 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
-| 12 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
-| 13 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
-| 14 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
-| 15 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
-| 16 | **Paper cutouts** | SVG | Folded polygon limbs, crease lines and offset paper shadows; worked muscles turn coral. |
-| 17 | **Halftone** | 2D canvas | Printed dots, bold comic outlines and vermilion muscle highlights. |
+| 2 | **Female athlete** | three.js | Soft cartoon shading, a turquoise training top, violet leggings, white trainers and hair tied in a bun. Fingers grip equipment and flatten on supports. |
+| 3 | **Mannequin** | three.js | The original smooth grey figure the app started with. |
+| 4 | **Anime** | three.js | Cel shading after VRM avatars and their MToon shader: soft bands with violet shadows, a rim light, thin outlines, a big head with painted eyes and spiky pink hair. |
+| 5 | **Low poly** | three.js | Faceted, flat-coloured shapes like Quaternius' free game characters. |
+| 6 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
+| 7 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass; the props get a pixel texture in their own colour. |
+| 8 | **Robot** | three.js | Ceramic armour, exposed mechanical joints, a glowing visor and amber highlights on the muscles being worked. |
+| 9 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
+| 10 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
+| 11 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
+| 12 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
+| 13 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
+| 14 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
+| 15 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
+| 16 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
+| 17 | **Paper cutouts** | SVG | Folded polygon limbs, crease lines and offset paper shadows; worked muscles turn coral. |
+| 18 | **Halftone** | 2D canvas | Printed dots, bold comic outlines and vermilion muscle highlights. |
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 

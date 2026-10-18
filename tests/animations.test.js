@@ -6,6 +6,7 @@ import { animationIds, getAnimation } from "../public/js/anim/clips/index.js";
 import { computeJoints, DIM, makePose, mirrorPose } from "../public/js/anim/rig.js";
 import { prepareClip, sampleClip } from "../public/js/anim/stage.js";
 import { createFigure } from "../public/js/anim/styles/athlete.js";
+import { createFigure as createFemaleFigure } from "../public/js/anim/styles/female.js";
 import { createHand } from "../public/js/anim/styles/human.js";
 import { createMaterials, createProp } from "../public/js/anim/props.js";
 import { MeshStandardMaterial } from "three";
@@ -119,53 +120,55 @@ test("the swept hair covers the skull without skin breaking through the crown", 
   figure.dispose();
 });
 
-test("rendered skin clears the doorway, walls, seats and other equipment throughout each movement", () => {
-  const figure = createFigure(), materials = createMaterials(false), meshes = [], head = new Set(), v = new Vector3(), local = new Vector3();
-  figure.group.traverse((o) => { if (o.isMesh) meshes.push(o); });
-  figure.group.getObjectByName("human-head").traverse((o) => head.add(o));
-  for (const id of animationIds()) for (const raw of getAnimation(id).clips) {
-    if (!raw.props?.length) continue;
-    const props = raw.props.map((spec) => createProp(spec, materials)), solids = [];
-    for (const prop of props) {
-      prop.updateMatrixWorld(true);
-      prop.traverse((o) => {
-        if (!o.isMesh) return;
-        o.geometry.computeBoundingBox();
-        solids.push({ mesh: o, box: o.geometry.boundingBox, inverse: new Matrix4().copy(o.matrixWorld).invert() });
-      });
-    }
-    const clip = prepareClip(raw);
-    const hanging = raw.props.some((p) => p.bar || p.type === "bar");
-    // The other half reflects both the figure and its props, preserving the same clearances.
-    const end = clip.half ?? clip.duration;
-    for (let t = 0; t < end; t += 0.125) {
-      const J = computeJoints(sampleClip(clip, t).pose);
-      const grip = hanging ? { L: true, R: true } : {};
-      figure.update(J, { t, grip }); figure.group.updateMatrixWorld(true);
-      for (const mesh of meshes) for (let i = 0; i < mesh.geometry.attributes.position.count; i += 8) {
-        mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld);
-        for (const solid of solids) {
-          local.copy(v).applyMatrix4(solid.inverse);
-          const { box, mesh: prop } = solid;
-          if (!box.containsPoint(local)) continue;
-          let depth = Math.min(local.x - box.min.x, box.max.x - local.x, local.y - box.min.y,
-            box.max.y - local.y, local.z - box.min.z, box.max.z - local.z);
-          if (prop.geometry.type === "CylinderGeometry") {
-            if (mesh.name.startsWith("human-hand")) continue; // Fingers wrap around the rail.
-            depth = Math.min(depth, prop.geometry.parameters.radiusTop - Math.hypot(local.x, local.z));
-          } else if (prop.geometry.type === "ExtrudeGeometry") {
-            const slope = box.max.y / (box.max.z - box.min.z);
-            depth = Math.min(depth, (slope * (box.max.z - local.z) - local.y) / Math.hypot(1, slope));
+for (const [style, create] of [["Athlete", createFigure], ["Female athlete", createFemaleFigure]]) {
+  test(`${style}'s rendered skin clears the doorway, walls, seats and other equipment throughout each movement`, () => {
+    const figure = create(), materials = createMaterials(false), meshes = [], head = new Set(), v = new Vector3(), local = new Vector3();
+    figure.group.traverse((o) => { if (o.isMesh) meshes.push(o); });
+    figure.group.getObjectByName("head").traverse((o) => head.add(o));
+    for (const id of animationIds()) for (const raw of getAnimation(id).clips) {
+      if (!raw.props?.length) continue;
+      const props = raw.props.map((spec) => createProp(spec, materials)), solids = [];
+      for (const prop of props) {
+        prop.updateMatrixWorld(true);
+        prop.traverse((o) => {
+          if (!o.isMesh) return;
+          o.geometry.computeBoundingBox();
+          solids.push({ mesh: o, box: o.geometry.boundingBox, inverse: new Matrix4().copy(o.matrixWorld).invert() });
+        });
+      }
+      const clip = prepareClip(raw);
+      const hanging = raw.props.some((p) => p.bar || p.type === "bar");
+      // The other half reflects both the figure and its props, preserving the same clearances.
+      const end = clip.half ?? clip.duration;
+      for (let t = 0; t < end; t += 0.125) {
+        const J = computeJoints(sampleClip(clip, t).pose);
+        const grip = hanging ? { L: true, R: true } : {};
+        figure.update(J, { t, grip }); figure.group.updateMatrixWorld(true);
+        for (const mesh of meshes) for (let i = 0; i < mesh.geometry.attributes.position.count; i += 8) {
+          mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld);
+          for (const solid of solids) {
+            local.copy(v).applyMatrix4(solid.inverse);
+            const { box, mesh: prop } = solid;
+            if (!box.containsPoint(local)) continue;
+            let depth = Math.min(local.x - box.min.x, box.max.x - local.x, local.y - box.min.y,
+              box.max.y - local.y, local.z - box.min.z, box.max.z - local.z);
+            if (prop.geometry.type === "CylinderGeometry") {
+              if (mesh.name.startsWith("human-hand")) continue; // Fingers wrap around the rail.
+              depth = Math.min(depth, prop.geometry.parameters.radiusTop - Math.hypot(local.x, local.z));
+            } else if (prop.geometry.type === "ExtrudeGeometry") {
+              const slope = box.max.y / (box.max.z - box.min.z);
+              depth = Math.min(depth, (slope * (box.max.z - local.z) - local.y) / Math.hypot(1, slope));
+            }
+            const tolerance = hanging && head.has(mesh) ? 0.001 : 0.013;
+            assert.ok(depth < tolerance, `${id}: ${mesh.name} penetrates equipment at ${t.toFixed(3)}`);
           }
-          const tolerance = hanging && head.has(mesh) ? 0.001 : 0.013;
-          assert.ok(depth < tolerance, `${id}: ${mesh.name} penetrates equipment at ${t.toFixed(3)}`);
         }
       }
+      for (const prop of props) prop.traverse((o) => o.geometry?.dispose());
     }
-    for (const prop of props) prop.traverse((o) => o.geometry?.dispose());
-  }
-  figure.dispose(); Object.values(materials).forEach((m) => m.dispose());
-});
+    figure.dispose(); Object.values(materials).forEach((m) => m.dispose());
+  });
+}
 
 test("new spine, wrist and foot orientation controls mirror with the whole skeleton", () => {
   const p = makePose({ root: [0.1, 0.88, 0.03], rot: [12, 22, 5], spine: [18, 7, 25], lumbar: [5, 2, 3], armL: [155, 12, 28, 8], wristL: [15, 8, 55], wristR: [-5, -8, -12], footL: [0.15, 0.1, 0.1], footYawL: 15 });

@@ -5,6 +5,7 @@ import { createMannequin } from "../mannequin.js";
 
 const MODULES = {
   athlete: () => import("./athlete.js"),
+  female: () => import("./female.js"),
   anime: () => import("./anime.js"),
   lowpoly: () => import("./lowpoly.js"),
   cartoon: () => import("./cartoon.js"),
