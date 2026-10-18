@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.3] - 2026-10-18
+
+### Changed
+- Rebuilt the default Athlete with fuller proportions, a shorter neck, a sculpted face and hair, textured clothes and trainers.
+- Elbows, knees, wrists and fingers bend through continuous skin, with softer lighting and muscle highlights.
+- Jumping jacks carry through each hop and soften the landing; mountain climbers change direction smoothly.
+
+### Fixed
+- Closed the gaps between palms and forearms and improved how fingers wrap around equipment.
+- Removed wrist flips in side planks and burpees, and corrected the reaching hand in thread-the-needle.
+- The pull-up demonstration clears the bar; kneeling and seated demonstrations keep their hands and body on their supports.
+- Kept the palm on the forehead during neck resistance and widened views that clipped hands or feet.
+
 ## [1.24.2] - 2026-10-17
 
 ### Changed

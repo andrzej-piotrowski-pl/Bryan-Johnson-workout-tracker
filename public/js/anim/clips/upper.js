@@ -260,8 +260,8 @@ export default {
         keys: [
           { t: 0, p: hang(0), cue: "Full hang, shoulders active" },
           { t: 0.5, p: hang(0), cue: "Chest to the bar, elbows down to the ribs" },
-          { t: 2, p: hang(0.4, { lean: 8 }) },
-          { t: 2.4, p: hang(0.4, { lean: 8 }), cue: "Lower in 2–3 s to a full hang" },
+          { t: 2, p: hang(0.52, { lean: 8 }) },
+          { t: 2.4, p: hang(0.52, { lean: 8 }), cue: "Lower in 2–3 s to a full hang" },
           { t: 4.6, p: hang(0) },
         ],
       },
@@ -273,8 +273,8 @@ export default {
         keys: [
           { t: 0, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }), cue: "Shoulder-width grip, palms toward you" },
           { t: 0.5, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }), cue: "Pull until your chin clears the bar" },
-          { t: 2, p: hang(0.4, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }) },
-          { t: 2.4, p: hang(0.4, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }), cue: "Slow lowering, 2–3 s" },
+          { t: 2, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }) },
+          { t: 2.4, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }), cue: "Slow lowering, 2–3 s" },
           { t: 4.6, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }) },
         ],
       },

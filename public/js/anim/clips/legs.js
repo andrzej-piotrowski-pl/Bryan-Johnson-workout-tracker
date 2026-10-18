@@ -180,7 +180,7 @@ function nordicBody(theta) {
   // theta: forward lean of the straight body from vertical (deg)
   const slope = 6; // shins run slightly down from the mat to the floor
   const leg = [0, 3, 90 - slope - theta, 72];
-  const p = { rot: [theta, 0, 0], legL: leg, legR: leg, neck: [-4, 0], shrugL: [0, 0.012 * Math.sin(theta * Math.PI / 180)], shrugR: [0, 0.012 * Math.sin(theta * Math.PI / 180)] };
+  const p = { rot: [theta, 0, 0], legL: leg, legR: leg, neck: [-4, 0], palmL: [0, 1, 0], palmR: [0, 1, 0], shrugL: [0, 0.012 * Math.sin(theta * Math.PI / 180)], shrugR: [0, 0.012 * Math.sin(theta * Math.PI / 180)] };
   return anchor(p, "kneeL", NORDIC_KNEE, "yz");
 }
 

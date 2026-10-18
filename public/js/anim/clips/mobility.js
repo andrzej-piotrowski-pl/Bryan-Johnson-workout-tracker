@@ -100,7 +100,8 @@ function thread(u) {
     const v = [QUAD_HANDS.R[0] - THREAD_S0.x, QUAD_HANDS.R[1] - THREAD_S0.y, QUAD_HANDS.R[2] - THREAD_S0.z];
     handR = [S.x + v[0] * Math.cos(a) - v[1] * Math.sin(a), S.y + v[0] * Math.sin(a) + v[1] * Math.cos(a), S.z + v[2]];
   }
-  return { ...body, handR };
+  const palmTurn = open * Math.PI / 2;
+  return { ...body, handR, palmR: [0, Math.cos(palmTurn), -Math.sin(palmTurn)] };
 }
 const threadPose = (q) => thread(q.u ?? 0);
 
@@ -156,12 +157,12 @@ function handsRest(J, sit) {
   };
   return { L: spot("L", 0.02), R: spot("R", -0.02) };
 }
-const HANDS_BEHIND = { L: [0.26, 0.08 + MAT_Y, KNEE_AT[2] - 0.74], R: [-0.26, 0.08 + MAT_Y, KNEE_AT[2] - 0.74] };
-const TOE_ON_HANDS = { sit: 10, lean: 76, reach: 1 };
-const TOE_SIT_BACK = { sit: 50, lean: 72, reach: 1 };
+const HANDS_BEHIND = { L: [0.26, 0.035 + MAT_Y, KNEE_AT[2] - 0.74], R: [-0.26, 0.035 + MAT_Y, KNEE_AT[2] - 0.74] };
+const TOE_ON_HANDS = { sit: 10, lean: 84, reach: 1 };
+const TOE_SIT_BACK = { sit: 50, lean: 80, reach: 1 };
 const HANDS_FRONT = (() => {
   const J = joints(kneelBody(TOE_ON_HANDS, "tucked"));
-  return { L: [0.21, 0.08 + MAT_Y, J.shoulderL.z + 0.06], R: [-0.21, 0.08 + MAT_Y, J.shoulderR.z + 0.06] };
+  return { L: [0.21, 0.035 + MAT_Y, J.shoulderL.z + 0.06], R: [-0.21, 0.035 + MAT_Y, J.shoulderR.z + 0.06] };
 })();
 function kneel(o, feet = "flat", { from = "thighs", to = "thighs", elbows = [0.5, -0.2, -1] } = {}) {
   const body = kneelBody(o, feet);
@@ -169,12 +170,19 @@ function kneel(o, feet = "flat", { from = "thighs", to = "thighs", elbows = [0.5
   const s = o.reach ?? 0;
   const arc = Math.sin(Math.PI * s) * 0.1; // hands lift a little on the way
   const hand = (side) => spots[from][side].map((v, i) => v + (spots[to][side][i] - v) * s + (i === 1 ? arc : 0));
-  return { ...body, handsIn: "world", handL: hand("L"), handR: hand("R"), elbowL: elbows, elbowR: [-elbows[0], elbows[1], elbows[2]] };
+  const p = { ...body, handsIn: "world", handL: hand("L"), handR: hand("R"), elbowL: elbows, elbowR: [-elbows[0], elbows[1], elbows[2]] };
+  const J = joints(p), contact = from === "thighs" ? to === "thighs" ? 0 : s : 1 - s;
+  const flat = Math.max(contact, Math.min(1, (o.sit ?? 0) / 60));
+  const palm = (side) => {
+    const normal = J["handRef" + side];
+    return [normal.x * (1 - flat), normal.y * (1 - flat) + flat, normal.z * (1 - flat)];
+  };
+  return { ...p, palmL: palm("L"), palmR: palm("R") };
 }
 // Shin stretch: sitting on the heels, then leaning back on the hands to lift the knees.
 const SEIZA = { sit: 66 };
-const LEAN_BACK = { sit: 66, lean: -40, reach: 1 };
-const KNEES_UP = { sit: 74, lean: -40, reach: 1, lift: 8 }; // hips stay level as the knees rise
+const LEAN_BACK = { sit: 66, lean: -50, reach: 1 };
+const KNEES_UP = { sit: 74, lean: -50, reach: 1, lift: 8 }; // hips stay level as the knees rise
 const shinPose = (q) => kneel(q, "flat", { from: "thighs", to: "behind", elbows: [0.4, 0, -1] });
 // Toe sit: lean onto the hands, sit back toward the heels, then sit up as tolerance allows.
 const toeHandsDown = (q) => kneel(q, "tucked", { from: "thighs", to: "front", elbows: [0.5, 0, -0.6] });
@@ -252,7 +260,7 @@ const BF_FEET = { x: 0.085, y: 0.068 + MAT_Y, z: 0.32 };
 function butterflyBody({ hinge = 0, drop = 0, breath = 0 }) {
   const pole = [1, 0.25 - drop, 0.1];
   const p = {
-    root: [0, 0.1, 0],
+    root: [0, MAT_Y + 0.12 + 0.012 * Math.sin(hinge * D2R), 0],
     rot: [hinge - 3, 0, 0],
     spine: [3 + hinge * 0.2 + breath, 0, 0],
     neck: [hinge * 0.15, 0],
@@ -264,10 +272,8 @@ function butterflyBody({ hinge = 0, drop = 0, breath = 0 }) {
     ankleL: 10,
     ankleR: 10,
   };
-  // Sit on the mat: lower the pelvis (only the root moves; the feet are IK targets).
-  return ground(p, ["pelvis"], MAT_Y + BUTT);
+  return p;
 }
-const BUTT = -0.017; // the pelvis shell reaches 1.7 cm below the joint radius ground() assumes
 function butterfly(o) {
   const body = butterflyBody(o);
   const J = joints(body);
@@ -364,7 +370,7 @@ export default {
         title: "Thread the needle",
         props: [mat(0.1)],
         highlight: ["upperBack", "shoulders"],
-        camera: { view: [0.55, 0.45, 1], target: [0, 0.38, 0.15], dist: 3.6 },
+        camera: { view: [0.55, 0.45, 1], target: [0, 0.42, 0.15], dist: 4.0 },
         alternate: true,
         keys: [
           { t: 0, p: threadPose({}), cue: "Hands under the shoulders, knees under the hips" },
@@ -564,7 +570,7 @@ export default {
         title: "Cobra",
         props: [mat(-0.1, 2.0)],
         highlight: ["back", "chest"],
-        camera: { view: [1, 0.2, 0.35], target: [0, 0.22, -0.05], dist: 3.9 },
+        camera: { view: [1, 0.2, 0.35], target: [0, 0.22, -0.05], dist: 4.3 },
         keys: [
           { t: 0, p: cobra(0), cue: "Face down, hands under the shoulders, elbows in" },
           { t: 0.6, p: cobra(0), cue: "Press up to lift the chest; hips stay down" },

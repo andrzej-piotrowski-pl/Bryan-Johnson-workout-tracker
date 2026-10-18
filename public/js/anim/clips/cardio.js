@@ -130,12 +130,17 @@ function stepClip(dt, cues, style) {
 
 // ---------- jumping jacks ----------
 
-// open: 0 = feet together, arms down … 1 = feet wide, arms overhead; air: height off the floor.
-function jack(open, air = 0) {
+function jack(ph) {
+  const outward = ph < 0.5, u = (ph * 2) % 1;
+  const flight = Math.min(1, Math.max(0, (u - 0.12) / 0.76));
+  const sweep = flight * flight * (3 - 2 * flight);
+  const open = outward ? sweep : 1 - sweep;
+  const arms = 0.5 - 0.5 * Math.cos(2 * Math.PI * ph);
+  const hop = 4 * flight * (1 - flight), air = 0.075 * hop;
   const x = 0.09 + 0.27 * open;
-  const pitch = air ? 26 : 10;
+  const pitch = 10 + 16 * hop;
   return {
-    root: [0, (air ? 0.99 : 0.945 - 0.04 * open) + air, 0.03],
+    root: [0, 0.94 - 0.045 * open + air - 0.018 * (1 - hop), 0.03],
     rot: [3, 0, 0],
     neck: [-3, 0],
     footL: tiptoe([x, ANKLE_Y + air, 0], pitch, 7),
@@ -144,8 +149,10 @@ function jack(open, air = 0) {
     toeR: pitch,
     kneeL: [0.35, 0, 1],
     kneeR: [-0.35, 0, 1],
-    armL: [6, 10 + 160 * open, 14 - 7 * open, -12 * open],
-    armR: [6, 10 + 160 * open, 14 - 7 * open, -12 * open],
+    shrugL: [0.008 * arms, 0],
+    shrugR: [0.008 * arms, 0],
+    armL: [6, 10 + 160 * arms, 14 - 7 * arms, -12 * arms],
+    armR: [6, 10 + 160 * arms, 14 - 7 * arms, -12 * arms],
   };
 }
 
@@ -206,8 +213,11 @@ const B_KICK = anchor({ rot: [96, 0, 0], neck: [-16, 0] }, "neckBase", v3(PLANK_
 function burpee(stage) {
   const hands = { handsIn: "world", handL: B_HANDS.L, handR: B_HANDS.R, palmL: [0, 1, 0], palmR: [0, 1, 0], ...ARM_POLES };
   switch (stage) {
-    case "stand":
-      return hangArms({ root: [0, 0.94, 0.02], ...B_FEET(0) }, { fwd: 0.04 });
+    case "stand": {
+      const p = hangArms({ root: [0, 0.94, 0.02], ...B_FEET(0) }, { fwd: 0.04 });
+      const J = joints(p);
+      return { ...p, palmL: v3(J.handRefL), palmR: v3(J.handRefR) };
+    }
     case "squat": { // hips down, hands to the floor in front of the feet
       const { y, z } = legsTo(40, 100);
       return { root: [0, y, z], rot: [60, 0, 0], spine: [10, 0, 0], neck: [-25, 0], ...B_FEET(0), ...hands };
@@ -251,13 +261,7 @@ function jacksClip(title, cue) {
     highlight: ["heart", "calves", "shoulders"],
     camera: CAM.jacks,
     loops: 4,
-    keys: [
-      { t: 0, p: jack(0), cue },
-      { t: 0.2, p: jack(0.5, 0.07) },
-      { t: 0.4, p: jack(1) },
-      { t: 0.6, p: jack(0.5, 0.07) },
-      { t: 0.8, p: jack(0) },
-    ],
+    keys: cycle(jack, 0.9, 12, cue),
   };
 }
 function climbersClip(title, cue) {
@@ -270,8 +274,8 @@ function climbersClip(title, cue) {
     loops: 5,
     keys: [
       { t: 0, p: CLIMB, cue },
-      { t: 0.17, p: climber("out", "up"), e: "lin" },
-      { t: 0.34, p: mirrorPose(makePose(CLIMB)), e: "lin" },
+      { t: 0.17, p: climber("out", "up"), e: "smooth" },
+      { t: 0.34, p: mirrorPose(makePose(CLIMB)), e: "smooth" },
     ],
   };
 }

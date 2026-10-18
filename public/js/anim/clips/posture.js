@@ -134,12 +134,12 @@ function facePull(pull) {
 // Lying on the right side, knees bent and stacked, head on a cushion. The top (left) elbow
 // stays on the ribs at 90°; r rotates the forearm from across the belly (−) up toward the
 // ceiling (+). Shoulder, hip, knee and ankle of the bottom side all rest on the floor.
-const CONTACT_R = { shoulderR: 0.058, hipR: 0.078, kneeR: 0.051, ankleR: 0.035 };
+const CONTACT_R = { shoulderR: 0.062, hipR: 0.095, kneeR: 0.052, ankleR: 0.052 };
 function onFloor(p) {
   const J = joints(p);
   let low = Infinity;
   for (const [n, r] of Object.entries(CONTACT_R)) low = Math.min(low, J[n].y - r);
-  return { ...p, root: [p.root[0], p.root[1] - low, p.root[2]] };
+  return { ...p, root: [p.root[0], p.root[1] - low + 0.012, p.root[2]] };
 }
 function sideLying(r) {
   return onFloor({
@@ -178,27 +178,24 @@ function elbowOnKnee(rotation) {
 function headTip(ext) {
   return { tuck: 0.012 * (1 - ext), neck: [3 - 15 * ext, 0], head: [4 - 22 * ext, 0] };
 }
-// Places the hand centre at a point given in the head's frame (iterates on the forearm direction).
+// Keep the palm on the forehead and the fingers pointing up as the head tilts.
 function handOnHead(p, local, pole) {
-  let q = { ...p, handsIn: "world", elbowL: pole };
+  const q = { ...p, handsIn: "world", elbowL: pole };
   const J0 = joints(q);
   const offset = J0.head.clone().set(...local).applyMatrix4(J0.Rh); // head-space offset → world
   const target = J0.head.clone().add(offset);
-  let wrist = target.clone();
-  for (let i = 0; i < 4; i++) {
-    q = { ...q, handL: [wrist.x, wrist.y, wrist.z] };
-    const J = joints(q);
-    wrist = target.clone().addScaledVector(J.foreDirL, -DIM.hand * 0.55);
-  }
-  return { ...q, handL: [wrist.x, wrist.y, wrist.z] };
+  const fingers = J0.head.clone().set(0, 1, 0).transformDirection(J0.Rh);
+  const palm = J0.head.clone().set(0, 0, 1).transformDirection(J0.Rh);
+  const wrist = target.addScaledVector(fingers, -DIM.hand * 0.55).addScaledVector(palm, 0.018);
+  return { ...q, handL: wrist.toArray(), palmL: palm.toArray(), fingersL: fingers.toArray() };
 }
-const FOREHEAD = [0, 0.07, 0.112]; // a palm's thickness in front of the forehead
+const FOREHEAD = [0, 0.025, 0.114]; // a palm's thickness in front of the forehead
 const ELBOW_OUT = [1, -0.45, 0.5]; // elbow forward and out to the side
 // IK version (wrist target + elbow pole) of an FK left-arm pose, so every key uses IK.
 function leftArmIK(base, arm) {
   const J = joints({ ...base, armL: arm });
   const pole = J.elbowL.clone().sub(J.shoulderL);
-  return { ...base, handsIn: "world", handL: [J.wristL.x, J.wristL.y, J.wristL.z], elbowL: [pole.x, pole.y, pole.z] };
+  return { ...base, handsIn: "world", handL: J.wristL.toArray(), elbowL: pole.toArray(), palmL: J.handRefL.toArray(), fingersL: J.handDirL.toArray() };
 }
 // hand: 0 = arm hanging, 0.5 = rising in front of the chest, 1 = palm on the forehead.
 function neckPose(ext, hand = 1) {
@@ -384,7 +381,7 @@ export default {
         props: [LIE_MAT, CUSHION],
         hold: { L: true, axis: "wx" },
         highlight: ["rotatorCuff"],
-        camera: { view: [0.55, 0.6, 1], target: [0, 0.3, 0.1], dist: 3.3 },
+        camera: { view: [0.55, 0.6, 1], target: [0, 0.3, 0.1], dist: 3.7 },
         alternate: true,
         keys: [
           // The 1 ms first segment makes the side switch of the mirrored half a clean cut

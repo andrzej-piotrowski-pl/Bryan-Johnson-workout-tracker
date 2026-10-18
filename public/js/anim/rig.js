@@ -69,6 +69,8 @@ export function defaultPose() {
     wristR: [0, 0, 0],
     palmL: null, // world normal above a supported palm; keeps the fingers on its surface
     palmR: null,
+    fingersL: null, // optional world finger direction when a palm orientation is specified
+    fingersR: null,
     // or IK: wrist target. Frame given by handsIn: "world" | "chest" | "pelvis".
     handL: null,
     handR: null,
@@ -161,8 +163,10 @@ export function computeJoints(pose) {
     } else {
       const [flex, abd, kneeFlex] = P["leg" + side];
       const Rt = Rp.clone().multiply(rotMat(-flex, 0, abd * s, "XZY"));
+      J["thighFrame" + side] = Rt;
       knee = hip.clone().add(apply(Rt, 0, -DIM.thigh, 0));
       shinFrame = Rt.clone().multiply(rotMat(kneeFlex, 0, 0, "XYZ"));
+      J["shinFrame" + side] = shinFrame;
       ankle = knee.clone().add(apply(shinFrame, 0, -DIM.shin, 0));
     }
     J["knee" + side] = knee;
@@ -230,6 +234,8 @@ export function computeJoints(pose) {
       const Ru = Rc.clone().multiply(rotMat(-flex, extRot * s, abd * s, "XZY"));
       elbow = shoulder.clone().add(apply(Ru, 0, -DIM.upperArm, 0));
       const Rf = Ru.clone().multiply(rotMat(-elbowFlex, 0, 0, "XYZ"));
+      J["upperArmFrame" + side] = Ru;
+      J["forearmFrame" + side] = Rf;
       wrist = elbow.clone().add(apply(Rf, 0, -DIM.forearm, 0));
       foreRef = dirOf(Rf, 0, 0, 1);
     }
@@ -245,7 +251,7 @@ export function computeJoints(pose) {
     const frame = new THREE.Matrix4().makeBasis(lateral, fore, ref).multiply(rotMat(wr[0], wr[2] * s, wr[1] * s, "YXZ"));
     const palm = P["palm" + side] ? new THREE.Vector3(...P["palm" + side]).normalize() : null;
     if (palm) {
-      const fingers = new THREE.Vector3(Math.sin(P.rot[1] * D2R), 0, Math.cos(P.rot[1] * D2R));
+      const fingers = P["fingers" + side] ? new THREE.Vector3(...P["fingers" + side]) : new THREE.Vector3(Math.sin(P.rot[1] * D2R), 0, Math.cos(P.rot[1] * D2R));
       fingers.addScaledVector(palm, -fingers.dot(palm));
       if (fingers.lengthSq() < 1e-6) fingers.copy(fore).addScaledVector(palm, -fore.dot(palm));
       fingers.normalize();
@@ -303,6 +309,7 @@ export function mirrorPose(p) {
   swap("armL", "armR");
   swap("wristL", "wristR");
   swap("palmL", "palmR", flipX);
+  swap("fingersL", "fingersR", flipX);
   swap("shrugL", "shrugR");
   swap("toeL", "toeR");
   swap("footYawL", "footYawR", (v) => v == null ? v : -v);

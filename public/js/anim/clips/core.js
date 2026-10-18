@@ -126,6 +126,7 @@ function sidePlank(o) {
     ...body,
     handsIn: "world",
     handR: SIDE_WRIST,
+    palmR: [0, 1, 0],
     elbowR: [SIDE_ELBOW[0] - S.x, SIDE_ELBOW[1] - S.y, SIDE_ELBOW[2] - S.z], // pole through the planted elbow
     handL: at(J.Rp, J.pelvis, [0.2, 0.06, 0.03]), // top hand resting on the hip
     elbowL: [0, 0.6, -1],
@@ -171,7 +172,7 @@ export default {
       {
         title: "Bird dog",
         highlight: ["core", "lowerBack", "glutes"],
-        camera: { view: [1, 0.38, 0.35], target: [0, 0.42, 0.1], dist: 4.4 },
+        camera: { view: [1, 0.38, 0.35], target: [0, 0.42, 0.1], dist: 4.8 },
         alternate: true,
         keys: [
           { t: 0, p: birdDog(0), cue: "Hands under shoulders, knees under hips" },
@@ -189,7 +190,7 @@ export default {
       {
         title: "Dead bug",
         highlight: ["core"],
-        camera: { view: [1, 0.55, -0.15], target: [0, 0.3, -0.35], dist: 3.7 },
+        camera: { view: [1, 0.55, -0.15], target: [0, 0.3, -0.35], dist: 4.0 },
         alternate: true,
         keys: [
           { t: 0, p: deadBug(0), cue: "Arms up, knees over hips, lower back pressed down" },
