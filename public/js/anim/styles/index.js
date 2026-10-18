@@ -11,6 +11,7 @@ const MODULES = {
   cartoon: () => import("./cartoon.js"),
   voxel: () => import("./voxel.js"),
   robot: () => import("./robot.js"),
+  glass: () => import("./glass.js"),
   pictogram: () => import("./pictogram.js"),
   ink: () => import("./ink.js"),
   ascii: () => import("./ascii.js"),
@@ -21,6 +22,8 @@ const MODULES = {
   googly: () => import("./googly.js"),
   paper: () => import("./paper.js"),
   halftone: () => import("./halftone.js"),
+  linocut: () => import("./linocut.js"),
+  orrery: () => import("./orrery.js"),
 };
 
 export async function loadFigure(id) {

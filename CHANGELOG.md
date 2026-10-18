@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.26.0] - 2026-10-18
+
+### Added
+- Stained glass, a 3D figure with jewel panes, brass seams and a rose window in its chest.
+- Linocut, a carved print animation with textured paper, gouged ink lines and a vermilion sun.
+- Orrery, an illustrated clockwork figure with planet joints, orbiting moons and a solar heart.
+- All three styles work across every exercise in Settings and the live style switcher.
+
 ## [1.25.0] - 2026-10-18
 
 ### Added

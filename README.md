@@ -273,7 +273,7 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 ## Animation styles
 
-Choose one of eighteen looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+Choose one of twenty-one looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
 
 All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
 
@@ -289,22 +289,26 @@ High knees and marching roll through take-off and landing. Jumping jacks carry t
 
 ![Female athlete from the front and side, curling weights, squatting and doing a push-up](docs/screenshots/animation-female.png)
 
+**Stained glass** builds a 3D figure from jewel panes and brass seams, with a rose window in its chest. **Linocut** turns the movement into a carved print against a vermilion sun. **Orrery** joins planets with engraved brass rods and puts orbiting moons around the joints.
+
+![Stained glass, Linocut and Orrery showing curls, push-ups and pull-ups](docs/screenshots/animation-creative.png)
+
 ![Squats, presses and floor exercises shown at several points in their movement](docs/screenshots/animation-motion.png)
 
 Liquid chrome has been removed because it could freeze browsers, including during automatic previews. A saved chrome preference falls back to Athlete.
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
-![The eighteen animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+![The twenty-one animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
 
-![Today with the animation style switcher, a fixed warm-up movement, and the zoom controls](docs/screenshots/anim-live.png)
+![Today with the animation style switcher, a warm-up movement and the zoom controls](docs/screenshots/anim-live.png)
 
 <details>
 <summary><b>Animation style descriptions and technical details</b></summary>
 
 Other ways to draw the exercise animations, on all 65 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
-Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Eight are three.js scenes. The other ten don't use three.js to draw: they get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
+Every style plays the same movement: the stage works out the skeleton and the camera once, and each style draws them its own way. Nine are three.js scenes. The other twelve get the joints projected to the screen and draw with SVG, a 2D canvas or text, so the camera buttons, zoom controls and dragging still work in all of them. The animation speed button goes up to 2×; for multi-movement animations, use the arrows to select a movement and choose **Fixed** to keep it on screen.
 
 | # | Style | Drawn with | Looks like |
 |---|---|---|---|
@@ -316,16 +320,19 @@ Every style plays the same movement: the stage works out the skeleton and the ca
 | 6 | **Cartoon** | three.js | Classic cel shading with two hard tones and thick black ink outlines; the worked muscles get a yellow outline. |
 | 7 | **Voxel** | three.js | Minecraft-style blocks with pixel-art textures, on grass; the props get a pixel texture in their own colour. |
 | 8 | **Robot** | three.js | Ceramic armour, exposed mechanical joints, a glowing visor and amber highlights on the muscles being worked. |
-| 9 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
-| 10 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
-| 11 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
-| 12 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
-| 13 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
-| 14 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
-| 15 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
-| 16 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
-| 17 | **Paper cutouts** | SVG | Folded polygon limbs, crease lines and offset paper shadows; worked muscles turn coral. |
-| 18 | **Halftone** | 2D canvas | Printed dots, bold comic outlines and vermilion muscle highlights. |
+| 9 | **Stained glass** | three.js | Jewel panes, brass seams, a gilded mask and a rose window in the chest. Working muscles glow amber. |
+| 10 | **Pictogram** | SVG | A white sign figure on a blue tile after Otl Aicher's 1972 Munich Olympics pictograms; the worked muscles in orange, a heart on the chest for cardio. |
+| 11 | **Ink brush** | 2D canvas | Sumi-e brush strokes on rice paper that leave fading ink trails, an ensō circle for the head, vermilion washes on the worked muscles. |
+| 12 | **ASCII** | Text | The figure typed out in characters on a green CRT, with a floor grid; the worked muscles in amber. |
+| 13 | **Synthwave** | 2D canvas | Neon tubes on a magenta grid that scrolls toward you in true perspective, a striped sun behind wireframe mountains, a reflection on the wet floor; the worked muscles in hot pink. |
+| 14 | **Blueprint** | SVG | An engineering drawing that measures you as you move: live knee and hip angle dimensions, readouts of both knees, hips and elbows, hatched muscles, dash-dot centre lines, hidden lines dashed, the height of a step or box dimensioned, and a title block naming the exercise. |
+| 15 | **Stardust** | 2D canvas | About 1,800 particles in deep space, each chasing its own spot on the body with its own lag, so the moving parts smear into light trails; the joints shine as a constellation. |
+| 16 | **Doodle** (funny) | SVG | A biro stick figure in a school notebook, its lines wobbling like hand-drawn animation: highlighter on the worked muscles, a face that strains on the way up, flying sweat, motion lines and a speech bubble with opinions about each kind of exercise. |
+| 17 | **Googly** (funny) | 2D canvas | A fuzzy purple monster in enormous trainers whose googly eyes run on real physics (every jolt of the head throws the pupils about), with a wobbly antenna and buck teeth; the worked muscles turn sparkling pink, and cardio beats a heart on its belly. |
+| 18 | **Paper cutouts** | SVG | Folded polygon limbs, crease lines and offset paper shadows; worked muscles turn coral. |
+| 19 | **Halftone** | 2D canvas | Printed dots, bold comic outlines and vermilion muscle highlights. |
+| 20 | **Linocut** | 2D canvas | A hand-carved figure with ink grooves, paper grain and a vermilion sun. Working muscles use ochre ink. |
+| 21 | **Orrery** | 2D canvas | Planets for joints, orbiting moons, engraved brass rods and a sun in the chest. Working muscles turn coral. |
 
 How the styles are built, and how to add one: [docs/ANIMATIONS.md](docs/ANIMATIONS.md#animation-styles).
 

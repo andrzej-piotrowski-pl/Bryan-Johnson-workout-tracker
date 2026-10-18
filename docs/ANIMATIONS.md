@@ -235,10 +235,11 @@ public/js/anim/styles/
   flat.js       shared parts for the flat styles: body pieces on screen, prop faces,
                 dumbbell heads, lit regions, curves, depth, segments clipped at the
                 camera, the horizon
-  athlete.js  female.js  anime.js  lowpoly.js  cartoon.js  voxel.js  robot.js
+  athlete.js  female.js  anime.js  lowpoly.js  cartoon.js  voxel.js  robot.js  glass.js
                                                                    three.js figures
   pictogram.js  blueprint.js  doodle.js  paper.js                    SVG
-  ink.js  synthwave.js  stardust.js  googly.js  halftone.js          2D canvas
+  ink.js  synthwave.js  stardust.js  googly.js  halftone.js
+  linocut.js  orrery.js                                             2D canvas
   ascii.js                                                           text
 ```
 
@@ -329,6 +330,15 @@ with its own torso profile, face, tied-back hair and toon materials. The slimmer
 keep their original joint lengths. Full-length leggings and a turquoise training top
 follow the spine and limb bones. Blinking uses clip time, and the hands use the same
 grip and support frames as Athlete. Equipment clearance checks cover both figures.
+
+Stained glass uses vertex-coloured facets, brass wire seams and clear-coated
+materials. It uses ordinary lighting without transmission or a refraction pass.
+Its shoes follow the Athlete's contact profile with fewer facets, and its palms
+flatten against supports. Linocut draws clipped gouge marks along the projected
+limbs and ribs, with a cached grain pattern. Orrery uses shaded planet discs,
+engraved rods and orbiting satellites. Both canvas styles draw props and held
+equipment through `flat.js`; orbits, blinking and the rose window use clip time,
+so paused frames and snapshots are repeatable.
 
 To add a style: write its module, add it to `MODULES` in `styles/index.js` and to
 `ANIM_STYLES` in `anim-styles.js`, and check it on every exercise with

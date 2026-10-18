@@ -20,6 +20,7 @@ export const ANIM_STYLES = [
   { id: "cartoon", name: "Cartoon", tech: "3d", after: "Classic cel shading with ink outlines", blurb: "A brightly coloured cartoon with thick black outlines. Working muscles have yellow outlines." },
   { id: "voxel", name: "Voxel", tech: "3d", after: "Minecraft-style blocks", blurb: "A block figure with pixel-art clothes and equipment, standing on grass." },
   { id: "robot", name: "Robot", tech: "3d", after: "Friendly service robots", blurb: "A robot with ceramic armour, visible joints and a glowing visor. Amber panels show the working muscles." },
+  { id: "glass", name: "Stained glass", tech: "3d", after: "Art Nouveau stained-glass windows", blurb: "Jewel-coloured panes joined by brass seams, with a rose window in the chest and a gilded mask. Working muscles glow amber." },
   { id: "pictogram", name: "Pictogram", tech: "svg", after: "Otl Aicher's 1972 Munich Olympics pictograms", blurb: "A white sports sign figure on a blue tile. Orange bars show which muscles are working." },
   { id: "ink", name: "Ink brush", tech: "canvas", after: "Japanese sumi-e painting", blurb: "A brush-painted figure on rice paper with a circular head and fading ink trails. Red washes show the working muscles." },
   { id: "ascii", name: "ASCII", tech: "text", after: "Old green-screen terminals", blurb: "A figure made from text on a glowing green screen, with a floor grid and amber working muscles." },
@@ -30,6 +31,8 @@ export const ANIM_STYLES = [
   { id: "googly", name: "Googly", tech: "canvas", fun: true, after: "Felt puppets", blurb: "A fuzzy monster in oversized trainers. Its googly eyes bounce as it moves." },
   { id: "paper", name: "Paper cutouts", tech: "svg", after: "Folded paper collage", blurb: "A figure cut from folded paper, with soft shadows and coral pieces showing the working muscles." },
   { id: "halftone", name: "Halftone", tech: "canvas", after: "Two-colour printed comics", blurb: "A moving comic figure with newsprint dots and bold ink outlines. Working muscles are vermilion." },
+  { id: "linocut", name: "Linocut", tech: "canvas", after: "Hand-carved printmaking", blurb: "A carved ink figure against a vermilion sun, with paper grain, gouged lines and uneven edges. Working muscles use ochre ink." },
+  { id: "orrery", name: "Orrery", tech: "canvas", after: "Antique mechanical solar systems", blurb: "A clockwork constellation with planets for joints, orbiting moons and a sun in the chest. Brass rods turn coral where muscles work." },
 ];
 
 // The style until you pick one.
