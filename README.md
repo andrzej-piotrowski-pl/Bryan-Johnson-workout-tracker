@@ -6,7 +6,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the exact timestamp and focused single-exercise demo videos, with a `min X sec Y` timestamp guide above the player and per-movement video sets that switch automatically with multi-movement animations.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
 - **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History, Progress and Benchmarks into four tabs.
-- **Eighteen animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
+- **Twenty-one animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
@@ -273,7 +273,12 @@ How the themes are built, and how to add your own: [docs/THEMES.md](docs/THEMES.
 
 ## Animation styles
 
-Choose one of twenty-one looks in **Settings → Animation style**. **Athlete** is the default. Each style shows the same exercise movement, and you can preview it before choosing. Use **Try styles live** to compare them during a session.
+Every exercise has an animated demonstration. Choose from 21 styles in **Settings → Animation style**.
+
+![All 21 animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
+
+<details>
+<summary><b>Animation controls, style descriptions and technical details</b></summary>
 
 All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
 
@@ -299,12 +304,7 @@ Liquid chrome has been removed because it could freeze browsers, including durin
 
 The speed button goes up to **2×**. For demonstrations with several movements, use the arrows to pick one and choose **Fixed** to keep showing it.
 
-![The twenty-one animation styles previewed on one exercise](docs/screenshots/anim-styles.png)
-
 ![Today with the animation style switcher, a warm-up movement and the zoom controls](docs/screenshots/anim-live.png)
-
-<details>
-<summary><b>Animation style descriptions and technical details</b></summary>
 
 Other ways to draw the exercise animations, on all 65 exercises, props, dumbbells and bands included. **Athlete** is the default. Pick another in **Settings → Animation style**, which has a live preview (pick any exercise for it under the preview) and a card with a still of each style on that exercise, or use **Try styles live** there: it opens today's session (on a phone or a rest day, the exercise in the preview) with a numbered switcher at the top of the screen (hover for the name; on a phone it turns into ‹ name ›), like the theme switcher. Both switchers can be open at once.
 
