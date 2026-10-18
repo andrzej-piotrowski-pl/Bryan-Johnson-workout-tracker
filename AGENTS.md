@@ -15,7 +15,9 @@ Pick the bump from the largest change in the push. The current version is the `v
 
 ## Every change that reaches `main`
 
-Each time a change is committed and pushed to `main`:
+Small or medium changes to `README.md` do not need a changelog entry or a version bump.
+
+For other changes committed and pushed to `main`:
 
 1. **Bump the version** in `package.json` (and in `package-lock.json`, with `npm version <major|minor|patch> --no-git-tag-version`).
 2. **Update `CHANGELOG.md`** in the repo root. Create it if it doesn't exist. Add a section for the new version at the top, in this format:

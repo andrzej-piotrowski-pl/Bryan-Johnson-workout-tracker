@@ -1,10 +1,5 @@
 # Changelog
 
-## [1.26.1] - 2026-10-18
-
-### Changed
-- Shortened the README's animation overview to one screenshot of all styles, with extra details collapsed.
-
 ## [1.26.0] - 2026-10-18
 
 ### Added
