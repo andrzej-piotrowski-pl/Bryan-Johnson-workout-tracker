@@ -44,10 +44,13 @@ function pushup(theta) {
 // ---------- pull-up / chin-up ----------
 const BAR_Y = 2.14;
 const BAR_Z = 0.08;
-function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1] } = {}) {
+const DOORFRAME = { type: "doorframe", pos: [0, 0, -0.36], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z + 0.36 };
+function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1], supinated = false } = {}) {
   const p = { rot: [-lean, 0, 0], spine: [-8 * lift, 0, 0], shrugL: [-0.045 * lift, -0.035 * lift], shrugR: [-0.045 * lift, -0.035 * lift], legL: [12 + 8 * lift, 4, 70 - 10 * lift, 25], legR: [12 + 8 * lift, 4, 70 - 10 * lift, 25], neck: [-lift * 16, 0] };
-  const top = BAR_Y - 0.56 + lift;
-  const placed = anchor(p, "neckBase", [0, top, BAR_Z - 0.02], "yz");
+  const dx = grip - joints(p).shoulderL.x, dz = 0.22;
+  const top = BAR_Y - 0.035 - Math.sqrt(0.548 ** 2 - dx * dx - dz * dz) + lift;
+  // The face rises behind the projecting bar, clear of both the rail and door lintel.
+  const placed = anchor(p, "shoulderL", [0, top, BAR_Z - dz], "yz");
   return {
     ...placed,
     handsIn: "world",
@@ -55,6 +58,10 @@ function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1] } = {}) {
     handR: [-grip, BAR_Y - 0.035, BAR_Z],
     elbowL: elbows,
     elbowR: [-elbows[0], elbows[1], elbows[2]],
+    palmL: [0, 0, supinated ? -1 : 1],
+    palmR: [0, 0, supinated ? -1 : 1],
+    fingersL: [0, 1, 0],
+    fingersR: [0, 1, 0],
   };
 }
 
@@ -66,7 +73,7 @@ function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1] } = {}) {
 // The bench ends just behind the kneeling shin, so that foot hangs off its end.
 const ROW_H = 0.42;
 const ROW_BENCH = { type: "bench", pos: [0, 0, -0.13], rotY: 90, w: 0.42, d: 1.05, h: ROW_H };
-const ROW_BODY = anchor({ rot: [80, 0, 0], legL: [80, 2, 88, 40], neck: [-10, 0] }, "kneeL", [0.11, ROW_H + 0.05, 0], "yz");
+const ROW_BODY = anchor({ rot: [82, 0, 0], legL: [82, 2, 88, 40], neck: [-8, 0] }, "kneeL", [0.11, ROW_H + 0.05, 0], "yz");
 const ROW_J = joints(ROW_BODY);
 function row(pull) {
   const sh = ROW_J.shoulderR;
@@ -254,7 +261,7 @@ export default {
     clips: [
       {
         title: "Pull-up (palms away)",
-        props: [{ type: "doorframe", pos: [0, 0, 0], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z }],
+        props: [DOORFRAME],
         highlight: ["back", "biceps", "grip"],
         camera: { view: [0.75, 0.15, 1], target: [0, 1.45, 0], dist: 4.2 },
         keys: [
@@ -267,15 +274,15 @@ export default {
       },
       {
         title: "Chin-up (palms facing you)",
-        props: [{ type: "doorframe", pos: [0, 0, 0], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z }],
+        props: [DOORFRAME],
         highlight: ["back", "biceps", "grip"],
         camera: { view: [0.75, 0.15, 1], target: [0, 1.45, 0], dist: 4.2 },
         keys: [
-          { t: 0, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }), cue: "Shoulder-width grip, palms toward you" },
-          { t: 0.5, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }), cue: "Pull until your chin clears the bar" },
-          { t: 2, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }) },
-          { t: 2.4, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45] }), cue: "Slow lowering, 2–3 s" },
-          { t: 4.6, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45] }) },
+          { t: 0, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45], supinated: true }), cue: "Shoulder-width grip, palms toward you" },
+          { t: 0.5, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45], supinated: true }), cue: "Pull until your chin clears the bar" },
+          { t: 2, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45], supinated: true }) },
+          { t: 2.4, p: hang(0.52, { grip: 0.17, lean: 6, elbows: [0.25, -1, 0.45], supinated: true }), cue: "Slow lowering, 2–3 s" },
+          { t: 4.6, p: hang(0, { grip: 0.17, elbows: [0.25, -1, 0.45], supinated: true }) },
         ],
       },
     ],

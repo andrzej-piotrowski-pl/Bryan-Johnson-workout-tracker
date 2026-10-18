@@ -153,6 +153,11 @@ export function createProp(spec, M) {
         bar.rotation.z = Math.PI / 2;
         bar.position.set(0, spec.barH ?? 2.0, spec.barZ ?? 0.08);
         g.add(bar);
+        for (const sx of [-1, 1]) {
+          const bracket = box(0.035, 0.035, spec.barZ ?? 0.08, M.metal);
+          bracket.position.set(sx * (w / 2 + 0.035), spec.barH ?? 2.0, (spec.barZ ?? 0.08) / 2);
+          g.add(bracket);
+        }
       }
       break;
     }

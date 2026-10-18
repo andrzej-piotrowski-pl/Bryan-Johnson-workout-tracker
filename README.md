@@ -98,7 +98,7 @@ To update later: stop the app, run `git pull`, then `npm install` in the project
 
 Your details and workouts save automatically on your computer. They are not uploaded to GitHub.
 
-Open **Settings → Latest changes** for the newest 20 releases, with a link to the full changelog beside the title. A red **Plan changed** badge marks updates to exercises or workout doses, with the details highlighted in that release.
+Open **Settings → Latest changes** for the newest 20 releases, with a link to the full changelog beside the title. The version label refreshes when Settings opens, including after an update. A red **Plan changed** badge marks updates to exercises or workout doses, with the details highlighted in that release.
 
 - **Back up** in **Settings → Export backup**. Keep the downloaded file somewhere safe.
 - **Restore a backup** in **Settings → Import backup**. Choose merge to combine it with your existing logs, or replace to overwrite your current logs.
@@ -277,11 +277,13 @@ Choose one of seventeen looks in **Settings → Animation style**. **Athlete** i
 
 All 65 exercises (90 movement clips) use coordinated shoulders, spine and limbs. Steps and cardio include weight shifts and arm swings; curls turn the wrists, and floor exercises keep their supporting hands and feet planted. Movements follow curved paths with smooth starts, stops and continuous walking loops.
 
-Athlete has fuller proportions, a shorter neck, a sculpted face and hair, and textured training clothes and trainers. Its arms and legs bend through the elbows and knees, and its hands join the wrists with continuous skin. Fingers wrap around equipment, flatten against the floor, and relax when free. Breathing, blinking and arm follow-through add smaller movements.
+Athlete has fuller proportions, a shorter neck and a face modelled after Bryan Johnson's portraits, with a defined jaw, blue eyes and swept dark hair. It wears a cobalt blue training shirt, coral shorts and white trainers with blue panels and laces. Its arms and legs bend through the elbows and knees, and its hands join the wrists with continuous skin. Rotation spreads along the forearms as the palms turn. Fingers wrap around equipment, flatten against the floor, and relax when free. Breathing, blinking and arm follow-through add smaller movements.
 
-High knees and marching roll through take-off and landing. Jumping jacks carry through each hop and soften the landing; mountain climbers change direction smoothly. Floor exercises keep the palms on their supports, and the pull-up demonstration lifts the chin above the bar.
+High knees and marching roll through take-off and landing. Jumping jacks carry through each hop and soften the landing; mountain climbers change direction smoothly. Floor and wall exercises keep the palms on their supports. Pull-ups lift the chin above the bar while keeping the head and chest clear of the doorway beam.
 
 ![Athlete from the front and side, holding weights, squatting and doing a push-up](docs/screenshots/animation-athlete.png)
+
+![The Athlete's face from three angles and its trainers](docs/screenshots/animation-details.png)
 
 ![Squats, presses and floor exercises shown at several points in their movement](docs/screenshots/animation-motion.png)
 

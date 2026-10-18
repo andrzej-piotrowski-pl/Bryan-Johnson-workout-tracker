@@ -41,7 +41,7 @@ function deadBug(reach) {
 const BAR_Y = 2.14;
 const BAR_Z = 0.08;
 const GRIP = 0.25;
-const DOORFRAME = { type: "doorframe", pos: [0, 0, 0], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z };
+const DOORFRAME = { type: "doorframe", pos: [0, 0, -0.36], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z + 0.36 };
 function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 22, shrug = -0.03 } = {}) {
   const p = {
     rot: [lean - curl, 0, 0],
@@ -61,6 +61,10 @@ function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 2
     handsIn: "world",
     handL: [GRIP, BAR_Y - 0.035, BAR_Z],
     handR: [-GRIP, BAR_Y - 0.035, BAR_Z],
+    palmL: [0, 0, 1],
+    palmR: [0, 0, 1],
+    fingersL: [0, 1, 0],
+    fingersR: [0, 1, 0],
     elbowL: [0.6, -1, 0.1],
     elbowR: [-0.6, -1, 0.1],
   };
@@ -109,9 +113,8 @@ function sideBody({ tilt, bend = 0, legTilt = 0, breath = 0 }) {
 }
 // Hips lifted: body in one straight line, bottom elbow straight under the shoulder.
 const SIDE_UP = { tilt: 16.75 };
-// Hips resting on the mat, propped on the forearm (bend solved so the shoulder stays
-// one upper-arm length from the planted elbow).
-const SIDE_DOWN = { tilt: 10, legTilt: 5.7, bend: 39.1 };
+// Hips resting on the mat, propped on the forearm.
+const SIDE_DOWN = { tilt: 10, legTilt: 5.7 };
 // The planted forearm: elbow on the mat under the lifted shoulder, forearm pointing forward.
 const SIDE_ELBOW = (() => {
   const s = joints(sideBody(SIDE_UP)).shoulderR;
@@ -119,7 +122,14 @@ const SIDE_ELBOW = (() => {
 })();
 const SIDE_WRIST = [SIDE_ELBOW[0], 0.037 + MAT_Y, SIDE_ELBOW[2] + 0.26];
 function sidePlank(o) {
-  const body = sideBody(o);
+  // Keep the shoulder one upper-arm length from the elbow while the hips rise.
+  let lo = 0, hi = 65;
+  for (let i = 0; i < 18; i++) {
+    const bend = (lo + hi) / 2, S = joints(sideBody({ ...o, bend })).shoulderR;
+    if (Math.hypot(S.x - SIDE_ELBOW[0], S.y - SIDE_ELBOW[1], S.z - SIDE_ELBOW[2]) < 0.29) lo = bend;
+    else hi = bend;
+  }
+  const body = sideBody({ ...o, bend: (lo + hi) / 2 });
   const J = joints(body);
   const S = J.shoulderR;
   return {
@@ -132,6 +142,7 @@ function sidePlank(o) {
     elbowL: [0, 0.6, -1],
   };
 }
+const sideLift = (d) => sidePlank({ tilt: 10 + 6.75 * d, legTilt: 5.7 * (1 - d) });
 
 // ---------- high plank (shoulder taps) ----------
 // Straight body on the hands, feet a bit wider than the hips; hands planted under the shoulders.
@@ -296,10 +307,10 @@ export default {
           // 1 ms "hold" segment: switching sides is an instant cut, not a flip through the air.
           { t: 0.001, p: sidePlank(SIDE_DOWN), e: "hold", cue: "On one forearm, elbow under the shoulder" },
           { t: 0.6, p: sidePlank(SIDE_DOWN), cue: "Lift the hips into a straight line" },
-          { t: 2.0, p: sidePlank(SIDE_UP), cue: "Hold and breathe, feet stacked" },
+          ...transition(sideLift, 0, 1, 0.6, 2.0, "Hold and breathe, feet stacked"),
           { t: 3.6, p: sidePlank({ ...SIDE_UP, breath: 2 }) },
           { t: 5.2, p: sidePlank(SIDE_UP), cue: "Lower with control, then switch sides" },
-          { t: 6.6, p: sidePlank(SIDE_DOWN) },
+          ...transition(sideLift, 1, 0, 5.2, 6.6),
         ],
       },
     ],

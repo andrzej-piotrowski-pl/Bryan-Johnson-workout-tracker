@@ -20,8 +20,6 @@ const PORT = Number(process.env.PORT) || 3030;
 const HOST = process.env.HOST || "127.0.0.1";
 const MAX_BODY = 2 * 1024 * 1024;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-// Read from package.json so it never drifts from the release.
-const APP_VERSION = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8")).version;
 
 // URL prefixes served straight from installed packages, so the app works offline.
 const VENDOR = [
@@ -65,6 +63,11 @@ async function readJson(file, fallback = null) {
     if (err.code === "ENOENT") return fallback;
     throw err;
   }
+}
+
+// Updates can replace package.json while this local server keeps running.
+async function appVersion() {
+  return (await readJson(path.join(ROOT, "package.json"))).version;
 }
 
 // Write to a temp file first, then rename: a crash mid-write never corrupts your data.
@@ -131,7 +134,7 @@ async function handleApi(req, res, pathname) {
   const method = req.method;
 
   if (pathname === "/api/info" && method === "GET") {
-    return send(res, 200, { app: "bryan-johnson-workout-website", version: APP_VERSION, storage: "server", dataDir: path.relative(ROOT, DATA_DIR) || "." });
+    return send(res, 200, { app: "bryan-johnson-workout-website", version: await appVersion(), storage: "server", dataDir: path.relative(ROOT, DATA_DIR) || "." });
   }
 
   if (pathname === "/api/changelog" && method === "GET") {
@@ -192,7 +195,7 @@ async function handleApi(req, res, pathname) {
   if (pathname === "/api/export" && method === "GET") {
     const payload = {
       app: "bryan-johnson-workout-website",
-      version: APP_VERSION,
+      version: await appVersion(),
       exportedAt: new Date().toISOString(),
       profile: await readJson(PROFILE_FILE),
       days: await readAllDays(),

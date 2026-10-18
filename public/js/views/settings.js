@@ -42,6 +42,13 @@ export function render(el) {
   let equipmentEditor = null;
   let preview = null;
   let disposed = false;
+  function refreshVersion() {
+    fetch("/api/info", { cache: "no-store" }).then((res) => res.ok ? res.json() : null).then((info) => {
+      if (disposed || !info?.version) return;
+      state.version = info.version;
+      el.querySelector("[data-changelog]").textContent = `Version ${info.version} · Latest changes`;
+    }).catch(() => {});
+  }
   const previewObserver = new IntersectionObserver((entries) => {
     if (disposed || !entries.some((entry) => entry.isIntersecting)) return;
     previewObserver.disconnect();
@@ -221,6 +228,7 @@ export function render(el) {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.hasAttribute("data-changelog")) {
+      refreshVersion();
       try {
         const res = await fetch("/api/changelog", { cache: "no-store" });
         if (!res.ok) throw new Error("Changelog unavailable");
@@ -380,6 +388,7 @@ export function render(el) {
   }
 
   draw();
+  refreshVersion();
   return {
     destroy() {
       equipmentEditor?.destroy();

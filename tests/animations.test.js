@@ -1,17 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { Quaternion, Vector3 } from "three";
+import { Matrix4, Quaternion, Raycaster, Vector3 } from "three";
 import { EXERCISES } from "../public/js/data/exercises.js";
 import { animationIds, getAnimation } from "../public/js/anim/clips/index.js";
 import { computeJoints, DIM, makePose, mirrorPose } from "../public/js/anim/rig.js";
 import { prepareClip, sampleClip } from "../public/js/anim/stage.js";
 import { createFigure } from "../public/js/anim/styles/athlete.js";
 import { createHand } from "../public/js/anim/styles/human.js";
+import { createMaterials, createProp } from "../public/js/anim/props.js";
 import { MeshStandardMaterial } from "three";
 
 const near = (a, b, epsilon = 1e-8) => assert.ok(Math.abs(a - b) < epsilon, `${a} differs from ${b}`);
 
-test("every exercise and movement has finite joints, fixed bone lengths and reachable planted feet throughout playback", () => {
+test("every exercise and movement has fixed bone lengths, valid frames and reachable IK contacts throughout playback", () => {
   assert.deepEqual(animationIds().sort(), Object.keys(EXERCISES).sort());
   for (const id of animationIds()) for (const raw of getAnimation(id).clips) {
     const clip = prepareClip(raw);
@@ -27,9 +28,143 @@ test("every exercise and movement has finite joints, fixed bone lengths and reac
           near(J[a + s].distanceTo(J[b + s]), length);
         }
         if (pose["foot" + s]) assert.ok(J["ankle" + s].distanceTo(new Vector3(...pose["foot" + s])) < 0.004, label + ": foot out of reach");
+        if (pose["hand" + s]) {
+          const target = new Vector3(...pose["hand" + s]);
+          if (pose.handsIn === "chest") target.applyMatrix4(J.Rc).add(J.neckBase);
+          else if (pose.handsIn === "pelvis") target.applyMatrix4(J.Rp).add(J.pelvis);
+          assert.ok(J["wrist" + s].distanceTo(target) < 0.004, label + ": hand out of reach");
+        }
+        for (const [a, b] of [["handDir", "handRef"], ["footF", "footU"]]) {
+          near(J[a + s].length(), 1); near(J[b + s].length(), 1);
+          near(J[a + s].dot(J[b + s]), 0);
+        }
       }
     }
   }
+});
+
+test("chin-ups turn the palms inward and forearm rotation preserves the wrist's volume", () => {
+  const pull = computeJoints(sampleClip(prepareClip(getAnimation("chinup").clips[0]), 0).pose);
+  const chin = computeJoints(sampleClip(prepareClip(getAnimation("chinup").clips[1]), 0).pose);
+  for (const s of ["L", "R"]) {
+    assert.ok(pull["handRef" + s].z > 0.8);
+    assert.ok(chin["handRef" + s].z < -0.8);
+  }
+  for (const raw of ["chinup", "legraise", "deadhang"].flatMap((id) => getAnimation(id).clips)) {
+    const clip = prepareClip(raw), first = computeJoints(sampleClip(clip, 0).pose);
+    for (let t = 0; t < clip.duration; t += 1 / 30) {
+      const J = computeJoints(sampleClip(clip, t).pose);
+      for (const s of ["L", "R"]) near(J["hand" + s].distanceTo(first["hand" + s]), 0);
+    }
+  }
+  const figure = createFigure(), J = computeJoints(makePose({ wristL: [0, 0, 180], wristR: [0, 0, 180] }));
+  figure.update(J); figure.group.updateMatrixWorld(true);
+  for (const s of ["L", "R"]) {
+    const mesh = figure.group.getObjectByName("human-arm" + s), bones = mesh.skeleton.bones;
+    const upper = bones[2].getWorldQuaternion(new Quaternion()), middle = bones[5].getWorldQuaternion(new Quaternion()), end = bones[3].getWorldQuaternion(new Quaternion());
+    assert.ok(upper.angleTo(middle) > 1 && middle.angleTo(end) > 1);
+    const axis = J["foreDir" + s], p = mesh.geometry.attributes.position;
+    for (let i = 0; i < p.count; i++) if (p.getY(i) < -0.37 && p.getY(i) > -0.5) {
+      const v = mesh.getVertexPosition(i, new Vector3()).applyMatrix4(mesh.matrixWorld).sub(J["elbow" + s]);
+      v.addScaledVector(axis, -v.dot(axis));
+      assert.ok(v.length() > 0.014, "forearm collapsed while turning the palm");
+    }
+  }
+  figure.dispose();
+});
+
+test("step-ups roll onto the forefoot without sinking their soles or adding a pause to the loop", () => {
+  const figure = createFigure(), v = new Vector3();
+  for (const id of ["norwegian", "zone2"]) {
+    const raw = getAnimation(id).clips[0], clip = prepareClip(raw);
+    near(clip.duration, raw.keys.at(-1).t * 2);
+    assert.ok(clip.cyclic);
+    for (let t = 0; t < clip.duration; t += 1 / 60) {
+      figure.update(computeJoints(sampleClip(clip, t).pose)); figure.group.updateMatrixWorld(true);
+      for (const s of ["L", "R"]) figure.group.getObjectByName("foot" + s).traverse((mesh) => {
+        if (!mesh.isMesh) return;
+        for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+          mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld);
+          assert.ok(v.y > -0.006, id + ": trainer sole crossed the floor");
+        }
+      });
+    }
+  }
+  const burpee = getAnimation("indoorhiit").clips[4];
+  near(prepareClip(burpee).duration, burpee.keys.at(-1).t);
+  figure.dispose();
+});
+
+test("side-plank hips move around a planted elbow and ankle", () => {
+  const clip = prepareClip(getAnimation("sideplank").clips[0]), first = computeJoints(sampleClip(clip, 0).pose);
+  for (let t = 0; t < clip.half; t += 1 / 60) {
+    const J = computeJoints(sampleClip(clip, t).pose);
+    assert.ok(J.elbowR.distanceTo(first.elbowR) < 0.003, "supporting elbow moved off the mat");
+    assert.ok(J.ankleR.distanceTo(first.ankleR) < 0.001, "supporting foot slid");
+  }
+});
+
+test("the swept hair covers the skull without skin breaking through the crown", () => {
+  const figure = createFigure();
+  figure.update(computeJoints(makePose())); figure.group.updateMatrixWorld(true);
+  const head = figure.group.getObjectByName("human-head"), face = figure.group.getObjectByName("human-face"), hair = figure.group.getObjectByName("human-hair");
+  for (const polar of [15, 30, 40]) for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) {
+    const theta = polar * Math.PI / 180;
+    const dir = new Vector3(Math.sin(theta) * Math.cos(a), Math.cos(theta), Math.sin(theta) * Math.sin(a));
+    const origin = dir.clone().multiplyScalar(0.4).applyMatrix4(head.matrixWorld);
+    const ray = new Raycaster(origin, dir.transformDirection(head.matrixWorld).negate());
+    const skinHit = ray.intersectObject(face)[0], hairHit = ray.intersectObject(hair)[0];
+    assert.ok(skinHit && hairHit && hairHit.distance < skinHit.distance - 0.001, "hair intersects the skull");
+  }
+  figure.dispose();
+});
+
+test("rendered skin clears the doorway, walls, seats and other equipment throughout each movement", () => {
+  const figure = createFigure(), materials = createMaterials(false), meshes = [], head = new Set(), v = new Vector3(), local = new Vector3();
+  figure.group.traverse((o) => { if (o.isMesh) meshes.push(o); });
+  figure.group.getObjectByName("human-head").traverse((o) => head.add(o));
+  for (const id of animationIds()) for (const raw of getAnimation(id).clips) {
+    if (!raw.props?.length) continue;
+    const props = raw.props.map((spec) => createProp(spec, materials)), solids = [];
+    for (const prop of props) {
+      prop.updateMatrixWorld(true);
+      prop.traverse((o) => {
+        if (!o.isMesh) return;
+        o.geometry.computeBoundingBox();
+        solids.push({ mesh: o, box: o.geometry.boundingBox, inverse: new Matrix4().copy(o.matrixWorld).invert() });
+      });
+    }
+    const clip = prepareClip(raw);
+    const hanging = raw.props.some((p) => p.bar || p.type === "bar");
+    // The other half reflects both the figure and its props, preserving the same clearances.
+    const end = clip.half ?? clip.duration;
+    for (let t = 0; t < end; t += 0.125) {
+      const J = computeJoints(sampleClip(clip, t).pose);
+      const grip = hanging ? { L: true, R: true } : {};
+      figure.update(J, { t, grip }); figure.group.updateMatrixWorld(true);
+      for (const mesh of meshes) for (let i = 0; i < mesh.geometry.attributes.position.count; i += 8) {
+        mesh.getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld);
+        for (const solid of solids) {
+          local.copy(v).applyMatrix4(solid.inverse);
+          const { box, mesh: prop } = solid;
+          if (!box.containsPoint(local)) continue;
+          let depth = Math.min(local.x - box.min.x, box.max.x - local.x, local.y - box.min.y,
+            box.max.y - local.y, local.z - box.min.z, box.max.z - local.z);
+          if (prop.geometry.type === "CylinderGeometry") {
+            if (mesh.name.startsWith("human-hand")) continue; // Fingers wrap around the rail.
+            depth = Math.min(depth, prop.geometry.parameters.radiusTop - Math.hypot(local.x, local.z));
+          } else if (prop.geometry.type === "ExtrudeGeometry") {
+            const slope = box.max.y / (box.max.z - box.min.z);
+            depth = Math.min(depth, (slope * (box.max.z - local.z) - local.y) / Math.hypot(1, slope));
+          }
+          const tolerance = hanging && head.has(mesh) ? 0.001 : 0.013;
+          assert.ok(depth < tolerance, `${id}: ${mesh.name} penetrates equipment at ${t.toFixed(3)}`);
+        }
+      }
+    }
+    for (const prop of props) prop.traverse((o) => o.geometry?.dispose());
+  }
+  figure.dispose(); Object.values(materials).forEach((m) => m.dispose());
 });
 
 test("new spine, wrist and foot orientation controls mirror with the whole skeleton", () => {
@@ -259,14 +394,16 @@ test("hands cover the wrist and plant their surfaces on the floor in kneeling an
   figure.dispose();
 });
 
-test("skin frames keep their twist through overhead reaches", () => {
+test("hands and skin keep their twist through vertical reaches and changes in direction", () => {
   const figure = createFigure();
-  for (const id of ["chinup", "doorway"]) {
+  for (const id of ["chinup", "doorway", "woodchop", "floorpress", "jefferson", "tree"]) {
     const clip = prepareClip(getAnimation(id).clips[0]);
     let previous;
     for (let t = 0; t < clip.duration; t += 1 / 60) {
-      figure.update(computeJoints(sampleClip(clip, t).pose)); figure.group.updateMatrixWorld(true);
-      const current = ["L", "R"].flatMap((s) => [0, 2].map((i) => figure.group.getObjectByName("human-arm" + s).skeleton.bones[i].getWorldQuaternion(new Quaternion())));
+      const J = computeJoints(sampleClip(clip, t).pose);
+      figure.update(J); figure.group.updateMatrixWorld(true);
+      const current = ["L", "R"].flatMap((s) => [0, 2, 5].map((i) => figure.group.getObjectByName("human-arm" + s).skeleton.bones[i].getWorldQuaternion(new Quaternion()))
+        .concat(new Quaternion().setFromRotationMatrix(J["handFrame" + s])));
       if (previous) current.forEach((q, i) => assert.ok(q.angleTo(previous[i]) < 0.35, id + ": skin flipped around the bone"));
       previous = current;
     }
@@ -296,8 +433,12 @@ test("pull-ups clear the bar and jumping jacks travel through the airborne part 
   for (const raw of getAnimation("chinup").clips) {
     const J = computeJoints(sampleClip(prepareClip(raw), 2).pose);
     figure.update(J); figure.group.updateMatrixWorld(true);
-    const chin = new Vector3(0, -0.113, 0.03).applyMatrix4(figure.group.getObjectByName("head").matrixWorld);
-    assert.ok(chin.y > raw.props[0].barH + 0.005, "chin does not clear the bar");
+    const face = figure.group.getObjectByName("human-face"), p = face.geometry.attributes.position;
+    let chin = Infinity;
+    for (let i = 0; i < p.count; i++) if (p.getY(i) < -0.105 && p.getZ(i) > 0.04) {
+      chin = Math.min(chin, face.getVertexPosition(i, new Vector3()).applyMatrix4(face.matrixWorld).y);
+    }
+    assert.ok(Number.isFinite(chin) && chin > raw.props[0].barH + 0.005, "chin does not clear the bar");
   }
   figure.dispose();
   const clip = prepareClip(getAnimation("indoorhiit").clips[3]);

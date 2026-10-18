@@ -1,6 +1,6 @@
 // Animations for the indoor cardio exercises: intervals, the Norwegian 4×4, interval moves and Zone 2.
-import { makePose, mirrorPose } from "../rig.js";
-import { ANKLE_Y, D2R, DIM, FOOT_X, anchor, hangArms, joints, legsTo, translate } from "../poses.js";
+import { lerpPose, makePose, mirrorPose } from "../rig.js";
+import { ANKLE_Y, D2R, DIM, FOOT_X, anchor, hangArms, joints, legsTo, translate, transition } from "../poses.js";
 
 // ---------- helpers ----------
 
@@ -125,7 +125,20 @@ function stepPose(ph, { arm = 30, elbow = 40 } = {}) {
 // One left-led cycle, `dt` seconds per phase (also the closing step back to the start); with
 // alternate: true the next cycle leads with the right leg.
 function stepClip(dt, cues, style) {
-  return { closeTime: dt, keys: [...STEP_PHASES, STEP_PHASES[0]].map((ph, i) => ({ t: i * dt, p: stepPose(ph, style), e: "smooth", cue: cues[i] })) };
+  const phases = [...STEP_PHASES, STEP_PHASES[0]];
+  const keys = [{ t: 0, p: stepPose(phases[0], style), e: "smooth", cue: cues[0] }];
+  for (let i = 1; i < phases.length; i++) {
+    const a = stepPose(phases[i - 1], style), b = stepPose(phases[i], style);
+    const floor = ["L", "R"].filter((s) => [phases[i - 1][s], phases[i][s]].every((v) => v == null || v === "push"));
+    const roll = floor.some((s) => a["toe" + s] !== b["toe" + s]);
+    const n = roll ? 8 : 1;
+    for (let j = 1; j <= n; j++) {
+      const p = j === n ? b : lerpPose(a, b, j / n);
+      if (roll) for (const s of floor) p["foot" + s] = tiptoe([FOOT_X * (s === "L" ? 1 : -1), ANKLE_Y, 0], p["toe" + s], s === "L" ? 7 : -7);
+      keys.push({ t: (i - 1 + j / n) * dt, p, e: "smooth", cue: j === n ? cues[i] : undefined });
+    }
+  }
+  return { closeTime: dt, keys };
 }
 
 // ---------- jumping jacks ----------
@@ -234,6 +247,20 @@ function burpee(stage) {
   }
 }
 
+function burpeeLower(d) {
+  const a = makePose(burpee("stand")), b = makePose(burpee("squat"));
+  if (d === 0) return a;
+  if (d === 1) return b;
+  const p = lerpPose(a, b, d), A = joints(a), B = joints(b), J = joints(p);
+  // Follow the shoulders while folding down; world-space blending overreaches mid-squat.
+  for (const side of ["L", "R"]) {
+    const from = A["wrist" + side].clone().sub(A["shoulder" + side]);
+    const to = B["wrist" + side].clone().sub(B["shoulder" + side]);
+    p["hand" + side] = from.lerp(to, d).add(J["shoulder" + side]).toArray();
+  }
+  return p;
+}
+
 // Shared clips (several exercises use the same moves).
 const CAM = {
   spot: { view: [0.85, 0.2, 0.7], target: [0, 0.95, 0.1], dist: 4.2 },
@@ -315,13 +342,13 @@ export default {
         camera: CAM.burpee,
         keys: [
           { t: 0, p: burpee("stand"), cue: "Squat down, hands to the floor" },
-          { t: 0.6, p: burpee("squat"), cue: "Jump back to a plank (or step back)" },
+          ...transition(burpeeLower, 0, 1, 0, 0.6, "Jump back to a plank (or step back)"),
           { t: 0.82, p: burpee("kick"), e: "in" },
           { t: 1.02, p: burpee("plank"), e: "out" },
           { t: 1.3, p: burpee("plank"), cue: "No push-up: jump the feet back in" },
           { t: 1.5, p: burpee("kick"), e: "in" },
           { t: 1.72, p: burpee("squat"), e: "out", cue: "Stand up tall" },
-          { t: 2.4, p: burpee("stand") },
+          ...transition(burpeeLower, 1, 0, 1.72, 2.4),
         ],
       },
     ],

@@ -83,12 +83,14 @@ function wallArms(p, up, fore) {
   const out = { ...p, handsIn: "world" };
   for (const [side, s] of [["L", 1], ["R", -1]]) {
     const S = J["shoulder" + side];
-    const ez = WALL_Z + 0.044, wz = WALL_Z + 0.03; // elbow and wrist centres, limb radius off the wall
+    const ez = WALL_Z + 0.056, wz = WALL_Z + 0.02; // elbow and wrist centres, limb radius off the wall
     const ru = Math.sqrt(DIM.upperArm ** 2 - (ez - S.z) ** 2);
     const E = [S.x + s * ru * Math.sin(up * D2R), S.y - ru * Math.cos(up * D2R), ez];
     const rf = Math.sqrt(DIM.forearm ** 2 - (wz - ez) ** 2);
     out["hand" + side] = [E[0] + s * rf * Math.sin(fore * D2R), E[1] + rf * Math.cos(fore * D2R), wz];
     out["elbow" + side] = [E[0] - S.x, E[1] - S.y, E[2] - S.z];
+    out["palm" + side] = [0, 0, -1];
+    out["fingers" + side] = [s * Math.sin(fore * D2R), Math.cos(fore * D2R), 0];
   }
   return out;
 }
@@ -236,6 +238,10 @@ function doorway({ step = 0, lift = 0, lean = 0, breath = 0 } = {}) {
     handsIn: "world",
     handL: [ELBOW_X, ELBOW_Y + DIM.forearm, ARM_Z],
     handR: [-ELBOW_X, ELBOW_Y + DIM.forearm, ARM_Z],
+    palmL: [0, 0, -1],
+    palmR: [0, 0, -1],
+    fingersL: [0, 1, 0],
+    fingersR: [0, 1, 0],
     elbowL: pole(J.shoulderL, 1),
     elbowR: pole(J.shoulderR, -1),
   };

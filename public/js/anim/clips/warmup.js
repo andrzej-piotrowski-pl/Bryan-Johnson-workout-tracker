@@ -156,7 +156,10 @@ function legSwing(flex, knee, { hand = true } = {}) {
     legL: [flex, 3, knee, knee > 1 ? (flex < 10 ? -10 : 6) : 0], // toes up as the foot brushes past the floor
   };
   const p = { ...ground(legs, ["heelR", "ballR"]), handsIn: "world" };
-  const right = hand ? { handR: [-0.555, 1.3, 0.1], elbowR: [-0.3, -1, -0.3] } : armIK(p, "R", [0, 14, 25]); // fingertips on the wall
+  const rest = armIK(p, "R", [0, 14, 25]), J = joints({ ...p, ...rest });
+  const right = hand
+    ? { handR: [-0.602, 1.3, 0.1], elbowR: [-0.3, -1, -0.3], palmR: [1, 0, 0], fingersR: [0, 1, 0] }
+    : { ...rest, palmR: J.handRefR.toArray(), fingersR: J.handDirR.toArray() };
   return { ...p, ...armIK(p, "L", [-flex * 0.3, 14, 25]), ...right }; // free arm: small counter-swing
 }
 

@@ -229,6 +229,7 @@ export function computeJoints(pose) {
       const r = solveTwoBone(shoulder, target, DIM.upperArm, DIM.forearm, pole);
       elbow = r.mid;
       wrist = r.end;
+      foreRef = shoulder.clone().sub(elbow); // the elbow's hinge plane stays stable through vertical reaches
     } else {
       const [flex, abd, elbowFlex, extRot] = P["arm" + side];
       const Ru = Rc.clone().multiply(rotMat(-flex, extRot * s, abd * s, "XZY"));

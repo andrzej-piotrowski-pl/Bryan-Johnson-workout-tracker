@@ -134,7 +134,7 @@ function jefferson(neck, flex, pitch, back = 0) {
   // the hands rest in front of the thighs; rolled down, the arms hang straight to the floor.
   const J = joints(p);
   const up = Math.max(0, 1 - (pitch + flex) / 60);
-  const y = J.shoulderL.y - 0.515 + 0.04 * up;
+  const y = J.shoulderL.y - 0.5 + 0.04 * up;
   const z = (J.shoulderL.z + J.shoulderR.z) / 2 + 0.03 + 0.15 * up;
   return { ...p, handsIn: "world", handL: [0.045, y, z], handR: [-0.045, y, z], elbowL: [1, -0.25, -0.35], elbowR: [-1, -0.25, -0.35] };
 }

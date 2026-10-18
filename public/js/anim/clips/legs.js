@@ -238,7 +238,7 @@ const CALF_BALL_Z = 0.575;
 function seatedCalf(raise) {
   // raise: foot pitch (deg), negative = heels below the book (stretch)
   const p = {
-    root: [0, 0.555, 0],
+    root: [0, 0.595, 0],
     rot: [5, 0, 0],
     spine: [7, 0, 0],
     neck: [-5, 0],
@@ -261,7 +261,7 @@ function seatedCalf(raise) {
 
 // Standing on a step edge: left ball on the edge, heel hanging off, right foot lifted behind, hands on the wall.
 const CALF_STEP = { type: "step", pos: [0, 0, 0.24], w: 0.62, d: 0.34, h: 0.18 };
-const CALF_WALL = { type: "wall", pos: [0, 0, 0.6], w: 1.6, h: 2.3 };
+const CALF_WALL = { type: "wall", pos: [0, 0, 0.54], w: 1.6, h: 2.3 };
 const CALF_EDGE_Z = 0.1; // balls of the feet, 3 cm in from the back edge
 const CALF_HANDS = [0.2, 1.42, 0.48];
 
@@ -282,6 +282,10 @@ function stepCalf(raise, oneLeg = true) {
     handsIn: "world",
     handL: CALF_HANDS,
     handR: [-CALF_HANDS[0], CALF_HANDS[1], CALF_HANDS[2]],
+    palmL: [0, 0, -1],
+    palmR: [0, 0, -1],
+    fingersL: [0, 1, 0],
+    fingersR: [0, 1, 0],
     elbowL: [0.6, -0.8, -0.2],
     elbowR: [-0.6, -0.8, -0.2],
   };

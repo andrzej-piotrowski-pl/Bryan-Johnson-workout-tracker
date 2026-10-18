@@ -24,8 +24,10 @@ animation style.
 
 Use `&samples=8` to inspect evenly spaced times, including the motion between keys,
 without rendering every authored pose. Run `npm test` for the animation checks:
-all 65 exercises and 90 clips, sampled at 60 frames per second, plus contact,
-mirroring and loop regressions.
+all 65 exercises and 90 clips, sampled at 60 frames per second, with reachable
+hand and foot targets and orthonormal hand/foot frames, plus skin, contact,
+mirroring and loop regressions. Rendered skin is also checked against equipment,
+including clearance between the head, pull-up bar and doorway beam.
 
 The step-up clips use a low aerobic step, and Poliquin heel taps use a slant board on the floor. Both preserve the existing exercise ids and logged history.
 
@@ -83,6 +85,7 @@ continues to describe the forearm.
 
 FK limbs also expose `upperArmFrameL/R`, `forearmFrameL/R`, `thighFrameL/R` and
 `shinFrameL/R`. These preserve the authored twist when a limb passes overhead.
+IK hands follow the elbow's hinge plane so a vertical forearm doesn't flip the palm.
 
 ## Helpers (`poses.js`)
 
@@ -206,6 +209,7 @@ optional `rotY` (degrees).
 ## Quality checklist
 
 - Feet and hands that should be planted don't slide (IK targets fixed across keys).
+- Keep targets within limb length between keys too. Rebuild curved transitions from the body's current frame when a straight blend overreaches.
 - Contacts touch the surface: no floating, no sinking (use `ground`/`anchor`).
 - Check the rendered palms, fingertips, clothing and shoes too: joint centres alone don't show gaps or intersections.
 - Knees and elbows bend the natural way (set poles when the default is wrong).
@@ -284,17 +288,33 @@ thumbnails.
 
 Athlete uses `styles/human.js` for its torso, neck, limbs, hands, face and trainers.
 Each arm and leg is one skinned surface. An extra bone halfway between the upper
-and lower limb rotations keeps elbows and knees from collapsing. The shoulders and
-hips blend into the torso's frame. IK surfaces use
+and lower limb rotations keeps elbows and knees from collapsing. Rounded shoulder
+caps roll with the upper arms; the hips blend into the torso's frame. IK surfaces use
 the hinge plane; FK surfaces use the authored frames, avoiding sudden twists near
 an overhead reach. The head and neck share a shorter attachment without changing
 the exercise skeleton's targets.
 
+An extra forearm bone distributes pronation between the elbow and wrist, preserving
+volume when the palms turn. Hanging exercises use fixed palm and finger frames
+so the grip stays on the bar throughout the rep. Step-up push-off arcs are rebuilt
+around the forefoot; side-plank poses solve the shoulder around the planted elbow
+and rebuild the hip lift between keys.
+
+Pull-up bars project in front of the door frame on brackets. The head rises behind
+the rail with space in front of the doorway beam. Both 3D props and flat styles use
+the same bracket dimensions. Wall contacts specify palm and finger directions;
+supported hands flatten against any surface, including vertical walls.
+
 Each hand is one skinned mesh with three joints per finger and an opposing thumb.
 The palm extends over the wrist, fingers spread against the floor, and the grip
 closes around a handle. Adjacent material groups are combined to limit draw calls.
+The cobalt blue shirt and coral shorts have narrow hems and a waistband.
 Clothing uses a small generated fabric texture and muscle highlighting uses the
-existing materials.
+existing materials. The face has a defined jaw, subtle cheek colouring and blue
+eyes, using Bryan Johnson's portraits as reference. Features attach to the sculpted
+face surface; the hair shell stays outside the skull and adds a swept front.
+Trainers have coloured side panels, a separate tongue, heel tab and crossed laces.
+Their contact sole stays aligned with the existing foot rig.
 
 Breathing deforms the ribcage without moving planted contacts. The stage passes
 `grip`, `gripAxis` and `breath` to `figure.update`: weights, goblet holds, bars and

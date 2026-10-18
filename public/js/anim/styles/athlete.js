@@ -20,19 +20,23 @@ export function createFigure() {
   const rig = createRig(), weave = fabric(), regions = [];
   const physical = (color, options = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.75, ...options });
   const mats = {
-    skin: physical(0xc89173, { sheen: 0.12, sheenColor: 0xf1b597, sheenRoughness: 0.9 }),
-    top: physical(0x235a73, { roughness: 0.95, sheen: 0.25, bumpMap: weave, bumpScale: 0.00035, side: THREE.DoubleSide }),
-    bottom: physical(0x252e3b, { roughness: 0.98, bumpMap: weave, bumpScale: 0.0004, side: THREE.DoubleSide }),
-    collar: physical(0x19445a, { roughness: 0.95 }),
-    shoe: physical(0xe2e8e8, { roughness: 0.85 }),
-    midsole: physical(0xf3f4ef, { roughness: 0.9 }),
-    sole: physical(0x384b56, { roughness: 0.95 }),
-    sock: physical(0xd5dce2, { roughness: 1, bumpMap: weave, bumpScale: 0.00025 }),
-    hair: physical(0x332720, { roughness: 0.94, vertexColors: true }),
+    skin: physical(0xe4bca6, { sheen: 0.16, sheenColor: 0xf2c4aa, sheenRoughness: 0.9 }),
+    top: physical(0x3267ef, { roughness: 0.95, sheen: 0.2, bumpMap: weave, bumpScale: 0.00035, side: THREE.DoubleSide }),
+    bottom: physical(0xf3735d, { roughness: 0.98, bumpMap: weave, bumpScale: 0.0004, side: THREE.DoubleSide }),
+    collar: physical(0x2851c5, { roughness: 0.95 }),
+    trim: physical(0xcd4d44, { roughness: 0.98 }),
+    shoe: physical(0xf7faff, { roughness: 0.88, vertexColors: true, bumpMap: weave, bumpScale: 0.0002 }),
+    shoeAccent: physical(0x3267ef, { roughness: 0.85 }),
+    midsole: physical(0xf2f5fa, { roughness: 0.9 }),
+    sole: physical(0x223044, { roughness: 0.95 }),
+    sock: physical(0xf3f5fa, { roughness: 1, bumpMap: weave, bumpScale: 0.00025 }),
+    hair: physical(0x4b3028, { roughness: 0.94, vertexColors: true }),
+    brow: physical(0x563d32, { roughness: 0.95 }),
     dark: physical(0x201a18, { roughness: 0.65 }),
-    eye: physical(0xc6c5ba, { roughness: 0.35 }),
-    iris: physical(0x514a32, { roughness: 0.4 }),
-    lip: physical(0xa47160, { roughness: 0.9 }),
+    eye: physical(0xdfdcd4, { roughness: 0.4 }),
+    iris: physical(0x4c7894, { roughness: 0.4 }),
+    lip: physical(0xb78176, { roughness: 0.9 }),
+    nostril: physical(0x80544a, { roughness: 0.95 }),
   };
   const region = (base, names) => {
     const material = base.clone(); regions.push({ material, names, lit: false }); return material;
@@ -40,7 +44,7 @@ export function createFigure() {
   const shirtRegions = ["abdomen", "chest"];
   const torso = createTorso([
     region(mats.bottom, ["pelvis"]), region(mats.top, shirtRegions),
-    region(mats.top, shirtRegions), mats.collar,
+    region(mats.top, shirtRegions), mats.collar, mats.trim,
   ]);
   const neck = createNeck(region(mats.skin, ["neck"])), head = createHead(mats);
   rig.group.add(torso.mesh, neck.mesh); rig.anchors.head.add(head.group);
@@ -48,16 +52,16 @@ export function createFigure() {
   for (const [side] of SIDES) {
     const arm = createLimb([
       region(mats.top, ["shoulder" + side, "upperArm" + side]),
-      region(mats.skin, ["upperArm" + side]), region(mats.skin, ["forearm" + side]),
+      region(mats.skin, ["upperArm" + side]), region(mats.skin, ["forearm" + side]), mats.collar,
     ], "arm", side);
     const leg = createLimb([
       region(mats.bottom, ["pelvis", "thigh" + side]), region(mats.skin, ["thigh" + side]),
-      region(mats.skin, ["shin" + side]), mats.sock,
+      region(mats.skin, ["shin" + side]), mats.sock, mats.trim,
     ], "leg", side);
     limbs.push(arm, leg); rig.group.add(arm.mesh, leg.mesh);
     hands[side] = createHand(region(mats.skin, ["hand" + side]), side);
     rig.anchors["hand" + side].add(hands[side].group);
-    const shoe = createShoe([mats.sole, mats.midsole, region(mats.shoe, ["foot" + side])]);
+    const shoe = createShoe([mats.sole, mats.midsole, region(mats.shoe, ["foot" + side]), mats.shoeAccent]);
     rig.anchors["foot" + side].add(shoe);
   }
   const localAxis = new THREE.Vector3(), inverseHand = new THREE.Matrix4(), neckOffset = new THREE.Vector3();
@@ -75,7 +79,7 @@ export function createFigure() {
       for (const limb of limbs) limb.update(J);
       for (const [side] of SIDES) {
         const axis = gripAxis[side] ? localAxis.copy(gripAxis[side]).transformDirection(inverseHand.copy(J["handFrame" + side]).invert()) : null;
-        const flat = J["palm" + side] ? THREE.MathUtils.smoothstep(J["palm" + side].y, 0.3, 0.85) : 0;
+        const flat = J["palm" + side] && !grip[side] ? 1 : 0;
         hands[side].update(grip[side], flat, axis);
       }
     },

@@ -167,7 +167,8 @@ const HANDS_FRONT = (() => {
 function kneel(o, feet = "flat", { from = "thighs", to = "thighs", elbows = [0.5, -0.2, -1] } = {}) {
   const body = kneelBody(o, feet);
   const spots = { thighs: handsRest(joints(body), o.sit ?? 0), behind: HANDS_BEHIND, front: HANDS_FRONT };
-  const s = o.reach ?? 0;
+  const reach = o.reach ?? 0;
+  const s = to === "front" ? reach ** 3 : reach;
   const arc = Math.sin(Math.PI * s) * 0.1; // hands lift a little on the way
   const hand = (side) => spots[from][side].map((v, i) => v + (spots[to][side][i] - v) * s + (i === 1 ? arc : 0));
   const p = { ...body, handsIn: "world", handL: hand("L"), handR: hand("R"), elbowL: elbows, elbowR: [-elbows[0], elbows[1], elbows[2]] };
@@ -213,7 +214,7 @@ function halfKneel({ beta, tilt = 0, torso = 0, side = 0, breath = 0 }, S) {
 function onFrontThigh(J, t) {
   const h = J.hipR, k = J.kneeR;
   const p = [h.x + (k.x - h.x) * t, h.y + (k.y - h.y) * t + 0.075, h.z + (k.z - h.z) * t];
-  return { handL: [p[0] + 0.05, p[1], p[2]], handR: [p[0] - 0.06, p[1], p[2] - 0.02] };
+  return { handL: [p[0] + 0.075, p[1], p[2]], handR: [p[0] - 0.06, p[1], p[2] - 0.02] };
 }
 
 // Couch stretch: back knee on the mat at the foot of the sofa, the shin leaning up against the
@@ -261,7 +262,7 @@ function butterflyBody({ hinge = 0, drop = 0, breath = 0 }) {
   const pole = [1, 0.25 - drop, 0.1];
   const p = {
     root: [0, MAT_Y + 0.12 + 0.012 * Math.sin(hinge * D2R), 0],
-    rot: [hinge - 3, 0, 0],
+    rot: [hinge + 4, 0, 0],
     spine: [3 + hinge * 0.2 + breath, 0, 0],
     neck: [hinge * 0.15, 0],
     footL: [BF_FEET.x, BF_FEET.y, BF_FEET.z],

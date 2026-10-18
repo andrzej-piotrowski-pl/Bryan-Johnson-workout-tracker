@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.24.4] - 2026-10-18
+
+### Changed
+- Athlete wears a cobalt blue shirt, coral shorts and redesigned white trainers with blue panels and laces.
+- Reshaped the face using Bryan Johnson's portraits as reference, with a defined jaw, straighter nose, blue eyes and swept dark hair.
+- Rounded the shoulders and refined the skin tones and clothing seams.
+- Palm rotation spreads along the forearm, keeping the wrist's shape during curls and chin-ups.
+
+### Fixed
+- Hands stay within reach during burpees, toe stretches, butterfly stretches, rows, Jefferson curls and couch stretches.
+- Hanging exercises keep the hands on the bar, with the palms facing the right way for pull-ups and chin-ups.
+- Pull-ups keep the head and chest clear of the bar and doorway beam.
+- Wall-supported movements keep the palms flat, and seated calf raises sit above the chair seat.
+- Removed hand twists when a reach passes through vertical, including floor presses and band woodchops.
+- Step-ups roll onto the forefoot without sinking into the floor; side planks keep the elbow and foot planted as the hips move.
+- Settings refreshes the installed version when opened; the server no longer keeps an old version after an update.
+
 ## [1.24.3] - 2026-10-18
 
 ### Changed

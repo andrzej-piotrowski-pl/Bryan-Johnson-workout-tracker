@@ -94,7 +94,11 @@ function solids(spec) {
     case "doorframe": {
       const w = spec.w ?? 0.9, h = spec.h ?? 2.05;
       const parts = [...[-1, 1].map((k) => B("prop", k * (w / 2 + 0.035), h / 2, 0, 0.07, h, 0.14)), B("prop", 0, h + 0.04, 0, w + 0.14, 0.08, 0.14)];
-      if (spec.bar) parts.push(B("metal", 0, spec.barH ?? 2.0, spec.barZ ?? 0.08, w + 0.12, 0.032, 0.032));
+      if (spec.bar) {
+        parts.push(B("metal", 0, spec.barH ?? 2.0, spec.barZ ?? 0.08, w + 0.12, 0.032, 0.032));
+        for (const s of [-1, 1]) parts.push(B("metal", s * (w / 2 + 0.035), spec.barH ?? 2.0,
+          (spec.barZ ?? 0.08) / 2, 0.035, 0.035, spec.barZ ?? 0.08));
+      }
       return parts;
     }
     case "door": {
