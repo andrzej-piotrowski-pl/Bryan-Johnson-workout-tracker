@@ -24,7 +24,7 @@ export function createFigure() {
       out += `<path d="${poly(f.pts)}" fill="${color}" opacity="${f.ghost ? 0.25 : f.light}" stroke="${PAPER}" stroke-width="1"/>`;
     }
     const pieces = bodyPieces(J, view);
-    if (lit.has("neck")) pieces.push({ kind: "arm", region: "neck", pts: [view.project(J.neckBase), view.project(J.headJoint)] });
+    pieces.push({ kind: "arm", region: "neck", pts: [view.project(J.neckBase), view.project(J.headJoint)] });
     for (const p of pieces) {
       const color = isLit(lit, p.kind === "torso" ? "torso" : p.region) ? ACCENT : p.kind === "head" ? "#d9b490" : "#648894";
       let pts = p.pts;

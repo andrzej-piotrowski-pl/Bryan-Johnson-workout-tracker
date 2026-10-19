@@ -147,12 +147,12 @@ export function createFigure() {
     if (lit.has("chest")) o += marker([P("thoracic"), P("neckBase")], u * 0.13);
     if (lit.has("neck")) o += marker([P("neckBase"), P("headJoint")], u * 0.07);
 
-    // The stick figure: arms from one shoulder point, legs from the hips, little feet.
+    // The stick figure: arms from the shoulders, legs from the hips, little feet.
     const neck = view.project(J.neckBase.clone().lerp(J.thoracic, 0.15));
     const near = P("hipL").z < P("hipR").z ? "L" : "R";
     for (const s of near === "L" ? ["R", "L"] : ["L", "R"]) {
-      o += pen([P("pelvis"), P("knee" + s), P("ankle" + s), P("toe" + s)], seed * 3 + (s === "L" ? 1 : 2));
-      o += pen([neck, P("elbow" + s), P("hand" + s)], seed * 3 + (s === "L" ? 11 : 12));
+      o += pen([P("hip" + s), P("knee" + s), P("ankle" + s), P("toe" + s)], seed * 3 + (s === "L" ? 1 : 2));
+      o += pen([P("shoulder" + s), P("elbow" + s), P("hand" + s)], seed * 3 + (s === "L" ? 11 : 12));
     }
     o += pen([neck, P("pelvis")], seed * 3 + 21, 2.6);
     o += pen([P("headJoint"), neck], seed * 3 + 22, 2.3);

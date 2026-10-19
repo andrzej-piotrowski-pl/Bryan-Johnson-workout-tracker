@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.26.4] - 2026-10-19
+
+### Fixed
+- Side-bend hands stay on the waist, limbs and necks stay connected in three styles, and Blueprint labels clear the figure and equipment.
+
 ## [1.26.3] - 2026-10-19
 
 ### Fixed

@@ -41,8 +41,10 @@ function sidebend(d) {
     handsIn: "world",
     handR: hang,
     elbowR: [-0.3, 0, -1],
-    handL: [p.root[0] + 0.165, p.root[1] + 0.1, 0.02], // on the waist (the pelvis doesn't rotate)
+    handL: [p.root[0] + 0.165, p.root[1] + 0.1, 0.02],
     elbowL: [1, 0, -0.3],
+    palmL: [-1, 0, 0],
+    fingersL: [0, -1, 0],
   };
 }
 

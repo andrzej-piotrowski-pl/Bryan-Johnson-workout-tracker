@@ -14,6 +14,22 @@ const INK = "#eaf4ff";
 const n = (v) => v.toFixed(1);
 const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const FONT = `font-family="JetBrains Mono, ui-monospace, Menlo, Consolas, monospace"`;
+const bounds = (pts, pad = 0) => ({
+  left: Math.min(...pts.map((p) => p.x)) - pad,
+  right: Math.max(...pts.map((p) => p.x)) + pad,
+  top: Math.min(...pts.map((p) => p.y)) - pad,
+  bottom: Math.max(...pts.map((p) => p.y)) + pad,
+});
+
+function titlePlacement(w, h, blocked) {
+  const pad = 12, height = 31;
+  const widths = [...new Set([190, 150, 110, 70, 44].map((n) => Math.min(n, w - pad * 2)))].filter((n) => n >= 44);
+  for (const width of widths) for (const y of [18, h - height - 18]) for (const x of [pad, w - pad - width]) {
+    const box = { left: x, right: x + width, top: y, bottom: y + height };
+    if (!blocked.some((b) => box.left < b.right && box.right > b.left && box.top < b.bottom && box.bottom > b.top)) return { x, y, width };
+  }
+  return null;
+}
 
 // The angle at b between the lines to a and c, in degrees (3D).
 function angle(a, b, c) {
@@ -48,6 +64,29 @@ export function createFigure() {
     if (!J) return void (svg.innerHTML = o);
     const u = view.scaleAt(J.pelvis);
     const P = (k) => view.project(J[k]);
+    const head = P("head"), headRadius = u * 0.105;
+    const blocked = [bounds([head], headRadius + 2)];
+    const blockLine = (keys, radius) => blocked.push(bounds(keys.map(P), radius + 2));
+    blocked.push(bounds(["shoulderL", "shoulderR", "hipL", "hipR"].map(P), u * 0.06 + 2));
+    for (const s of ["L", "R"]) {
+      blockLine(["shoulder" + s, "elbow" + s], u * 0.09);
+      blockLine(["elbow" + s, "wrist" + s, "hand" + s], u * 0.1);
+      blockLine(["hip" + s, "knee" + s], u * 0.08);
+      blockLine(["knee" + s, "ankle" + s], u * 0.08);
+      blockLine(["heel" + s, "ball" + s, "toe" + s], u * 0.08);
+    }
+    blockLine(["neckBase", "headJoint"], u * 0.08);
+    const e = view.camera.world, rl = Math.hypot(e[0], e[2]) || 1;
+    blocked.push(bounds([-0.95, 0.95].map((k) => view.project({ x: J.pelvis.x + (e[0] / rl) * k, y: 0, z: J.pelvis.z + (e[2] / rl) * k })), 10));
+    for (const spec of view.props) for (const face of propFaces(spec, view)) {
+      blocked.push(bounds(face.pts, spec.type === "step" || spec.type === "box" ? 24 : 3));
+    }
+    for (const [a, b] of view.attachments.bands) blocked.push(bounds([view.project(a), view.project(b)], 3));
+    if (view.attachments.string) blocked.push(bounds(view.attachments.string.map(view.project), 3));
+    for (const db of view.attachments.dumbbells) {
+      const { a, b, r } = dumbbellHeads(db), radius = u * r + 3;
+      blocked.push(bounds([view.project(a)], radius), bounds([view.project(b)], radius));
+    }
     const near = P("hipL").z + P("shoulderL").z < P("hipR").z + P("shoulderR").z ? "L" : "R";
     const far = near === "L" ? "R" : "L";
 
@@ -61,7 +100,9 @@ export function createFigure() {
       ["ELBOW L/R", `${Math.round(elbow("L"))}/${Math.round(elbow("R"))}°`],
       ["PELVIS", `${Math.round(J.pelvis.y * 1000)} mm`],
     ];
-    o += titleStrip(readouts, Math.max(150, w - 128), title, exId);
+    const strip = titlePlacement(w, h, blocked);
+    // shortcut: hide the label if no corner is clear; move it outside the stage if every frame must show it.
+    if (strip) o += titleStrip(readouts, strip.width, title, exId, strip.x, strip.y);
     o += ground(view, u);
     for (const spec of view.props) o += prop(spec, view, u);
 
@@ -97,7 +138,7 @@ export function createFigure() {
     const spine = ["neckBase", "thoracic", "lumbar", "pelvis"].map(P);
     o += `<path d="M${spine.map((p) => `${n(p.x)} ${n(p.y)}`).join("L")}" fill="none" stroke="${INK}" stroke-width="0.7" stroke-dasharray="10 3 2 3"/>`;
     o += part(["neckBase", "headJoint"], 0.08, "neck", false);
-    const hd = P("head"), hr = u * 0.105;
+    const hd = head, hr = headRadius;
     o += `<circle cx="${n(hd.x)}" cy="${n(hd.y)}" r="${n(hr)}" fill="${PAPER}" stroke="${INK}" stroke-width="1.3"/>`;
     o += `<path d="M${n(hd.x - hr * 1.3)} ${n(hd.y)}H${n(hd.x + hr * 1.3)}M${n(hd.x)} ${n(hd.y - hr * 1.3)}V${n(hd.y + hr * 1.3)}" stroke="${INK}" stroke-width="0.6" stroke-dasharray="6 2 1.5 2"/>`;
     o += side(near, false);
@@ -151,26 +192,28 @@ export function createFigure() {
     return s;
   }
 
-  function titleStrip(readouts, maxW, name, dwg) {
-    const x = 20, y = 18, cw = 4.9; // cw: width of one 8 px mono character
+  function titleStrip(readouts, boxW, name, dwg, x, y) {
+    const cw = 4.9; // cw: width of one 8 px mono character
     let line = "", width = 0;
     for (const [k, v] of readouts) {
       const item = `${k} <tspan font-weight="700" fill="#ffe3a6">${v}</tspan>`;
       const len = (k.length + v.length + 4) * cw;
-      if (width + len > maxW - 14) break;
+      if (width + len > boxW - 14) break;
       line += (line ? '<tspan fill-opacity="0.4"> · </tspan>' : "") + item;
       width += len;
     }
     // The name fits the strip: the drawing number goes first, then the name is cut short.
     let head = name.toUpperCase(), num = `DWG HP-${dwg.toUpperCase()}`;
-    const fits = (t) => t.length * 5.6 + 14 <= maxW;
+    const fits = (t) => t.length * 5.6 + 14 <= boxW;
     if (!fits(head + "  " + num)) num = "";
-    if (!fits(head)) head = head.slice(0, Math.max(4, Math.floor((maxW - 14) / 5.6) - 1)) + "…";
-    const w = Math.min(maxW, Math.max(width + 14, (head.length + (num ? num.length + 2 : 0)) * 5.6 + 14, 190));
-    return `<g ${FONT} fill="${INK}"><rect x="${x}" y="${y}" width="${n(w)}" height="31" fill="${PAPER}" fill-opacity="0.85" stroke="${INK}" stroke-width="0.9"/>
-      <text x="${x + 7}" y="${y + 12}" font-size="8.5" font-weight="700" letter-spacing="0.5">${esc(head)} <tspan font-weight="400" fill-opacity="0.6" letter-spacing="0">${esc(num)}</tspan></text>
-      <path d="M${x} ${y + 16.5}h${n(w)}" stroke="${INK}" stroke-width="0.5" stroke-opacity="0.7"/>
-      <text x="${x + 7}" y="${y + 27}" font-size="8">${line}</text></g>`;
+    if (!fits(head)) {
+      const chars = Math.floor((boxW - 14) / 5.6);
+      head = chars > 1 ? head.slice(0, chars - 1) + "…" : head.slice(0, chars);
+    }
+    return `<g ${FONT} fill="${INK}"><rect x="${n(x)}" y="${n(y)}" width="${n(boxW)}" height="31" fill="${PAPER}" fill-opacity="0.85" stroke="${INK}" stroke-width="0.9"/>
+      <text x="${n(x + 7)}" y="${n(y + 12)}" font-size="8.5" font-weight="700" letter-spacing="0.5">${esc(head)}${num ? ` <tspan font-weight="400" fill-opacity="0.6" letter-spacing="0">${esc(num)}</tspan>` : ""}</text>
+      <path d="M${n(x)} ${n(y + 16.5)}h${n(boxW)}" stroke="${INK}" stroke-width="0.5" stroke-opacity="0.7"/>
+      <text x="${n(x + 7)}" y="${n(y + 27)}" font-size="8">${line}</text></g>`;
   }
 
   // An angle dimension at b, from the line to a round to the line to c, with its label

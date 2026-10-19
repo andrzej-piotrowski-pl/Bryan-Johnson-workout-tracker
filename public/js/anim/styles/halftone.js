@@ -37,7 +37,7 @@ export function createFigure() {
     }
     ctx.globalAlpha = 1;
     const pieces = bodyPieces(J, view);
-    if (lit.has("neck")) pieces.push({ kind: "arm", region: "neck", pts: [view.project(J.neckBase), view.project(J.headJoint)] });
+    pieces.push({ kind: "arm", region: "neck", pts: [view.project(J.neckBase), view.project(J.headJoint)] });
     for (const p of pieces) {
       const fill = isLit(lit, p.kind === "torso" ? "torso" : p.region) ? ACCENT : pattern;
       if (p.kind === "head") {
