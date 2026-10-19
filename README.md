@@ -11,7 +11,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4 with a spoken voice coach and heart-rate target announcements, hold and rest timers with beeps.
-- **Radio in guided workouts**: open **Radio** in the top bar to play FIP Electro or pick another FIP station, with volume and previous/next controls. The app remembers your station and volume.
+- **Radio in guided workouts**: open **Radio** in the top bar to play FIP Electro or pick another FIP station, with volume, quick mute and previous/next controls. The app remembers your station and volume.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
 - **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) in **Today → Notes & observations** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
 - **Bryan's weekly targets**: one comparison in **Activity → This week**, showing your level's weekly targets alongside Bryan's full Well trained week, with what is left and which days count.
@@ -227,7 +227,7 @@ The inventory is collapsed by default in Settings. Open **Your equipment** when 
 
 ## Workout radio
 
-Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose any of the 11 FIP stations, play or pause, use the arrows for the previous or next station, and set the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. The streams come from FIP (Radio France) and need an internet connection.
+Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose any of the 11 FIP stations, play or pause, use the arrows for the previous or next station, and set the volume. The speaker button beside **Radio** mutes the stream without changing the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. The streams come from FIP (Radio France) and need an internet connection.
 
 ## Themes
 

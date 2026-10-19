@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.28.0] - 2026-10-19
+
+### Added
+- A quick mute button beside Radio in guided workouts. It mutes the stream without changing the volume and lights up while the sound is off.
+
 ## [1.27.0] - 2026-10-19
 
 ### Added

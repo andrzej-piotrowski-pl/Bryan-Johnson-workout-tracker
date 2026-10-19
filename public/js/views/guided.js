@@ -123,8 +123,9 @@ export function startGuided(date, onExit) {
   }
 
   function onKey(e) {
-    if (e.target.closest && e.target.closest("input, textarea, select, .workout-radio")) return;
+    if (e.target.closest && e.target.closest("input, textarea, select")) return;
     if (e.key === "Escape") close();
+    else if (e.target.closest && e.target.closest(".workout-radio")) return;
     else if (e.key === "ArrowRight") {
       i = Math.min(steps.length, i + 1);
       show();

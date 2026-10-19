@@ -525,9 +525,11 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .guided-main .stage { aspect-ratio: auto; min-height: 50vh; height: 100%; border-bottom: 0; border-right: 1px solid var(--line); }
 .guided-side { padding: 20px; display: grid; gap: 14px; align-content: start; overflow: auto; }
 .guided-bottom { display: flex; gap: 10px; justify-content: space-between; align-items: center; padding: 12px 18px max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--surface); }
-.workout-radio { position: relative; flex: none; }
+.workout-radio { position: relative; display: flex; align-items: center; gap: 2px; flex: none; }
 .radio-toggle { gap: 6px; }
 .radio-toggle .icon { width: 18px; height: 18px; }
+.radio-mute { color: var(--muted); }
+.radio-mute.is-muted { color: var(--bryan); background: var(--bryan-soft); }
 .radio-eq { display: none; align-items: end; gap: 2px; height: 12px; margin-left: 1px; }
 .radio-eq i { display: block; width: 2px; height: 4px; border-radius: 1px; background: var(--accent); animation: radio-eq 0.9s ease-in-out infinite; }
 .radio-eq i:nth-child(2) { height: 9px; animation-delay: 0.15s; }

@@ -32,6 +32,7 @@ export function createWorkoutRadio() {
   let volume = clamp(Number.isFinite(savedVolume) ? savedVolume : DEFAULT_RADIO_VOLUME, 0, 1);
   let open = false;
   let intent = false;
+  let muted = false;
   let attempt = 0;
   let sourceKey = "";
   let disposed = false;
@@ -40,6 +41,7 @@ export function createWorkoutRadio() {
     <button type="button" class="btn sm ghost radio-toggle" data-radio="toggle" aria-expanded="false" aria-controls="workout-radio-panel" aria-label="Workout radio">
       ${icon("radio")}<span class="radio-toggle-text">Radio</span><span class="radio-eq" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
+    <button type="button" class="btn sm ghost icon-only radio-mute" data-radio="mute" aria-label="Mute radio" aria-pressed="false" title="Mute radio">${icon("volume", "sm")}</button>
     <div class="radio-panel" id="workout-radio-panel" data-radio="panel" role="group" aria-label="Workout radio" hidden>
       <div class="radio-head">
         <div class="radio-now">
@@ -72,6 +74,7 @@ export function createWorkoutRadio() {
   const descEl = wrap.querySelector('[data-radio="description"]');
   const statusEl = wrap.querySelector('[data-radio="status"]');
   const playBtn = wrap.querySelector('[data-radio="play"]');
+  const muteBtn = wrap.querySelector('[data-radio="mute"]');
   const volumeInput = wrap.querySelector(".radio-volume input");
   const volumeOut = wrap.querySelector('[data-radio="volume"]');
   const audio = wrap.querySelector("audio");
@@ -80,6 +83,23 @@ export function createWorkoutRadio() {
   function setStatus(text, error = false) {
     statusEl.textContent = text;
     statusEl.dataset.error = error ? "true" : "false";
+  }
+
+  function syncMute() {
+    muteBtn.innerHTML = icon(muted ? "mute" : "volume", "sm");
+    muteBtn.setAttribute("aria-label", muted ? "Unmute radio" : "Mute radio");
+    muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
+    muteBtn.title = muted ? "Unmute radio" : "Mute radio";
+    muteBtn.classList.toggle("is-muted", muted);
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    audio.muted = muted;
+    syncMute();
+    if (muted) setStatus(intent ? "Muted" : "Paused");
+    else if (intent && !audio.paused) setStatus(audio.readyState >= 3 ? "Live" : "Connecting…");
+    else setStatus("Paused");
   }
 
   function syncPlayButton() {
@@ -198,6 +218,7 @@ export function createWorkoutRadio() {
       else playRadio();
     } else if (action === "prev") stepStation(-1);
     else if (action === "next") stepStation(1);
+    else if (action === "mute") toggleMute();
   });
 
   volumeInput.addEventListener("input", () => {
@@ -209,7 +230,7 @@ export function createWorkoutRadio() {
 
   audio.addEventListener("playing", () => {
     if (disposed) return;
-    setStatus("Live");
+    setStatus(muted ? "Muted" : "Live");
     syncPlayButton();
   });
   audio.addEventListener("waiting", () => {
@@ -247,6 +268,7 @@ export function createWorkoutRadio() {
   document.addEventListener("keydown", onKey, true);
 
   syncStation();
+  syncMute();
   syncPlayButton();
 
   return {
