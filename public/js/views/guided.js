@@ -14,6 +14,7 @@ import { renderVideos, videoGroupsFor, videosFor } from "../components/video.js"
 import { mountLevelCheck } from "../components/level-check.js";
 import { pauseDesk, resumeDesk } from "../components/desk.js";
 import { stopRest } from "../components/timer.js";
+import { createWorkoutRadio } from "../components/radio.js";
 
 function buildSteps(date) {
   const level = levelFor(date);
@@ -44,6 +45,7 @@ export function startGuided(date, onExit) {
       <button type="button" class="btn sm ghost" data-g="close">${icon("x")} Exit</button>
       <span class="mono muted" data-g="count"></span>
       <div class="bar"><i></i></div>
+      <div class="radio-host"></div>
     </div>
     <div class="guided-main"><div class="stage-host"></div><div class="guided-side"></div></div>
     <div class="guided-bottom">
@@ -63,6 +65,8 @@ export function startGuided(date, onExit) {
   const side = wrap.querySelector(".guided-side");
   const bar = wrap.querySelector(".bar i");
   const count = wrap.querySelector('[data-g="count"]');
+  const radio = createWorkoutRadio();
+  wrap.querySelector(".radio-host").appendChild(radio.el);
 
   function finishScreen() {
     const done = steps.filter((s) => (getItemLog(date, s.scope, s.item.id) || {}).done).length;
@@ -110,6 +114,7 @@ export function startGuided(date, onExit) {
   function close() {
     stopRest();
     resumeDesk("guided");
+    radio.dispose();
     stage.dispose();
     wrap.remove();
     document.body.style.overflow = "";
@@ -118,7 +123,7 @@ export function startGuided(date, onExit) {
   }
 
   function onKey(e) {
-    if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (e.target.closest && e.target.closest("input, textarea, select, .workout-radio")) return;
     if (e.key === "Escape") close();
     else if (e.key === "ArrowRight") {
       i = Math.min(steps.length, i + 1);

@@ -10,6 +10,7 @@
 // target of your level (reps left in the tank) always wins.
 
 import { iso } from "./util.js";
+import { DEFAULT_RADIO_STATION, DEFAULT_RADIO_VOLUME } from "./data/radio.js";
 
 // Each level has its own workouts (index into the dose arrays of data/program.js)
 // and scales the starting weights. Weight, sex and age scale the weights too.
@@ -70,7 +71,7 @@ export function defaultProfile() {
     hrMax: null,
     startDate: iso(new Date()),
     addons: { posture: true },
-    settings: { theme: "system", skin: "original", restSec: 75, sound: true, voiceCoach: true },
+    settings: { theme: "system", skin: "original", restSec: 75, sound: true, voiceCoach: true, radio: { station: DEFAULT_RADIO_STATION, volume: DEFAULT_RADIO_VOLUME } },
     createdAt: new Date().toISOString(),
   };
 }

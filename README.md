@@ -11,6 +11,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
 - **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4 with a spoken voice coach and heart-rate target announcements, hold and rest timers with beeps.
+- **Radio in guided workouts**: open **Radio** in the top bar to play FIP Electro or pick another FIP station, with volume and previous/next controls. The app remembers your station and volume.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
 - **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) in **Today → Notes & observations** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
 - **Bryan's weekly targets**: one comparison in **Activity → This week**, showing your level's weekly targets alongside Bryan's full Well trained week, with what is left and which days count.
@@ -224,6 +225,10 @@ The inventory is collapsed by default in Settings. Open **Your equipment** when 
 
 </details>
 
+## Workout radio
+
+Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose any of the 11 FIP stations, play or pause, use the arrows for the previous or next station, and set the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. The streams come from FIP (Radio France) and need an internet connection.
+
 ## Themes
 
 Choose one of nine themes during setup or in **Settings → Appearance**. Use **Try themes live** to compare them while using the app. Changing the theme keeps your workouts and data the same.
@@ -375,6 +380,7 @@ data/                     your data (created on first run, git-ignored)
 <summary><b>Sources, libraries and fonts</b></summary>
 
 - Exercise selection and doses follow Bryan Johnson's public material (his protocol pages, posture guide, bone-density protocol, videos and posts on X); every source is listed on *The plan* page. Videos belong to their creators and are embedded from YouTube.
+- Workout radio streams come from FIP (Radio France).
 - 3D rendering with [three.js](https://threejs.org). Fonts: Inter, Barlow Condensed, JetBrains Mono (SIL Open Font License), via Fontsource.
 
 </details>

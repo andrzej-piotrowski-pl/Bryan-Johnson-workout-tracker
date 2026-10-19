@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.27.0] - 2026-10-19
+
+### Added
+- Radio in guided workouts: pick from 11 FIP stations, set the volume, and use previous/next controls. FIP Electro is the default, and your station and volume are remembered.
+
 ## [1.26.4] - 2026-10-19
 
 ### Fixed

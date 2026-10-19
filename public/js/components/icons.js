@@ -26,6 +26,7 @@ const P = {
   rotate: '<path d="M20 12a8 8 0 1 1-2.3-5.7L20 8.5"/><path d="M20 3.5v5h-5"/>',
   eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   volume: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  radio: '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M6 11h6M6 15h4"/><circle cx="17" cy="14" r="2"/><path d="M7 7l10-4"/>',
   mute: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
   download: '<path d="M12 4v11M7 10.5l5 5 5-5M4.5 19.5h15"/>',
   upload: '<path d="M12 16V5M7 9.5l5-5 5 5M4.5 19.5h15"/>',
