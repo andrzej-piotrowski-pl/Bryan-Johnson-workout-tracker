@@ -42,7 +42,7 @@ const BAR_Y = 2.14;
 const BAR_Z = 0.08;
 const GRIP = 0.25;
 const DOORFRAME = { type: "doorframe", pos: [0, 0, -0.36], w: 0.9, h: 2.05, bar: true, barH: BAR_Y, barZ: BAR_Z + 0.36 };
-function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 22, shrug = -0.03 } = {}) {
+function legRaise({ hip = 12, knee = 6, curl = 0, lean = 0, back = 0, plantar = 10, shrug = -0.03 } = {}) {
   const p = {
     rot: [lean - curl, 0, 0],
     spine: [curl, 0, 0],
@@ -55,12 +55,12 @@ function legRaise({ hip = 4, knee = 6, curl = 0, lean = 0, back = 0, plantar = 2
   // Shoulders sit exactly one (straight) arm length below the hands.
   const dx = GRIP - joints(p).shoulderL.x;
   const dz = 0.02 + back;
-  const shoulderY = BAR_Y - 0.035 - Math.sqrt(0.548 ** 2 - dx * dx - dz * dz);
+  const shoulderY = BAR_Y - 0.085 - Math.sqrt(0.548 ** 2 - dx * dx - dz * dz);
   return {
     ...anchor(p, "shoulderL", [0, shoulderY, BAR_Z - dz], "yz"),
     handsIn: "world",
-    handL: [GRIP, BAR_Y - 0.035, BAR_Z],
-    handR: [-GRIP, BAR_Y - 0.035, BAR_Z],
+    handL: [GRIP, BAR_Y - 0.085, BAR_Z],
+    handR: [-GRIP, BAR_Y - 0.085, BAR_Z],
     palmL: [0, 0, 1],
     palmR: [0, 0, 1],
     fingersL: [0, 1, 0],
@@ -223,7 +223,7 @@ export default {
         camera: { view: [1, 0.2, 0.9], target: [0, 1.12, 0.1], dist: 4.5 },
         keys: [
           { t: 0, p: PASSIVE_HANG, cue: "Passive hang: relax shoulders and let gravity stretch your spine" },
-          { t: 2.0, p: legRaise({ shrug: 0.036, hip: 2 }), cue: "Breathe slowly and decompress the spine" },
+          { t: 2.0, p: legRaise({ shrug: 0.036, hip: 10 }), cue: "Breathe slowly and decompress the spine" },
           { t: 4.0, p: PASSIVE_HANG },
         ],
       },

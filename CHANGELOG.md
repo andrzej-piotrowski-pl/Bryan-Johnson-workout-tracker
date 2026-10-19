@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.26.3] - 2026-10-19
+
+### Fixed
+- Hands stay clear of the body in hops, grip bars cleanly and stay connected, and remain spaced during woodchops.
+
 ## [1.26.2] - 2026-10-19
 
 ### Fixed

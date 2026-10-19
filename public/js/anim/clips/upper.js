@@ -48,14 +48,14 @@ const DOORFRAME = { type: "doorframe", pos: [0, 0, -0.36], w: 0.9, h: 2.05, bar:
 function hang(lift, { grip = 0.27, lean = 0, elbows = [0.55, -1, 0.1], supinated = false } = {}) {
   const p = { rot: [-lean, 0, 0], spine: [-8 * lift, 0, 0], shrugL: [-0.045 * lift, -0.035 * lift], shrugR: [-0.045 * lift, -0.035 * lift], legL: [12 + 8 * lift, 4, 70 - 10 * lift, 25], legR: [12 + 8 * lift, 4, 70 - 10 * lift, 25], neck: [-lift * 16, 0] };
   const dx = grip - joints(p).shoulderL.x, dz = 0.22;
-  const top = BAR_Y - 0.035 - Math.sqrt(0.548 ** 2 - dx * dx - dz * dz) + lift;
+  const top = BAR_Y - 0.085 - Math.sqrt(0.548 ** 2 - dx * dx - dz * dz) + lift;
   // The face rises behind the projecting bar, clear of both the rail and door lintel.
   const placed = anchor(p, "shoulderL", [0, top, BAR_Z - dz], "yz");
   return {
     ...placed,
     handsIn: "world",
-    handL: [grip, BAR_Y - 0.035, BAR_Z],
-    handR: [-grip, BAR_Y - 0.035, BAR_Z],
+    handL: [grip, BAR_Y - 0.085, BAR_Z],
+    handR: [-grip, BAR_Y - 0.085, BAR_Z],
     elbowL: elbows,
     elbowR: [-elbows[0], elbows[1], elbows[2]],
     palmL: [0, 0, supinated ? -1 : 1],

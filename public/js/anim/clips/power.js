@@ -181,8 +181,8 @@ function chop(u, ready = false) {
     footL: tiptoe(flatL, heel, footYaw),
     toeL: heel,
     handsIn: "chest",
-    handL: [0.03, hand[1] + grip, hand[2]],
-    handR: [-0.03, hand[1] - grip, hand[2]],
+    handL: [0.08, hand[1] + grip, hand[2]],
+    handR: [-0.08, hand[1] - grip, hand[2]],
     elbowL: [0.6, -0.6, -0.4],
     elbowR: [-0.6, -0.6, -0.4],
   };
