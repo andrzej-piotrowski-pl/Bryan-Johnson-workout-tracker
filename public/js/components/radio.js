@@ -2,7 +2,7 @@
 // the volume and jump to the next or previous station. The player lives outside
 // the exercise panel so it keeps playing from one movement to the next.
 
-import { adjacentStation, DEFAULT_RADIO_STATION, DEFAULT_RADIO_VOLUME, RADIO_STATIONS, radioStation } from "../data/radio.js";
+import { adjacentStation, DEFAULT_RADIO_STATION, DEFAULT_RADIO_VOLUME, RADIO_SOURCES, RADIO_STATIONS, radioStation } from "../data/radio.js";
 import { state, updateProfile } from "../store.js";
 import { clamp, esc, h } from "../util.js";
 import { icon } from "./icons.js";
@@ -23,6 +23,10 @@ function stationGroupsHtml() {
       ${icon("check", "sm")}
     </button>`).join("")}
   </div>`).join("");
+}
+
+function sourceLinksHtml() {
+  return RADIO_SOURCES.map((source) => `<a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.name)}</a>`).join(" · ");
 }
 
 export function createWorkoutRadio() {
@@ -63,7 +67,7 @@ export function createWorkoutRadio() {
         <output data-radio="volume">${Math.round(volume * 100)}%</output>
       </label>
       <div class="radio-list" data-radio="stations">${stationGroupsHtml()}</div>
-      <div class="radio-foot"><span>Live streams need an internet connection.</span><a href="https://www.radiofrance.fr/fip" target="_blank" rel="noopener noreferrer">Streams by FIP ${icon("external", "sm")}</a></div>
+      <div class="radio-foot"><span>Live streams need internet.</span><span class="radio-sources">Stations: ${sourceLinksHtml()}</span></div>
     </div>
     <audio preload="none"></audio>
   </div>`);

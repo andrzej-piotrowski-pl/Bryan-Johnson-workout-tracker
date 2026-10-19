@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.29.0] - 2026-10-19
+
+### Added
+- Eight more workout radio stations from Radio Paradise, KEXP, The Current, Fréquence 3 and Rinse FM, grouped as High energy, Upbeat and Chill. FIP Electro is still the default.
+
 ## [1.28.0] - 2026-10-19
 
 ### Added

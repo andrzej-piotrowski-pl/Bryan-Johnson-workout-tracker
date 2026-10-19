@@ -558,7 +558,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .radio-volume { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 0.78rem; }
 .radio-volume input { flex: 1; min-width: 0; accent-color: var(--accent); }
 .radio-volume output { min-width: 3.1em; text-align: right; font-family: var(--font-mono); color: var(--ink-2); }
-.radio-list { display: grid; gap: 12px; max-height: 250px; overflow: auto; padding-right: 3px; scrollbar-width: thin; }
+.radio-list { display: grid; gap: 12px; max-height: 340px; overflow: auto; padding-right: 3px; scrollbar-width: thin; }
 .radio-group { display: grid; gap: 5px; }
 .radio-group-label { color: var(--muted); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .radio-station { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
@@ -568,13 +568,14 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .radio-station small { display: block; color: var(--muted); font-size: 0.72rem; }
 .radio-station .icon { flex: none; color: var(--accent); opacity: 0; }
 .radio-station[aria-pressed="true"] .icon { opacity: 1; }
-.radio-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 0.72rem; }
-.radio-foot a { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); white-space: nowrap; }
-.radio-foot .icon { width: 12px; height: 12px; }
+.radio-foot { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 6px 10px; color: var(--muted); font-size: 0.72rem; line-height: 1.5; }
+.radio-sources { display: inline; }
+.radio-foot a { color: var(--muted); text-decoration-thickness: 1px; }
+.radio-sources a { white-space: nowrap; }
 @media (max-width: 560px) {
   .radio-toggle-text { display: none; }
   .radio-panel { right: -6px; width: calc(100vw - 24px); max-height: min(72vh, 560px); padding: 14px; }
-  .radio-list { max-height: 220px; }
+  .radio-list { max-height: 300px; }
 }
 @media (max-width: 900px) {
   .guided-main { grid-template-columns: minmax(0, 1fr); }
