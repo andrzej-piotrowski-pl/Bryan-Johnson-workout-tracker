@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.26.2] - 2026-10-19
+
+### Fixed
+- Replaced the overlapping Athlete preview in the animation styles screenshot.
+
 ## [1.26.1] - 2026-10-19
 
 ### Changed
