@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.26.1] - 2026-10-19
+
+### Changed
+- Reshaped Athlete's face with softer contours, larger curved eyes with irises and eyelashes, and fuller side-parted hair around the temples, ears and nape.
+
 ## [1.26.0] - 2026-10-18
 
 ### Added

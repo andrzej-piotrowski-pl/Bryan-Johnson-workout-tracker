@@ -20,7 +20,7 @@ export function createFigure() {
   const rig = createRig(), weave = fabric(), regions = [];
   const physical = (color, options = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.75, ...options });
   const mats = {
-    skin: physical(0xe4bca6, { sheen: 0.16, sheenColor: 0xf2c4aa, sheenRoughness: 0.9 }),
+    skin: physical(0xe6bda7, { roughness: 0.68, sheen: 0.22, sheenColor: 0xf4c8b0, sheenRoughness: 0.85 }),
     top: physical(0x3267ef, { roughness: 0.95, sheen: 0.2, bumpMap: weave, bumpScale: 0.00035, side: THREE.DoubleSide }),
     bottom: physical(0xf3735d, { roughness: 0.98, bumpMap: weave, bumpScale: 0.0004, side: THREE.DoubleSide }),
     collar: physical(0x2851c5, { roughness: 0.95 }),
@@ -30,13 +30,13 @@ export function createFigure() {
     midsole: physical(0xf2f5fa, { roughness: 0.9 }),
     sole: physical(0x223044, { roughness: 0.95 }),
     sock: physical(0xf3f5fa, { roughness: 1, bumpMap: weave, bumpScale: 0.00025 }),
-    hair: physical(0x4b3028, { roughness: 0.94, vertexColors: true }),
-    brow: physical(0x563d32, { roughness: 0.95 }),
-    dark: physical(0x201a18, { roughness: 0.65 }),
-    eye: physical(0xdfdcd4, { roughness: 0.4 }),
-    iris: physical(0x4c7894, { roughness: 0.4 }),
-    lip: physical(0xb78176, { roughness: 0.9 }),
-    nostril: physical(0x80544a, { roughness: 0.95 }),
+    hair: physical(0x3d271e, { roughness: 0.72, sheen: 0.28, sheenColor: 0x6e4b3a, sheenRoughness: 0.65, vertexColors: true }),
+    brow: physical(0x36231b, { roughness: 0.85 }),
+    dark: physical(0x181311, { roughness: 0.35 }),
+    eye: physical(0xf6f4ef, { roughness: 0.22, clearcoat: 0.35, clearcoatRoughness: 0.15, vertexColors: true }),
+    iris: physical(0xffffff, { roughness: 0.2, clearcoat: 0.5, clearcoatRoughness: 0.1, vertexColors: true }),
+    lip: physical(0xc48377, { roughness: 0.62, sheen: 0.18, sheenColor: 0xe6a89c }),
+    nostril: physical(0x7d5146, { roughness: 0.9 }),
   };
   const region = (base, names) => {
     const material = base.clone(); regions.push({ material, names, lit: false }); return material;
