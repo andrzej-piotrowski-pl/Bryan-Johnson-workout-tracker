@@ -1,5 +1,6 @@
 // Animations for the core & stability exercises.
 import { anchor, ground, joints, pinHands, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 const MAT_Y = 0.012; // top of the exercise mat
 
@@ -16,19 +17,21 @@ function plankBody(theta, breath = 0) {
 }
 function plank(theta, breath = 0) {
   const body = plankBody(theta, breath);
-  const J = joints(plankBody(9));
+  const J = joints(plankBody(5));
   const zEl = J.shoulderL.z + 0.02;
-  return { ...body, handsIn: "world", palmL: [0, 1, 0], palmR: [0, 1, 0], handL: [0.1, 0.035, zEl + 0.25], handR: [-0.1, 0.035, zEl + 0.25], elbowL: [0.25, -1, -0.2], elbowR: [-0.25, -1, -0.2] };
+  return { ...body, handsIn: "world", palmL: [0, 1, 0], palmR: [0, 1, 0], handL: [0.1, 0.039, zEl + 0.25], handR: [-0.1, 0.039, zEl + 0.25], elbowL: [0.25, -1, -0.2], elbowR: [-0.25, -1, -0.2] };
 }
 
 // ---------- quadruped (bird dog base) ----------
 const QUAD = pinHands(ground({ rot: [82, 0, 0], legL: [82, 4, 90, 80], legR: [82, 4, 90, 80], armL: [82, 4, 0, 0], armR: [82, 4, 0, 0], neck: [-8, 0], palmL: [0, 1, 0], palmR: [0, 1, 0] }, ["kneeL", "kneeR", "handL", "handR"]), "R");
 function birdDog(reach) {
-  return pinHands({ ...QUAD, armL: [82 + 90 * reach, 4 + 2 * reach, 5 * Math.sin(Math.PI * reach), 0], legR: [82 * (1 - reach), 4 - reach, 90 - 88 * reach, 80 - 50 * reach], shrugL: [0.012 * reach, 0], elbowL: [0.3, 0, -1], elbowR: [-0.3, 0, -1] });
+  const p = pinHands({ ...QUAD, armL: [82 + 90 * reach, 4 + 2 * reach, 5 * Math.sin(Math.PI * reach), 0], legR: [82 * (1 - reach), 4 - reach, 90 - 88 * reach, 80 - 50 * reach], shrugL: [0.012 * reach, 0], elbowL: [0.3, 0, -1], elbowR: [-0.3, 0, -1] });
+  // Lower the knees to the floor without moving the pinned palms.
+  return { ...p, root: [p.root[0], p.root[1] - 0.018, p.root[2]] };
 }
 
 // ---------- supine (dead bug base) ----------
-const SUPINE = ground({ rot: [-90, 0, 0], legL: [90, 4, 90, 10], legR: [90, 4, 90, 10], armL: [90, 6, 0, 0], armR: [90, 6, 0, 0], neck: [6, 0] }, ["pelvis", "thoracic", "head"]);
+const SUPINE = ground({ rot: [-90, 0, 0], legL: [90, 4, 90, 10], legR: [90, 4, 90, 10], armL: [90, 6, 0, 0], armR: [90, 6, 0, 0], neck: [6, 0] }, ["pelvis", "thoracic", "head"], 0.008);
 function deadBug(reach) {
   const leg = reach * reach * (3 - 2 * reach);
   return { ...SUPINE, armL: [90 + 78 * reach, 6, 3 * Math.sin(Math.PI * reach), 0], legR: [90 - 72 * leg, 4, 90 - 86 * leg, 10 + 5 * leg] };
@@ -170,9 +173,9 @@ export default {
         highlight: ["core", "shoulders"],
         camera: { view: [1, 0.4, 0.3], target: [0, 0.25, -0.15], dist: 3.9 },
         keys: [
-          { t: 0, p: plank(9, 0), cue: "Elbows under shoulders, glutes squeezed" },
-          { t: 2, p: plank(9.6, 2), cue: "Brace your abs and breathe normally" },
-          { t: 4, p: plank(9, 0) },
+          { t: 0, p: plank(5, 0), cue: "Elbows under shoulders, glutes squeezed" },
+          { t: 2, p: plank(5.6, 2), cue: "Brace your abs and breathe normally" },
+          { t: 4, p: plank(5, 0) },
         ],
       },
     ],
@@ -302,6 +305,7 @@ export default {
         highlight: ["obliques", "glutes", "shoulders"],
         camera: { view: [0.15, 0.3, 1], target: [0, 0.28, 0], dist: 3.7 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: sidePlank(SIDE_DOWN), cue: "On one forearm, elbow under the shoulder" },
           // 1 ms "hold" segment: switching sides is an instant cut, not a flip through the air.
@@ -310,7 +314,8 @@ export default {
           ...transition(sideLift, 0, 1, 0.6, 2.0, "Hold and breathe, feet stacked"),
           { t: 3.6, p: sidePlank({ ...SIDE_UP, breath: 2 }) },
           { t: 5.2, p: sidePlank(SIDE_UP), cue: "Lower with control, then switch sides" },
-          ...transition(sideLift, 1, 0, 5.2, 6.6),
+          ...transition(sideLift, 1, 0, 5.2, 6.599),
+          { t: 6.6, p: mirrorPose(makePose(sidePlank(SIDE_DOWN))), e: "hold" },
         ],
       },
     ],
@@ -324,12 +329,14 @@ export default {
         highlight: ["core", "shoulders"],
         camera: { view: [0.45, 0.32, 1], target: [0, 0.32, -0.28], dist: 3.5 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: shoulderTap(0), cue: "High plank, feet a bit wider than the hips" },
           { t: 0.5, p: shoulderTap(0), cue: "Tap the opposite shoulder" },
           ...transition(shoulderTap, 0, 1, 0.5, 1.4, "Keep the hips still"),
           { t: 1.8, p: shoulderTap(1), cue: "Put your hand down, then tap with the other hand" },
-          ...transition(shoulderTap, 1, 0, 1.8, 2.7),
+          ...transition(shoulderTap, 1, 0, 1.8, 2.699),
+          { t: 2.7, p: mirrorPose(makePose(shoulderTap(0))), e: "hold" },
         ],
       },
     ],

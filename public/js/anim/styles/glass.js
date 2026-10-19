@@ -65,6 +65,7 @@ export function createFigure() {
       }
     },
   });
+  rig.anchors.head.scale.setScalar(0.95);
   const add = (parent, geo, mat, pos, scale = [1, 1, 1]) => {
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(...pos); mesh.scale.set(...scale);
@@ -103,6 +104,7 @@ export function createFigure() {
       floor: { color: "#101c2b", grid: "#826c47", gridOpacity: 0.12 } },
     update(J, { t = 0 } = {}) {
       rig.update(J);
+      rig.keepFeetAboveFloor();
       for (const [s] of SIDES) parts["hand" + s].scale.z = J["palm" + s] ? 0.014 : 0.024;
       rose.rotation.z = Math.sin(t * 0.7) * 0.08;
       const blink = t % 4.7;

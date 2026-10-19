@@ -2,6 +2,7 @@
 // texture (face, shirt, jeans, trainers), on a grass floor with a cobblestone step.
 
 import * as THREE from "three";
+import { DIM } from "../rig.js";
 import { canvasTexture, createHighlighter, createRig, createTwins, disposeTree, hash, propDresser, SIDES } from "./kit.js";
 
 const PALETTE = {
@@ -59,17 +60,28 @@ export function createFigure() {
     hl.tag(m, region);
   };
 
-  cube(0.25, 0.25, 0.25, head, "head", [0, 0.02, 0.01]);
+  cube(0.17, 0.18, 0.17, head, "head", [0, -0.025, 0.01]);
   cube(0.33, 0.27, 0.165, M.shirt, "chest", [0, 0.115, 0], "chest");
   cube(0.31, 0.2, 0.155, M.shirt, "abdomen", [0, 0, 0], "abdomen");
   cube(0.32, 0.17, 0.165, M.jeans, "pelvis", [0, 0.02, 0], "pelvis");
+  limb(0.105, M.skin, "neck", "neck");
+  const footLength = DIM.heel + DIM.toe, footHeight = 0.04;
+  const heelY = -DIM.ankleH, toeY = -DIM.ankleH * 0.55;
+  const soleSlope = (toeY - heelY) / footLength;
   for (const [s] of SIDES) {
     limb(0.105, M.sleeve, "upperArm" + s, "upperArm" + s);
     limb(0.095, M.skin, "forearm" + s, "forearm" + s);
-    cube(0.09, 0.1, 0.09, M.skin, "hand" + s, [0, 0, 0], "hand" + s);
-    limb(0.135, M.jeans, "thigh" + s, "thigh" + s);
-    limb(0.125, M.jeans, "shin" + s, "shin" + s);
-    cube(0.125, 0.085, 0.25, M.shoe, "foot" + s, [0, -0.034, 0.06], "foot" + s);
+    cube(0.09, 0.1, 0.04, M.skin, "hand" + s, [0, 0, 0.003], "hand" + s);
+    limb(0.1, M.jeans, "thigh" + s, "thigh" + s);
+    limb(0.08, M.jeans, "shin" + s, "shin" + s);
+    // Slant the block's sole between heel and toe so pitched feet stay on their contact points.
+    const foot = cube(0.125, footHeight, footLength, M.shoe, "foot" + s, [0, heelY + footHeight / 2, (DIM.toe - DIM.heel) / 2], "foot" + s);
+    const position = foot.geometry.attributes.position;
+    for (let i = 0; i < position.count; i++) position.setY(i, position.getY(i) + soleSlope * (position.getZ(i) + footLength / 2));
+    position.needsUpdate = true;
+    foot.geometry.computeVertexNormals();
+    foot.geometry.computeBoundingBox();
+    foot.geometry.computeBoundingSphere();
   }
 
   // Props get a pixel texture in their own colour (a cobblestone grey step, wood, the
@@ -90,7 +102,7 @@ export function createFigure() {
       rim: [0xffffff, 0.2],
       floor: { color: dark ? "#2f5a2a" : "#6aa84f", grid: dark ? "#1d3a1a" : "#3d7a2a", gridOpacity: 0.7 },
     }),
-    update: (J) => rig.update(J),
+    update(J) { rig.update(J); rig.keepFeetAboveFloor(); },
     setHighlight: (groups) => hl.set(groups),
     setPulse(v) {
       for (const m of twins.all()) m.emissiveIntensity = 0.5 + 0.9 * v;

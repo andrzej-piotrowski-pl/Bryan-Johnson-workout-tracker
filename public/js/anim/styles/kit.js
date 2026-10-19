@@ -84,6 +84,40 @@ export function createRig() {
   const ends = { neck: [new THREE.Vector3(), new THREE.Vector3(), null] };
   for (const b of Object.keys(BONES)) ends[b] = [new THREE.Vector3(), new THREE.Vector3(), null];
   const segs = [];
+  const floorUp = new THREE.Vector3(0, 1, 0), localUp = new THREE.Vector3();
+  const footPoints = {};
+
+  function keepFootGeometryAboveFloor(anchor) {
+    const oldOffset = anchor.userData.floorOffset;
+    if (oldOffset) for (const child of anchor.children) child.position.sub(oldOffset);
+    anchor.userData.floorOffset = null;
+    anchor.updateWorldMatrix(true, true);
+
+    let points = footPoints[anchor.name];
+    if (!points) {
+      points = [];
+      const inverse = anchor.matrixWorld.clone().invert(), relative = new THREE.Matrix4(), p = new THREE.Vector3();
+      anchor.traverse((obj) => {
+        if (!obj.isMesh || !obj.geometry?.attributes.position) return;
+        relative.multiplyMatrices(inverse, obj.matrixWorld);
+        const positions = obj.geometry.attributes.position;
+        for (let i = 0; i < positions.count; i++) {
+          points.push(p.fromBufferAttribute(positions, i).applyMatrix4(relative).clone());
+        }
+      });
+      footPoints[anchor.name] = points;
+    }
+    if (!points.length) return;
+
+    localUp.copy(floorUp).applyQuaternion(anchor.quaternion.clone().invert());
+    let lowest = anchor.position.y;
+    for (const point of points) lowest = Math.min(lowest, anchor.position.y + point.dot(localUp));
+    if (lowest < 0) {
+      const offset = localUp.multiplyScalar(-lowest + 1e-6);
+      for (const child of anchor.children) child.position.add(offset);
+      anchor.userData.floorOffset = offset.clone();
+    }
+  }
 
   // A mesh spanning part of a bone (from/to: 0 = top joint … 1 = bottom joint), its
   // geometry along +Y from −0.5 to 0.5, stretched to the bone. twist: true keeps its
@@ -134,7 +168,11 @@ export function createRig() {
     }
   }
 
-  return { group, anchors, ends, seg, update };
+  function keepFeetAboveFloor() {
+    for (const [s] of SIDES) keepFootGeometryAboveFloor(anchors["foot" + s]);
+  }
+
+  return { group, anchors, ends, seg, update, keepFeetAboveFloor };
 }
 
 // ---------- the standard body ----------

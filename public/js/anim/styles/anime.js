@@ -5,6 +5,17 @@
 import * as THREE from "three";
 import { SIDES, addRim, buildBody, canvasTexture, createHighlighter, createRig, disposeTree, outline, outlineMaterial, toonRamp } from "./kit.js";
 
+const hipAxis = new THREE.Vector3();
+
+function clearHipPalms(rig, J) {
+  if (!J.palmL || !J.palmR || J.palmL.x > -0.9 || J.palmR.x < 0.9) return;
+  if (Math.abs(J.handL.x - J.pelvis.x) > 0.24 || Math.abs(J.handR.x - J.pelvis.x) > 0.24
+    || Math.abs(J.handL.y - J.pelvis.y) > 0.14 || Math.abs(J.handR.y - J.pelvis.y) > 0.14) return;
+  hipAxis.setFromMatrixColumn(J.Rp, 0);
+  rig.anchors.handL.position.addScaledVector(hipAxis, 0.004);
+  rig.anchors.handR.position.addScaledVector(hipAxis, -0.004);
+}
+
 const HEAD = 1.22;
 const RIM = 0xcfe6ff;
 
@@ -77,7 +88,7 @@ export function createFigure() {
   const hl = createHighlighter((mesh, on) => (mesh.userData.ink.material = on ? inkHl : ink));
 
   const geo = { sphere: new THREE.SphereGeometry(1, 32, 22), seg: (rt, rb) => new THREE.CylinderGeometry(rt, rb, 1, 24, 1) };
-  buildBody(rig, {
+  const body = buildBody(rig, {
     geo,
     mat: (role) => mats[role],
     head: HEAD,
@@ -93,31 +104,38 @@ export function createFigure() {
 
   // Hair: a cap and spikes (cones with their base at the origin, tip up).
   const H = rig.anchors.head;
+  // Keep the Anime head slightly oversized while clearing the floor in deep side rolls.
+  H.scale.setScalar(0.84);
   const cone = new THREE.ConeGeometry(1, 1, 7).translate(0, 0.5, 0);
   const capGeo = new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.56);
   const cap = new THREE.Mesh(capGeo, mats.hair);
-  cap.scale.set(0.123, 0.14, 0.137);
-  cap.position.set(0, 0.03, -0.012);
-  cap.rotation.x = -0.32;
+  cap.scale.copy(body.head.scale).multiplyScalar(1.016);
+  cap.position.copy(body.head.position);
   H.add(cap);
   outline(cap, ink);
   const spike = (pos, dir, len, r) => {
     const m = new THREE.Mesh(cone, mats.hair);
     m.position.set(...pos);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...dir).normalize());
-    m.scale.set(r, len, r);
+    m.scale.set(r * 0.95, len, r * 0.95);
     m.castShadow = true;
     H.add(m);
     outline(m, ink);
+    return m;
   };
-  for (const x of [-0.07, -0.035, 0, 0.035, 0.07]) spike([x, 0.1, 0.085], [x * 3, -1, 0.5], 0.075, 0.026); // bangs
-  for (const [, s] of SIDES) {
-    spike([0.11 * s, 0.03, 0.03], [0.25 * s, -1, 0.15], 0.11, 0.026);
-    spike([0.11 * s, 0.04, -0.04], [0.45 * s, -1, -0.2], 0.12, 0.03);
-    spike([0.07 * s, 0.07, -0.1], [0.4 * s, -0.7, -0.7], 0.12, 0.034);
+  for (const x of [-0.07, -0.035, 0, 0.035, 0.07]) {
+    const bang = spike([x, 0.1, 0.085], [x * 3, -1, 0.5], 0.075, 0.026);
+    bang.position.y -= 0.01;
+    bang.scale.x *= 0.85;
+    bang.scale.z *= 0.85;
   }
-  spike([0, 0.06, -0.12], [0, -0.75, -0.65], 0.13, 0.036);
-  spike([0, 0.15, 0.0], [0.25, 1, -0.5], 0.07, 0.012); // the one strand that won't lie flat
+  for (const [, s] of SIDES) {
+    spike([0.06 * s, 0.03, 0.03], [0.25 * s, -1, 0.15], 0.045, 0.026);
+    spike([0.04 * s, 0.04, -0.04], [0.45 * s, -1, -0.2], 0.045, 0.03);
+    spike([0.07 * s, 0.07, -0.1], [0.4 * s, -0.7, 0], 0.025, 0.034);
+  }
+  spike([0, 0.06, -0.1], [0, -1, 0], 0.13, 0.02);
+  spike([0, 0.12, 0.0], [0.25, 1, 0], 0.04, 0.012); // the one strand that won't lie flat
 
   // The face, painted on small planes that sit on the head.
   const plane = new THREE.PlaneGeometry(1, 1);
@@ -144,7 +162,7 @@ export function createFigure() {
       key: [0xffffff, 2.9],
       rim: [0xffe0f2, 0.5],
     }),
-    update: (J) => rig.update(J),
+    update(J) { rig.update(J); clearHipPalms(rig, J); rig.keepFeetAboveFloor(); },
     setHighlight: (groups) => hl.set(groups),
     setPulse: (v) => (inkHl.uniforms.thickness.value = 0.007 + 0.007 * v),
     setTheme(dark, colors = {}) {

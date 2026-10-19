@@ -100,7 +100,7 @@ export function prepareClip(raw) {
 }
 
 export function sampleClip(clip, time) {
-  const tt = clip.duration > 0 ? ((time % clip.duration) + clip.duration) % clip.duration : 0;
+  const tt = clip.duration > 0 ? (time >= 0 && time < clip.duration ? time : ((time % clip.duration) + clip.duration) % clip.duration) : 0;
   const keys = clip.keys;
   let i = 0;
   while (i < keys.length - 2 && keys[i + 1].t <= tt) i++;

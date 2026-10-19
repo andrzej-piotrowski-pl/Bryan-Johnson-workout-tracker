@@ -1,6 +1,7 @@
 // Animations for the mobility & stretching exercises. Keyed by exercise id (see data/exercises.js).
 // Each entry: { clips: [{ title, props, hold, bands, camera, highlight, keys: [{ t, p, cue, e }] }] }
 import { ANKLE_Y, ARMS, FOOT_X, LEG, STAND_Y, anchor, ground, hangArms, hinge, joints, legsTo, pinFeet, pinHands, squat, stand, translate, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 const MAT_Y = 0.012; // top of the exercise mat
 const mat = (z = 0, d = 1.85) => ({ type: "mat", pos: [0, 0, z], w: 0.62, d });
@@ -37,9 +38,10 @@ function move(build, from, to, t0, t1, { n = 4, after } = {}) {
 
 // ---------- hands and knees (cat-cow, thread the needle) ----------
 // The pelvis stays over the knees. tilt rotates the pelvis (− tucks the tailbone) and the
-// hip flexion follows it, so thighs and knees stay put; hands are planted under the shoulders.
+// hip flexion follows it, so thighs and knees stay put. Hands are planted under the shoulders,
+// and the tops of the feet rest on the mat.
 const QUAD_BASE = ground(
-  { rot: [82, 0, 0], legL: [82, 4, 90, 80], legR: [82, 4, 90, 80], armL: [82, 4, 0, 0], armR: [82, 4, 0, 0] },
+  { rot: [82, 0, 0], legL: [82, 4, 86, 80], legR: [82, 4, 86, 80], armL: [82, 4, 0, 0], armR: [82, 4, 0, 0] },
   ["kneeL", "kneeR"],
   MAT_Y
 );
@@ -54,8 +56,8 @@ function quad({ tilt = 0, flex = 0, side = 0, twist = 0, neck = -8, turn = 0, no
     root: QUAD_BASE.root,
     rot: [82 + tilt, 0, 0],
     spine: [flex, side, twist],
-    legL: [82 + tilt, 4, 90, 80],
-    legR: [82 + tilt, 4, 90, 80],
+    legL: [82 + tilt, 4, 86, 80],
+    legR: [82 + tilt, 4, 86, 80],
     neck: [neck, turn],
     head: [nod, 0],
     shrugL: [0, shrug],
@@ -246,7 +248,7 @@ function hipFlexor(o, reach = 0) {
     ...halfKneel(o, HIPFLEX),
     armL: [8 + 164 * reach, 8 + 10 * reach, 12 - 7 * reach, 0],
     handsIn: "pelvis",
-    handR: [-0.18, 0.05, 0.03],
+    handR: [-0.23, 0.05, 0.03],
     elbowR: [-1, 0, -0.3],
   };
 }
@@ -373,6 +375,7 @@ export default {
         highlight: ["upperBack", "shoulders"],
         camera: { view: [0.55, 0.45, 1], target: [0, 0.42, 0.15], dist: 4.0 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: threadPose({}), cue: "Hands under the shoulders, knees under the hips" },
           { t: 0.5, p: threadPose({}), cue: "Reach one arm under, shoulder toward the floor" },
@@ -380,7 +383,8 @@ export default {
           { t: 2.9, p: threadPose({ u: -1 }), cue: "Open the arm to the ceiling, eyes follow the hand" },
           ...move(threadPose, { u: -1 }, { u: 1 }, 2.9, 5.3, { n: 6, after: "Pause at the top" }),
           { t: 5.9, p: threadPose({ u: 1 }), cue: "Hand back down, then switch sides" },
-          ...move(threadPose, { u: 1 }, { u: 0 }, 5.9, 7.3, { n: 3 }),
+          ...move(threadPose, { u: 1 }, { u: 0 }, 5.9, 7.299, { n: 3 }),
+          { t: 7.3, p: mirrorPose(makePose(threadPose({}))), e: "hold" },
         ],
       },
     ],
@@ -466,6 +470,7 @@ export default {
         highlight: ["quads", "hips"],
         camera: { view: [1, 0.22, 0.3], target: [0, 0.55, -0.55], dist: 4.0 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: couch(COUCH_SET, 0.85), cue: "Rest your back shin against the sofa, other foot forward" },
           // 1 ms "hold" segment: switching sides is an instant cut, not a blend.
@@ -474,7 +479,8 @@ export default {
           { t: 2.6, p: couch(COUCH_UP, 0.45), cue: "Stay upright and breathe" },
           { t: 4.4, p: couch({ ...COUCH_UP, breath: 2 }, 0.45) },
           { t: 5.4, p: couch(COUCH_UP, 0.45), cue: "Ease out, then switch sides" },
-          { t: 7.0, p: couch(COUCH_SET, 0.85) },
+          { t: 6.999, p: couch(COUCH_SET, 0.85) },
+          { t: 7.0, p: mirrorPose(makePose(couch(COUCH_SET, 0.85))), e: "hold" },
         ],
       },
     ],
@@ -488,6 +494,7 @@ export default {
         highlight: ["hips", "quads"],
         camera: { view: [1, 0.22, 0.45], target: [0, 0.8, 0.02], dist: 4.3 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: hipFlexor(HF_START), cue: "Half-kneel, back knee on a cushion" },
           // 1 ms "hold" segment: switching sides is an instant cut, not a blend.
@@ -497,7 +504,8 @@ export default {
           { t: 3.1, p: hipFlexor(HF_SHIFT), cue: "Reach the same-side arm up" },
           { t: 4.4, p: hipFlexor({ ...HF_SHIFT, side: 8 }, 1), cue: "Hold and breathe" },
           { t: 5.9, p: hipFlexor({ ...HF_SHIFT, side: 8, breath: 2 }, 1), cue: "Release, then switch sides" },
-          { t: 7.4, p: hipFlexor(HF_START) },
+          { t: 7.399, p: hipFlexor(HF_START) },
+          { t: 7.4, p: mirrorPose(makePose(hipFlexor(HF_START))), e: "hold" },
         ],
       },
     ],

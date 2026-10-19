@@ -6,6 +6,7 @@ import { DIM } from "./rig.js";
 
 const UP = new THREE.Vector3(0, 1, 0);
 const tmpV = new THREE.Vector3();
+const footPoint = new THREE.Vector3();
 const tmpM = new THREE.Matrix4();
 
 // Muscle groups → mesh names, for highlighting what an exercise trains.
@@ -49,6 +50,8 @@ export function createMannequin() {
   const baseMat = {};
 
   const sphereGeo = new THREE.SphereGeometry(1, 32, 22);
+  const footPoints = Array.from({ length: sphereGeo.attributes.position.count }, (_, i) =>
+    new THREE.Vector3().fromBufferAttribute(sphereGeo.attributes.position, i));
   function add(name, mesh, mat) {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -135,6 +138,12 @@ export function createMannequin() {
       const foot = parts["foot" + s];
       foot.quaternion.setFromRotationMatrix(tmpM);
       foot.position.copy(J["ankle" + s]).addScaledVector(f, (DIM.toe - DIM.heel) / 2).addScaledVector(u, -DIM.ankleH * 0.62);
+      let lowest = foot.position.y;
+      for (const point of footPoints) {
+        footPoint.set(point.x * foot.scale.x, point.y * foot.scale.y, point.z * foot.scale.z).applyQuaternion(foot.quaternion);
+        lowest = Math.min(lowest, foot.position.y + footPoint.y);
+      }
+      if (lowest < 0) foot.position.y += -lowest + 1e-6;
     }
   }
 

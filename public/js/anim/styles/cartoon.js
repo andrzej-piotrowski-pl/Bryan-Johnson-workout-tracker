@@ -6,6 +6,17 @@
 import * as THREE from "three";
 import { SIDES, buildBody, createHighlighter, createRig, disposeTree, outline, outlineMaterial, propDresser, toonRamp } from "./kit.js";
 
+const hipAxis = new THREE.Vector3();
+
+function clearHipPalms(rig, J) {
+  if (!J.palmL || !J.palmR || J.palmL.x > -0.9 || J.palmR.x < 0.9) return;
+  if (Math.abs(J.handL.x - J.pelvis.x) > 0.24 || Math.abs(J.handR.x - J.pelvis.x) > 0.24
+    || Math.abs(J.handL.y - J.pelvis.y) > 0.14 || Math.abs(J.handR.y - J.pelvis.y) > 0.14) return;
+  hipAxis.setFromMatrixColumn(J.Rp, 0);
+  rig.anchors.handL.position.addScaledVector(hipAxis, 0.011);
+  rig.anchors.handR.position.addScaledVector(hipAxis, -0.011);
+}
+
 export function createFigure() {
   const rig = createRig();
   const ramp = toonRamp([0.45, 1]);
@@ -26,7 +37,7 @@ export function createFigure() {
   const hl = createHighlighter((mesh, on) => (mesh.userData.ink.material = on ? inkHl : ink));
 
   const geo = { sphere: new THREE.SphereGeometry(1, 32, 22), seg: (rt, rb) => new THREE.CylinderGeometry(rt, rb, 1, 24, 1) };
-  buildBody(rig, {
+  const parts = buildBody(rig, {
     geo,
     mat: (role) => mats[role],
     torso: "smooth",
@@ -39,9 +50,11 @@ export function createFigure() {
       hl.tag(m, region);
     },
   });
+  for (const s of ["L", "R"]) parts["hand" + s].scale.y = 0.055;
 
   // Face and hair, on the head.
   const H = rig.anchors.head;
+  H.scale.setScalar(0.8);
   const S = new THREE.SphereGeometry(1, 24, 16);
   const add = (geom, mat, scale, pos, rot = [0, 0, 0], inked = true) => {
     const m = new THREE.Mesh(geom, mat);
@@ -52,8 +65,8 @@ export function createFigure() {
     if (inked) outline(m, ink);
     return m;
   };
-  add(new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.55), mats.hair, [0.112, 0.13, 0.124], [0, 0.03, -0.012], [-0.4, 0, 0]);
-  add(S, mats.hair, [0.06, 0.05, 0.08], [0.02, 0.12, 0.05], [0.5, 0, -0.3]); // quiff
+  add(new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.44), mats.hair, [0.112, 0.134, 0.124], [0, 0, 0]);
+  add(S, mats.hair, [0.05, 0.025, 0.055], [0.02, 0.09, 0.04], [0.5, 0, -0.3]); // quiff
   for (const [, s] of SIDES) {
     add(S, mats.white, [0.022, 0.034, 0.012], [0.03 * s, 0.022, 0.104], [0, 0.3 * s, 0]);
     add(S, mats.black, [0.011, 0.02, 0.008], [0.028 * s, 0.018, 0.114], [0, 0.3 * s, 0], false);
@@ -65,7 +78,7 @@ export function createFigure() {
   return {
     group: rig.group,
     look: (dark) => ({ tone: "none", hemi: [0xffffff, dark ? 0x4a5468 : 0xb3b9c6, 0.6], key: [0xffffff, 2.9], rim: [0xffffff, 0] }),
-    update: (J) => rig.update(J),
+    update(J) { rig.update(J); clearHipPalms(rig, J); rig.keepFeetAboveFloor(); },
     setHighlight: (groups) => hl.set(groups),
     setPulse: (v) => (inkHl.uniforms.thickness.value = 0.013 + 0.01 * v),
     setTheme(dark, colors = {}) {

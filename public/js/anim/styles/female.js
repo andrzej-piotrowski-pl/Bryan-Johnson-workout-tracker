@@ -68,7 +68,7 @@ function createHead(mats, ink) {
     hp.setXYZ(i, 0.095 * Math.sin(theta) * Math.cos(a), 0.123 * Math.cos(theta) + 0.005 + wave, 0.105 * Math.sin(theta) * Math.sin(a) - 0.006);
   }
   cap.computeVertexNormals(); add(cap, mats.hair, [1, 1, 1], [0, 0, 0], group, true);
-  const bun = add(sphere, mats.hair, [0.034, 0.033, 0.032], [0, 0.083, -0.084], group, true);
+  const bun = add(sphere, mats.hair, [0.034, 0.033, 0.032], [0, 0.083, -0.070], group, true);
   bun.name = "female-bun";
   add(new THREE.TorusGeometry(0.021, 0.004, 8, 24), mats.accent, [1, 1, 1], [0, 0.085, -0.077]);
   return {
@@ -137,6 +137,7 @@ export function createFigure() {
     look: (dark) => ({ tone: "none", hemi: [0xffffff, dark ? 0x554668 : 0xbeb5d4, 0.7], key: [0xffffff, 2.5], rim: [0xe0fff5, 0.55] }),
     update(J, { t = 0, grip = {}, gripAxis = {}, breath = 0 } = {}) {
       rig.update(J);
+      rig.keepFeetAboveFloor();
       neckOffset.subVectors(J.headJoint, J.neckBase).multiplyScalar(-0.28); rig.anchors.head.position.add(neckOffset);
       torso.update(J, breath); neck.update(J); head.update(t);
       for (const limb of limbs) limb.update(J);

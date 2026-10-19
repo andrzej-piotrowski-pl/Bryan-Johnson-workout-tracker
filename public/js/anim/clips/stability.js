@@ -1,5 +1,6 @@
 // Animations for the standing stability exercises (side bend, Pallof press, single-leg RDL, Jefferson curl).
 import { ANKLE_Y, ARM, FOOT_X, STAND_Y, joints, stand, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 // Linear blend of two points.
 const mix = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
@@ -150,12 +151,14 @@ export default {
         highlight: ["obliques", "core"],
         camera: { view: "front", target: [0, 0.95, 0], dist: 3.7 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: sidebend(0), cue: "Dumbbell in one hand, other hand on your waist" },
-          { t: SWITCH, p: sidebend(0) },
+          { t: SWITCH, p: sidebend(0), e: "hold" },
           { t: 0.5, p: sidebend(0), cue: "Bend straight to the side, no twisting" },
           ...transition(sidebend, 0, 1, 0.5, 2.5, "Squeeze the other side to come back up"),
-          ...transition(sidebend, 1, 0, 2.5, 4.3, "Switch sides"),
+          ...transition(sidebend, 1, 0, 2.5, 4.299, "Switch sides"),
+          { t: 4.3, p: mirrorPose(makePose(sidebend(0))), e: "hold" },
         ],
       },
     ],
@@ -170,13 +173,15 @@ export default {
         highlight: ["core", "obliques"],
         camera: { view: [0, 1.05, 1], target: [0, 0.85, -0.25], dist: 4.0 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: pallof(0), cue: "Side-on to the door, band at your sternum" },
-          { t: SWITCH, p: pallof(0) },
+          { t: SWITCH, p: pallof(0), e: "hold" },
           { t: 0.5, p: pallof(0), cue: "Press the hands straight out" },
           { t: 1.5, p: pallof(1), cue: "Hold 2 s, don't let the band turn you" },
           { t: 3.5, p: pallof(1), cue: "Bring the hands back slowly" },
-          { t: 5.0, p: pallof(0), cue: "Switch sides" },
+          { t: 4.999, p: pallof(0), cue: "Switch sides" },
+          { t: 5.0, p: mirrorPose(makePose(pallof(0))), e: "hold" },
         ],
       },
     ],
@@ -220,7 +225,7 @@ export default {
       {
         title: "Jefferson curl",
         props: [JC_STEP],
-        hold: { R: true, axis: "x" },
+        hold: { goblet: true },
         highlight: ["lowerBack", "back", "hamstrings"],
         camera: { view: "side", target: [0, 0.9, 0.05], dist: 4.2 },
         keys: [

@@ -192,7 +192,7 @@ const CLIMB_BACK = (() => {
 })();
 const CLIMB_FEET = {
   back: (s) => ({ pos: [CLIMB_BACK[0] * s, CLIMB_BACK[1], CLIMB_BACK[2]], toe: PLANK_TOE, knee: [0.1 * s, -1, 0.15] }),
-  in: (s) => ({ pos: [0.12 * s, 0.24, -0.05], toe: 62, knee: [0.05 * s, -0.2, 1] }),
+  in: (s) => ({ pos: [0.12 * s, 0.24, 0.1], toe: 62, knee: [0.15 * s, -0.2, 1] }),
   out: (s) => ({ pos: [0.14 * s, 0.17, -0.82], toe: 50, knee: [0.1 * s, -1, 0.3] }),
   up: (s) => ({ pos: [0.13 * s, 0.19, -0.42], toe: 55, knee: [0.05 * s, -0.5, 1] }),
 };
@@ -343,11 +343,11 @@ export default {
         keys: [
           { t: 0, p: burpee("stand"), cue: "Squat down, hands to the floor" },
           ...transition(burpeeLower, 0, 1, 0, 0.6, "Jump back to a plank (or step back)"),
-          { t: 0.82, p: burpee("kick"), e: "in" },
-          { t: 1.02, p: burpee("plank"), e: "out" },
+          { t: 0.82, p: burpee("kick"), e: "smooth" },
+          { t: 1.02, p: burpee("plank"), e: "smooth" },
           { t: 1.3, p: burpee("plank"), cue: "No push-up: jump the feet back in" },
-          { t: 1.5, p: burpee("kick"), e: "in" },
-          { t: 1.72, p: burpee("squat"), e: "out", cue: "Stand up tall" },
+          { t: 1.5, p: burpee("kick"), e: "smooth" },
+          { t: 1.72, p: burpee("squat"), e: "smooth", cue: "Stand up tall" },
           ...transition(burpeeLower, 1, 0, 1.72, 2.4),
         ],
       },

@@ -1,5 +1,6 @@
 // Animations for the upper-body exercises.
 import { ANKLE_Y, anchor, ground, joints, stand, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 // Linear blend of two points.
 const mix = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
@@ -297,13 +298,15 @@ export default {
         highlight: ["back", "upperBack", "biceps", "grip"],
         camera: { view: [0, 0.32, 1], target: [0, 0.6, 0], dist: 3.5 },
         alternate: true,
+        close: false, // Keep the mirrored setup at the exact cut instead of restoring the old side.
         keys: [
           { t: 0, p: row(0), cue: "Hand and knee on the bench, back flat" },
-          { t: SWITCH, p: row(0) },
+          { t: SWITCH, p: row(0), e: "hold" },
           { t: 0.6, p: row(0), cue: "Pull the dumbbell toward your hip" },
           { t: 1.6, p: row(1), cue: "Squeeze 1 s, elbow close to your side" },
           { t: 2.6, p: row(1), cue: "Lower to a full stretch, no twisting" },
-          { t: 4.6, p: row(0), cue: "Switch sides" },
+          { t: 4.6 - SWITCH, p: row(0), cue: "Switch sides" },
+          { t: 4.6, p: mirrorPose(makePose(row(0))), e: "hold" },
         ],
       },
     ],

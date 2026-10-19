@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.29.1] - 2026-10-19
+
+### Fixed
+- Corrected body, hand, foot and equipment contacts and smoothed exercise motion across animation styles.
+
 ## [1.29.0] - 2026-10-19
 
 ### Added

@@ -207,8 +207,9 @@ export function createFigure() {
 
     const stroke = (side, names, width, seed, opts) => brush(tx, names.map(P), u * width, rgba(INK, side && side !== near ? 0.42 : 0.9), seed, opts);
     const far = near === "L" ? "R" : "L";
+    stroke("", ["shoulderL", "neckBase", "shoulderR"], 0.09, 2, { lift: 0.35 });
     for (const s of [far, near]) {
-      if (s === near) stroke("", ["neckBase", "thoracic", "lumbar", "pelvis"], 0.15, 1, { lift: 0.35 });
+      if (s === near) stroke("", ["headJoint", "neckBase", "thoracic", "lumbar", "pelvis"], 0.15, 1, { lift: 0.35 });
       stroke(s, ["hip" + s, "knee" + s, "ankle" + s, "toe" + s], 0.095, s === "L" ? 11 : 12);
       stroke(s, ["shoulder" + s, "elbow" + s, "wrist" + s, "hand" + s], 0.065, s === "L" ? 21 : 22, { lift: 0.3 });
     }

@@ -73,6 +73,7 @@ export function createFigure() {
     }),
     update(J, { t = 0, grip = {}, gripAxis = {}, breath = 0 } = {}) {
       rig.update(J);
+      rig.keepFeetAboveFloor();
       neckOffset.subVectors(J.headJoint, J.neckBase).multiplyScalar(-0.28);
       rig.anchors.head.position.add(neckOffset);
       torso.update(J, breath); neck.update(J); head.update(t);

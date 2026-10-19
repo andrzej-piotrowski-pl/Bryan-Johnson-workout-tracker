@@ -150,6 +150,7 @@ export function createFigure() {
     // The stick figure: arms from the shoulders, legs from the hips, little feet.
     const neck = view.project(J.neckBase.clone().lerp(J.thoracic, 0.15));
     const near = P("hipL").z < P("hipR").z ? "L" : "R";
+    o += pen([P("shoulderL"), neck, P("shoulderR")], seed * 3 + 23, 2.6);
     for (const s of near === "L" ? ["R", "L"] : ["L", "R"]) {
       o += pen([P("hip" + s), P("knee" + s), P("ankle" + s), P("toe" + s)], seed * 3 + (s === "L" ? 1 : 2));
       o += pen([P("shoulder" + s), P("elbow" + s), P("hand" + s)], seed * 3 + (s === "L" ? 11 : 12));

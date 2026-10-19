@@ -3,6 +3,7 @@
 // shoulders. Pose fields used a lot here: tuck (head glide back), neck/head (pitch),
 // shrugL/R ([up, forward] of the shoulder girdle) and spine flexion for slouching.
 import { ANKLE_Y, D2R, DIM, FOOT_X, STAND_Y, joints, stand, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 // Keys for one smooth move through n intermediate poses, poseAt(u) for u = 1/n … 1.
 // The first segment eases in, the middle ones are linear and the last eases out, with
@@ -144,7 +145,7 @@ function onFloor(p) {
   return { ...p, root: [p.root[0], p.root[1] - low + 0.012, p.root[2]] };
 }
 function sideLying(r) {
-  return onFloor({
+  const p = onFloor({
     root: [0.06, 0.3, 0],
     rot: [0, 0, 83.5], // on the right side; the wider shoulders lift the chest end a little
     neck: [4, 0],
@@ -153,6 +154,8 @@ function sideLying(r) {
     armL: [0, 7, 90, r], // elbow at the ribs (7° keeps the upper arm off the chest mesh)
     armR: [90, 4, 40, 0], // bottom arm resting forward on the floor
   });
+  const J = joints(p);
+  return { ...p, handsIn: "world", handR: [J.wristR.x, 0.05, J.wristR.z], elbowR: [0.5, 0, -0.5], palmR: [0, 1, 0], fingersR: [0, 0, 1] };
 }
 // A cushion exactly under the head (the neck has no side bend to lower it onto the arm).
 const CUSHION = (() => {
@@ -373,13 +376,15 @@ export default {
         highlight: ["rotatorCuff", "shoulders"],
         camera: { view: [0.75, 0.25, 0.85], target: [0, 1.05, 0.1], dist: 3.6 },
         alternate: true,
+        close: false,
         keys: [
           { t: 0, p: elbowOnKnee(-55), cue: "Prop one foot up and rest your elbow on the knee at 90°" },
           { t: 0.001, p: elbowOnKnee(-55), e: "hold" },
           { t: 0.6, p: elbowOnKnee(-55), cue: "Rotate the forearm up and back" },
           ...transition(elbowOnKnee, -55, 50, 0.6, 1.8),
           { t: 2.2, p: elbowOnKnee(50), cue: "Lower slowly in 2–3 s, shoulder blade down" },
-          ...transition(elbowOnKnee, 50, -55, 2.2, 4.7),
+          ...transition(elbowOnKnee, 50, -55, 2.2, 4.69),
+          { t: 4.7, p: mirrorPose(makePose(elbowOnKnee(-55))), e: "hold" },
         ],
       },
       {
@@ -389,15 +394,16 @@ export default {
         highlight: ["rotatorCuff"],
         camera: { view: [0.55, 0.6, 1], target: [0, 0.3, 0.1], dist: 3.7 },
         alternate: true,
+        close: false,
         keys: [
-          // The 1 ms first segment makes the side switch of the mirrored half a clean cut
-          // (otherwise the body would blend across the mat from one side to the other).
+          // The held mirrored endpoint switches with the mirrored equipment at each half.
           { t: 0, p: sideLying(-45), cue: "On your side, top elbow pinned to the ribs at 90°" },
-          { t: 0.001, p: sideLying(-45), cue: "On your side, top elbow pinned to the ribs at 90°" },
+          { t: 0.001, p: sideLying(-45), e: "hold", cue: "On your side, top elbow pinned to the ribs at 90°" },
           { t: 0.6, p: sideLying(-45), cue: "Rotate the forearm up and back" },
           { t: 1.8, p: sideLying(95) },
           { t: 2.2, p: sideLying(95), cue: "Lower slowly in 2–3 s, blade back and down" },
-          { t: 4.7, p: sideLying(-45) },
+          ...transition(sideLying, 95, -45, 2.2, 4.69),
+          { t: 4.7, p: mirrorPose(makePose(sideLying(-45))), e: "hold" },
         ],
       },
     ],

@@ -1,5 +1,6 @@
 // Animations for the warm-up & balance exercises.
 import { ANKLE_Y, ARMS, D2R, DIM, FOOT_X, STAND_Y, ground, joints, stand, transition } from "../poses.js";
+import { makePose, mirrorPose } from "../rig.js";
 
 // ---------- helpers ----------
 
@@ -123,6 +124,7 @@ function backwalk(ph, { dumbbells = false } = {}) {
 // ---------- pogo hops ----------
 
 // Feet hip-width, hands on hips. Most of the spring comes from the ankles; knees stay almost straight.
+const HIP_HANDS = { ...ARMS.hips, handL: [0.17, 0.05, 0.03], handR: [-0.17, 0.05, 0.03] };
 function pogo(stage) {
   const feet = (pitch, lift) => ({
     footL: tiptoe([FOOT_X, ANKLE_Y + lift, 0], pitch, 7),
@@ -130,7 +132,7 @@ function pogo(stage) {
     toeL: pitch,
     toeR: pitch,
   });
-  const base = { ...ARMS.hips, rot: [3, 0, 0], neck: [-3, 0] };
+  const base = { ...HIP_HANDS, rot: [3, 0, 0], neck: [-3, 0] };
   if (stage === "bottom") return { ...base, root: [0, 0.934, 0.0], ...feet(0, 0) }; // heels kiss the floor
   if (stage === "push") return { ...base, root: [0, 0.997, 0.045], ...feet(30, 0) }; // on the balls, legs long
   return { ...base, root: [0, 1.05, 0.045], ...feet(32, 0.05) }; // flight, toes pointed
@@ -145,15 +147,15 @@ function armCircle(f) {
   return { ...stand(), spine: [1.2 * follow, 0, 0], armL: [f, 58, 6 + 3 * follow, 0], armR: [f, 58, 6 + 3 * follow, 0], wristL: [4 * follow, 0, 0], wristR: [4 * follow, 0, 0], neck: [-2 - follow, 0] };
 }
 
-// Leg swings: right hand on a wall, the left leg swings like a pendulum (angles, so the arc stays round).
+// Leg swings: right hand on a wall; flexion and abduction make smooth arcs in either plane.
 // Both hands are IK targets in every key, so the mirrored half (other hand on the wall) blends smoothly.
 const SWING_WALL = { type: "wall", pos: [-0.665, 0, -0.1], rotY: 90, w: 0.8, h: 2.1 };
-function legSwing(flex, knee, { hand = true } = {}) {
+function legSwing(flex, knee, { hand = true, abduction = 3 } = {}) {
   const legs = {
     root: [0, STAND_Y, 0],
     neck: [-3, 0],
     legR: [0, 3, 1, 0],
-    legL: [flex, 3, knee, knee > 1 ? (flex < 10 ? -10 : 6) : 0], // toes up as the foot brushes past the floor
+    legL: [flex, abduction, knee, knee > 1 ? (flex < 10 ? -10 : 6) : 0], // toes up as the foot brushes past the floor
   };
   const p = { ...ground(legs, ["heelR", "ballR"]), handsIn: "world" };
   const rest = armIK(p, "R", [0, 14, 25]), J = joints({ ...p, ...rest });
@@ -308,18 +310,28 @@ export default {
         camera: { view: [0.85, 0.22, 0.75], target: [0, 0.85, 0.1], dist: 4.0 },
         alternate: true,
         loops: 1,
+        close: false,
         keys: [
           { t: 0, p: legSwing(0, 1, { hand: false }), cue: "One hand on a wall, stand tall" },
-          { t: 0.5, p: legSwing(0, 9), cue: "Swing the leg front to back, 10 per leg" },
-          { t: 1.0, p: legSwing(-26, 18) },
-          { t: 1.4, p: legSwing(0, 22), e: "in" },
-          { t: 1.8, p: legSwing(62, 6), e: "out" },
-          { t: 2.2, p: legSwing(0, 22), e: "in" },
-          { t: 2.6, p: legSwing(-26, 18), e: "out" },
-          { t: 3.0, p: legSwing(0, 22), e: "in" },
-          { t: 3.4, p: legSwing(62, 6), e: "out" },
-          { t: 4.0, p: legSwing(0, 9) },
-          { t: 4.5, p: legSwing(0, 1, { hand: false }), cue: "Switch legs" },
+          { t: 0.5, p: legSwing(0, 9), e: "smooth", cue: "Swing the leg front to back, 10 per leg" },
+          { t: 1.0, p: legSwing(-26, 18), e: "smooth" },
+          { t: 1.4, p: legSwing(0, 22), e: "smooth" },
+          { t: 1.8, p: legSwing(62, 6), e: "smooth" },
+          { t: 2.2, p: legSwing(0, 22), e: "smooth" },
+          { t: 2.6, p: legSwing(-26, 18), e: "smooth" },
+          { t: 3.0, p: legSwing(0, 22), e: "smooth" },
+          { t: 3.4, p: legSwing(62, 6), e: "smooth" },
+          { t: 4.0, p: legSwing(0, 9), cue: "Then swing the leg side to side, keep your hips square" },
+          { t: 4.4, p: legSwing(0, 9, { abduction: 30 }), e: "smooth" },
+          { t: 4.8, p: legSwing(0, 9), e: "smooth" },
+          { t: 5.2, p: legSwing(0, 9, { abduction: -25 }), e: "smooth" },
+          { t: 5.6, p: legSwing(0, 9), e: "smooth" },
+          { t: 6.0, p: legSwing(0, 9, { abduction: 30 }), e: "smooth" },
+          { t: 6.4, p: legSwing(0, 9), e: "smooth" },
+          { t: 6.8, p: legSwing(0, 9, { abduction: -25 }), e: "smooth" },
+          { t: 7.2, p: legSwing(0, 9), e: "smooth" },
+          { t: 7.8, p: legSwing(0, 1, { hand: false }), cue: "Switch legs" },
+          { t: 7.801, p: mirrorPose(makePose(legSwing(0, 1, { hand: false }))), e: "hold" },
         ],
       },
       {
@@ -347,6 +359,7 @@ export default {
         highlight: ["hips", "glutes"],
         camera: { view: [0.9, 0.3, 0.8], target: [0, 0.85, 0], dist: 3.9 },
         alternate: true,
+        close: false,
         loops: 1,
         keys: [
           { t: 0, p: hipCar(null), cue: "Hands on hips, pelvis still: knee up…" },
@@ -355,7 +368,8 @@ export default {
           { t: 2.6, p: hipCar([55, 70, 95]), e: "lin", cue: "…rotate it back…" },
           { t: 3.4, p: hipCar([10, 55, 95]), e: "lin" },
           { t: 4.2, p: hipCar([-15, 20, 95]), e: "lin", cue: "…and lower" },
-          { t: 5.2, p: hipCar(null), e: "out", cue: "Other leg; 3 slow circles each way" },
+          { t: 5.199, p: hipCar(null), e: "out", cue: "Other leg; 3 slow circles each way" },
+          { t: 5.2, p: mirrorPose(makePose(hipCar(null))), e: "hold" },
         ],
       },
       {
@@ -417,11 +431,11 @@ export default {
         camera: { view: [0.85, 0.2, 0.7], target: [0, 0.92, 0], dist: 4.1 },
         alternate: true,
         keys: [
-          { t: 0, p: stand(ARMS.hips), cue: "Lift one foot to mid-shin height" },
-          { t: 0.55, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...ARMS.hips } },
-          { t: 0.75, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...ARMS.hips }, cue: "Stomp the whole foot firmly into the floor, knee soft" },
-          { t: 0.92, p: { root: [0.02, STAND_Y - 0.032, 0.02], rot: [3, 0, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, ANKLE_Y, 0], ...ARMS.hips }, e: "in" },
-          { t: 1.5, p: stand(ARMS.hips), cue: "Switch legs" },
+          { t: 0, p: stand(HIP_HANDS), cue: "Lift one foot to mid-shin height" },
+          { t: 0.55, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...HIP_HANDS } },
+          { t: 0.75, p: { root: [-0.035, STAND_Y - 0.004, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, 0.34, 0.08], toeL: 8, ...HIP_HANDS }, cue: "Stomp the whole foot firmly into the floor, knee soft" },
+          { t: 0.92, p: { root: [0.02, STAND_Y - 0.032, 0.02], rot: [3, 0, 0], footR: [-FOOT_X, ANKLE_Y, 0], footL: [FOOT_X, ANKLE_Y, 0], ...HIP_HANDS }, e: "in" },
+          { t: 1.5, p: stand(HIP_HANDS), cue: "Switch legs" },
         ],
       },
     ],

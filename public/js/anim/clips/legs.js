@@ -31,7 +31,8 @@ function footAt(side, point, at, toe) {
 function onToes(side, x, z, toe, y = 0) {
   const t = footOffset(side, "toe", toe);
   const b = footOffset(side, "ball", toe);
-  return { pos: [x, y - Math.min(t.y, b.y), z - t.z], toe };
+  // The shoe extends below the rig's toe/ball points, so leave its outsole on the floor.
+  return { pos: [x, y + 0.008 - Math.min(t.y, b.y), z - t.z], toe };
 }
 
 // Ankle target for toes lifted by `lift` degrees while the heel stays down (back of the heel at zBack).
@@ -98,7 +99,7 @@ function gobletSquat(d) {
 
 // RDL: dumbbells hang in front of the thighs (not through them) and slide down the legs.
 function rdlPose(d) {
-  return hangArms(hinge(d), { fwd: 0.13 * (1 - d), inward: 0, drop: 0.95 });
+  return hangArms(hinge(d), { fwd: 0.16 * (1 - d), out: 0.005, inward: 0, drop: 0.92 });
 }
 
 const PQ_BOARD = { type: "slant", pos: [0, 0, 0.06], w: 0.5, d: 0.28, angle: 15 };
@@ -173,13 +174,13 @@ function atgSlide(s) {
 // Knees on a folded mat, heels hooked under a sofa; the body pivots at the knees in one straight line.
 
 const NORDIC_KNEE = [0.118, 0.086, 0];
-const NORDIC_HANDS = [0.22, 0.035, 0.83]; // where the hands land: under the shoulders at the catch
+const NORDIC_HANDS = [0.22, 0.035, 0.83]; // hands plant on the floor in front of the knee cushion
 const NORDIC_POLE = [0.5, -1, -0.4]; // elbows: down/out when upright, up/back on the floor
 
 function nordicBody(theta) {
   // theta: forward lean of the straight body from vertical (deg)
   const slope = 6; // shins run slightly down from the mat to the floor
-  const leg = [0, 3, 90 - slope - theta, 72];
+  const leg = [0, 3, 90 - slope - theta, 85];
   const p = { rot: [theta, 0, 0], legL: leg, legR: leg, neck: [-4, 0], palmL: [0, 1, 0], palmR: [0, 1, 0], shrugL: [0, 0.012 * Math.sin(theta * Math.PI / 180)], shrugR: [0, 0.012 * Math.sin(theta * Math.PI / 180)] };
   return anchor(p, "kneeL", NORDIC_KNEE, "yz");
 }
@@ -263,7 +264,7 @@ function seatedCalf(raise) {
 const CALF_STEP = { type: "step", pos: [0, 0, 0.24], w: 0.62, d: 0.34, h: 0.18 };
 const CALF_WALL = { type: "wall", pos: [0, 0, 0.54], w: 1.6, h: 2.3 };
 const CALF_EDGE_Z = 0.1; // balls of the feet, 3 cm in from the back edge
-const CALF_HANDS = [0.2, 1.42, 0.48];
+const CALF_HANDS = [0.2, 1.46, 0.48];
 
 function stepCalf(raise, oneLeg = true) {
   const footL = footAt("L", "ball", [0.12, 0.18, CALF_EDGE_Z], raise);
@@ -294,7 +295,10 @@ function stepCalf(raise, oneLeg = true) {
 // ---------- dumbbell swing ----------
 // FK arms swing like pendulums from the shoulders; the hips do the work.
 
-const SWING_FEET = { footL: [0.16, ANKLE_Y, 0], footR: [-0.16, ANKLE_Y, 0], turnout: 12 };
+const SWING_FEET = {
+  footL: [0.23, ANKLE_Y, 0], footR: [-0.23, ANKLE_Y, 0],
+  kneeL: [0.4, 0, 1], kneeR: [-0.4, 0, 1], turnout: 12,
+};
 
 function swing(stage) {
   const S = {
@@ -307,7 +311,7 @@ function swing(stage) {
   const arm = [S.arm, -14, S.elbow, 0];
   return {
     ...SWING_FEET,
-    root: [0, y - 0.006, z],
+    root: [0, y - 0.012, z],
     rot: [S.rot, 0, 0],
     spine: [S.spine, 0, 0],
     neck: [S.neck, 0],
@@ -335,7 +339,7 @@ function lunge(stage) {
     toeR = b.toe;
   }
   const p = { root: S.root, rot: [S.rot, 0, 0], neck: [-S.rot, 0], shrugL: [-0.008, 0], shrugR: [-0.008, 0], footL: [0.11, ANKLE_Y, 0], footR, toeR, kneeR: [0, -0.2, 1] };
-  return hangArms(p, { fwd: 0.03, out: 0.05 });
+  return hangArms(p, { fwd: 0.03, out: 0.08, drop: 0.975 });
 }
 
 // ---------- step-up ----------
@@ -369,7 +373,7 @@ function stepUp(stage, arms) {
     kneeL: [0.1, 0, 1],
     kneeR: [-0.1, 0, 1],
   };
-  return arms === "dumbbells" ? hangArms(p, { fwd: 0.03, out: 0.05 }) : { ...p, ...ARMS.hips };
+  return arms === "dumbbells" ? hangArms(p, { fwd: 0.03, out: 0.08, drop: 0.975 }) : { ...p, ...ARMS.hips };
 }
 
 // One rep: foot onto the box, drive up, stand tall, step back down slowly. cues: [setup, drive, lower]

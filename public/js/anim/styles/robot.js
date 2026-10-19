@@ -26,6 +26,7 @@ export function createFigure() {
       hl.tag(mesh, region);
     },
   });
+  rig.anchors.head.scale.setScalar(0.82);
   const add = (anchor, geo, mat, pos, scale) => {
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(...pos);
@@ -37,7 +38,8 @@ export function createFigure() {
   for (const [s, side] of SIDES) {
     add("head", box, mats.light, [side * 0.038, 0.018, 0.111], [0.026, 0.012, 0.008]);
     for (const joint of ["elbow", "knee", "wrist"]) {
-      add(joint + s, ball, mats.joint, [0, 0, 0], [0.039, 0.039, 0.039]);
+      const size = joint === "wrist" ? [0.039, 0.039, 0.02] : [0.039, 0.039, 0.039];
+      add(joint + s, ball, mats.joint, [0, 0, 0], size);
     }
   }
   add("chest", box, mats.joint, [0, 0.15, 0.116], [0.105, 0.1, 0.015]);
@@ -46,7 +48,7 @@ export function createFigure() {
   return {
     group: rig.group,
     look: (dark) => ({ hemi: [0xffffff, dark ? 0x283d59 : 0x9aaabe, 1.2], key: [0xf4f8ff, 2.4], rim: [0x9ce8ff, 0.8] }),
-    update: (J) => rig.update(J),
+    update(J) { rig.update(J); rig.keepFeetAboveFloor(); },
     setHighlight: (groups) => hl.set(groups),
     setPulse(v) { for (const m of twins.all()) m.emissiveIntensity = 0.15 + v * 0.35; },
     setTheme() {},
