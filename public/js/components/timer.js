@@ -10,7 +10,7 @@ import { fmtSecs } from "../util.js";
 import { icon } from "./icons.js";
 import { openDialog } from "./ui.js";
 import { clockKey } from "../voice/script.js";
-import { cancelVoice, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoiceEnabled, unlockVoice, videoVoice, voiceEnabled, voiceStatus } from "../voice/player.js";
+import { cacheVoice, cancelVoice, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoiceEnabled, unlockVoice, videoVoice, voiceEnabled, voiceStatus } from "../voice/player.js";
 
 let audio = null;
 export function beep(freq = 880, ms = 120, vol = 0.18) {
@@ -204,14 +204,18 @@ function runPhases({ title, phases, onFinish, voiceContext, voiceTimer }) {
   }
   async function prepare() {
     try {
-      if (!voiceContext || !voiceEnabled()) return begin();
-      if (!voiceStatus.installed) await refreshVoiceStatus();
+      if (!voiceContext || state.profile?.settings?.voiceCoach !== true) return begin();
+      if (!voiceStatus.installed || !voiceStatus.cacheEnabled) await refreshVoiceStatus();
       if (!voiceStatus.installed) {
         const button = el.querySelector('[data-t="voice"]');
         button.textContent = "Voice unavailable"; button.disabled = true;
         button.title = "Download the local voice in Settings → Voice coach.";
         return begin();
       }
+      voiceOn = voiceEnabled();
+      el.querySelector('[data-t="voice"]').innerHTML = `${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}`;
+      if (!voiceOn) return begin();
+      cacheVoice({ level: voiceContext.level });
       el.querySelector('[data-t="begin"]').hidden = started;
       info.textContent = "Preparing coach audio. You can start the timer while it loads.";
       manifest = await prepareVoice({ ...voiceContext, timer: voiceTimer });

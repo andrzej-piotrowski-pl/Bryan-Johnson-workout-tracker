@@ -4,17 +4,18 @@ import { existsSync } from "node:fs";
 import { readFile, readdir, stat, unlink } from "node:fs/promises";
 import path from "node:path";
 import { ROOT, VOICE_DIR, MODEL, MODEL_SHA, nativeEnv } from "./runtime.js";
+import { VoiceCache } from "./cache.js";
 import { CLOCK, EFFORT, PREVIEW, VOICES, exerciseScript, phaseLine, restLine, speechText } from "../public/js/voice/script.js";
 import { DAYS } from "../public/js/data/program.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
 import { EXERCISES } from "../public/js/data/exercises.js";
 import { INTERVAL_MOVES, intervalPhases } from "../public/js/data/routines.js";
 import { rxFor, timerPresets } from "../public/js/plan.js";
-import { defaultProfile, bpmRange } from "../public/js/personalize.js";
+import { defaultProfile, bpmRange, levelIndex, personalize } from "../public/js/personalize.js";
 
 const catalog = new Map();
 for (const block of DAYS.flatMap((d) => d.blocks)) for (const item of block.items) catalog.set(item.id, { item, block: block.name });
-for (const addon of ADDONS) for (const variant of Object.values(addon.variants)) for (const item of variant.items) catalog.set(item.id, { item, block: addon.name });
+for (const addon of ADDONS) for (const variant of Object.values(addon.variants)) for (const item of variant.items) catalog.set(item.id, { item, block: addon.name, addon: addon.id });
 const clips = new Map();
 const pending = new Map();
 let worker = null;
@@ -25,16 +26,28 @@ let installer = null;
 let installMessage = "";
 let engineError = "";
 const cacheDir = path.join(VOICE_DIR, "audio");
+const voiceCache = new VoiceCache(VOICE_DIR, async (entry) => {
+  // Only one background clip is queued; workout requests get the next turn.
+  while (pending.size) await Promise.allSettled([...pending.values()].map((task) => task.promise));
+  clips.set(entry.id, entry);
+  await audioFile(entry.id);
+});
 
 function bad(message) { throw Object.assign(new Error(message), { status: 400 }); }
 function integer(value, min, max) { return Number.isInteger(value) && value >= min && value <= max; }
+async function modelInstalled() {
+  try {
+    const marker = JSON.parse(await readFile(path.join(VOICE_DIR, "ready.json"), "utf8"));
+    return marker.sha256 === MODEL_SHA && existsSync(path.join(VOICE_DIR, "model/model.int8.onnx"));
+  } catch { return false; }
+}
 function clip(text, voice, speed) {
   if (!text) return null;
-  const id = createHash("sha256").update(JSON.stringify([MODEL_SHA, "sherpa-1.13.8", voice.id, speed, text])).digest("hex");
+  const id = createHash("sha256").update(JSON.stringify([MODEL_SHA, "sherpa-1.13.8", voice.id, 1, text])).digest("hex");
   clips.delete(id);
-  clips.set(id, { text, sid: voice.sid, speed });
+  clips.set(id, { text, sid: voice.sid, speed: 1 });
   while (clips.size > 3000) clips.delete(clips.keys().next().value);
-  return { id, text, url: `/api/voice/audio/${id}.wav` };
+  return { id, text, rate: speed, url: `/api/voice/audio/${id}.wav` };
 }
 
 export function prepareManifest(body, savedProfile = {}) {
@@ -105,14 +118,55 @@ export function prepareManifest(body, savedProfile = {}) {
         phase.sub = range ? `Target ${bpmRange(profile, ...range)}` : "";
       }
     } else bad("Unknown timer");
-    result.phases = phases.map((phase) => cue(phaseLine(phase, t.type, profile)));
+    result.phases = phases.map((phase) => {
+      if (t.type !== "intervals" || phase.kind !== "work") return [cue(phaseLine(phase, t.type, profile))];
+      const movement = phase.ex ? cue(`For this interval, do ${speechText(EXERCISES[phase.ex].name, profile)}.`) : null;
+      const round = phase.round ? cue(`Round ${speechText(String(phase.round))} of ${speechText(String(phase.total))}. Follow today's prescribed pace.`) : null;
+      return [movement, round, cue(phaseLine({ ...phase, ex: undefined, round: undefined }, t.type, profile))].filter(Boolean);
+    });
   }
   return result;
 }
 
+export function buildVoicePack(body, savedProfile = {}) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) bad("Expected a voice cache request");
+  const profile = { ...defaultProfile(), ...savedProfile };
+  const level = body.level ?? levelIndex(profile);
+  if (!integer(level, 0, 3)) bad("Invalid training level");
+  const addons = body.addons ?? ADDONS.filter((addon) => profile.addons?.[addon.id]).map((addon) => addon.id);
+  if (!Array.isArray(addons) || addons.length > ADDONS.length || !addons.every((id) => ADDONS.some((addon) => addon.id === id))) bad("Unknown add-on");
+  const entries = new Map();
+  const collect = (value) => {
+    if (value?.id) entries.set(value.id, { id: value.id, ...clips.get(value.id) });
+    else if (Array.isArray(value)) value.forEach(collect);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  const base = { voice: body.voice, pace: "steady", level, profile: body.profile, restSec: body.restSec ?? profile.settings?.restSec ?? 75 };
+  collect(prepareManifest({ ...base, preview: true }, profile));
+  for (const { item, addon } of catalog.values()) {
+    if (addon && !addons.includes(addon)) continue;
+    if (!rxFor(item, level) || rxFor(item, level) === "—") continue;
+    const request = { ...base, itemId: item.id, restSec: item.id === "fri-strength-rdl" && level === 3 ? 25 : base.restSec };
+    collect(prepareManifest(request, profile));
+    const rx = personalize(rxFor(item, level), { ...profile, ...body.profile });
+    const sec = /(?:\d+\s*×\s*)?\d+(?:–(\d+))?\s*s\b/.exec(rx);
+    const minutes = /(\d+)(?:–\d+)?\s*min\b/.exec(rx);
+    const type = EXERCISES[item.ex].log;
+    if (type === "hold" || (type === "check" && sec)) {
+      const seconds = sec ? Number(sec[1] || sec[0].match(/\d+(?=\s*s)/)?.[0]) : 30;
+      collect(prepareManifest({ ...request, timer: { type: "hold", seconds, sides: /\/(side|leg|arm)\b/.test(rx) ? 2 : 1 } }, profile));
+    }
+    if (type === "cardio" && minutes) collect(prepareManifest({ ...request, timer: { type: "countdown", minutes: Number(minutes[1]) } }, profile));
+    for (const [preset] of timerPresets(item, level).entries()) for (const move of item.ex === "shortint" ? INTERVAL_MOVES : ["highknees"]) {
+      collect(prepareManifest({ ...request, timer: { type: "intervals", preset, moves: [move] } }, profile));
+    }
+  }
+  return [...entries.values()];
+}
+
 async function pruneCache() {
   const entries = await readdir(cacheDir).catch(() => []);
-  const files = await Promise.all(entries.filter((name) => /^[a-f0-9]{64}\.wav$/.test(name)).map(async (name) => ({ name, ...await stat(path.join(cacheDir, name)) })));
+  const files = await Promise.all(entries.filter((name) => /^[a-f0-9]{64}\.wav$/.test(name) && !voiceCache.pinned(name.slice(0, -4))).map(async (name) => ({ name, ...await stat(path.join(cacheDir, name)) })));
   let size = files.reduce((total, f) => total + f.size, 0);
   for (const file of files.sort((a, b) => a.mtimeMs - b.mtimeMs)) {
     if (size <= 256 * 1024 * 1024) break;
@@ -167,7 +221,7 @@ async function audioFile(id) {
   queue = queue.catch(() => {}).then(async () => {
     try {
       await startWorker();
-      const timeout = setTimeout(() => worker?.kill(), 60000);
+      const timeout = setTimeout(() => worker?.kill(), 180000);
       worker.send({ id, ...data, file });
       await promise.finally(() => clearTimeout(timeout));
     } catch (err) { pending.delete(id); reject(err); }
@@ -188,10 +242,25 @@ export async function handleVoice(req, res, pathname, { readBody, send, fail, pr
     const origin = req.headers.origin;
     if (req.headers["sec-fetch-site"] === "cross-site" || (origin && new URL(origin).host !== req.headers.host)) return fail(res, 403, "Use the voice controls from this app");
   }
+  await voiceCache.load();
   if (pathname === "/api/voice/status" && method === "GET") {
-    let ready = false;
-    try { const marker = JSON.parse(await readFile(path.join(VOICE_DIR, "ready.json"), "utf8")); ready = marker.sha256 === MODEL_SHA && existsSync(path.join(VOICE_DIR, "model/model.int8.onnx")); } catch {}
-    return send(res, 200, { installed: ready, installing: !!installer, error: !!engineError, message: installer ? installMessage : engineError || installMessage || (ready ? "Local voice is ready. Speech works offline." : "Download the local voice to hear coaching."), model: MODEL });
+    const ready = await modelInstalled();
+    const voice = new URL(req.url, "http://localhost").searchParams.get("voice") || "af_heart";
+    if (!VOICES.some((v) => v.id === voice)) return fail(res, 400, "Unknown voice");
+    if (ready && !installer) voiceCache.resume();
+    return send(res, 200, { installed: ready, installing: !!installer, error: !!engineError, message: installer ? installMessage : engineError || installMessage || (ready ? "Local voice is ready. Speech works offline." : "Download the local voice to hear coaching."), model: MODEL, cacheEnabled: voiceCache.packs.size > 0, cache: voiceCache.status(voice) });
+  }
+  if (pathname === "/api/voice/cache" && method === "POST") {
+    if (installer || !await modelInstalled()) return fail(res, 409, "Install the local voice first");
+    const body = await readBody(req);
+    const entries = buildVoicePack(body, await profile());
+    const voice = body.voice || "af_heart";
+    const cache = await voiceCache.start(voice, entries);
+    if (voice !== "af_heart" && !voiceCache.packs.has("af_heart")) {
+      await voiceCache.start("af_heart", buildVoicePack({ ...body, voice: "af_heart" }, await profile()));
+      voiceCache.selected = voice;
+    }
+    return send(res, 202, { cacheEnabled: true, cache });
   }
   if (pathname === "/api/voice/install" && method === "POST") {
     if (!installer) {
@@ -208,6 +277,7 @@ export async function handleVoice(req, res, pathname, { readBody, send, fail, pr
   if (pathname === "/api/voice/prepare" && method === "POST") return send(res, 200, prepareManifest(await readBody(req), await profile()));
   const match = pathname.match(/^\/api\/voice\/audio\/([a-f0-9]{64})\.wav$/);
   if (match && method === "GET") {
+    if (!voiceCache.packs.size) return fail(res, 409, "Turn coaching on once to prepare and save voice audio");
     if (!clips.has(match[1])) return fail(res, 404, "Prepare this workout cue first");
     const file = await audioFile(match[1]);
     return send(res, 200, await readFile(file), "audio/wav");
@@ -216,3 +286,8 @@ export async function handleVoice(req, res, pathname, { readBody, send, fail, pr
 }
 
 process.once("exit", () => { worker?.kill(); installer?.kill(); });
+
+export async function resumeVoiceCache() {
+  await voiceCache.load();
+  if (await modelInstalled()) voiceCache.resume();
+}

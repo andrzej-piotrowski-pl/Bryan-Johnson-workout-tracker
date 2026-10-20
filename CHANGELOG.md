@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.33.0] - 2026-10-20
+
+### Added
+- The first coaching activation prepares a saved voice pack for your week, form tips and timer options.
+- Coach shows cache progress and an estimated wait; selecting another voice prepares its pack too.
+
+### Changed
+- Saved voice packs survive server restarts and stay available when switching voices.
+- Both speaking paces share cached audio, and repeated interval cues reuse the same clips.
+
+### Fixed
+- Ready voice packs play from saved files without waiting for speech generation.
+- No workout voice pack is generated before you first turn coaching on.
+
 ## [1.32.2] - 2026-10-20
 
 ### Fixed

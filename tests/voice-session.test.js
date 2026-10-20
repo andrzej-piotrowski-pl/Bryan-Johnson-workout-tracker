@@ -27,7 +27,8 @@ test("guided rests continue teaching, respect the remaining time and keep clock 
   }
   globalThis.window = { AudioContext: Context };
   globalThis.fetch = async (url, options) => {
-    if (url === "/api/voice/status") return { ok: true, json: async () => ({ installed: true }) };
+    if (url.startsWith("/api/voice/status")) return { ok: true, json: async () => ({ installed: true, cacheEnabled: true }) };
+    if (url === "/api/voice/cache") return { ok: true, json: async () => ({ cacheEnabled: true, cache: { state: "ready", completed: 1, total: 1 } }) };
     if (url === "/api/voice/prepare") {
       if (failPreparation) throw new Error("Could not prepare the local voice.");
       const result = prepareManifest(JSON.parse(options.body));
@@ -44,6 +45,7 @@ test("guided rests continue teaching, respect the remaining time and keep clock 
     return { ok: true, arrayBuffer: async () => new TextEncoder().encode(texts.get(url)).buffer };
   };
   state.profile = { ...defaultProfile(), level: "active" };
+  voiceStatus.cacheEnabled = true;
   const all = DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items.map((item) => ({ item, block: b.name, level: 2, scope: "main" }))));
   const row = all.find((s) => s.item.ex === "row");
   const next = all.find((s) => s.item.ex === "pushup");
@@ -58,8 +60,8 @@ test("guided rests continue teaching, respect the remaining time and keep clock 
   const entering = coach.enter(0);
   await loadingAudio;
   assert.equal(voiceStatus.preparing, true, "the popup stays in preparation state while speech is loading");
-  assert.match(status.textContent, /few minutes/);
-  assert.match(status.textContent, /creating and saving spoken instructions/);
+  assert.match(status.textContent, /Loading coach audio/);
+  assert.match(status.textContent, /progress is shown in Coach/);
   releaseAudio(); await entering;
   assert.equal(voiceStatus.preparing, false, "preparation ends when the opening speech is ready");
   assert.equal(status.textContent, "");

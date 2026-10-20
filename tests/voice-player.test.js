@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { state } from "../public/js/store.js";
-import { cancelTeaching, cancelVoice, loadClip, onVoice, playVoice, unlockVoice, videoVoice } from "../public/js/voice/player.js";
+import { cacheVoice, cancelTeaching, cancelVoice, loadClip, onVoice, playVoice, refreshVoiceStatus, unlockVoice, videoVoice, voiceStatus } from "../public/js/voice/player.js";
 
 test("one player cancels stale audio, prioritises clocks, and restores ducking on every stop", async (t) => {
   const sources = [];
@@ -15,7 +15,7 @@ test("one player cancels stale audio, prioritises clocks, and restores ducking o
     resume() { return Promise.resolve(); }
     createBuffer() { return {}; }
     createBufferSource() {
-      const source = { connect() {}, disconnect() {}, start() { if (failStart) throw new Error("Audio device stopped"); source.started = true; }, stop() { source.stopped = true; }, onended: null };
+      const source = { playbackRate: { value: 1 }, connect() {}, disconnect() {}, start() { if (failStart) throw new Error("Audio device stopped"); source.started = true; }, stop() { source.stopped = true; }, onended: null };
       sources.push(source);
       return source;
     }
@@ -27,19 +27,22 @@ test("one player cancels stale audio, prioritises clocks, and restores ducking o
   globalThis.window = { AudioContext: Context };
   t.after(() => { globalThis.fetch = originalFetch; if (originalWindow === undefined) delete globalThis.window; else globalThis.window = originalWindow; });
   state.profile = { settings: { voiceCoach: true, sound: false } };
+  voiceStatus.cacheEnabled = true;
   await unlockVoice();
   const events = [];
   const off = onVoice((status) => events.push(status.speaking));
   t.after(() => { cancelVoice(); off(); state.profile = null; });
   const clip = (id) => ({ id, url: `/api/voice/audio/${id}.wav` });
-  const teaching = clip("teaching"), clock = clip("clock");
+  const teaching = { ...clip("teaching"), rate: 1.06 }, clock = clip("clock");
   await loadClip(teaching); await loadClip(clock);
   const first = playVoice(teaching, { teaching: true });
   assert.equal(events.at(-1), true, "beeps can be off while voice plays and ducks the radio");
   const oldSource = sources.at(-1);
+  assert.equal(oldSource.playbackRate.value, 1.06, "brisk pace reuses the cached audio at a faster playback rate");
   const warning = playVoice(clock, { urgent: true });
   assert.equal(oldSource.stopped, true, "clock interrupts teaching");
   const warningSource = sources.at(-1);
+  assert.equal(warningSource.playbackRate.value, 1);
   assert.equal(await playVoice(teaching, { teaching: true }), false, "teaching cannot interrupt a clock");
   cancelTeaching();
   assert(!warningSource.stopped, "typing does not silence a clock cue");
@@ -66,4 +69,26 @@ test("one player cancels stale audio, prioritises clocks, and restores ducking o
   assert.equal(events.at(-1), false, "failed playback restores radio volume");
   state.profile.settings.voiceCoach = false;
   assert.equal(await playVoice(clock), false);
+});
+
+test("voice selection cannot cache before opt-in and status polling cannot undo activation", async (t) => {
+  const originalFetch = globalThis.fetch;
+  const previousStatus = { ...voiceStatus };
+  t.after(() => { globalThis.fetch = originalFetch; Object.assign(voiceStatus, previousStatus); state.profile = null; });
+  state.profile = { level: "new", settings: { coachVoice: "af_heart" } };
+  voiceStatus.cacheEnabled = false;
+  const calls = [];
+  let finish;
+  globalThis.fetch = (url) => { calls.push(url); return new Promise((resolve) => { finish = resolve; }); };
+  await cacheVoice();
+  assert.deepEqual(calls, [], "choosing a voice before first activation saves nothing");
+  const activation = cacheVoice({ activate: true });
+  await refreshVoiceStatus();
+  assert.deepEqual(calls, ["/api/voice/cache"], "polling waits for explicit activation to finish");
+  finish({ ok: true, json: async () => ({ cacheEnabled: true, cache: { state: "ready", completed: 10, total: 10 } }) });
+  await activation;
+  assert.equal(voiceStatus.cacheEnabled, true);
+  assert.equal(voiceStatus.cache.state, "ready");
+  await cacheVoice();
+  assert.equal(calls.length, 1, "unchanged preferences reuse the same pack");
 });

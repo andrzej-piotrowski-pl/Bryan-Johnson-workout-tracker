@@ -2,6 +2,7 @@
 import { state, updateProfile } from "../store.js";
 import { VOICES } from "./script.js";
 import { rxFor } from "../plan.js";
+import { levelIndex } from "../personalize.js";
 
 let context = null;
 let source = null;
@@ -12,12 +13,14 @@ let mutedByVideo = false;
 let finishSource = null;
 const buffers = new Map();
 const listeners = new Set();
-export const PREPARING_VOICE = "Preparing coach audio… First use can take a few minutes, especially on slower computers. Your computer is creating and saving spoken instructions. Saved audio is quicker next time. You can keep exercising while it prepares.";
-export const voiceStatus = { installed: false, installing: false, preparing: false, message: "Checking local voice…", blocked: false };
+let cacheRequest = "";
+let pendingCache = "";
+export const PREPARING_VOICE = "Loading coach audio. Saved clips play as soon as they arrive. If this voice is still being cached, its progress is shown in Coach.";
+export const voiceStatus = { installed: false, installing: false, preparing: false, cacheEnabled: false, cache: null, message: "Checking local voice…", blocked: false };
 const notify = () => { for (const fn of listeners) fn({ ...voiceStatus, speaking }); };
 export function onVoice(fn) { listeners.add(fn); fn({ ...voiceStatus, speaking }); return () => listeners.delete(fn); }
 export function setVoicePreparing(value) { voiceStatus.preparing = value; notify(); }
-export const voiceEnabled = () => state.profile?.settings?.voiceCoach === true;
+export const voiceEnabled = () => state.profile?.settings?.voiceCoach === true && voiceStatus.cacheEnabled;
 export const selectedVoice = () => VOICES.find((v) => v.id === state.profile?.settings?.coachVoice) || VOICES[0];
 
 export function unlockVoice() {
@@ -49,18 +52,58 @@ export function videoVoice(value) { mutedByVideo = value; if (value) cancelVoice
 export function setVoiceEnabled(value) {
   updateProfile((p) => { p.settings ||= {}; p.settings.voiceCoach = value; }, { silent: true });
   if (!value) { voiceStatus.preparing = false; cancelVoice(); }
-  else { mutedByVideo = false; unlockVoice(); }
+  else { mutedByVideo = false; unlockVoice(); cacheVoice({ activate: true }); }
   notify();
 }
 
 export async function refreshVoiceStatus() {
+  if (pendingCache) return voiceStatus;
+  const voice = selectedVoice().id;
+  const requestedCache = cacheRequest;
   try {
-    const response = await fetch("/api/voice/status", { cache: "no-store" });
+    const response = await fetch(`/api/voice/status?voice=${voice}`, { cache: "no-store" });
     if (!response.ok) throw new Error();
-    Object.assign(voiceStatus, await response.json());
+    const result = await response.json();
+    if (pendingCache || selectedVoice().id !== voice || requestedCache !== cacheRequest) return voiceStatus;
+    Object.assign(voiceStatus, result);
   } catch { voiceStatus.installed = false; voiceStatus.message = "Start the local server to use voice coaching."; }
   notify();
   return voiceStatus;
+}
+
+export function voiceCacheMessage() {
+  const cache = voiceStatus.cache;
+  if (!voiceStatus.cacheEnabled) return "Turn coaching on once to prepare and save voice audio. No voice pack is generated before that.";
+  if (!cache) return "This voice has not been cached yet. Select it to start its one-time preparation.";
+  if (cache.state === "error") return `Voice cache paused: ${cache.error} Turn coaching on again to retry; finished audio is kept.`;
+  if (cache.state === "ready") return `${selectedVoice().name} is cached. Saved audio is ready for your workout.`;
+  const seconds = cache.remainingSeconds;
+  const remaining = seconds ? seconds >= 3600 ? ` About ${Math.ceil(seconds / 3600)} hours remaining.` : ` About ${Math.max(1, Math.ceil(seconds / 60))} minutes remaining.` : " The first build can take a long time on a slow CPU.";
+  return `Caching ${selectedVoice().name}: ${cache.completed} of ${cache.total || "…"} clips saved.${remaining} Your week, timer options and form cues are being saved once. You can leave this page; preparation continues on the server.`;
+}
+
+export async function cacheVoice({ activate = false, level = levelIndex(state.profile) } = {}) {
+  if (!activate && !voiceStatus.cacheEnabled) return;
+  const p = state.profile || {};
+  const body = { voice: selectedVoice().id, level, profile: voiceProfile(), addons: Object.keys(p.addons || {}).filter((id) => p.addons[id]), restSec: p.settings?.restSec || 75 };
+  const key = JSON.stringify(body);
+  if (cacheRequest === key && voiceStatus.cache?.state !== "error") return;
+  cacheRequest = key;
+  pendingCache = key;
+  const wasEnabled = voiceStatus.cacheEnabled;
+  voiceStatus.cacheEnabled = true;
+  voiceStatus.cache = { state: "building", completed: 0, total: 0 };
+  notify();
+  try {
+    const response = await fetch("/api/voice/cache", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Could not prepare the voice cache.");
+    if (cacheRequest === key) Object.assign(voiceStatus, result);
+  } catch (err) {
+    if (cacheRequest === key) { voiceStatus.cacheEnabled = wasEnabled; voiceStatus.cache = { state: "error", error: err.message }; voiceStatus.message = err.message; cacheRequest = ""; }
+  }
+  if (pendingCache === key) pendingCache = "";
+  notify();
 }
 export async function installVoice() {
   const response = await fetch("/api/voice/install", { method: "POST" });
@@ -69,13 +112,16 @@ export async function installVoice() {
   Object.assign(voiceStatus, { installing: true, message: data.message }); notify();
 }
 
-export function voiceRequest(item, level, log = {}, restSec = 75) {
+function voiceProfile() {
   const p = state.profile || {};
+  return Object.fromEntries(["age", "weightKg", "maxDumbbellKg", "hrMax", "sex", "units", "level"].map((key) => [key, p[key]]));
+}
+export function voiceRequest(item, level, log = {}, restSec = 75) {
   return {
     itemId: item.id, level, restSec,
     easier: ["dose", "version"].includes(log.easier?.choice) ? log.easier.choice : undefined,
     doseLevel: log.rxOverride ? [0, 1, 2, 3].find((n) => rxFor(item, n) === log.rxOverride) : undefined,
-    profile: Object.fromEntries(["age", "weightKg", "maxDumbbellKg", "hrMax", "sex", "units", "level"].map((key) => [key, p[key]])),
+    profile: voiceProfile(),
   };
 }
 
@@ -131,6 +177,7 @@ export async function playVoice(clips, { urgent = false, teaching = false, wait 
       speaking = true; notify();
       await new Promise((resolve) => {
         source = context.createBufferSource(); source.buffer = buffer;
+        if (source.playbackRate) source.playbackRate.value = clip.rate || 1;
         source.connect(context.destination);
         finishSource = resolve;
         source.onended = resolve;

@@ -1,6 +1,6 @@
 import { state } from "../store.js";
 import { getItemLog } from "../components/logger.js";
-import { PREPARING_VOICE, cancelTeaching, cancelVoice, clipDuration, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoicePreparing, videoVoice, voiceEnabled, voiceRequest, voiceStatus } from "./player.js";
+import { PREPARING_VOICE, cacheVoice, cancelTeaching, cancelVoice, clipDuration, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoicePreparing, videoVoice, voiceEnabled, voiceRequest, voiceStatus } from "./player.js";
 
 export function createGuidedVoice(date, steps, statusEl) {
   let index = 0;
@@ -40,6 +40,7 @@ export function createGuidedVoice(date, steps, statusEl) {
       if (!voiceStatus.installed) await refreshVoiceStatus();
       if (disposed || stamp !== token || !voiceEnabled()) return;
       if (!voiceStatus.installed) { statusEl.textContent = ""; setVoicePreparing(false); return; }
+      cacheVoice({ level: steps[index].level });
       const current = await getManifest(steps[index]);
       if (disposed || stamp !== token) return;
       manifest = current;

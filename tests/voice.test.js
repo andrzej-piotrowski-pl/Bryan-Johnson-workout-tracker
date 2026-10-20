@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { DAYS } from "../public/js/data/program.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
+import { EXERCISES } from "../public/js/data/exercises.js";
+import { parseRx } from "../public/js/components/logger.js";
 import { defaultProfile, LEVELS, personalize, bpmRange } from "../public/js/personalize.js";
 import { rxFor } from "../public/js/plan.js";
 import { CLOCK, VOICES, clockKey, durationText, exerciseScript, phaseLine, speechText } from "../public/js/voice/script.js";
-import { prepareManifest } from "../voice/service.js";
+import { buildVoicePack, prepareManifest } from "../voice/service.js";
 
 const items = [...DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items)), ...ADDONS.flatMap((a) => Object.values(a.variants).flatMap((v) => v.items))];
 
@@ -58,7 +60,7 @@ test("the spoken load matches personalisation, including an easier dose and heav
   assert.match(retained.effort.text, /two or three/);
   const cardio = items.find((it) => it.ex === "zone2");
   const cleared = prepareManifest({ itemId: cardio.id, level: 2, profile: { age: 30, hrMax: null }, timer: { type: "countdown", minutes: 10 } }, { hrMax: 230 });
-  assert(cleared.phases[1].text.includes(speechText(bpmRange(defaultProfile(), 60, 70))), "a pending cleared max HR uses the same estimate as the screen");
+  assert(cleared.phases[1].map((c) => c.text).join(" ").includes(speechText(bpmRange(defaultProfile(), 60, 70))), "a pending cleared max HR uses the same estimate as the screen");
 });
 
 test("level-specific teaching and safety follow the actual movement", () => {
@@ -87,15 +89,58 @@ test("hold, recovery and countdown cues use their own names and exact durations"
   assert(!Object.values(CLOCK).some((s) => /great job/i.test(s)));
 });
 
-test("five voices include US men and women; cache keys include voice, speed and exact text", () => {
+test("five voices include US men and women; paces reuse cached audio", () => {
   assert.equal(VOICES.length, 5);
   assert(VOICES.some((v) => v.id.startsWith("am_")));
   assert(VOICES.some((v) => v.id.startsWith("af_")));
   const first = prepareManifest({ preview: true, voice: "af_heart" }).preview;
   assert.equal(first.id, prepareManifest({ preview: true, voice: "af_heart" }).preview.id);
   assert.notEqual(first.id, prepareManifest({ preview: true, voice: "am_michael" }).preview.id);
-  assert.notEqual(first.id, prepareManifest({ preview: true, pace: "brisk" }).preview.id);
+  const brisk = prepareManifest({ preview: true, pace: "brisk" }).preview;
+  assert.equal(first.id, brisk.id);
+  assert.equal(brisk.rate, 1.06);
+  assert.equal(first.rate, 1);
   assert.match(first.url, /^\/api\/voice\/audio\/[a-f0-9]{64}\.wav$/);
+});
+
+test("a deduplicated voice pack covers the week, both paces and interval movement choices", () => {
+  const profile = { ...defaultProfile(), level: "active" };
+  const pack = buildVoicePack({ voice: "af_heart", addons: [] }, profile);
+  const ids = new Set(pack.map((entry) => entry.id));
+  assert.equal(ids.size, pack.length);
+  assert(pack.every((entry) => entry.sid === VOICES[0].sid && entry.speed === 1));
+  const collect = (value) => {
+    if (value?.id) assert(ids.has(value.id), value.text);
+    else if (Array.isArray(value)) value.forEach(collect);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  for (const day of DAYS) for (const block of day.blocks) for (const item of block.items) {
+    if (!rxFor(item, 2) || rxFor(item, 2) === "—") continue;
+    collect(prepareManifest({ voice: "af_heart", itemId: item.id, level: 2, pace: "brisk" }, profile));
+  }
+  const interval = items.find((item) => item.ex === "shortint");
+  collect(prepareManifest({ voice: "af_heart", itemId: interval.id, level: 2, timer: { type: "intervals", preset: 0, moves: ["burpee", "jacks"] } }, profile));
+  assert.throws(() => buildVoicePack({ level: 99 }), /Invalid training level/);
+  assert.throws(() => buildVoicePack({ addons: ["unknown"] }), /Unknown add-on/);
+});
+
+test("packs include the hold and cardio timers offered by the logger at every level", () => {
+  for (const [level, { id }] of LEVELS.entries()) {
+    const profile = { ...defaultProfile(), level: id };
+    const ids = new Set(buildVoicePack({ addons: ADDONS.map((addon) => addon.id) }, profile).map((entry) => entry.id));
+    for (const item of items) {
+      const rx = rxFor(item, level);
+      if (!rx || rx === "—") continue;
+      const type = EXERCISES[item.ex].log;
+      const target = parseRx(personalize(rx, profile));
+      const timer = type === "hold" || (type === "check" && target.seconds)
+        ? { type: "hold", seconds: target.seconds || 30, sides: target.perSide ? 2 : 1 }
+        : type === "cardio" && target.minutes ? { type: "countdown", minutes: target.minutes } : null;
+      if (!timer) continue;
+      const manifest = prepareManifest({ itemId: item.id, level, timer }, profile);
+      for (const clip of manifest.phases.flat()) assert(ids.has(clip.id), `${id}: ${item.id}: ${clip.text}`);
+    }
+  }
 });
 
 test("the local API accepts plan context, never arbitrary speech or invalid resource requests", () => {

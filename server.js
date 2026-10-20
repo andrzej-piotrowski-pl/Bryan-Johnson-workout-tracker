@@ -285,6 +285,9 @@ const server = http.createServer(async (req, res) => {
 });
 
 await mkdir(DAYS_DIR, { recursive: true });
+if (existsSync(path.join(ROOT, ".voice", "packs"))) {
+  import("./voice/service.js").then(({ resumeVoiceCache }) => resumeVoiceCache()).catch((err) => console.warn("Voice cache:", err.message));
+}
 if (!existsSync(path.join(ROOT, "node_modules", "three"))) {
   console.warn("\n  three.js is missing. Run `npm install` first, or the 3D animations won't load.\n");
 }

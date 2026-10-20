@@ -37,10 +37,20 @@ The browser fetches and decodes clips ahead of playback. Clock cues interrupt te
 
 Radio ducking follows actual playback, including previews: volume is multiplied by 0.12 while speaking and restored on finish, cancellation or failure. Changing volume while ducked updates the underlying preference. The mute flag is independent. On browsers that lock media volume, the radio is temporarily muted during speech instead. This fallback still needs a listening check on physical devices.
 
-Audio cache keys include model hash, runtime, voice, speed and exact text. The disk cache is outside `data/` and capped at 256 MB. Browser buffers and prepared server cue IDs also have bounds. Old profile fields and logs are read as before; voice preferences add optional settings.
+## Persistent voice packs
+
+The first explicit **Turn coaching on** starts a background pack for Heart and the selected voice. Looking at Settings, choosing a voice before that activation or restarting a server without saved packs does not generate workout audio. Preview is disabled until the first activation. The installer's existing test cue still checks that the native runtime works.
+
+`buildVoicePack` collects and deduplicates the six-day plan at the current training level, enabled add-ons, form instructions, set and rest cues, and prescribed hold, cardio and interval options. Selecting another voice after the first activation starts its pack. Changes to the profile, level or rest setting reuse unchanged files and prepare new lines as needed. Easier overrides and unusual timer lengths can still need audio on demand.
+
+`voice/cache.js` saves pack manifests in `.voice/packs/` and PCM WAV files in `.voice/audio/`. One background clip is generated at a time; queued workout requests get the next turn after the current clip. Progress comes from the saved WAVs, so an unfinished pack resumes when the server restarts. A failed generation pauses that pack and keeps finished audio for retry. Preparation continues with the browser closed or coaching off.
+
+The first full pack contains hundreds of clips and can take hours on the measured CPU. The controls show completed clips and estimate remaining time after three new clips finish. A ready pack plays from local WAVs without loading the model. Both paces share the same generation at speed 1; Brisk uses browser playback rate 1.06, while teaching stays at 1. Interval movement and round announcements are separate reusable clips.
+
+Audio cache keys include model hash, runtime, voice and exact text. Current packs for previously selected voices are protected from eviction; the 256 MB cleanup limit applies only to other generated clips. Packs need extra disk space. Browser buffers and prepared server cue IDs also have bounds. Everything stays outside `data/`; personal logs and backups are unchanged.
 
 ## Verification
 
-The automated checks cover all plan and add-on prescriptions at every level in metric and imperial, difficult dose strings, easier choices, safety cues, side changes, clock thresholds, request validation, cache-key changes, cancellation while decoding, clock priority and voice independent of beeps. Browser checks use sample profiles and controlled audio to check Settings, the guided controls, radio volume restoration, rest interactions, mobile layout and interval pause/stop. A real native cue was also generated and served as PCM WAV.
+The automated checks cover all plan and add-on prescriptions at every level in metric and imperial, difficult dose strings, easier choices, safety cues, side changes, clock thresholds, request validation, cache-key changes, cancellation while decoding, clock priority and voice independent of beeps. Cache checks cover explicit opt-in, deduplication, voice changes, failures and restart recovery. An isolated server test serves a saved pack without a native runtime, including after a restart. Browser checks use sample profiles and controlled audio to check Settings, progress and ETA, voice switching, automatic coaching after reload, the guided controls, radio volume restoration, rest interactions, mobile layout and interval pause/stop. A real native cue was also generated and served as PCM WAV.
 
 Physical iOS/Android audio permissions, locked-screen playback, subjective voice quality and native installation on Windows/macOS have not been verified. Browser timers can be throttled in the background; keep the workout visible for timed guidance.
