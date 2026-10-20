@@ -245,7 +245,8 @@ export function renderLogger(container, ctx) {
       container.innerHTML = `<p class="muted">Choose movements from this list for your intervals, then record them in the interval block.</p>`;
       return;
     }
-    const doneBtn = ctx.manualCompletion ? "" : `<button type="button" class="btn ${done ? "primary" : ""}" data-l="done">${icon("check")} ${done ? "Done" : "Mark done"}</button>`;
+    const doneButton = ctx.manualCompletion ? "" : `<button type="button" class="btn ${done ? "primary" : ""}" data-l="done" aria-pressed="${done}">${icon("check")} ${done || ctx.compactActions ? "Done" : "Mark done"}</button>`;
+    const doneBtn = ctx.compactActions ? "" : doneButton;
 
     if (type === "reps" || type === "load" || type === "hold" || type === "carry") {
       const cols = [];
@@ -305,11 +306,15 @@ export function renderLogger(container, ctx) {
       body += `<div class="banner easier"><span>${icon("info", "lg")}</span><div class="grow"><b>${esc(label)}</b><span>${esc(l.easier.text || "")}</span></div><button type="button" class="btn sm ghost" data-l="easier-undo">${icon("undo", "sm")} Undo</button></div>`;
     }
     body += suggestionHtml(l.holdProgress ? { kind: "repeat", text: "Progression paused today after the easier choice. Repeat this session next time." } : suggestion);
-    body += `<div class="btn-row"><button type="button" class="btn sm ghost" data-l="easier">${icon("info", "sm")} ${l.easier ? "Change easier choice" : "Something hurts or too hard?"}</button></div>`;
+    const easierButton = `<button type="button" class="btn sm ghost" data-l="easier" aria-label="${l.easier ? "Change easier choice" : "Something hurts or too hard?"}" title="Something hurts or too hard?">${icon("info", "sm")} ${l.easier ? "Change easier choice" : ctx.compactActions ? "Something hurts?" : "Something hurts or too hard?"}</button>`;
+    if (!ctx.compactActions) body += `<div class="btn-row">${easierButton}</div>`;
     const last = type !== "check" && type !== "cardio" && type !== "intervals" ? lastPerformance(item.ex, date, { level }) : null;
     body += last ? `<p class="muted" style="font-size:0.84rem">Last time (${esc(fmtShort(last.date))}): <span class="mono">${esc(summarizeLog(last.log, type))}</span></p>` : "";
-    body += `<details ${l.note ? "open" : ""}><summary class="muted" style="cursor:pointer;font-size:0.86rem">${icon("note", "sm")} Note for this exercise</summary><textarea class="input" data-l="note" rows="2" placeholder="Note how it felt, any pain or a technique cue to remember." style="margin-top:8px;min-height:64px">${esc(l.note || "")}</textarea></details>`;
-    container.innerHTML = `<div class="logger">${body}</div>`;
+    const noteField = `<textarea class="input" data-l="note" aria-label="Note for this exercise" rows="2" placeholder="Note how it felt, any pain or a technique cue to remember." style="margin-top:8px;min-height:64px"${ctx.compactActions && !l.note ? " hidden" : ""}>${esc(l.note || "")}</textarea>`;
+    body += ctx.compactActions
+      ? `<div class="logger-actions">${doneButton}${easierButton}<button type="button" class="btn sm ghost${l.note ? " has-note" : ""}" data-l="note-toggle" aria-label="Note for this exercise" aria-expanded="${!!l.note}">${icon("note", "sm")} Note</button></div>${noteField}`
+      : `<details ${l.note ? "open" : ""}><summary class="muted" style="cursor:pointer;font-size:0.86rem">${icon("note", "sm")} Note for this exercise</summary>${noteField}</details>`;
+    container.innerHTML = `<div class="logger${ctx.compactActions ? " compact-actions" : ""}">${body}</div>`;
   }
 
   // The next-time line turns the plan's progression rule into one clear action.
@@ -415,6 +420,7 @@ export function renderLogger(container, ctx) {
       save((l) => {
         l.note = t.value;
       });
+      container.querySelector('[data-l="note-toggle"]')?.classList.toggle("has-note", !!t.value);
     }
     refreshDoneButton();
   });
@@ -441,7 +447,8 @@ export function renderLogger(container, ctx) {
     const b = container.querySelector('[data-l="done"]');
     if (b) {
       b.classList.toggle("primary", !!l.done);
-      b.innerHTML = `${icon("check")} ${l.done ? "Done" : "Mark done"}`;
+      b.setAttribute("aria-pressed", String(!!l.done));
+      b.innerHTML = `${icon("check")} ${l.done || ctx.compactActions ? "Done" : "Mark done"}`;
     }
   }
 
@@ -449,7 +456,12 @@ export function renderLogger(container, ctx) {
     const b = e.target.closest("button");
     if (!b) return;
     const a = b.dataset.l;
-    if (a === "done") {
+    if (a === "note-toggle") {
+      const field = container.querySelector('[data-l="note"]');
+      field.hidden = !field.hidden;
+      b.setAttribute("aria-expanded", String(!field.hidden));
+      if (!field.hidden) field.focus();
+    } else if (a === "done") {
       save((l) => {
         l.done = !l.done;
         if (l.done) l.skipped = false;

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.35.3] - 2026-10-20
+
+### Changed
+- Today groups Done, Something hurts? and Note into one compact action row; notes open underneath.
+
 ## [1.35.2] - 2026-10-20
 
 ### Fixed

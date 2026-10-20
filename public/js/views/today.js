@@ -475,7 +475,7 @@ export function render(el, params) {
   }
 
   function panelCtx(found) {
-    return { exId: found.item.ex, item: found.item, date, level: found.level, scope: selected.scope, scopeName: found.scopeName, onChange: refreshStatus };
+    return { exId: found.item.ex, item: found.item, date, level: found.level, scope: selected.scope, scopeName: found.scopeName, compactActions: true, onChange: refreshStatus };
   }
 
   function closeInline() {

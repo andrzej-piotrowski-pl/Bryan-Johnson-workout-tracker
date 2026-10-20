@@ -104,6 +104,7 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
         level: ctx.level,
         scope: ctx.scope || "main",
         onChange: ctx.onChange,
+        compactActions: ctx.compactActions,
         // Keep the dose above the logger in step with an easier choice.
         onDraw: (log) => {
           const routine = body.querySelector("[data-routine]");

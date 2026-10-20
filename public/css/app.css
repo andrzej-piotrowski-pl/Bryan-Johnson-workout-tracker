@@ -1082,3 +1082,9 @@ td.cur, th.cur { background: var(--accent-soft); }
 .guided-progress-steps > button[data-completion="done"] { background: var(--accent-soft); }
 .guided-progress-steps > button[data-completion="skipped"] { border-bottom: 2px dashed var(--muted); }
 .guided-progress-steps > button[aria-current="step"] { box-shadow: inset 0 -3px var(--accent); }
+
+.logger-actions { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 5px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
+.logger-actions > .btn { min-height: 36px; padding: 7px 9px; font-size: 0.8rem; }
+.logger-actions > [data-l="easier"] { flex: 1; }
+.logger-actions > [data-l="note-toggle"]:is(.has-note, [aria-expanded="true"]) { color: var(--accent); background: var(--accent-soft); }
+.compact-actions > .btn-row:empty { display: none; }

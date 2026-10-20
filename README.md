@@ -4,7 +4,7 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 
 - **What to do each day**, block by block, with workouts set by your training level (New to training, Returning, Active, Well trained). Feel ready for more, or need it easier? Switch level any time.
 - **A 3D animation for every exercise** (65 of them), plus Bryan's own video at the exact timestamp and focused single-exercise demo videos, with a `min X sec Y` timestamp guide above the player and per-movement video sets that switch automatically with multi-movement animations.
-- **Today’s desktop exercise panel** stays beside the list as you scroll. Scroll inside it for instructions and videos; selecting another exercise returns the panel to its animation.
+- **Today’s desktop exercise panel** stays beside the list as you scroll. Scroll inside it for instructions and videos; selecting another exercise returns the panel to its animation. Done, Something hurts? and Note share one action row; Note opens the editor below it.
 - **Animations on phones and tablets**: Today opens the first exercise inline automatically. Tap another exercise to switch; resizing keeps the selected demonstration visible.
 - **Navigation** has five destinations: Today, Activity, Exercises, Plan and Settings. Activity groups This week, History, Progress and Benchmarks into four tabs.
 - **Twenty-one animation styles**: choose how the exercise demonstrations look, from a realistic athlete to a doodle or a friendly monster.
@@ -266,6 +266,8 @@ Unpacked audio stays in the gitignored `.voice/` folder, separate from personal 
 <img src="docs/screenshots/today-follow-panel.png" width="49%" alt="Today scrolled down with the selected exercise animation still visible beside the list">
 <img src="docs/screenshots/guided-status-bottom.png" width="49%" alt="Guided coach-audio status below the exercise controls">
 </p>
+
+![Today’s compact Done, Something hurts? and Note buttons](docs/screenshots/today-action-row.png)
 
 ## Themes
 
