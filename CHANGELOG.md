@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.31.0] - 2026-10-20
+
+### Added
+- Collapse individual add-ons on Today by clicking their headers. They start expanded, with progress still visible when collapsed.
+
 ## [1.30.0] - 2026-10-20
 
 ### Added

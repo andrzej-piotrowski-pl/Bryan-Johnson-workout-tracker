@@ -580,7 +580,7 @@
 [data-skin="darkroom"] .ex-card .meta b { font-weight: 500; }
 [data-skin="darkroom"] .log-entry { padding: 10px 0; }
 [data-skin="darkroom"] .chart-card { padding: 0; }
-[data-skin="darkroom"] details.card { background: var(--surface); padding: 16px 20px; border-radius: var(--r); }
+[data-skin="darkroom"] details.card:not(.block) { background: var(--surface); padding: 16px 20px; border-radius: var(--r); }
 
 /* setup, dialogs, odds and ends */
 [data-skin="darkroom"] .setup-card { background: var(--surface); border-radius: var(--r); }

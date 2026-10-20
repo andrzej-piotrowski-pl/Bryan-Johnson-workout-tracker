@@ -30,6 +30,7 @@ export function render(el, params) {
   let selected = null; // { scope, id }
   let panel = null;
   let showSkipped = false;
+  let collapsedAddons = new Set();
   let lastStatus = state.days[date] ? state.days[date].status : null;
   const narrowView = window.matchMedia("(max-width: 1180px)");
   let panelMode = detailMode();
@@ -102,11 +103,11 @@ export function render(el, params) {
     const periodic = due
       .map((pd) => `<label class="banner hint" style="align-items:center"><input type="checkbox" class="tick" data-periodic="${esc(pd.id)}" ${a.periodic && a.periodic[pd.id] ? "checked" : ""}><span class="grow"><b>Due today</b><span>${esc(pd.label)}</span></span></label>`)
       .join("");
-    return `<section class="card block addon-scope" data-addon="${esc(addon.id)}">
-      <div class="block-head">
+    return `<details class="card block addon-scope" data-addon="${esc(addon.id)}" ${collapsedAddons.has(addon.id) ? "" : "open"}>
+      <summary class="block-head">
         <div class="addon-head">${icon(addon.icon || "sparkle", "lg")}<h3>${esc(addon.name)}</h3><span class="chip addon">${optional ? "Optional today" : "Add-on"}</span></div>
-        <span class="eyebrow" data-addon-prog>${prog.skipped ? "skipped" : `${prog.done}/${prog.total} · ≈${variant.mins} min`}</span>
-      </div>
+        <span class="addon-summary"><span class="eyebrow" data-addon-prog>${prog.skipped ? "skipped" : `${prog.done}/${prog.total} · ≈${variant.mins} min`}</span>${icon("chevronD", "addon-chevron")}</span>
+      </summary>
       <p class="block-note">${esc(variant.name)}. ${esc(variant.note || "")}</p>
       ${
         a.skipped
@@ -116,7 +117,7 @@ export function render(el, params) {
                <div class="btn-row"><button type="button" class="btn sm" data-addon-all>${icon("check", "sm")} Mark all done</button><button type="button" class="btn sm ghost skip" data-addon-skip>${icon("skip", "sm")} Skip ${esc(addon.short || addon.name)} today</button></div>
              </div>`
       }
-    </section>`;
+    </details>`;
   }
 
   // Desk breaks follows the other add-ons, with its own countdowns and daily count.
@@ -125,14 +126,14 @@ export function render(el, params) {
     const { addon, optional } = entry;
     const d = (log() && log().desk) || {};
     const total = (d.move || 0) + (d.squats || 0);
-    return `<section class="card block desk-addon" data-addon="desk">
-      <div class="block-head">
+    return `<details class="card block desk-addon" data-addon="desk" ${collapsedAddons.has("desk") ? "" : "open"}>
+      <summary class="block-head">
         <div class="addon-head">${icon(addon.icon || "clock", "lg")}<h3>${esc(addon.name)}</h3><span class="chip">${optional ? "Optional today" : "Add-on"}</span></div>
-        <span class="eyebrow" data-desk-count-label>${total ? `${total} logged today` : "Not started"}</span>
-      </div>
+        <span class="addon-summary"><span class="eyebrow" data-desk-count-label>${total ? `${total} logged today` : "Not started"}</span>${icon("chevronD", "addon-chevron")}</span>
+      </summary>
       <p class="block-note">${esc(addon.description)}</p>
       <div class="desk-inner" data-desk>${deskBodyHtml()}</div>
-    </section>`;
+    </details>`;
   }
 
   function deskBodyHtml() {
@@ -387,6 +388,7 @@ export function render(el, params) {
 
   function draw() {
     if (!profile()) return;
+    collapsedAddons = new Set([...el.querySelectorAll("details[data-addon]:not([open])")].map((card) => card.dataset.addon));
     const ctx = context();
     const l = log();
     const prev = addDays(date, -1);

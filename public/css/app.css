@@ -376,6 +376,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .addon-scope { border-color: color-mix(in srgb, var(--addon) 30%, var(--line)); }
 .addon-scope .block-head h3 { color: var(--addon); }
 .addon-head { display: flex; align-items: center; gap: 10px; }
+summary.block-head { cursor: pointer; list-style: none; }
+summary.block-head::-webkit-details-marker { display: none; }
+summary.block-head .addon-head { flex-wrap: wrap; min-width: 0; }
+.addon-summary { display: flex; align-items: center; gap: 8px; }
+.addon-chevron { flex-shrink: 0; }
+details[data-addon]:not([open]) .addon-chevron { transform: rotate(-90deg); }
 
 .obs { display: grid; gap: 12px; }
 .obs-ratings { display: grid; gap: 8px; }
