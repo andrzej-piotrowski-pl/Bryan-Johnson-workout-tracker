@@ -1,0 +1,25 @@
+name: Build shared coach voices
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        voice: [af_heart, af_bella, am_michael, am_puck, bf_emma]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 22
+      - run: npm run voice:install
+      - run: node voice/build-packs.js ${{ matrix.voice }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: coach-${{ matrix.voice }}
+          path: voice/packs/
+          retention-days: 1

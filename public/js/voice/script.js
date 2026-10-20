@@ -33,7 +33,11 @@ export function numberWords(value) {
 }
 
 export function speechText(text, profile) {
-  return personalize(text || "", profile)
+  const shared = (text || "")
+    .replace(/(\d+)\s*×\s*\{kg:[^}]+\}/g, "$1 weights at the weight shown on screen")
+    .replace(/\{kg:[^}]+\}/g, "the weight shown on screen")
+    .replace(/\{hr:[^}]+\}/g, "your prescribed heart-rate range");
+  return personalize(shared, profile)
     .replace(/\{[^}]*\}/g, "")
     // A pair of weights is equipment, never another set prescription.
     .replace(/(\d+)\s*×\s*([\d.]+(?:[–-][\d.]+)?\s*(?:kg|lb))\b/g, "$1 weights of $2 each")
@@ -58,6 +62,11 @@ export function durationText(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return [mins ? `${numberWords(mins)} ${mins === 1 ? "minute" : "minutes"}` : "", secs ? `${numberWords(secs)} ${secs === 1 ? "second" : "seconds"}` : ""].filter(Boolean).join(" and ");
+}
+
+export function durationParts(seconds) {
+  const mins = Math.floor(seconds / 60), secs = seconds % 60;
+  return [mins ? `${numberWords(mins)} ${mins === 1 ? "minute" : "minutes"}` : "", mins && secs ? "and" : "", secs ? `${numberWords(secs)} ${secs === 1 ? "second" : "seconds"}` : ""].filter(Boolean);
 }
 
 export function restLine(seconds) {

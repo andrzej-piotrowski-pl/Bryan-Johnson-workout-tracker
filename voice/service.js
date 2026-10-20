@@ -1,17 +1,18 @@
 import { fork } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
-import { readFile, readdir, stat, unlink } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ROOT, VOICE_DIR, MODEL, MODEL_SHA, nativeEnv } from "./runtime.js";
 import { VoiceCache } from "./cache.js";
-import { CLOCK, EFFORT, PREVIEW, VOICES, exerciseScript, phaseLine, restLine, speechText } from "../public/js/voice/script.js";
+import { combineWaves } from "./bundles.js";
+import { CLOCK, EFFORT, PREVIEW, VOICES, durationParts, exerciseScript, phaseLine, speechText } from "../public/js/voice/script.js";
 import { DAYS } from "../public/js/data/program.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
 import { EXERCISES } from "../public/js/data/exercises.js";
 import { INTERVAL_MOVES, intervalPhases } from "../public/js/data/routines.js";
 import { rxFor, timerPresets } from "../public/js/plan.js";
-import { defaultProfile, bpmRange, levelIndex, personalize } from "../public/js/personalize.js";
+import { defaultProfile, LEVELS, levelIndex, personalize } from "../public/js/personalize.js";
 
 const catalog = new Map();
 for (const block of DAYS.flatMap((d) => d.blocks)) for (const item of block.items) catalog.set(item.id, { item, block: block.name });
@@ -48,6 +49,14 @@ function clip(text, voice, speed) {
   clips.set(id, { text, sid: voice.sid, speed: 1 });
   while (clips.size > 3000) clips.delete(clips.keys().next().value);
   return { id, text, rate: speed, url: `/api/voice/audio/${id}.wav` };
+}
+
+function joinedClip(texts, voice, speed) {
+  const parts = texts.filter(Boolean).map((text) => clip(text, voice, 1));
+  if (parts.length === 1) return clip(parts[0].text, voice, speed);
+  const result = clip(parts.map((part) => part.text).join(" "), voice, speed);
+  clips.get(result.id).parts = parts.map((part) => ({ id: part.id, ...clips.get(part.id) }));
+  return result;
 }
 
 export function prepareManifest(body, savedProfile = {}) {
@@ -88,7 +97,7 @@ export function prepareManifest(body, savedProfile = {}) {
     how: script.how.map((text) => clip(text, voice, 1)), sets: script.sets.map(cue),
     block: cue(`${speechText(block, profile)} is next.`),
     effort: /strength/i.test(block) ? cue(EFFORT[body.level]) : null,
-    rest: cue(restLine(seconds)), next: cue(`Next is ${script.name}.`),
+    rest: joinedClip(["Rest for", ...durationParts(seconds), "Continue when you are ready."], voice, speed), next: cue(`Next is ${script.name}.`),
     back: cue(`Back to ${script.name}.`),
     clock: Object.fromEntries(Object.entries(CLOCK).map(([key, text]) => [key, cue(text)])),
   };
@@ -104,9 +113,8 @@ export function prepareManifest(body, savedProfile = {}) {
       }
     } else if (t.type === "countdown") {
       if (typeof t.minutes !== "number" || !Number.isFinite(t.minutes) || t.minutes <= 0 || t.minutes > 240) bad("Invalid countdown");
-      const range = item.intensity === "light" ? [50, 60] : ex.intensity === "hard" ? [80, body.level === 1 ? 85 : 90] : [60, 70];
       const label = item.intensity === "light" ? "Easy pace" : ex.intensity === "hard" ? "Vigorous" : "Zone 2";
-      phases = [{ kind: "ready", sec: 5 }, { kind: "work", label, sec: Math.round(t.minutes * 60), sub: `${label}: ${bpmRange(profile, ...range)}` }];
+      phases = [{ kind: "ready", sec: 5 }, { kind: "work", label, sec: Math.round(t.minutes * 60), sub: `${label}: your prescribed heart-rate range` }];
     } else if (t.type === "intervals") {
       const presets = timerPresets(item, body.level);
       if (!integer(t.preset ?? 0, 0, presets.length - 1)) bad("Unknown interval preset");
@@ -115,14 +123,18 @@ export function prepareManifest(body, savedProfile = {}) {
       phases = intervalPhases(item.ex, preset, t.moves);
       for (const phase of phases) {
         const range = phase.kind === "work" ? preset.workHr : phase.kind === "rest" ? preset.restHr : null;
-        phase.sub = range ? `Target ${bpmRange(profile, ...range)}` : "";
+        phase.sub = range ? "Follow your prescribed heart-rate range." : "";
       }
     } else bad("Unknown timer");
     result.phases = phases.map((phase) => {
-      if (t.type !== "intervals" || phase.kind !== "work") return [cue(phaseLine(phase, t.type, profile))];
+      if (phase.kind === "ready" || (t.type === "hold" && phase.kind === "rest")) return [cue(phaseLine(phase, t.type, profile))];
+      const duration = durationParts(phase.sec);
+      if (t.type === "hold") return [joinedClip([`${phase.label}.`, ...duration, "Breathe steadily throughout the hold."], voice, speed)];
+      if (t.type === "countdown") return [joinedClip([`${speechText(phase.label, profile)}.`, ...duration, "Follow your prescribed heart-rate range."], voice, speed)];
+      if (phase.kind === "rest") return [joinedClip(["Recover with easy marching.", ...duration, phase.sec > 30 ? phase.sub : ""], voice, speed)];
       const movement = phase.ex ? cue(`For this interval, do ${speechText(EXERCISES[phase.ex].name, profile)}.`) : null;
       const round = phase.round ? cue(`Round ${speechText(String(phase.round))} of ${speechText(String(phase.total))}. Follow today's prescribed pace.`) : null;
-      return [movement, round, cue(phaseLine({ ...phase, ex: undefined, round: undefined }, t.type, profile))].filter(Boolean);
+      return [movement, round, joinedClip([...duration, phase.sec > 30 ? phase.sub : ""], voice, speed)].filter(Boolean);
     });
   }
   return result;
@@ -148,6 +160,7 @@ export function buildVoicePack(body, savedProfile = {}) {
     if (!rxFor(item, level) || rxFor(item, level) === "—") continue;
     const request = { ...base, itemId: item.id, restSec: item.id === "fri-strength-rdl" && level === 3 ? 25 : base.restSec };
     collect(prepareManifest(request, profile));
+    collect(prepareManifest({ ...request, easier: "version" }, profile));
     const rx = personalize(rxFor(item, level), { ...profile, ...body.profile });
     const sec = /(?:\d+\s*×\s*)?\d+(?:–(\d+))?\s*s\b/.exec(rx);
     const minutes = /(\d+)(?:–\d+)?\s*min\b/.exec(rx);
@@ -161,6 +174,28 @@ export function buildVoicePack(body, savedProfile = {}) {
       collect(prepareManifest({ ...request, timer: { type: "intervals", preset, moves: [move] } }, profile));
     }
   }
+  return [...entries.values()];
+}
+
+export function buildSharedVoicePack(voice) {
+  const entries = new Map();
+  const collect = (entry) => {
+    if (entry.parts) entry.parts.forEach(collect);
+    else entries.set(entry.id, entry);
+  };
+  for (const [level, { id }] of LEVELS.entries()) for (const units of ["metric", "imperial"]) {
+    const profile = { ...defaultProfile(), level: id, units };
+    buildVoicePack({ voice, level, addons: ADDONS.map((addon) => addon.id) }, profile).forEach(collect);
+  }
+  const selected = VOICES.find((v) => v.id === voice);
+  if (!selected) bad("Unknown voice");
+  for (let seconds = 1; seconds < 60; seconds++) for (const text of durationParts(seconds)) {
+    const c = clip(text, selected, 1); collect({ id: c.id, ...clips.get(c.id) });
+  }
+  for (let minutes = 1; minutes <= 240; minutes++) for (const text of durationParts(minutes * 60)) {
+    const c = clip(text, selected, 1); collect({ id: c.id, ...clips.get(c.id) });
+  }
+  const and = clip("and", selected, 1); collect({ id: and.id, ...clips.get(and.id) });
   return [...entries.values()];
 }
 
@@ -213,6 +248,17 @@ async function audioFile(id) {
   if (pending.has(id)) { await pending.get(id).promise; return file; }
   const data = clips.get(id);
   if (!data) throw Object.assign(new Error("Prepare this workout cue again"), { status: 404 });
+  if (data.parts) {
+    const waves = [];
+    for (const part of data.parts) {
+      clips.set(part.id, part);
+      waves.push(await readFile(await audioFile(part.id)));
+    }
+    await mkdir(cacheDir, { recursive: true });
+    const tmp = `${file}.${randomUUID()}.tmp`;
+    await writeFile(tmp, combineWaves(waves)); await rename(tmp, file);
+    return file;
+  }
   if (pending.size > 100) throw Object.assign(new Error("Voice is busy preparing cues"), { status: 429 });
   let resolve, reject;
   const promise = new Promise((yes, no) => { resolve = yes; reject = no; });

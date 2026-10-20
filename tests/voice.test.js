@@ -4,10 +4,10 @@ import { DAYS } from "../public/js/data/program.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
 import { EXERCISES } from "../public/js/data/exercises.js";
 import { parseRx } from "../public/js/components/logger.js";
-import { defaultProfile, LEVELS, personalize, bpmRange } from "../public/js/personalize.js";
+import { defaultProfile, LEVELS, personalize } from "../public/js/personalize.js";
 import { rxFor } from "../public/js/plan.js";
 import { CLOCK, VOICES, clockKey, durationText, exerciseScript, phaseLine, speechText } from "../public/js/voice/script.js";
-import { buildVoicePack, prepareManifest } from "../voice/service.js";
+import { buildSharedVoicePack, buildVoicePack, prepareManifest } from "../voice/service.js";
 
 const items = [...DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items)), ...ADDONS.flatMap((a) => Object.values(a.variants).flatMap((v) => v.items))];
 
@@ -24,7 +24,7 @@ test("speech covers real prescriptions at every level, in both unit systems", ()
         assert.doesNotMatch(line, /[×@{}—–]|\b(?:NaN|undefined|kg|lb|bpm)\b|\d/, `${item.id}: ${line}`);
         assert(line.length < 500, `${item.id} clip is bounded`);
       }
-      if (rx.includes("{kg:")) assert.match(script.intro.join(" "), units === "metric" ? /kilograms/ : /pounds/);
+      if (rx.includes("{kg:")) assert.match(script.intro.join(" "), /weight shown on screen/);
       assert(!script.name.includes("{"));
     }
   }
@@ -43,7 +43,7 @@ test("equipment counts never become extra sets, and time and tempo survive", () 
   assert.deepEqual(script.sets, []);
 });
 
-test("the spoken load matches personalisation, including an easier dose and heaviest weight", () => {
+test("shared speech keeps the prescribed dose while personal loads and heart rates stay on screen", () => {
   const item = items.find((it) => it.ex === "row");
   const profile = { ...defaultProfile(), level: "active", units: "imperial", sex: "male", maxDumbbellKg: 12 };
   const raw = rxFor(item, 2);
@@ -52,7 +52,8 @@ test("the spoken load matches personalisation, including an easier dose and heav
   const expected = speechText(rxFor(item, 1), profile);
   assert.equal(result.intro.map((c) => c.text).join(" ").includes(expected), true);
   assert.match(result.sets[0].text, /each side/);
-  assert.match(result.intro.map((c) => c.text).join(" "), /pounds/);
+  assert.match(result.intro.map((c) => c.text).join(" "), /weight shown on screen/);
+  assert.doesNotMatch(result.intro.map((c) => c.text).join(" "), /pounds|heaviest/);
   const easier = prepareManifest({ itemId: item.id, level: 2, easier: "version" });
   assert.deepEqual(easier.how, []);
   const retained = prepareManifest({ itemId: item.id, level: 2, easier: "version", doseLevel: 1 });
@@ -60,7 +61,21 @@ test("the spoken load matches personalisation, including an easier dose and heav
   assert.match(retained.effort.text, /two or three/);
   const cardio = items.find((it) => it.ex === "zone2");
   const cleared = prepareManifest({ itemId: cardio.id, level: 2, profile: { age: 30, hrMax: null }, timer: { type: "countdown", minutes: 10 } }, { hrMax: 230 });
-  assert(cleared.phases[1].map((c) => c.text).join(" ").includes(speechText(bpmRange(defaultProfile(), 60, 70))), "a pending cleared max HR uses the same estimate as the screen");
+  assert.match(cleared.phases[1].map((c) => c.text).join(" "), /prescribed heart-rate range/);
+  const other = prepareManifest({ itemId: item.id, level: 2, profile: { age: 78, sex: "female", weightKg: 44, hrMax: 180, maxDumbbellKg: 3, units: "imperial" }, easier: "dose", voice: "am_michael" });
+  assert.deepEqual(result, other, "different personal details use exactly the same speech files");
+});
+
+test("the public pack covers all levels, units, add-ons, easier alternatives and arbitrary timer durations", () => {
+  const ids = new Set(buildSharedVoicePack("af_heart").map((entry) => entry.id));
+  const check = (entry) => {
+    if (entry.parts) entry.parts.forEach(check);
+    else assert(ids.has(entry.id), entry.text);
+  };
+  for (const [level, { id }] of LEVELS.entries()) for (const units of ["metric", "imperial"]) {
+    const profile = { ...defaultProfile(), level: id, units, age: 82, weightKg: 54, maxDumbbellKg: 2.5, hrMax: 168 };
+    buildVoicePack({ voice: "af_heart", level, addons: ADDONS.map((a) => a.id), restSec: 3599 }, profile).forEach(check);
+  }
 });
 
 test("level-specific teaching and safety follow the actual movement", () => {

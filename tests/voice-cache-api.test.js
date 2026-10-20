@@ -13,7 +13,7 @@ test("the API saves no audio before activation and serves a ready pack without a
   t.after(() => rm(root, { recursive: true, force: true }));
   for (const name of ["server.js", "package.json", "CHANGELOG.md"]) await copyFile(new URL(`../${name}`, import.meta.url), path.join(root, name));
   await mkdir(path.join(root, "voice"));
-  for (const name of ["service.js", "cache.js", "runtime.js", "worker.js"]) await copyFile(new URL(`../voice/${name}`, import.meta.url), path.join(root, "voice", name));
+  for (const name of ["service.js", "cache.js", "bundles.js", "runtime.js", "worker.js"]) await copyFile(new URL(`../voice/${name}`, import.meta.url), path.join(root, "voice", name));
   await cp(new URL("../public/js", import.meta.url), path.join(root, "public/js"), { recursive: true });
   await mkdir(path.join(root, ".voice/model"), { recursive: true });
   await writeFile(path.join(root, ".voice/ready.json"), JSON.stringify({ sha256: MODEL_SHA }));

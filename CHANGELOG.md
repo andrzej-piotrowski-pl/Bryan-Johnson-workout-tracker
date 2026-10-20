@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.34.0] - 2026-10-20
+
+### Added
+- A repeatable GitHub build creates shared audio packs for all five voices and all four training levels.
+
+### Changed
+- Shared coaching refers to weights and heart-rate targets on screen, keeping personal profile values out of the audio.
+- Timer durations reuse recorded fragments, so custom times do not need a new recording.
+
 ## [1.33.0] - 2026-10-20
 
 ### Added

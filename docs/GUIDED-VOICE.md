@@ -27,7 +27,9 @@ Kokoro and Sherpa are Apache-2.0 projects. Their licences remain with the instal
 
 ## Script and playback
 
-`public/js/voice/script.js` is shared by Node and the browser. It reads the personalised dose rather than the logger's `parseRx` heuristic. A pair of dumbbells remains equipment; minute prescriptions do not become sets. Tempo, per-side wording, ranges and technique clauses stay in the dose. The server accepts known exercise IDs, enum choices and bounded numeric values, then creates the spoken lines itself. There is no endpoint accepting arbitrary speech text.
+`public/js/voice/script.js` is shared by Node and the browser. It reads the prescribed dose rather than the logger's `parseRx` heuristic. A pair of dumbbells remains equipment; minute prescriptions do not become sets. Tempo, per-side wording, ranges and technique clauses stay in the dose. Speech refers to the weights and heart-rate targets on screen, keeping personal profile values out of shared recordings. The server accepts known exercise IDs, enum choices and bounded numeric values. There is no endpoint accepting arbitrary speech text.
+
+The **Build shared coach voices** GitHub workflow creates all five packs from plan content only. Each pack covers all four levels, both unit systems, add-ons and easier alternatives. It never reads `data/` or saved local pack manifests. Timer durations combine recorded minute and second fragments, including custom times. Build output is split into checksum-verified gzip files under `voice/packs/`, each below GitHub's file-size limit. Rebuild and publish all five packs whenever their source content changes.
 
 Exercise introductions include the name and dose. Relevant stop and pain instructions are repeated on entry. Repeated paired exercises get the set number. During guided rests, one form sentence is offered at steady pace when its decoded duration fits before the last ten seconds. Typing cancels teaching but keeps clock cues available. A sufficiently long final rest can preview the next movement. Logging on Today does not start rest coaching.
 
