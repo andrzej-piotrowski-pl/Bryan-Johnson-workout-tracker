@@ -9,14 +9,14 @@
 
 import { migrateProfile } from "./personalize.js";
 
-const LS = { profile: "hp:profile", days: "hp:days", pending: "hp:pending", theme: "hp:theme" };
+const LS = { profile: "hp:profile", days: "hp:days", pending: "hp:pending", theme: "hp:theme", version: "hp:version" };
 const SAVE_DELAY = 600;
 
 export const state = {
   ready: false,
   mode: "server", // "server" | "local"
   dataDir: "data",
-  version: null,
+  version: lsGet("hp:version", null),
   profile: null,
   days: {},
   saveStatus: "idle", // idle | pending | saving | saved | offline
@@ -75,6 +75,7 @@ export async function init() {
     state.mode = "server";
     state.dataDir = info.dataDir;
     state.version = info.version;
+    lsSet(LS.version, info.version);
     const [p, d] = await Promise.all([fetch("/api/profile", { cache: "no-store" }), fetch("/api/days", { cache: "no-store" })]);
     state.profile = p.ok ? await p.json() : null;
     state.days = d.ok ? await d.json() : {};

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.32.1] - 2026-10-20
+
+### Added
+- Permanent version link right above the save status in the sidebar that opens the changelog.
+
 ## [1.32.0] - 2026-10-20
 
 ### Added

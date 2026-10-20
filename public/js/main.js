@@ -8,6 +8,7 @@ import { applyLook } from "./themes.js";
 import { applyAnimStyle } from "./anim-styles.js";
 import { restoreSkinBar } from "./components/skin-bar.js";
 import { restoreAnimBar } from "./components/anim-bar.js";
+import { openChangelogDialog } from "./components/changelog.js";
 
 const VIEWS = {
   today: () => import("./views/today.js"),
@@ -113,7 +114,22 @@ window.addEventListener("beforeunload", (e) => {
   }
 });
 
+function drawVersion() {
+  const el = document.getElementById("sidebar-version");
+  if (!el) return;
+  const v = store.state.version;
+  el.textContent = v ? `v${v}` : "";
+  el.hidden = !v;
+  el.title = v ? `Version ${v} · Latest changes` : "Latest changes";
+}
+
+document.getElementById("sidebar-version")?.addEventListener("click", () => {
+  openChangelogDialog();
+});
+
+drawVersion();
 await store.init();
+drawVersion();
 // The profile on disk decides the look (this browser may have an older copy in localStorage).
 if (store.state.profile) applyLook(store.state.profile.settings);
 if (store.state.profile) applyAnimStyle(store.state.profile.settings);
