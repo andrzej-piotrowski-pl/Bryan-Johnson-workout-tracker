@@ -115,7 +115,7 @@ function runPhases({ title, phases, onFinish, voiceContext, voiceTimer }) {
 
     if (lastSpokenPhase !== i) {
       lastSpokenPhase = i;
-      if (p.ex && stage) stage.load(p.ex);
+      if (stage) stage.load(p.ex || phases.find((phase) => phase.ex).ex);
       spoken.clear();
       lastWhole = Math.ceil(left);
       if (started) say(manifest?.phases?.[i]);
@@ -183,6 +183,7 @@ function runPhases({ title, phases, onFinish, voiceContext, voiceTimer }) {
       if (!started) return;
       paused = !paused;
       b.innerHTML = paused ? `${icon("play")} Resume` : `${icon("pause")} Pause`;
+      if (stage) paused ? stage.pause() : stage.play();
       if (paused) cancelVoice();
     } else if (b.dataset.t === "voice") {
       setVoiceEnabled(!voiceEnabled());

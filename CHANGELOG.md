@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.35.0] - 2026-10-20
+
+### Added
+- Hover over or tap the guided step counter to jump directly to any workout step.
+
+### Fixed
+- Interval timer demonstrations animate during the ready countdown and each work and recovery phase.
+- Pausing an interval timer also pauses its demonstration.
+
 ## [1.34.3] - 2026-10-20
 
 ### Fixed

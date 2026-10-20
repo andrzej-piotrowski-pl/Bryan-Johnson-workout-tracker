@@ -54,7 +54,10 @@ export function startGuided(date, onExit) {
   const wrap = h(`<div class="guided" role="dialog" aria-modal="true" aria-label="Guided workout">
     <div class="guided-top">
       <button type="button" class="btn sm ghost" data-g="close">${icon("x")} Exit</button>
-      <span class="mono muted" data-g="count"></span>
+      <details class="guided-jump">
+        <summary class="btn sm ghost mono" data-g="count" aria-label="Choose workout step"></summary>
+        <div class="radio-panel guided-step-list" role="group" aria-label="Workout steps">${steps.map((step, index) => `<button type="button" class="btn sm ghost" data-step-index="${index}"><span>${index + 1}/${steps.length} · ${esc(personalize(step.item.label || EXERCISES[step.item.ex].name, state.profile))}${step.setIndex != null ? ` · Set ${step.setIndex + 1} of ${step.sets}` : ""}</span><small class="muted">${esc(step.block)}</small></button>`).join("")}</div>
+      </details>
       <div class="bar"><i></i></div>
       <div class="radio-host"></div>
     </div>
@@ -76,6 +79,13 @@ export function startGuided(date, onExit) {
   const side = wrap.querySelector(".guided-side");
   const bar = wrap.querySelector(".bar i");
   const count = wrap.querySelector('[data-g="count"]');
+  const jump = wrap.querySelector(".guided-jump");
+  jump.addEventListener("pointerenter", (event) => { if (event.pointerType === "mouse") jump.open = true; });
+  jump.addEventListener("pointerleave", (event) => { if (event.pointerType === "mouse") jump.open = false; });
+  jump.addEventListener("focusout", (event) => { if (!jump.contains(event.relatedTarget)) jump.open = false; });
+  jump.addEventListener("toggle", () => {
+    if (jump.open) jump.querySelector('[aria-current="step"]')?.scrollIntoView({ block: "nearest" });
+  });
   const radio = createWorkoutRadio();
   const voice = createGuidedVoice(date, steps, wrap.querySelector(".guided-voice-status"));
   const stopRestListener = onRest((event) => voice.rest(event));
@@ -112,6 +122,8 @@ export function startGuided(date, onExit) {
     stage.load(demoId);
     bar.style.width = `${(i / steps.length) * 100}%`;
     count.textContent = `${i + 1}/${steps.length}`;
+    count.setAttribute("aria-label", `Step ${i + 1} of ${steps.length}. Choose workout step`);
+    jump.querySelectorAll("[data-step-index]").forEach((button) => button.setAttribute("aria-current", Number(button.dataset.stepIndex) === i ? "step" : "false"));
     const itemLog = getItemLog(date, s.scope, s.item.id);
     wrap.querySelector("[data-routine]").innerHTML = ex.routine ? routineHtml(s.item, s.level, itemLog || {}, { compact: true }) : "";
     side.innerHTML = `
@@ -151,6 +163,10 @@ export function startGuided(date, onExit) {
   function onKey(e) {
     if (document.querySelector("#overlay-root > .overlay")) return;
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (jump.open && e.target.closest?.(".guided-jump")) {
+      if (e.key === "Escape") { jump.open = false; count.focus(); e.preventDefault(); }
+      return;
+    }
     if (e.key === "Escape") close();
     else if (e.target.closest && e.target.closest(".workout-radio, .workout-coach")) return;
     else if (e.key === "ArrowRight") {
@@ -163,6 +179,18 @@ export function startGuided(date, onExit) {
   }
 
   wrap.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-step-index]");
+    if (target) {
+      const next = Number(target.dataset.stepIndex);
+      if (!Number.isInteger(next) || next < 0 || next >= steps.length) return;
+      const reason = next < i ? "back" : "next";
+      i = next;
+      jump.open = false;
+      count.focus();
+      show(reason);
+      return;
+    }
+    if (!e.target.closest(".guided-jump")) jump.open = false;
     const movement = e.target.closest("[data-movement]");
     if (movement) {
       stage.load(movement.dataset.movement);

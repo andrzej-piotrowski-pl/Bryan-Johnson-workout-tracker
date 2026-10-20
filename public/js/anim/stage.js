@@ -468,6 +468,8 @@ export class Stage {
     this.forcedView = view || null;
     this.applyClip(true);
     this.syncStyle();
+    this.lastNow = performance.now();
+    this.updateLoop();
     this.render();
     return !!anim;
   }
