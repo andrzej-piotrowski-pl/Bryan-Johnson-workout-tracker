@@ -1,7 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
+import { existsSync } from "node:fs";
 import { MODEL_SHA } from "./runtime.js";
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -33,49 +34,53 @@ export function combineWaves(waves) {
 }
 
 export async function writeBundle(voice, entries, audioDir, outputDir) {
-  await mkdir(outputDir, { recursive: true });
-  const metadata = { format: 1, voice, model: MODEL_SHA, clips: entries.map((entry) => entry.id), files: [] };
-  let batch = [], size = 0;
-  const flush = async () => {
-    if (!batch.length) return;
-    const name = `${voice}.${String(metadata.files.length).padStart(3, "0")}.json.gz`;
-    const bytes = gzipSync(JSON.stringify(batch), { level: 9 });
-    await writeFile(path.join(outputDir, name), bytes);
-    metadata.files.push({ name, sha256: hash(bytes), bytes: bytes.length });
-    batch = []; size = 0;
-  };
+  const dir = path.join(outputDir, voice);
+  await mkdir(dir, { recursive: true });
+  const metadata = { format: 2, voice, model: MODEL_SHA, clips: [] };
+  let previous = new Map();
+  try {
+    const saved = JSON.parse(await readFile(path.join(outputDir, `${voice}.json`), "utf8"));
+    if (saved.format === 2 && saved.voice === voice && saved.model === MODEL_SHA) previous = new Map(saved.clips.map((clip) => [clip.id, clip]));
+  } catch {}
   for (const entry of entries) {
+    const file = path.join(dir, `${entry.id}.wav.gz`), saved = previous.get(entry.id);
+    if (saved && existsSync(file)) {
+      const bytes = await readFile(file);
+      if (bytes.length === saved.bytes && hash(bytes) === saved.sha256) { metadata.clips.push({ ...saved, text: entry.text }); continue; }
+    }
     const audio = await readFile(path.join(audioDir, `${entry.id}.wav`));
-    const encoded = audio.toString("base64");
-    if (size + encoded.length > 8 * 1024 * 1024) await flush();
-    batch.push([entry.id, encoded]); size += encoded.length;
+    const bytes = gzipSync(audio, { level: 9 });
+    await writeFile(file, bytes);
+    metadata.clips.push({ id: entry.id, text: entry.text, sha256: hash(bytes), bytes: bytes.length });
   }
-  await flush();
-  await writeFile(path.join(outputDir, `${voice}.json`), JSON.stringify(metadata));
+  const ids = new Set(entries.map((entry) => entry.id));
+  for (const name of await readdir(dir)) if (/^[a-f0-9]{64}\.wav\.gz$/.test(name) && !ids.has(name.slice(0, 64))) await rm(path.join(dir, name));
+  await writeFile(path.join(outputDir, `${voice}.json`), JSON.stringify(metadata, null, 2) + "\n");
   return metadata;
 }
 
-export async function unpackBundle(voice, sourceDir, audioDir) {
+export async function readBundle(voice, sourceDir) {
   if (!/^(af_heart|af_bella|am_michael|am_puck|bf_emma)$/.test(voice)) throw new Error("Unknown voice");
   const metadata = JSON.parse(await readFile(path.join(sourceDir, `${voice}.json`), "utf8"));
-  if (metadata.format !== 1 || metadata.voice !== voice || metadata.model !== MODEL_SHA || !Array.isArray(metadata.clips) || !metadata.clips.every(validId) || !Array.isArray(metadata.files)) throw new Error("Invalid shared voice pack");
-  const expected = new Set(metadata.clips), found = new Set();
+  if (metadata.format !== 2 || metadata.voice !== voice || metadata.model !== MODEL_SHA || !Array.isArray(metadata.clips) || !metadata.clips.length || metadata.clips.length > 20000 || !metadata.clips.every((clip) => clip && validId(clip.id) && validId(clip.sha256) && (clip.text === undefined || (typeof clip.text === "string" && clip.text.length <= 1024)) && Number.isInteger(clip.bytes) && clip.bytes > 0 && clip.bytes <= 16 * 1024 * 1024) || new Set(metadata.clips.map((clip) => clip.id)).size !== metadata.clips.length) throw new Error("Invalid shared voice pack");
+  return metadata;
+}
+
+export async function unpackBundle(voice, sourceDir, audioDir, clipId) {
+  const metadata = await readBundle(voice, sourceDir);
   await mkdir(audioDir, { recursive: true });
-  for (const file of metadata.files) {
-    if (!new RegExp(`^${voice}\\.\\d{3}\\.json\\.gz$`).test(file.name) || !validId(file.sha256) || file.bytes > 16 * 1024 * 1024) throw new Error("Invalid voice pack file");
-    const bytes = await readFile(path.join(sourceDir, file.name));
-    if (bytes.length !== file.bytes || hash(bytes) !== file.sha256) throw new Error("Voice pack checksum failed. Update the app and retry.");
-    const entries = JSON.parse(gunzipSync(bytes, { maxOutputLength: 16 * 1024 * 1024 }).toString("utf8"));
-    if (!Array.isArray(entries)) throw new Error("Invalid voice pack contents");
-    for (const entry of entries) {
-      if (!Array.isArray(entry) || entry.length !== 2 || !expected.has(entry[0]) || found.has(entry[0]) || typeof entry[1] !== "string") throw new Error("Invalid voice pack clip");
-      const audio = Buffer.from(entry[1], "base64");
+  const clips = clipId ? metadata.clips.filter((clip) => clip.id === clipId) : metadata.clips;
+  for (let start = 0; start < clips.length; start += 16) {
+    await Promise.all(clips.slice(start, start + 16).map(async (clip) => {
+      const file = path.join(audioDir, `${clip.id}.wav`);
+      if (existsSync(file)) return;
+      const bytes = await readFile(path.join(sourceDir, voice, `${clip.id}.wav.gz`));
+      if (bytes.length !== clip.bytes || hash(bytes) !== clip.sha256) throw new Error("Voice pack checksum failed. Update the app and retry.");
+      const audio = gunzipSync(bytes, { maxOutputLength: 16 * 1024 * 1024 });
       combineWaves([audio]);
-      const tmp = path.join(audioDir, `${entry[0]}.${randomUUID()}.tmp`);
-      await writeFile(tmp, audio); await rename(tmp, path.join(audioDir, `${entry[0]}.wav`));
-      found.add(entry[0]);
-    }
+      const tmp = path.join(audioDir, `${clip.id}.${randomUUID()}.tmp`);
+      await writeFile(tmp, audio); await rename(tmp, file);
+    }));
   }
-  if (found.size !== expected.size) throw new Error("Voice pack is incomplete. Update the app and retry.");
   return metadata;
 }

@@ -5,7 +5,7 @@ import { mkdir, readFile, readdir, rename, stat, unlink, writeFile } from "node:
 import path from "node:path";
 import { ROOT, VOICE_DIR, MODEL, MODEL_SHA, nativeEnv } from "./runtime.js";
 import { VoiceCache } from "./cache.js";
-import { combineWaves } from "./bundles.js";
+import { combineWaves, readBundle, unpackBundle } from "./bundles.js";
 import { CLOCK, EFFORT, PREVIEW, VOICES, durationParts, exerciseScript, phaseLine, speechText } from "../public/js/voice/script.js";
 import { DAYS } from "../public/js/data/program.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
@@ -27,11 +27,37 @@ let installer = null;
 let installMessage = "";
 let engineError = "";
 const cacheDir = path.join(VOICE_DIR, "audio");
+const bundleDir = path.join(ROOT, "voice/packs");
+const unpacking = new Map();
+const bundleEntries = new Map();
+let migration = null;
+const bundled = (voice) => existsSync(path.join(bundleDir, `${voice}.json`));
+function sharedEntries(voice) {
+  if (!bundleEntries.has(voice)) bundleEntries.set(voice, readBundle(voice, bundleDir).then((metadata) => metadata.clips.map((clip) => ({ id: clip.id, text: clip.text || "", sid: VOICES.find((v) => v.id === voice).sid, speed: 1 }))).catch((err) => { bundleEntries.delete(voice); throw err; }));
+  return bundleEntries.get(voice);
+}
+function unpackVoice(voice) {
+  if (!unpacking.has(voice)) unpacking.set(voice, unpackBundle(voice, bundleDir, cacheDir).finally(() => unpacking.delete(voice)));
+  return unpacking.get(voice);
+}
+async function migrateSharedPacks() {
+  await voiceCache.load();
+  migration ||= (async () => {
+    for (const voice of voiceCache.packs.keys()) if (bundled(voice)) await voiceCache.start(voice, await sharedEntries(voice));
+  })();
+  await migration;
+}
+function cacheStatus(voice) {
+  const cache = voiceCache.status(voice);
+  return cache ? { ...cache, shared: bundled(voice) } : null;
+}
 const voiceCache = new VoiceCache(VOICE_DIR, async (entry) => {
   // Only one background clip is queued; workout requests get the next turn.
   while (pending.size) await Promise.allSettled([...pending.values()].map((task) => task.promise));
   clips.set(entry.id, entry);
-  await audioFile(entry.id);
+  const voice = VOICES.find((voice) => voice.sid === entry.sid)?.id;
+  if (voice && bundled(voice)) await unpackVoice(voice);
+  else await audioFile(entry.id);
 });
 
 function bad(message) { throw Object.assign(new Error(message), { status: 400 }); }
@@ -259,6 +285,12 @@ async function audioFile(id) {
     await writeFile(tmp, combineWaves(waves)); await rename(tmp, file);
     return file;
   }
+  const voice = VOICES.find((voice) => voice.sid === data.sid)?.id;
+  if (voice && bundled(voice)) {
+    await unpackBundle(voice, bundleDir, cacheDir, id);
+    if (existsSync(file)) return file;
+    throw Object.assign(new Error("Shared voice audio is out of date. Update the app's voice packs."), { status: 503 });
+  }
   if (pending.size > 100) throw Object.assign(new Error("Voice is busy preparing cues"), { status: 429 });
   let resolve, reject;
   const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
@@ -288,25 +320,26 @@ export async function handleVoice(req, res, pathname, { readBody, send, fail, pr
     const origin = req.headers.origin;
     if (req.headers["sec-fetch-site"] === "cross-site" || (origin && new URL(origin).host !== req.headers.host)) return fail(res, 403, "Use the voice controls from this app");
   }
-  await voiceCache.load();
+  await migrateSharedPacks();
   if (pathname === "/api/voice/status" && method === "GET") {
-    const ready = await modelInstalled();
     const voice = new URL(req.url, "http://localhost").searchParams.get("voice") || "af_heart";
     if (!VOICES.some((v) => v.id === voice)) return fail(res, 400, "Unknown voice");
+    const shared = bundled(voice);
+    const ready = shared || await modelInstalled();
     if (ready && !installer) voiceCache.resume();
-    return send(res, 200, { installed: ready, installing: !!installer, error: !!engineError, message: installer ? installMessage : engineError || installMessage || (ready ? "Local voice is ready. Speech works offline." : "Download the local voice to hear coaching."), model: MODEL, cacheEnabled: voiceCache.packs.size > 0, cache: voiceCache.status(voice) });
+    return send(res, 200, { installed: ready, installing: !!installer, error: !!engineError, message: installer ? installMessage : engineError || installMessage || (shared ? "Recorded coach voices are included. Audio works offline." : ready ? "Local voice is ready. Speech works offline." : "Download the local voice to hear coaching."), model: MODEL, cacheEnabled: voiceCache.packs.size > 0, cache: cacheStatus(voice) });
   }
   if (pathname === "/api/voice/cache" && method === "POST") {
-    if (installer || !await modelInstalled()) return fail(res, 409, "Install the local voice first");
     const body = await readBody(req);
-    const entries = buildVoicePack(body, await profile());
+    const requested = buildVoicePack(body, await profile());
     const voice = body.voice || "af_heart";
-    const cache = await voiceCache.start(voice, entries);
+    if (installer || (!bundled(voice) && !await modelInstalled())) return fail(res, 409, "Install the local voice first");
+    await voiceCache.start(voice, bundled(voice) ? await sharedEntries(voice) : requested);
     if (voice !== "af_heart" && !voiceCache.packs.has("af_heart")) {
-      await voiceCache.start("af_heart", buildVoicePack({ ...body, voice: "af_heart" }, await profile()));
+      await voiceCache.start("af_heart", bundled("af_heart") ? await sharedEntries("af_heart") : buildVoicePack({ ...body, voice: "af_heart" }, await profile()));
       voiceCache.selected = voice;
     }
-    return send(res, 202, { cacheEnabled: true, cache });
+    return send(res, 202, { cacheEnabled: true, cache: cacheStatus(voice) });
   }
   if (pathname === "/api/voice/install" && method === "POST") {
     if (!installer) {
@@ -334,6 +367,7 @@ export async function handleVoice(req, res, pathname, { readBody, send, fail, pr
 process.once("exit", () => { worker?.kill(); installer?.kill(); });
 
 export async function resumeVoiceCache() {
-  await voiceCache.load();
+  await migrateSharedPacks();
+  if ([...voiceCache.packs.keys()].some(bundled)) { voiceCache.resume(); return; }
   if (await modelInstalled()) voiceCache.resume();
 }

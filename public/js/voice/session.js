@@ -40,7 +40,7 @@ export function createGuidedVoice(date, steps, statusEl) {
       if (!voiceStatus.installed) await refreshVoiceStatus();
       if (disposed || stamp !== token || !voiceEnabled()) return;
       if (!voiceStatus.installed) { statusEl.textContent = ""; setVoicePreparing(false); return; }
-      cacheVoice({ level: steps[index].level });
+      cacheVoice();
       const current = await getManifest(steps[index]);
       if (disposed || stamp !== token) return;
       manifest = current;

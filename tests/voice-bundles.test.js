@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -28,12 +28,30 @@ test("public voice bundles round-trip PCM audio and reject corruption and path t
   await unpackBundle("af_heart", bundle, dest);
   assert.deepEqual(await readFile(path.join(dest, `${id}.wav`)), audio);
   await assert.rejects(unpackBundle("../profile", bundle, dest), /Unknown voice/);
-  const file = path.join(bundle, meta.files[0].name);
+  const file = path.join(bundle, "af_heart", `${id}.wav.gz`);
   await writeFile(file, "corrupt");
-  await assert.rejects(unpackBundle("af_heart", bundle, dest), /checksum/);
-  meta.files[0].name = "../../data/profile.json";
+  await assert.rejects(unpackBundle("af_heart", bundle, path.join(dir, "fresh")), /checksum/);
+  meta.clips[0].id = "../../data/profile.json";
   await writeFile(path.join(bundle, "af_heart.json"), JSON.stringify(meta));
-  await assert.rejects(unpackBundle("af_heart", bundle, dest), /Invalid voice pack file/);
+  await assert.rejects(unpackBundle("af_heart", bundle, dest), /Invalid shared voice pack/);
+});
+
+test("changing one sentence keeps every unrelated compressed recording untouched", async (t) => {
+  const dir = await mkdtemp(path.join(tmpdir(), "voice-incremental-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const source = path.join(dir, "source"), bundle = path.join(dir, "bundle"); await mkdir(source);
+  const entries = ["Keep your back straight.", "Bend your knees.", "Bend your knees slightly."].map((text) => ({ id: createHash("sha256").update(text).digest("hex") }));
+  for (const [i, entry] of entries.entries()) await writeFile(path.join(source, `${entry.id}.wav`), wave([i, i + 1]));
+  const first = await writeBundle("af_heart", entries.slice(0, 2), source, bundle);
+  const playback = path.join(dir, "playback");
+  await unpackBundle("af_heart", bundle, playback, entries[1].id);
+  assert.deepEqual(await readdir(playback), [`${entries[1].id}.wav`], "requested speech can play before the rest of the pack is copied");
+  const unchanged = path.join(bundle, "af_heart", `${entries[0].id}.wav.gz`);
+  const before = await stat(unchanged);
+  const second = await writeBundle("af_heart", [entries[0], entries[2]], source, bundle);
+  assert.deepEqual(second.clips[0], first.clips[0]);
+  assert.equal((await stat(unchanged)).mtimeMs, before.mtimeMs, "unchanged audio is never rewritten");
+  assert.deepEqual((await readdir(path.join(bundle, "af_heart"))).sort(), [entries[0], entries[2]].map((entry) => `${entry.id}.wav.gz`).sort());
 });
 
 test("timer speech joins reusable WAV fragments without changing samples", () => {

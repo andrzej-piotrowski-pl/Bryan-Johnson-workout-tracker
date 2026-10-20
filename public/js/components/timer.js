@@ -215,7 +215,7 @@ function runPhases({ title, phases, onFinish, voiceContext, voiceTimer }) {
       voiceOn = voiceEnabled();
       el.querySelector('[data-t="voice"]').innerHTML = `${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}`;
       if (!voiceOn) return begin();
-      cacheVoice({ level: voiceContext.level });
+      cacheVoice();
       el.querySelector('[data-t="begin"]').hidden = started;
       info.textContent = "Preparing coach audio. You can start the timer while it loads.";
       manifest = await prepareVoice({ ...voiceContext, timer: voiceTimer });

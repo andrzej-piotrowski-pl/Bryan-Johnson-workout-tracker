@@ -16,10 +16,15 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 22
-      - run: npm run voice:install
+      - id: changes
+        run: node voice/build-packs.js ${{ matrix.voice }} --check >> "$GITHUB_OUTPUT"
+      - if: steps.changes.outputs.needed == 'true'
+        run: npm run voice:install
       - run: node voice/build-packs.js ${{ matrix.voice }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: coach-${{ matrix.voice }}
-          path: voice/packs/
+          path: |
+            voice/packs/${{ matrix.voice }}.json
+            voice/packs/${{ matrix.voice }}/
           retention-days: 1

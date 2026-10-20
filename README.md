@@ -89,7 +89,7 @@ sudo tailscale serve --bg --https=10000 http://127.0.0.1:3030
 
 Then open `https://<device>.<tailnet>.ts.net:10000` on a Tailscale device. This stays within your tailnet. The app has no login, so do not expose it with Tailscale Funnel or a public port forward.
 
-`npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node. The optional [voice coach](#voice-coach) has a separate download.
+`npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node. The [voice coach](#voice-coach) recordings are included in the Git download (about 640 MiB for all five voices).
 
 </details>
 
@@ -231,19 +231,19 @@ Open **Radio** in the guided workout's top bar. FIP Electro is the default; choo
 
 ## Voice coach
 
-Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**. Choose **Download local voice** once, then **Turn coaching on**. That first activation starts saving a voice pack for your whole week at your current level, including enabled add-ons, form tips and timer options. No pack is generated before you turn coaching on yourself. The download and preparation run on the computer hosting the app; your PC, tablet and phone share its saved audio.
+Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**, then **Turn coaching on**. The app includes recorded Kokoro audio for Heart and Bella (American women), Michael and Puck (American men), and Emma (British woman). No speech model or hours of local generation are needed.
 
-The first pack can take hours on a slow CPU. Coach shows how many clips are saved and estimates the remaining time after a few clips finish. You can close the page or turn coaching off while it works; preparation continues on the server and resumes after a server restart. Once the pack is ready, later workouts play the saved files without waiting for speech generation. Until then, saved clips are available as they finish, and you can keep exercising while missing audio prepares.
+The first activation unpacks the default and selected voices for playback. Requested speech can play while the rest copies in the background. No audio is unpacked before you turn coaching on yourself. Choosing another voice saves its recordings too; completed voices stay ready when you switch back. Preparation can finish with the page closed and resumes after a server restart. Your PC, tablet and phone all use the audio saved on the computer hosting the app.
 
-Choose Heart or Bella (American women), Michael or Puck (American men), or Emma (British woman). After the first activation, selecting another voice starts caching it and shows the same preparation warning. Heart, the default, is also prepared if you start with another voice. Unselected voices are left alone, and completed packs stay available when you switch back. **Preview** becomes available after that first activation. Your voice, pace and coaching choice are saved; Steady and Brisk reuse the same audio.
+Each voice covers all four training levels, both unit systems, enabled add-ons, easier alternatives, form tips and timer choices. **Cues and form tips** adds short instructions during rests; **Essential cues only** keeps exercise, dose, set and timer announcements. Steady and Brisk reuse the same recordings. The coach reads the prescribed reps and durations, and refers to the weights and heart-rate targets on screen. Personal profile values stay out of the shared audio. You count your own reps.
 
-**Cues and form tips** adds short instructions during rests; **Essential cues only** keeps exercise, dose, set and timer announcements. The coach uses today's level and easier dose. Spoken instructions refer to the weights and heart-rate targets on screen; personal profile values stay out of the shared audio. You still count your own reps.
+Logging reps or hold seconds starts the usual rest timer when automatic rest is enabled. During a guided rest, the coach reads one form cue that fits before the last ten seconds, then continues with another cue on a later rest. It can preview the next exercise after the last set. Timer durations combine reusable recorded phrases, so a custom time does not need new speech generation.
 
-Logging reps or hold seconds starts the usual rest timer when automatic rest is enabled. During a guided rest, the coach reads one form cue that fits before the last ten seconds, then continues with another cue on a later rest. It can preview the next exercise after the last set. Timer beeps and voice have separate controls. Radio drops to 12% of your chosen volume while speech plays, then returns to that volume; mute stays muted. On phones that lock media volume, music is muted briefly during speech instead.
+Radio drops to 12% of your chosen volume while speech plays, then returns to that volume; mute stays muted. On phones that lock media volume, music is muted briefly during speech instead. Timer beeps and voice have separate controls. Timers let you **Start without waiting**, and skip any spoken cue that is not ready on time.
 
-The Kokoro model download is 132 MB, plus a native speech runtime. On Linux x64, the model and runtime use about 215 MB on disk. Saved voice packs need extra disk space and are protected from automatic cleanup; other generated clips have a separate 256 MB limit. Speech works offline after installation; radio still needs internet. Timers let you **Start without waiting**, and skip any spoken cue that is not ready on time.
+Recordings are stored individually under `voice/packs/`, with a filename based on the voice and spoken text. Changing one sentence only requires new recordings for that sentence in each voice. Unchanged files are reused. See [the voice implementation notes](docs/GUIDED-VOICE.md) for rebuilding the shared recordings after workout content changes.
 
-For a terminal install on the server, run `npm run voice:install`. Linux needs `tar` with bzip2 support. The main app starts normally without the voice download, including after an interrupted or failed install. The voice runs in a separate process and releases its memory after two idle minutes. Models and audio stay in the gitignored `.voice/` folder, separate from personal logs and backups. See [the voice implementation notes](docs/GUIDED-VOICE.md) for runtime details and checks.
+Unpacked audio stays in the gitignored `.voice/` folder, separate from personal logs and backups. Selected voice packs are protected from automatic cleanup; other generated audio has a separate 256 MB limit. Speech works offline; radio needs internet. The optional native model installer remains available for rebuilding recordings or using a checkout without shared audio.
 
 ![Five local English voices with preview, pace and coaching controls](docs/screenshots/voice-settings.png)
 

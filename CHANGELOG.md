@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.34.1] - 2026-10-20
+
+### Added
+- Shared recordings for all five voices, covering every level, add-ons, easier alternatives and timer choices.
+
+### Changed
+- Turning coaching on copies the included audio instead of generating a voice pack locally; speech can play while the rest copies.
+- Recordings are saved per short clip; changing a sentence rebuilds only affected clips and keeps the rest.
+- Shared voice builds reuse existing recordings and skip the speech model when nothing needs recording.
+
 ## [1.34.0] - 2026-10-20
 
 ### Added

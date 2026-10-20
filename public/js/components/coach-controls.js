@@ -15,11 +15,11 @@ export function createCoachControls({ popup = false, onChange = () => {} } = {})
       <button type="button" class="btn" data-coach="cache" hidden>Prepare voice cache</button>
       <div class="btn-row"><button type="button" class="btn primary" data-coach="enable"></button><button type="button" class="btn" data-coach="preview">${icon("play", "sm")} Preview</button></div>
       <button type="button" class="btn" data-coach="install">Download local voice</button>
-      <small class="muted" data-coach="download-info">132 MB model download, plus the voice runtime. Uses about 215 MB on Linux. Saved voice packs need extra disk space; only the default voice and voices you select are prepared after you first turn coaching on.</small>
+      <small class="muted" data-coach="download-info">The app includes recordings for five voices. Turn coaching on to save the selected voice for playback. A speech model is only needed if the shared recordings are missing.</small>
       <div class="coach-voices" aria-label="Coach voice">${VOICES.map((v) => `<button type="button" class="choice" data-coach-voice="${v.id}" aria-pressed="false"><b>${esc(v.name)}</b><small>${esc(v.detail)}</small></button>`).join("")}</div>
       <label class="field"><span>Coaching</span><select class="input" data-coach-option="coachDetail"><option value="coach">Cues and form tips during rest</option><option value="cues">Essential cues only</option></select></label>
       <label class="field"><span>Pace</span><select class="input" data-coach-option="coachPace"><option value="steady">Steady</option><option value="brisk">Brisk</option></select></label>
-      <p class="muted coach-note">The coach reads today's dose, set numbers and timer cues. Form tips fit into rests; you count your own reps. Radio gets quieter while the coach speaks.</p>
+      <p class="muted coach-note">The coach reads today's dose, set numbers and timer cues. Personal weights and heart-rate targets stay on screen. Form tips fit into rests; you count your own reps. Radio gets quieter while the coach speaks.</p>
       <button type="button" class="btn" data-coach="unlock" hidden>Tap to enable audio</button>
     </div>
   </div>`);

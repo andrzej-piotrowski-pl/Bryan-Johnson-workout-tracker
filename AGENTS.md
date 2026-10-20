@@ -54,7 +54,7 @@ Don't create git tags or GitHub releases; the user handles those. If a version s
 - Run `npm start` and check the change in the browser (http://localhost:3030) before you commit it.
 - `data/` holds the user's personal profile and logs. Never commit it, never delete or rewrite it, and keep new code able to read data saved by older versions.
 - Update `README.md` and the screenshots in `docs/screenshots/` when a change makes them out of date.
-- When exercises, doses, form tips, timer cues or other spoken content change, rebuild and publish the shared audio packs for all five voices. Keep shared speech free of personal profile data and check that the packs cover every training level.
+- When exercises, doses, form tips, timer cues or other spoken content change, rebuild and publish the shared audio packs for all five voices. Reuse the saved clips: a text change should regenerate only affected sentences, never the whole library. Keep shared speech free of personal profile data and check that the packs cover every training level.
 
 ## General
 
