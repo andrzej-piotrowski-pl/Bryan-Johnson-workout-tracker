@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.35.4] - 2026-10-20
+
+### Changed
+- README voice and radio details start collapsed, with no screenshots in the voice section.
+- Opening screenshots show different animation styles, starting with the default Athlete.
+
 ## [1.35.3] - 2026-10-20
 
 ### Changed

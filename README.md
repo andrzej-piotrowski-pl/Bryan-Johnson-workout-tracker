@@ -11,8 +11,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
-- **Guided workout mode** keeps the full demonstration visible on desktop and shows interval rounds in order beneath it, with each work burst and recovery listed. Hover along the progress bar to preview each exercise, then click to jump there. The step counter beside Exit also opens the exercise list. Jumping leaves the other steps unmarked. Only the bottom **Skip** and **Done, next** buttons record guided completion; the green bar shows completed steps. Coach-audio loading messages sit at the bottom of the right panel. The optional local voice coach has five English voices, personalised doses, set and timer cues, and form tips during rest. Interval, hold and rest timers also have beeps.
-- **Radio in guided workouts**: open **Radio** in the top bar to choose from 19 stations across electronic, rock, metal, hip-hop, dance, indie and more, with volume, mute and previous/next controls. FIP Electro is the default. Music gets quieter while the coach speaks, then returns to your chosen volume.
+- **Guided workout mode** keeps the full demonstration visible on desktop and shows interval rounds in order beneath it, with each work burst and recovery listed. Hover along the progress bar to preview each exercise, then click to jump there. The step counter beside Exit also opens the exercise list. Jumping leaves the other steps unmarked. Only the bottom **Skip** and **Done, next** buttons record guided completion; the green bar shows completed steps. Coach-audio loading messages sit at the bottom of the right panel. The optional [voice coach](#voice-coach) adds spoken cues. Interval, hold and rest timers also have beeps.
+- **[Workout radio](#workout-radio)**: music during guided workouts, with 19 stations and automatic volume reduction while the coach speaks.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
 - **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) in **Today → Notes & observations** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
 - **Bryan's weekly targets**: one comparison in **Activity → This week**, showing your level's weekly targets alongside Bryan's full Well trained week, with what is left and which days count.
@@ -27,10 +27,10 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - An exercise library with equipment, muscle, source and category filters, and the full plan with dated sources.
 - Custom rest timer values, compact effort and energy ratings, and more than 30 extra activities to log.
 
-![The Today screen: the day's blocks on the left, the selected exercise with its 3D animation and set logger on the right](docs/screenshots/today.png)
+![Today with the default Athlete animation: the day's blocks on the left, the selected exercise and logger on the right](docs/screenshots/today.png)
 
 <p>
-<img src="docs/screenshots/exercise.png" width="32%" alt="An exercise page with its animation, steps and videos">
+<img src="docs/screenshots/exercise.png" width="32%" alt="An exercise page with the Female athlete animation, steps and videos">
 <img src="docs/screenshots/progress-returning.png" width="32%" alt="Progress at Returning: sessions, Zone 2 and hard-cardio minutes per week">
 <img src="docs/screenshots/history.png" width="32%" alt="History calendar with skip reasons">
 </p>
@@ -39,8 +39,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 <img src="docs/screenshots/setup-accessories.png" width="49%" alt="First-run equipment setup: 3D examples and your equipment names and links">
 </p>
 <p>
-<img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone">
-<img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone">
+<img src="docs/screenshots/mobile-today.png" width="24%" alt="Today on a phone with the Robot animation">
+<img src="docs/screenshots/mobile-exercise.png" width="24%" alt="An exercise on a phone with the Doodle animation">
 </p>
 
 ![Mobile bottom navigation: Today, Activity, Exercises, Plan and Settings](docs/screenshots/mobile-navigation.png)
@@ -228,11 +228,25 @@ The inventory is collapsed by default in Settings. Open **Your equipment** when 
 
 ## Workout radio
 
-Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose from 19 stations grouped as **High energy**, **Upbeat** and **Chill**, play or pause, use the arrows for the previous or next station, and set the volume. The speaker button **inside the Radio popup** mutes the stream without changing the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. Stations come from FIP (Radio France), Radio Paradise, KEXP, The Current, Fréquence 3 and Rinse FM. The streams need an internet connection.
+Open **Radio** in a guided workout to choose from 19 stations. Radio needs an internet connection.
+
+<details>
+<summary><b>Radio controls and stations</b></summary>
+
+FIP Electro is the default. Stations are grouped as **High energy**, **Upbeat** and **Chill**. Play or pause, use the arrows for the previous or next station, and set the volume. The speaker button inside the Radio popup mutes the stream without changing the volume.
+
+Music keeps playing between exercises, and your station and volume are saved for next time. It gets quieter while the coach speaks, then returns to your chosen volume. Stations come from FIP (Radio France), Radio Paradise, KEXP, The Current, Fréquence 3 and Rinse FM.
+
+</details>
 
 ## Voice coach
 
-Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**, then **Turn coaching on**. The app includes recorded Kokoro audio for Heart and Bella (American women), Michael and Puck (American men), and Emma (British woman). No speech model or hours of local generation are needed.
+Choose **Turn coaching on** in **Coach** during a guided workout, or in **Settings → Voice coach**. Five English voices give exercise, set and timer cues using included recordings that work offline.
+
+<details>
+<summary><b>Voices, controls and audio storage</b></summary>
+
+The app includes recorded Kokoro audio for Heart and Bella (American women), Michael and Puck (American men), and Emma (British woman). No speech model or local generation is needed.
 
 The first activation unpacks the default and selected voices for playback. Requested speech can play while the rest copies in the background. No audio is unpacked before you turn coaching on yourself. Choosing another voice saves its recordings too; completed voices stay ready when you switch back. Preparation can finish with the page closed and resumes after a server restart. Your PC, tablet and phone all use the audio saved on the computer hosting the app.
 
@@ -246,28 +260,7 @@ Recordings are stored individually under `voice/packs/`, with a filename based o
 
 Unpacked audio stays in the gitignored `.voice/` folder, separate from personal logs and backups. Selected voice packs are protected from automatic cleanup; other generated audio has a separate 256 MB limit. Speech works offline; radio needs internet. The optional native model installer remains available for rebuilding recordings or using a checkout without shared audio.
 
-![Five local English voices with preview, pace and coaching controls](docs/screenshots/voice-settings.png)
-
-<p>
-<img src="docs/screenshots/guided-coach.png" width="69%" alt="Coach popup beside Radio in a guided workout">
-<img src="docs/screenshots/mobile-guided-coach.png" width="25%" alt="Voice coach controls on a phone">
-</p>
-
-![Guided short intervals with numbered rounds in order beneath the demonstration](docs/screenshots/guided-intervals.png)
-
-<p>
-<img src="docs/screenshots/guided-step-picker.png" width="49%" alt="Guided step counter open with a list of exercises to jump to">
-<img src="docs/screenshots/guided-interval-timer.png" width="49%" alt="An interval timer with its animated movement demonstration">
-</p>
-
-![Hovering along the guided progress bar previews the exercise at that position; click to jump there](docs/screenshots/guided-progress-bar.png)
-
-<p>
-<img src="docs/screenshots/today-follow-panel.png" width="49%" alt="Today scrolled down with the selected exercise animation still visible beside the list">
-<img src="docs/screenshots/guided-status-bottom.png" width="49%" alt="Guided coach-audio status below the exercise controls">
-</p>
-
-![Today’s compact Done, Something hurts? and Note buttons](docs/screenshots/today-action-row.png)
+</details>
 
 ## Themes
 
