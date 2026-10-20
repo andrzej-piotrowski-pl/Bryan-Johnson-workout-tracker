@@ -67,6 +67,10 @@ export function render(el, params) {
     </li>`;
   }
 
+  function itemRows(items, level, scope) {
+    return items.map((item, index) => `${item.group && item.group !== items[index - 1]?.group ? `<li class="item-group">${esc(item.group)}</li>` : ""}${itemRow(item, level, scope)}`).join("");
+  }
+
   function blocksHtml(def, level) {
     return def.blocks
       .map((b) => {
@@ -75,7 +79,7 @@ export function render(el, params) {
         return `<section class="card block" data-kind="${blockKind(b.name)}">
           <div class="block-head"><h3>${esc(b.name)}</h3><span class="eyebrow">≈${blockMins(b, level)} min</span></div>
           ${b.note ? `<p class="block-note">${esc(personalize(b.note, profile()))}</p>` : ""}
-          <ul class="items">${items.map((it) => itemRow(it, level, "main")).join("")}</ul>
+          <ul class="items">${itemRows(items, level, "main")}</ul>
         </section>`;
       })
       .join("");
@@ -107,7 +111,7 @@ export function render(el, params) {
       ${
         a.skipped
           ? `<div class="banner skip" style="margin:0 20px 16px"><div class="grow"><b>Skipped today</b>${a.skipReason ? `<span>${esc(a.skipReason)}</span>` : ""}</div><button type="button" class="btn sm" data-addon-unskip>${icon("undo", "sm")} Undo</button></div>`
-          : `<ul class="items">${items.map((it) => itemRow(it, level, addon.id)).join("")}</ul>
+          : `<ul class="items">${itemRows(items, level, addon.id)}</ul>
              <div style="padding:6px 20px 18px;display:grid;gap:14px">${metrics}${periodic}
                <div class="btn-row"><button type="button" class="btn sm" data-addon-all>${icon("check", "sm")} Mark all done</button><button type="button" class="btn sm ghost skip" data-addon-skip>${icon("skip", "sm")} Skip ${esc(addon.short || addon.name)} today</button></div>
              </div>`

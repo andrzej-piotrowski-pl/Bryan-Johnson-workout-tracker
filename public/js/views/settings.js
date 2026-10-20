@@ -35,7 +35,7 @@ export function render(el) {
   let previewEx = PREVIEW_EXERCISE;
   try {
     const kept = sessionStorage.getItem("hp:animpreview");
-    if (kept && EXERCISES[kept]) previewEx = kept;
+    if (kept && EXERCISES[kept] && !EXERCISES[kept].hidden) previewEx = kept;
   } catch {}
   const previewEl = document.createElement("div");
   previewEl.className = "anim-preview stage";
@@ -130,7 +130,7 @@ export function render(el) {
         <h3>Animation style</h3>
         <p class="muted" style="font-size:0.86rem">Pick how the demonstrations look. Every style shows the same movement.</p>
         <div data-anim-preview></div>
-        <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
+        <label class="field anim-preview-pick"><span>Exercise in the preview</span><select class="input" data-anim-ex>${CATEGORIES.map((c) => `<optgroup label="${esc(c)}">${Object.entries(EXERCISES).filter(([, x]) => x.cat === c && !x.hidden).map(([id, x]) => `<option value="${id}"${id === previewEx ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join("")}</select></label>
         ${animStylePickerHtml(st.animStyle)}
         <div class="live-row">
           <button type="button" class="btn" data-anim-live>${icon("eye")} Try styles live</button>

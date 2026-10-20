@@ -11,6 +11,8 @@ Made for: male, 38, 188 cm, 75 kg, trained before, four years off, no injuries.
 - Plus a posture block every day: ≈8 min, ≈10 min on Wednesday and Saturday
 - Estimated max heart rate 182 bpm (Zone 2 = 109–127 bpm)
 
+Each movement has its own row. Dynamic warm-ups run once through. Paired strength exercises alternate one set each; Friday's Well trained deadlifts alternate with 3 jumps after a 20–30 second wait. Interval timers show each movement and recovery in round order.
+
 Each table lists the dose for each training level. A dash means the exercise is skipped at that level. Click an exercise name for how-to steps, the minute where Bryan does it, and demo videos.
 
 The app’s source timeline and source lists show supporting links with separate dates, newest first where known. This presentation does not change the training doses below.
@@ -129,8 +131,15 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Backward walk](#backward-walk) | 1–2 min, bodyweight, slow | 2 min, bodyweight | — | — | Bryan: backward sled ≈2 min |
+| [Backward walk with resistance](#backward-walk-with-resistance) | — | — | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Arm circles](#arm-circles) | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward |  |
+| [Front-to-back leg swings](#front-to-back-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [Side-to-side leg swings](#side-to-side-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [High knees on the spot](#high-knees-on-the-spot) | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet |  |
+| [Lateral lunge](#lateral-lunge) | 5/side | 5/side | 5/side | 5/side |  |
+| [Standing hip CARs](#standing-hip-cars) | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way |  |
+| [Lunge with twist](#lunge-with-twist) | 5/side | 5/side | 5/side | 5/side |  |
 | [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
 | [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
@@ -138,7 +147,9 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Jumps](#jumps-snap-down--squat-jump--countermovement-jump) | — | Snap-downs 2 × 5 | Squat jumps 3 × 3, stick each landing | Countermovement jumps 3 × 3, stick each landing | Bryan 2026: jumps for fast-twitch power |
+| [Snap-down landing](#snap-down-landing) | — | Snap-downs 2 × 5 | — | — | Bryan 2026: jumps for fast-twitch power |
+| [Squat jump](#squat-jump) | — | — | Squat jumps 3 × 3, stick each landing | — | Bryan 2026: jumps for fast-twitch power |
+| [Countermovement jump](#countermovement-jump) | — | — | — | Countermovement jumps 3 × 3, stick each landing | Bryan 2026: jumps for fast-twitch power |
 
 **Strength (≈18 / 22 / 28 / 30 min)** · Rest 60–90 s between sets. Pair push-ups with rows to save time.
 
@@ -154,10 +165,12 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 12–15 | 1 × 15–20 | 1 × 25 | 1 × 25 + 1 × 10/leg single-leg | Bryan: 1 × 25 |
-| [Seated dumbbell calf raise](#calf-raises-seated--single-leg) | 1 × 12 @ 2 × 7 kg | 1 × 15 @ 2 × 10 kg | 1 × 20 @ 2 × 16 kg | 1 × 25 @ 2 × 20–26 kg | Bryan: 1 × 25 |
+| [Two-leg tibialis raise](#two-leg-tibialis-raise) | 1 × 12–15 | 1 × 15–20 | 1 × 25 | 1 × 25 | Bryan: 1 × 25 |
+| [Single-leg tibialis raise](#single-leg-tibialis-raise) | — | — | — | 1 × 10/leg single-leg |  |
+| [Seated dumbbell calf raise](#seated-dumbbell-calf-raise) | 1 × 12 @ 2 × 7 kg | 1 × 15 @ 2 × 10 kg | 1 × 20 @ 2 × 16 kg | 1 × 25 @ 2 × 20–26 kg | Bryan: 1 × 25 |
 | [Plank](#plank) | 2 × 15–20 s, knees down is fine | 2 × 20–30 s | 3 × 30 s | 3 × 45 s | Official: 3 × 20–30 s |
-| [Hanging knee / leg raise](#hanging-knee--leg-raise) | 2 × 5 knee raises, small range | 2 × 8 knee raises | 2 × 12 knee raises | Straight legs: 30–50 reps in as few sets as possible | Bryan: 1 × 50 |
+| [Hanging knee raise](#hanging-knee-raise) | 2 × 5 knee raises, small range | 2 × 8 knee raises | 2 × 12 knee raises | — | Bryan: 1 × 50 |
+| [Hanging straight-leg raise](#hanging-straight-leg-raise) | — | — | — | Straight legs: 30–50 reps in as few sets as possible | Bryan: 1 × 50 |
 
 **Zone 2 (≈5 / 10 / 15 / 25 min)**
 
@@ -182,8 +195,8 @@ _Day 1 of Bryan’s template (squat, push-up, row, swing, plank) with his Knees-
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Forehead resistance hold](#forehead-resistance-hold) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Tuesday: Intervals 1 · 20-second bursts + Zone 2 + back & core
@@ -194,8 +207,15 @@ _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished 
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Backward walk](#backward-walk) | 1–2 min, bodyweight, slow | 2 min, bodyweight | — | — | Bryan: backward sled ≈2 min |
+| [Backward walk with resistance](#backward-walk-with-resistance) | — | — | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Arm circles](#arm-circles) | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward |  |
+| [Front-to-back leg swings](#front-to-back-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [Side-to-side leg swings](#side-to-side-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [High knees on the spot](#high-knees-on-the-spot) | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet |  |
+| [Lateral lunge](#lateral-lunge) | 5/side | 5/side | 5/side | 5/side |  |
+| [Standing hip CARs](#standing-hip-cars) | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way |  |
+| [Lunge with twist](#lunge-with-twist) | 5/side | 5/side | 5/side | 5/side |  |
 | [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
 | [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
@@ -204,7 +224,6 @@ _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
 | [Short intervals (20 s bursts)](#short-intervals-20-s-bursts) | 4 × (20 s brisk / 40 s easy) | 6 × (20 s brisk / 40 s easy) | 8 × (20 s hard / 40 s easy) | 2 × [8 × (20 s all-out / 20 s easy)], 3 min easy between | Newest template: 8 × 20 s |
-| [Moves: step-ups, high knees, climbers, jacks, burpees](#indoor-interval-moves) | Pick 1, the quiet version | Pick 1–2 | Pick 2 | Pick 2–3 |  |
 
 **Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
 
@@ -242,8 +261,8 @@ _Tuesday of Bryan’s template: short hard bursts, then steady Zone 2. Finished 
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Forehead resistance hold](#forehead-resistance-hold) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Wednesday: Strength B · Pull, knees & mobility
@@ -254,8 +273,9 @@ _Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 2 min | 2 min | 2 min | 2 min |  |
-| [Arm circles + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min | 2 min |  |
+| [Backward walk](#backward-walk) | 2 min | 2 min | 2 min | 2 min |  |
+| [Arm circles](#arm-circles) | 1 min, forward then backward | 1 min, forward then backward | 1 min, forward then backward | 1 min, forward then backward |  |
+| [Standing hip CARs](#standing-hip-cars) | 1 min, both legs and directions | 1 min, both legs and directions | 1 min, both legs and directions | 1 min, both legs and directions |  |
 | [Wall slides](#wall-slides) | 1 × 8 | 1 × 10 | 1 × 10 | 1 × 10 |  |
 | [Thread the needle](#thread-the-needle) | 5/side | 5/side | 5/side | 5/side |  |
 | [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10 | 2 × 20 | 2 × 20 |  |
@@ -264,7 +284,8 @@ _Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Pull-ups (palms away)](#chin-ups-and-pull-ups) | 3 × 10–20 s dead hang, or 2 × 3 band-assisted | 3 × 3–5 band-assisted or 5 s negatives | 3 × 5–6 | 3 × 6–8; add a loaded backpack at 3 × 8 | Bryan 2025: 2 × 5–8 |
+| [Passive dead hang](#passive-dead-hang) | 3 × 10–20 s dead hang | — | — | — | Bryan 2025: 2 × 5–8 |
+| [Pull-up (palms away)](#pull-up-palms-away) | — | 3 × 3–5 band-assisted or 5 s negatives | 3 × 5–6 | 3 × 6–8; add a loaded backpack at 3 × 8 | Bryan 2025: 2 × 5–8 |
 | [ATG split squat](#atg-split-squat) | 2 × 5/leg, part range, hand on a chair | 2 × 6/leg, hand on a chair | 3 × 8/leg, full depth | 3 × 8–10/leg holding 2 × 10–18 kg | Bryan: 3 × 10 |
 | [Nordic hamstring curl](#nordic-hamstring-curl) | — | 2 × 3–4 slow lowers | 2 × 4–6 | 2 × 5–8 | Bryan: 1 × 10 → 2 × 5–8 |
 | [Reverse Nordic](#reverse-nordic) | 1 × 5, small range | 1 × 6, small range | 1 × 8–10 | 1 × 10, full range | Bryan: 1 × 10 |
@@ -306,10 +327,10 @@ _Built around Bryan’s mobility strength day, with his pulling, Knees-Over-Toes
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 | [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 × 10 @ 2 × 2.5–3 kg, stop well before fatigue | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 6–7 kg | 1 set to fatigue @ 2 × 8–12 kg | Bryan: 1 set to fatigue, 2×/wk |
-| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
+| [Slow forehead resistance](#slow-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
 
 ### Thursday: Intervals 2 · Norwegian 4×4 + stability
 
@@ -320,14 +341,15 @@ _Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his offi
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
 | [Easy step-ups or marching, building to ≈129 bpm](#zone-2-cardio-indoors) | 8 min | 8 min | 8 min | 8 min |  |
-| [Leg swings + hip CARs](#dynamic-series) | 2 min | 2 min | 2 min | 2 min |  |
+| [Front-to-back leg swings](#front-to-back-leg-swings) | 30 s total, both legs | 30 s total, both legs | 30 s total, both legs | 30 s total, both legs |  |
+| [Side-to-side leg swings](#side-to-side-leg-swings) | 30 s total, both legs | 30 s total, both legs | 30 s total, both legs | 30 s total, both legs |  |
+| [Standing hip CARs](#standing-hip-cars) | 1 min, both legs and directions | 1 min, both legs and directions | 1 min, both legs and directions | 1 min, both legs and directions |  |
 
 **Norwegian 4×4 (≈12 / 15 / 25 / 25 min)** · Hard but controlled. Rotate the indoor moves every minute.
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
 | [Norwegian 4×4](#norwegian-44) | 2 × (2 min brisk @ 137–146 bpm / 3 min easy) | 2 rounds, then 3, of (3 min @ 146–155 bpm / 3 min easy) | 3 × (4 min / 3 min), then 4 × (4 min / 3 min) @ 149–166 bpm | 4 × (4 min @ 155–173 bpm / 3 min @ 109–127 bpm) | Newest template: Thursday |
-| [Moves: step-ups → high knees → jacks → climbers](#indoor-interval-moves) | 1 min each, the quiet versions | 1 min each, repeat | 1 min each, repeat | 1 min each, repeat |  |
 
 **Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
 
@@ -345,7 +367,8 @@ _Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his offi
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Single-leg RDL / toe touch](#single-leg-rdl--toe-touch) | 2 × 5/leg, hand on a wall, small range | 2 × 6/leg, hand on a wall | 2 × 8/leg | 2 × 10/leg, slow |  |
+| [Single-leg toe touch](#single-leg-toe-touch) | 2 × 5/leg, hand on a wall, small range | 2 × 6/leg, hand on a wall | — | — |  |
+| [Bodyweight single-leg RDL](#bodyweight-single-leg-rdl) | — | — | 2 × 8/leg | 2 × 10/leg, slow |  |
 | [Bird dog](#bird-dog) | 2 × 5/side, 2 s hold | 2 × 6/side, 2 s hold | 2 × 8/side | 2 × 10/side |  |
 | [Dead bug](#dead-bug) | 2 × 5/side | 2 × 6/side | 2 × 8/side | 2 × 10/side |  |
 | [Plank shoulder taps](#plank-shoulder-taps) | 2 × 6/side, from the knees | 2 × 8/side, wide feet | 2 × 10/side | 2 × 12/side |  |
@@ -360,8 +383,8 @@ _Thursday of Bryan’s template: the Norwegian 4×4, done indoors, then his offi
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Forehead resistance hold](#forehead-resistance-hold) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Friday: Strength C · Power, lunge, press + tendons
@@ -372,8 +395,15 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Backward walk (sled substitute)](#backward-walk-sled-substitute) | 1–2 min, bodyweight, slow | 2 min, bodyweight | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
-| [Dynamic series](#dynamic-series) | ≈4 min, full series, slow | ≈4 min, full series | ≈4 min | ≈4 min |  |
+| [Backward walk](#backward-walk) | 1–2 min, bodyweight, slow | 2 min, bodyweight | — | — | Bryan: backward sled ≈2 min |
+| [Backward walk with resistance](#backward-walk-with-resistance) | — | — | 2 min holding 2 × 9–12 kg | 2–3 min holding 2 × 16–20 kg or band-resisted | Bryan: backward sled ≈2 min |
+| [Arm circles](#arm-circles) | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward | 10 forward, 10 backward |  |
+| [Front-to-back leg swings](#front-to-back-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [Side-to-side leg swings](#side-to-side-leg-swings) | 10/leg | 10/leg | 10/leg | 10/leg |  |
+| [High knees on the spot](#high-knees-on-the-spot) | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet | 20 s, light and quiet |  |
+| [Lateral lunge](#lateral-lunge) | 5/side | 5/side | 5/side | 5/side |  |
+| [Standing hip CARs](#standing-hip-cars) | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way | 3 circles/leg each way |  |
+| [Lunge with twist](#lunge-with-twist) | 5/side | 5/side | 5/side | 5/side |  |
 | [Pogo hops](#pogo-hops) | 1 × 10, very low | 2 × 10, low | 2 × 20 | 3 × 20 | Bone protocol: hops 4–7×/wk |
 | [Single-leg balance](#single-leg-balance) | 2 × 20 s/leg, hand near a wall | 2 × 30 s/leg, eyes open | 2 × 30 s/leg, eyes closed | 2 × 30 s/leg, eyes closed on a folded mat |  |
 
@@ -389,12 +419,15 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Dumbbell Romanian deadlift](#dumbbell-romanian-deadlift) | 2 × 8 @ 2 × 8–11 kg | 2 × 10 @ 2 × 12–16 kg | 3 × 8 @ 2 × 20–26 kg | 3 × 6–8, heaviest pair; 20–30 s after each set, 3 countermovement jumps | Bryan 2026: heavy pull → jumps |
+| [Dumbbell Romanian deadlift](#dumbbell-romanian-deadlift) | 2 × 8 @ 2 × 8–11 kg | 2 × 10 @ 2 × 12–16 kg | 3 × 8 @ 2 × 20–26 kg | 3 × 6–8, heaviest pair | Bryan 2026: heavy pull → jumps |
+| [Countermovement jump](#countermovement-jump) | — | — | — | 3 × 3, wait 20–30 s after each deadlift set |  |
 | [Reverse lunge](#reverse-lunge) | 2 × 6/leg, hand on a chair | 2 × 8/leg, bodyweight | 3 × 10/leg @ 2 × 9–12 kg | 3 × 10–12/leg @ 2 × 16–20 kg | Official: 3 × 10–12 |
 | [Dumbbell floor press](#dumbbell-floor-press) | 2 × 8 @ 2 × 7–8 kg | 2 × 10 @ 2 × 10–12 kg | 3 × 10 @ 2 × 16–18 kg | 3 × 8–10, heaviest pair | Official: 3 × 10–12 |
-| [Chin-ups (palms facing you)](#chin-ups-and-pull-ups) | 2 × 10–20 s dead hang | 2 × 3–5 band-assisted | 3 × 5 | 3 × 6–8 | Bryan does both grips |
+| [Passive dead hang](#passive-dead-hang) | 2 × 10–20 s dead hang | — | — | — | Bryan does both grips |
+| [Chin-up (palms facing you)](#chin-up-palms-facing-you) | — | 2 × 3–5 band-assisted | 3 × 5 | 3 × 6–8 | Bryan does both grips |
 | [Standing dumbbell overhead press](#standing-dumbbell-overhead-press) | 2 × 8 @ 2 × 4–5.5 kg | 2 × 10 @ 2 × 6–8 kg | 3 × 10 @ 2 × 9–14 kg | 3 × 8–10 @ 2 × 16–20 kg | Official: 3 × 10–12 |
-| [Step-up (low step, drive)](#step-up-low-step-drive) | 2 × 6/leg, lowest stable step | 2 × 6/leg, low step | 2 × 8/leg, low step | 3 × 8/leg holding 2 × 10–16 kg, low step, controlled drive | Official: 3 × 10/leg |
+| [Bodyweight low step-up](#bodyweight-low-step-up) | 2 × 6/leg, lowest stable step | 2 × 6/leg, low step | 2 × 8/leg, low step | — | Official: 3 × 10/leg |
+| [Dumbbell low step-up](#dumbbell-low-step-up) | — | — | — | 3 × 8/leg holding 2 × 10–16 kg, low step, controlled drive | Official: 3 × 10/leg |
 
 **Side plank & tendons (≈6 / 7 / 8 / 9 min)**
 
@@ -402,8 +435,9 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 |---|---|---|---|---|---|
 | [Side plank](#side-plank) | 2 × 15 s/side, knees down | 2 × 20 s/side, knees down is fine | 2 × 30 s/side | 2 × 45 s/side | Official: 20–30 s/side |
 | [Jefferson curl](#jefferson-curl) | 2 × 5, no weight, on the floor, small range | 2 × 5, no weight, on the floor | 2 × 5 @ 2.5–4.5 kg on a step | 2 × 5 @ 5–13 kg on a step | Bryan 2025: flexibility set |
-| [Single-leg calf raise, slow](#calf-raises-seated--single-leg) | 1 × 8/leg, hand on a wall | 1 × 10/leg | 1 × 12/leg | 1 × 15/leg |  |
-| [Tibialis raise (wall)](#tibialis-raise-wall) | 1 × 12 | 1 × 15 | 1 × 20 | 1 × 25 |  |
+| [Single-leg calf raise](#single-leg-calf-raise) | 1 × 8/leg, hand on a wall | 1 × 10/leg | 1 × 12/leg | 1 × 15/leg |  |
+| [Two-leg tibialis raise](#two-leg-tibialis-raise) | 1 × 12 | 1 × 15 | 1 × 20 | 1 × 25 |  |
+| [Single-leg tibialis raise](#single-leg-tibialis-raise) | — | — | — | — |  |
 
 **Zone 2 (≈5 / 10 / 20 / 30 min)** · Scheduled cardio toward Bryan’s 150 min/week; outdoor activity is optional.
 
@@ -427,8 +461,8 @@ _Friday of Bryan’s template (lunge, overhead press, chest press, step-up, side
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Forehead resistance hold](#forehead-resistance-hold) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ### Saturday: Cardio + long stretch
@@ -441,7 +475,10 @@ _Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, pla
 
 | Exercise | New to training | Returning | Active | Well trained | Bryan |
 |---|---|---|---|---|---|
-| [Marching, leg swings, hip CARs](#dynamic-series) | 5 min | 5 min | 5 min | 5 min |  |
+| [Marching on the spot](#marching-on-the-spot) | 1 min, easy | 1 min, easy | 1 min, easy | 1 min, easy |  |
+| [Front-to-back leg swings](#front-to-back-leg-swings) | 1 min total, both legs | 1 min total, both legs | 1 min total, both legs | 1 min total, both legs |  |
+| [Side-to-side leg swings](#side-to-side-leg-swings) | 1 min total, both legs | 1 min total, both legs | 1 min total, both legs | 1 min total, both legs |  |
+| [Standing hip CARs](#standing-hip-cars) | 2 min, both legs and directions | 2 min, both legs and directions | 2 min, both legs and directions | 2 min, both legs and directions |  |
 
 **Controlled vigorous cardio (≈– / 6 / 12 / 18 min)** · Home-plan conditioning toward Bryan’s 75 min/week: controlled effort, not all-out. Log only vigorous minutes; recoveries are extra time.
 
@@ -479,10 +516,10 @@ _Bryan keeps weekends for easy, enjoyable movement (he hikes, bikes, climbs, pla
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 | [Shoulders up and out (levator shrug)](#shoulders-up-and-out-levator-shrug) | 1 × 10 @ 2 × 2.5–3 kg, stop well before fatigue | 1 set to fatigue @ 2 × 3.5–4 kg | 1 set to fatigue @ 2 × 6–7 kg | 1 set to fatigue @ 2 × 8–12 kg | Bryan: 1 set to fatigue, 2×/wk |
-| [Neck: forehead resistance to fatigue](#neck-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
+| [Slow forehead resistance](#slow-forehead-resistance) | 1 × 5 slow holds, stop well before fatigue | 1 set to fatigue, slow and patient | 1 set to fatigue | 1 set to fatigue | Bryan: to fatigue, 2×/wk |
 
 ### Sunday: Rest
 
@@ -497,8 +534,8 @@ _No training. Keep the posture habits; the daily posture block and an easy walk 
 | [Wall slides](#wall-slides) | 1 × 8 slow | 1 × 10 slow | 1 × 10 slow | 1 × 12 slow |  |
 | [Band pull-apart](#band-pull-apart) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20 | Bryan: 1 × 15 |
 | [Band face pull](#band-face-pull) | 1 × 12, lightest band | 1 × 15 | 1 × 15–20 | 1 × 20–25 | Bryan: 1 × 15–25 |
-| [Shoulder external rotation](#shoulder-external-rotation) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
-| [Neck: forehead resistance, gentle](#neck-forehead-resistance) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
+| [External rotation with elbow on knee](#external-rotation-with-elbow-on-knee) | 1 × 10/arm @ 0.5–1.5 kg | 1 × 10/arm @ 1–2 kg | 1 × 12/arm @ 2.5–3.5 kg | 1 × 15/arm @ 4–5 kg | In Bryan’s routine |
+| [Forehead resistance hold](#forehead-resistance-hold) | 3 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds | 5 × 10 s holds |  |
 | [Doorway chest stretch](#doorway-chest-stretch) | 30 s/side | 30 s/side | 30 s/side | 45 s/side | Classic (not Bryan) |
 
 ## Posture program
@@ -623,31 +660,73 @@ Checked against Bryan's direct [Workout Protocol, updated 14 October 2026](https
 
 ### Warm-up & balance
 
-#### Backward walk (sled substitute)
+#### Backward walk
 
-> **From Bryan:** Bryan opens his workouts with a backward sled drag (about 2 min in his 2023 routine, still first in his 2025 warm-up with Dr. Andy Galpin). It loads the knees and quads the Knees-Over-Toes way.
+1. Walk backward along a clear hallway, taking short steps and turning before the wall.
+2. Land on the ball of your foot, lower the heel, and keep your knees softly bent.
 
-1. Walk backward for 2 min along your longest clear line indoors (hallway or living room), turning around at the wall.
-2. Short steps; land on the ball of the foot and let the heel follow.
-3. Keep the knees bent so they travel forward over the toes, and push the floor away in front of you.
-4. From Returning up: hold a dumbbell in each hand, or loop a band around your waist anchored in front of you so it pulls you forward like a sled.
+Watch: [Backward walk for knee strength](https://www.youtube.com/watch?v=6EhaDP7WKG0) · [Walk backward for knee and back health](https://www.youtube.com/watch?v=HLdGJaPrjZ8&t=18s)
 
-- Tip: It should burn in the front of the thighs, never hurt inside the knee.
+#### Backward walk with resistance
 
-Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈1:36](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=96s) · [At-home sled pull alternative](https://www.youtube.com/watch?v=47XXOSCVUlg) · [Sled pull alternative (Knees Over Toes style)](https://www.youtube.com/watch?v=6zcj8dNolrA)
+1. Walk backward with a dumbbell in each hand, taking short steps with bent knees.
+2. Alternatively, use a securely anchored band around your waist that pulls you forward.
+3. Keep the route clear and turn before reaching the wall.
 
-#### Dynamic series
+Watch: [Sled pull alternative (Knees Over Toes style)](https://www.youtube.com/watch?v=6zcj8dNolrA&t=12s) · [Backward walking progression](https://www.youtube.com/watch?v=kQvm1_KQ2Jg&t=45s)
 
-> **From Bryan:** Arm circles, leg swings, high knees and lateral lunges are the dynamic warm-up in Bryan’s official protocol; hip CARs and lunge with twist come from his mobility day and his 2025 warm-up with Dr. Andy Galpin.
+#### Arm circles
 
-1. Arm circles: 10 forward, 10 back.
-2. Leg swings: 10 front-to-back and 10 side-to-side per leg, one hand on a wall.
-3. High knees on the spot: 20 s, light and quiet.
-4. Lateral lunges: 5 per side, sitting the hips back.
-5. Hip CARs: 3 slow circles per leg each way (knee up, open out, rotate back, lower).
-6. Lunge with twist: 5 per side, turning your chest toward the front knee.
+1. Stand tall with your arms out to the sides.
+2. Make controlled circles forward, then backward, keeping your shoulders relaxed.
 
-Watch: [Leg swings](https://www.youtube.com/watch?v=difYoBtZi2s) · [Lateral lunge](https://www.youtube.com/watch?v=vwK7vZNQwUI) · [Standing hip CARs](https://www.youtube.com/watch?v=vybS-uVNrqA) · [Lunge with twist](https://www.youtube.com/watch?v=KDelmDbh4Ms)
+Watch: [Arm circles exercise](https://www.youtube.com/watch?v=UVMEnIaY8aU) · [Standing warm-up arm circles](https://www.youtube.com/watch?v=mwDgFY86zck)
+
+#### Front-to-back leg swings
+
+1. Stand beside a wall with one hand supporting you.
+2. Swing one leg forward and backward without arching your back.
+3. Finish the prescribed reps or time, then switch legs.
+
+Watch: [How to do leg swings](https://www.youtube.com/watch?v=difYoBtZi2s&t=3s) · [Front-to-back and side-to-side leg swings](https://www.youtube.com/watch?v=RdL35MpuoQs&t=12s) · [Active warm-up leg swings](https://www.youtube.com/watch?v=naW8u72lOzI&t=6s)
+
+#### Side-to-side leg swings
+
+1. Face a wall and use your hands for support.
+2. Swing one leg across your body and out to the side, keeping your hips facing forward.
+3. Finish the prescribed reps or time, then switch legs.
+
+Watch: [How to do leg swings](https://www.youtube.com/watch?v=difYoBtZi2s&t=3s) · [Front-to-back and side-to-side leg swings](https://www.youtube.com/watch?v=RdL35MpuoQs&t=12s) · [Active warm-up leg swings](https://www.youtube.com/watch?v=naW8u72lOzI&t=6s)
+
+#### High knees on the spot
+
+1. Stand tall and alternate lifting your knees in front of you, driving the opposite arm.
+2. Keep your landings light and quiet. Follow the pace prescribed for this step.
+
+Watch: [How to do high knees](https://www.youtube.com/watch?v=sTvekaq6vOU) · [High knee warm-up drill](https://www.youtube.com/watch?v=ymdS7tM0zws&t=2s)
+
+#### Lateral lunge
+
+1. Step out to one side and sit your hips back over the bent knee.
+2. Keep the other leg long and both feet on the floor.
+3. Push back to standing and repeat on the other side.
+
+Watch: [How to do lateral lunges (side lunges)](https://www.youtube.com/watch?v=apsp_uuXZTU&t=3s) · [Lateral lunge form and cues](https://www.youtube.com/watch?v=vwK7vZNQwUI&t=22s)
+
+#### Standing hip CARs
+
+1. Hold a wall and stand tall without twisting your torso.
+2. Lift one knee, open it out, rotate it back and lower slowly.
+3. Circle in both directions, then switch legs.
+
+Watch: [Standing hip CARs explained](https://www.youtube.com/watch?v=PO1of6rKX3Q&t=3s) · [Standing hip CARs (controlled articular rotations)](https://www.youtube.com/watch?v=vybS-uVNrqA&t=4s) · [Wall-supported standing hip CARs](https://www.youtube.com/watch?v=C4MDREc9ERg)
+
+#### Lunge with twist
+
+1. Step into a lunge and turn your chest toward the front knee.
+2. Return to standing and repeat on the other side, keeping the movement controlled.
+
+Watch: [Lunge with twist](https://www.youtube.com/watch?v=peb887Bc0-Q&t=2s) · [Walking lunge with twist tutorial](https://www.youtube.com/watch?v=7yrkGWJHSP0&t=3s) · [Lunge with torso rotation](https://www.youtube.com/watch?v=KDelmDbh4Ms&t=5s)
 
 #### Pogo hops
 
@@ -674,20 +753,35 @@ Watch: [Eyes-closed single-leg balance](https://www.youtube.com/watch?v=cDnTke5l
 
 ### Power
 
-#### Jumps: snap-down → squat jump → countermovement jump
+#### Snap-down landing
 
-> **From Bryan:** Since July 2026 Bryan trains to dunk at 49: heavy lifts with jumps between sets, aimed at the fast-twitch fibres and force development he says he lacks. He also flags Achilles risk from landing forces, so you learn to land before you jump high.
-
-1. Snap-down (Returning): rise onto your toes with arms up, then drop fast into a quarter squat, arms back. Freeze 2 s.
-2. Squat jump (Active): from a half squat, jump as high as you can; land softly in the same spot and hold 2 s.
-3. Countermovement jump (Well trained): quick dip with an arm swing, then a max-height jump; stick the landing.
-4. Knees track over the toes on landing and never cave in. Full rest; every rep at max intent.
-
-- Tip: Shoes on, land on a mat. Loud landings mean the set is over.
+1. Rise onto your toes with your arms overhead.
+2. Drop quickly into a quarter squat with your arms back. Keep your feet on the floor.
+3. Hold the landing for 2 seconds with your knees over your toes.
 
 Easier version: Quiet version: explosive squat to calf raise without leaving the floor.
 
-Watch: [Snap-downs: introduction to landings](https://www.youtube.com/watch?v=4BkMWe3au9w) · [Squat jump with stable landing](https://www.youtube.com/watch?v=d0p-3x84nj0) · [How to land properly](https://www.youtube.com/watch?v=ORF7BS3ewQo)
+Watch: [Snap-downs: introduction to landings](https://www.youtube.com/watch?v=4BkMWe3au9w&t=4s) · [Snap-down plyometric landing drill](https://www.youtube.com/watch?v=0fadxQR0g0c) · [Snap-down mechanics](https://www.youtube.com/watch?v=x1nBhDLUUi0&t=15s)
+
+#### Squat jump
+
+1. Start in a half squat, then jump upward.
+2. Land softly with your knees over your toes and hold for 2 seconds.
+3. Rest fully between reps. Stop if your landings get loud.
+
+Easier version: Quiet version: explosive squat to calf raise without leaving the floor.
+
+Watch: [How to jump squat](https://www.youtube.com/watch?v=BRfxI2Es2lE) · [Squat jump with stable landing](https://www.youtube.com/watch?v=d0p-3x84nj0&t=10s) · [How to land properly](https://www.youtube.com/watch?v=ORF7BS3ewQo&t=18s)
+
+#### Countermovement jump
+
+1. Stand tall, dip quickly and swing your arms to jump upward.
+2. Land softly with your knees over your toes and hold steady.
+3. Rest fully between reps. Stop if your landings get loud.
+
+Easier version: Quiet version: explosive squat to calf raise without leaving the floor.
+
+Watch: [Countermovement jump (CMJ)](https://www.youtube.com/watch?v=m7-AV0mikkI&t=2s) · [How to countermovement jump](https://www.youtube.com/watch?v=09yR5a4u-6A)
 
 #### Stationary power skips
 
@@ -789,25 +883,36 @@ Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈15:0
 
 Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈15:40](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=940s) · [Reverse Nordic (beginner to advanced)](https://www.youtube.com/watch?v=BnlPIJ3d-ck) · [How to perform and progress reverse Nordics](https://www.youtube.com/shorts/uJSCxJh-tec)
 
-#### Tibialis raise (wall)
+#### Two-leg tibialis raise
 
-> **From Bryan:** Bryan does tibialis raises (1 × 25, single-leg in his list). In his 2026 dunk notes he names limited ankle dorsiflexion as a weak point; this is the fix.
+1. Lean your back and hips on a wall with your feet 30–60 cm forward.
+2. Keep both heels down and lift both sets of toes.
+3. Pause for a second and lower slowly.
 
-1. Lean your back and hips on a wall, feet 30–60 cm in front, legs straight.
-2. Lift your toes and the fronts of your feet as high as possible.
-3. Pause 1 s, lower slowly.
-4. Feet farther from the wall make it harder; progress to one leg.
+Watch: [Wall tibialis raise](https://www.youtube.com/watch?v=O8ZcXfwFuqs&t=5s) · [Knees Over Toes wall shin raises](https://www.youtube.com/watch?v=t3JPQkBMjuU&t=10s)
 
-Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈16:03](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=963s) · [Wall tibialis raise](https://www.youtube.com/watch?v=O8ZcXfwFuqs) · [Knees Over Toes wall shin raises](https://www.youtube.com/watch?v=t3JPQkBMjuU)
+#### Single-leg tibialis raise
 
-#### Calf raises: seated + single-leg
+1. Lean your back and hips on a wall with one heel on the floor in front of you.
+2. Lift the other foot clear of the floor.
+3. Raise the toes of your working foot, pause for a second and lower slowly. Finish the reps, then switch legs.
 
-> **From Bryan:** Bryan: seated calf raises 1 × 25. The standing single-leg version adds Achilles preparation for jumping, his own 2026 concern.
+Watch: [Wall tibialis raise](https://www.youtube.com/watch?v=O8ZcXfwFuqs&t=5s) · [Knees Over Toes wall shin raises](https://www.youtube.com/watch?v=t3JPQkBMjuU&t=10s)
 
-1. Seated: sit on a chair, balls of the feet on a book or plate, dumbbells on your knees. Raise the heels high, pause, lower to a full stretch.
-2. Standing single-leg: one foot on a step, hand on a wall. 2 s up, 2 s down, full range.
+#### Seated dumbbell calf raise
 
-Watch: [Seated dumbbell calf raise](https://www.youtube.com/watch?v=4-slnRXcGDc) · [Single-leg calf raise](https://www.youtube.com/watch?v=_rKgZMP1X5o)
+1. Sit on a chair with the balls of your feet on a book or plate and dumbbells on your knees.
+2. Raise your heels, pause, then lower into a comfortable stretch.
+
+Watch: [Seated dumbbell calf raise](https://www.youtube.com/watch?v=4-slnRXcGDc&t=4s) · [How to do a dumbbell seated calf raise](https://www.youtube.com/watch?v=fFWpWJy8ybU&t=12s) · [Seated calf raise form](https://www.youtube.com/watch?v=3ZRe_QpvRPg)
+
+#### Single-leg calf raise
+
+1. Stand on one foot on a stable step, holding a wall.
+2. Raise your heel over 2 seconds, then lower over 2 seconds through a comfortable range.
+3. Finish the prescribed reps, then switch legs.
+
+Watch: [Single-leg calf raise](https://www.youtube.com/watch?v=_rKgZMP1X5o&t=5s) · [Single-leg calf raise (HSS)](https://www.youtube.com/watch?v=qPd73snQfUs&t=5s) · [Single-leg calf raise over a step](https://www.youtube.com/watch?v=ZSa8XCt6VLQ)
 
 #### Dumbbell Romanian deadlift
 
@@ -844,29 +949,43 @@ Watch: [How to: dumbbell swing](https://www.youtube.com/watch?v=Y30kFfgW-bY) · 
 
 Watch: [Dumbbell reverse lunges: tutorial and tips](https://www.youtube.com/watch?v=MyqQRJ2lW7Q) · [Dumbbell reverse lunge tutorial](https://www.youtube.com/watch?v=MpfeGnBFEo8)
 
-#### Step-up (low step, drive)
+#### Bodyweight low step-up
 
-> **From Bryan:** Step-ups are in the Friday session of Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026) (3 × 10 per leg), and box step-ups are part of the power training in his bone protocol.
-
-1. Use a stable aerobic step or stair, starting at its lowest secure height. This is the home adaptation of Bryan’s step-up.
-2. Whole foot on the step; drive up through that leg until you stand tall.
+1. Use a stable aerobic step or stair, starting at its lowest secure height. A low step is the home adaptation of Bryan’s step-up.
+2. Place your whole foot on the step. Push through that leg until you stand tall.
 3. Don’t push off the back foot.
 4. Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.
 
-Watch: [How to do a dumbbell step-up](https://www.youtube.com/watch?v=DxUNi119Qzs) · [Choosing the box height](https://www.youtube.com/watch?v=xYQsyViNwi4)
+Watch: [Bodyweight step-up](https://www.youtube.com/watch?v=wfhXnLILqdk) · [Choosing the box height](https://www.youtube.com/watch?v=xYQsyViNwi4&t=15s) · [Step-up technique and common mistakes](https://www.youtube.com/watch?v=WCFCdxzFBa4&t=18s)
+
+#### Dumbbell low step-up
+
+1. Use a stable aerobic step or stair, starting at its lowest secure height. A low step is the home adaptation of Bryan’s step-up.
+2. Place your whole foot on the step. Push through that leg until you stand tall.
+3. Don’t push off the back foot.
+4. Lower slowly. Drive up under control; do not jump onto an aerobic step or stack loose risers or furniture.
+
+Watch: [How to do a dumbbell step-up](https://www.youtube.com/watch?v=DxUNi119Qzs) · [Dumbbell step-up demonstration](https://www.youtube.com/watch?v=9ZknEYboBOQ&t=3s) · [Dumbbell step-ups guide](https://www.youtube.com/watch?v=7AtIjR-QqVA&t=6s)
 
 ### Upper body
 
-#### Chin-ups and pull-ups
+#### Pull-up (palms away)
 
-> **From Bryan:** Bryan does both. In his 2025 Galpin session they sit in the strength block at 2 × 5–8; his official beginner list uses assisted pull-ups.
+On Wednesday at New to training, 2 × 3 band-assisted pull-ups are an optional replacement for the prescribed dead hang. Choose one.
 
-1. Pull-up: palms away, slightly wider than shoulders. Chin-up: palms facing you, shoulder-width.
-2. Start from a full hang; pull your chest to the bar, elbows driving down toward the ribs.
-3. Lower in 2–3 s to a full hang.
-4. Fewer than 5 clean reps? Use a band for assistance, or jump up and lower in 5 s (negatives).
+1. Grip the bar with your palms facing away, slightly wider than shoulder-width.
+2. Pull your chest toward the bar, then lower over 2–3 seconds to a full hang.
+3. Use a band or controlled negatives when prescribed.
 
-Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈16:47 (pull-ups)](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=1007s) · [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈17:13 (chin-ups)](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=1033s) · [Band-assisted pull-ups: 0 to 10](https://www.youtube.com/watch?v=Dx6DNiOklZI) · [How to do a negative pull-up](https://www.youtube.com/watch?v=gbPURTSxQLY)
+Watch: [How to do pull-ups](https://www.youtube.com/watch?v=PHdHnZcbsB8) · [Band-assisted pull-ups: setup and reps](https://www.youtube.com/watch?v=Dx6DNiOklZI&t=212s) · [How to do a negative pull-up](https://www.youtube.com/watch?v=gbPURTSxQLY&t=8s)
+
+#### Chin-up (palms facing you)
+
+1. Grip the bar with your palms facing you, shoulder-width apart.
+2. Pull your chest toward the bar, then lower over 2–3 seconds to a full hang.
+3. Use a band or controlled negatives when prescribed.
+
+Watch: [Proper chin-up form](https://www.youtube.com/watch?v=mRy9m2Q9_1I&t=5s) · [Chin-up technique guide](https://www.youtube.com/watch?v=e1YSApl-QcM&t=24s)
 
 #### Push-ups
 
@@ -956,18 +1075,25 @@ Watch: [Dumbbell farmer’s walk: form and mistakes](https://www.youtube.com/wat
 
 ### Core & stability
 
-#### Hanging knee / leg raise
+#### Hanging knee raise
 
-> **From Bryan:** Bryan: leg raises 1 × 50 on a captain’s chair. Your pull-up bar replaces the station.
-
-1. Hang from the bar with the shoulders pulled slightly down (active hang).
-2. Raise the knees toward the chest (easier levels), later straight legs to hip height or higher.
-3. Curl the pelvis up at the top; no swinging.
-4. Lower slowly. Collect the reps in as few sets as you can.
+1. Hang with your shoulders drawn slightly down.
+2. Bring your bent knees toward your chest and curl your pelvis upward.
+3. Lower slowly without swinging.
 
 Easier version: Lying leg raises on the floor.
 
-Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈11:43](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=703s) · [Hanging knee raise / leg lift](https://www.youtube.com/watch?v=KhPTiWP6lB4) · [Hanging leg raise progressions](https://www.youtube.com/watch?v=EYe6dc_i4L0)
+Watch: [Hanging knee raise tutorial](https://www.youtube.com/watch?v=l7OroezzX9k&t=3s) · [Hanging knee raise / leg lift](https://www.youtube.com/watch?v=KhPTiWP6lB4&t=12s) · [Hanging knee raise progression](https://www.youtube.com/watch?v=EYe6dc_i4L0&t=233s)
+
+#### Hanging straight-leg raise
+
+1. Hang with your shoulders drawn slightly down.
+2. Raise your straight legs toward hip height and curl your pelvis upward.
+3. Lower slowly without swinging. Collect the prescribed total reps in as few sets as needed.
+
+Easier version: Lying leg raises on the floor.
+
+Watch: [How to perform hanging straight-leg raises](https://www.youtube.com/watch?v=2n4UqRIJyk4) · [Hanging leg raise technique](https://www.youtube.com/watch?v=EYe6dc_i4L0&t=69s) · [Hanging leg raise tutorial](https://www.youtube.com/watch?v=_jLskVdzS4o&t=5s)
 
 #### Floor back extension
 
@@ -1021,16 +1147,23 @@ Watch: [Perfect plank: fix common mistakes](https://www.youtube.com/watch?v=rzHR
 
 Watch: [Side plank: form and 5 progressions](https://www.youtube.com/watch?v=0M-erHBl48U)
 
-#### Single-leg RDL / toe touch
-
-> **From Bryan:** Both versions are on the stability menu of Bryan’s official protocol (single-leg RDL, single-leg toe touch).
+#### Single-leg toe touch
 
 1. Stand on one leg, knee soft, other leg straight behind you with the toe just off the floor.
 2. Hinge forward, reaching the opposite hand toward the standing foot; the back leg rises as a counterweight.
 3. Hips stay square to the floor. Stand back up by squeezing the glute.
 4. Hold a wall at first.
 
-Watch: [Single-leg toe touches for balance (beginners)](https://www.youtube.com/watch?v=dUJf1IuITAo) · [Bodyweight single-leg RDL](https://www.youtube.com/watch?v=DPFnfAUCvTA)
+Watch: [Single-leg toe touches for balance (beginners)](https://www.youtube.com/watch?v=dUJf1IuITAo&t=5s) · [Single-leg toe touch demonstration](https://www.youtube.com/watch?v=oBU22OqbIag&t=3s)
+
+#### Bodyweight single-leg RDL
+
+1. Stand on one leg, knee soft, other leg straight behind you with the toe just off the floor.
+2. Hinge forward, reaching the opposite hand toward the standing foot; the back leg rises as a counterweight.
+3. Hips stay square to the floor. Stand back up by squeezing the glute.
+4. Hold a wall at first.
+
+Watch: [Bodyweight single-leg RDL](https://www.youtube.com/watch?v=DPFnfAUCvTA&t=5s) · [Bodyweight single-leg Romanian deadlift demo](https://www.youtube.com/watch?v=JQZqPsmeesc&t=2s) · [Single-leg deadlift bodyweight](https://www.youtube.com/watch?v=SHY8-2cErd0&t=3s)
 
 #### Bird dog
 
@@ -1076,15 +1209,12 @@ Watch: [Jefferson curl progressions](https://www.youtube.com/watch?v=CscPML4QWfU
 
 ### Cardio (indoor)
 
-#### Short intervals (20 s bursts)
+#### Marching on the spot
 
-> **From Bryan:** Tuesday in Bryan’s newest weekly template (exercise newsletter, 4 Oct 2026): 8 rounds of 20 s efforts with 40 s rest for beginners, then moderate cardio. Day 2 of his official protocol uses 20 s all-out with 20 s rest. These bursts are where most of your near-max minutes come from.
+1. Stand tall and march in place with relaxed arm swings.
+2. Keep your steps quiet and adjust your pace to the prescribed effort.
 
-1. Pick one or two moves from “Indoor interval moves”.
-2. 20 s hard, then easy marching for the rest time. Count rounds, not minutes.
-3. New to training and Returning: brisk, not all-out. Active: hard. Well trained: truly all-out.
-
-Watch: [No-jumping HIIT, apartment friendly (move ideas)](https://www.youtube.com/watch?v=u_CscwYKo5U)
+Watch: [Marching in place](https://www.youtube.com/watch?v=Ac8M_Osjy6s) · [Marching in place (physical therapist demo)](https://www.youtube.com/watch?v=u1gmWFvEluM&t=15s)
 
 #### Norwegian 4×4
 
@@ -1099,19 +1229,37 @@ Watch: [No-jumping HIIT, apartment friendly (move ideas)](https://www.youtube.co
 
 Watch: [4×4 HIIT with no equipment](https://www.youtube.com/watch?v=ZOU0eUMYB8o) · [4×4 timing and heart rates explained](https://www.youtube.com/watch?v=EirgwA1FXUs)
 
-#### Indoor interval moves
+#### Fast alternating step-ups
 
-> **From Bryan:** Bryan’s published options for bodyweight HIIT: jumping jacks, high knees, mountain climbers, burpees without the push-up, jump squats, plus marching and bodyweight squats for beginners.
+1. Use a stable low aerobic step or stair.
+2. Step up and down continuously, switching your lead leg regularly.
+3. Keep your whole foot on the step and follow today's pace and heart-rate target.
 
-1. Fast step-ups on a stair or step: quietest and easiest to keep for 4 minutes.
-2. High knees on the spot, driving the arms.
-3. Mountain climbers, hips level.
-4. Jumping jacks, or side-step jacks for a quiet version.
-5. Burpees without push-up (step back and forward for a quiet version).
+Watch: [Alternating step-ups](https://www.youtube.com/watch?v=RbRFci8p1m8&t=5s) · [Alternating step-up hops](https://www.youtube.com/watch?v=TGtwCyVqfvM&t=4s)
 
-- Tip: For the 4×4, rotate step-ups → high knees → jacks → climbers, one minute each.
+#### Mountain climbers
 
-Watch: [Mountain climbers: 3 steps to proper form](https://www.youtube.com/watch?v=gW-q50V6Z_0) · [No-push-up burpee](https://www.youtube.com/watch?v=CqJ947Bj2Zg) · [Silent HIIT cardio (quiet move ideas)](https://www.youtube.com/watch?v=gi7pZ8CYzvk)
+1. Start in a straight-arm plank with your hands under your shoulders.
+2. Alternate bringing each knee toward your chest, keeping your hips level.
+3. Move at the prescribed pace. Step slowly for a quieter version.
+
+Watch: [How to do mountain climbers](https://www.youtube.com/watch?v=kLh-uczlPLg) · [Mountain climbers: 3 steps to proper form](https://www.youtube.com/watch?v=gW-q50V6Z_0&t=8s)
+
+#### Jumping jacks
+
+1. Jump your feet apart as your arms rise overhead.
+2. Return to the starting position and repeat with soft landings.
+3. Use side-step jacks for a quiet version.
+
+Watch: [How to do jumping jacks](https://www.youtube.com/watch?v=ttVmvj88Zwc) · [Jumping jack proper form (NASM)](https://www.youtube.com/watch?v=uLVt6u15L98) · [Low-impact step jacks (quiet option)](https://www.youtube.com/watch?v=qhy7VjMqsck&t=2s)
+
+#### Burpee without push-up
+
+1. Squat down and place your hands on the floor.
+2. Jump or step your feet back into a plank, then bring them forward again.
+3. Stand tall. This version has no push-up.
+
+Watch: [No-push-up burpee](https://www.youtube.com/watch?v=CqJ947Bj2Zg&t=4s) · [No-push-up burpee demo](https://www.youtube.com/watch?v=HfV1UBKzQTo) · [Squat thrust (burpee without push-up)](https://www.youtube.com/watch?v=QOk0tYKehFw)
 
 #### Controlled vigorous cardio (indoors)
 
@@ -1295,29 +1443,37 @@ Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈4:38
 
 Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈3:37](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=217s) · [Band face pull with a door anchor](https://www.youtube.com/shorts/Q77ORURfeYc) · [Face pulls with a door anchor](https://www.youtube.com/watch?v=Fe37Ll4VDfI)
 
-#### Shoulder external rotation
+#### External rotation with elbow on knee
 
-> **From Bryan:** “External rotation” is in the posture part of Bryan’s routine, right after band pull-aparts. It strengthens the rotator cuff that holds the shoulders back.
+1. Sit with one foot on a stable chair and rest the working elbow on the inside of that knee, bent 90°.
+2. Hold a light dumbbell and rotate the forearm upward without moving the elbow.
+3. Lower over 2–3 seconds, keeping the shoulder blade back and down.
 
-1. Sit with one foot up on a chair or bench and rest the elbow of the working arm on the inside of that knee, elbow bent 90°; or lie on your side with the elbow pinned to the ribs.
-2. Hold a light dumbbell (1–4 kg) and rotate the forearm up and back as far as is comfortable.
-3. Lower slowly in 2–3 s. Keep the shoulder blade back and down.
+Watch: [Elbow-on-knee shoulder external rotation](https://www.youtube.com/watch?v=mbdDt0c9bZY) · [Dumbbell external rotation with the elbow on the knee](https://www.youtube.com/watch?v=7hfjcXtXi0w&t=15s)
 
-Watch: [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈5:02](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=302s) · [Dumbbell external rotation with the elbow on the knee](https://www.youtube.com/watch?v=7hfjcXtXi0w) · [Side-lying dumbbell external rotation](https://www.youtube.com/watch?v=3XLT7kpMzcM)
+#### Side-lying external rotation
 
-#### Neck: forehead resistance
+1. Lie on your side with the upper elbow bent 90° and held against your ribs.
+2. Rotate a light dumbbell upward while keeping your elbow still.
+3. Lower over 2–3 seconds without rolling your torso.
 
-> **From Bryan:** Bryan’s physical-therapist exercise #2. Official wording (2026): “With a hand on your forehead, resist the pressure of your hand pushing your head back. When doing this, be very patient.” He does it to fatigue twice a week.
+Watch: [Side-lying dumbbell external rotation](https://www.youtube.com/watch?v=brwBvldn4gw) · [Side-lying external rotation form tutorial](https://www.youtube.com/watch?v=3XLT7kpMzcM&t=12s)
 
-1. Sit or stand tall (string cue), chin slightly tucked so the back of the neck is long.
-2. Put a hand on your forehead and push gently backward.
-3. Resist with your neck. Either hold still, or let the hand win slowly over 3–5 s, moving the head back up to about 30°, then return.
-4. Daily: 5 × 10 s holds at 30–50% effort. Wednesday and Saturday: 1 set to fatigue.
+#### Forehead resistance hold
 
-- Tip: Bryan calls this technical and was taught it for his own diagnosed condition. Stay gentle, and stop if you get dizziness, tingling or a headache.
-- Tip: His 2023 version: neck long, chin down, light hand pressure on top of the head, lift the chin about 30° and lower, until fatigue.
+1. Sit or stand tall with your chin slightly tucked.
+2. Place a hand on your forehead and resist gentle backward pressure without moving your head.
+3. Use 30–50% effort for the prescribed holds. Stop for dizziness, tingling or a headache.
 
-Watch: [Bryan: How I Fixed My Terrible Posture – 5 Habits at ≈3:32](https://www.youtube.com/watch?v=in9ubCilsT8&t=212s) · [Bryan: My Complete Anti-Aging Workout (Jul 2023, gym version) at ≈2:45](https://www.youtube.com/watch?v=sYyVi-H-ozI&t=165s) · [Bryan: A 20-Minute Call with My Posture Coach at ≈10:34](https://www.youtube.com/watch?v=cYGlj8Ryij8&t=634s)
+Watch: [Isometric cervical flexion (forehead hold)](https://www.youtube.com/watch?v=aF6txnLeC04) · [Isometric cervical flexion for neck strengthening](https://www.youtube.com/watch?v=4rK-m6GvNCk&t=8s)
+
+#### Slow forehead resistance
+
+1. Sit or stand tall with a long neck and your chin slightly tucked.
+2. Press gently against your forehead and let your hand move your head backward slowly over 3–5 seconds, up to about 30°.
+3. Return slowly and follow today's dose. Stop for dizziness, tingling or a headache.
+
+Watch: [Controlled neck flexion against hand resistance](https://www.youtube.com/watch?v=WnKcq1Uh8m4&t=5s)
 
 #### Shoulders up and out (levator shrug)
 
@@ -1339,6 +1495,48 @@ Watch: [Bryan: How I Fixed My Terrible Posture – 5 Habits at ≈2:38](https://
 3. Ribs down, no low-back arch, no pinching in the shoulder.
 
 Watch: [Physical therapy tip: doorway pec stretch](https://www.youtube.com/watch?v=069o76BafTk) · [Doorway pec and shoulder stretch](https://www.youtube.com/watch?v=Dmm8_S23I74)
+
+### Hanging and impact movements
+
+#### Passive dead hang
+
+1. Grip the bar slightly wider than shoulder-width and let your body hang without swinging.
+2. Relax your shoulders and breathe steadily for the prescribed time.
+3. Support some of your weight with your feet when prescribed.
+
+Watch: [Passive dead hang tutorial](https://www.youtube.com/watch?v=ny4AVinFBmI) · [Passive vs active hang key differences](https://www.youtube.com/watch?v=7DcNQ_bDaME) · [Build hanging from zero (beginner progression)](https://www.youtube.com/watch?v=no_ZdiJsLu4)
+
+#### Active dead hang
+
+1. Hang from the bar with straight elbows.
+2. Draw your shoulder blades down and slightly back, away from your ears.
+3. Hold without swinging and breathe steadily. Support your feet if needed.
+
+Watch: [How to do an active hang](https://www.youtube.com/watch?v=0_YZc2yuKkE) · [Active hang technique and scapular pull](https://www.youtube.com/watch?v=ny4AVinFBmI) · [Dead hang vs active hang explained](https://www.youtube.com/watch?v=GwMTIwfOPQE)
+
+#### Heel drops
+
+1. Stand tall with feet hip-width apart on a firm surface or thin mat.
+2. Rise smoothly onto the balls of your feet, lifting heels 3–5 cm.
+3. Drop your full body weight firmly down onto your heels with knees slightly soft (do not lock them).
+4. Feel the mechanical vibration pulse up through the shins, femur neck and lumbar spine.
+5. Perform rhythmic, controlled drops: 20–30 reps for beginners, up to 50 for trained.
+
+Watch: [Heel drop exercise for bone density](https://www.youtube.com/watch?v=tZ8gy_V6bxM) · [How to do heel drops for osteoporosis](https://www.youtube.com/watch?v=d3FVrOVuQtM)
+
+#### Stomp drills
+
+1. Stand tall beside a wall if you need support.
+2. Lift one foot to mid-shin height and place the whole foot down firmly, keeping the knee soft.
+3. Alternate feet. Reduce the impact or stop if it causes pain.
+
+Watch: [Foot stomp exercise for strengthening bone](https://www.youtube.com/watch?v=kMbajq1u-Us) · [Bone-building stomp drill](https://www.youtube.com/watch?v=Hpg5COs6LNA)
+
+### Interval group
+
+#### Short intervals (20 s bursts)
+
+Choose one or two work movements, then alternate work and easy marching for the rounds in your level's table. The timer names each movement and recovery. Open the individual movement pages for technique.
 
 ## Sources
 

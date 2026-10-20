@@ -1,8 +1,10 @@
 // Logging UI for one exercise on one day: sets × reps × load, holds with a timer,
 // cardio minutes and heart rate, or interval rounds. Everything auto-saves.
 
+import { EXERCISES } from "../data/exercises.js";
+import { INTERVAL_MOVES } from "../data/routines.js";
 import { state } from "../store.js";
-import { editDay, logLevel, rxFor, timerPresets } from "../plan.js";
+import { editDay, itemLog, loggedExerciseId, logLevel, rxFor, timerPresets } from "../plan.js";
 import { LEVELS, bpmRange, fmtWeight, kgUnit, personalize, suggestedKg } from "../personalize.js";
 import { esc, fmtShort } from "../util.js";
 import { icon } from "./icons.js";
@@ -40,10 +42,7 @@ const num = (v) => {
 };
 
 export function getItemLog(date, scope, itemId) {
-  const d = state.days[date];
-  if (!d) return null;
-  if (scope === "main") return d.items[itemId] || null;
-  return (d.addons[scope] && d.addons[scope].items && d.addons[scope].items[itemId]) || null;
+  return itemLog(state.days[date], scope, itemId);
 }
 
 export function editItem(date, scope, item, fn) {
@@ -55,7 +54,8 @@ export function editItem(date, scope, item, fn) {
       d.addons[scope].items = d.addons[scope].items || {};
       bag = d.addons[scope].items;
     }
-    const cur = bag[item.id] || { ex: item.ex, done: false };
+    const cur = structuredClone(bag[item.id] || getItemLog(date, scope, item.id) || { ex: item.ex, done: false });
+    if (!bag[item.id] && item.id === "fri-strength-rdl") cur.splitMovements = true;
     cur.ex = item.ex;
     fn(cur);
     bag[item.id] = cur;
@@ -73,8 +73,8 @@ export function performanceHistory(exId, beforeDate, limit = 4, { level = null }
     const day = state.days[date];
     const bags = [day.items, ...Object.values(day.addons || {}).map((a) => a && a.items)];
     for (const bag of bags) {
-      for (const l of Object.values(bag || {})) {
-        if (l.ex !== exId || !l.sets || !l.sets.some((s) => s.reps != null || s.kg != null || s.sec != null)) continue;
+      for (const [id, l] of Object.entries(bag || {})) {
+        if (loggedExerciseId(day, id, l) !== exId || !l.sets || !l.sets.some((s) => s.reps != null || s.kg != null || s.sec != null)) continue;
         const lvl = logLevel(day);
         if (level != null && lvl != null && lvl !== level) continue;
         out.push({ date, log: l });
@@ -220,7 +220,7 @@ export function renderLogger(container, ctx) {
   const p = state.profile;
   const type = ex.log;
   const u = kgUnit(p);
-  const restSec = (p && p.settings && p.settings.restSec) || 75;
+  const restSec = item.id === "fri-strength-rdl" && level === 3 ? 25 : (p && p.settings && p.settings.restSec) || 75;
   const cardioRange = item.intensity === "light" ? [50, 60] : ex.intensity === "hard" ? [80, level === 1 ? 85 : 90] : [60, 70];
   const cardioLabel = item.intensity === "light" ? "Easy pace" : ex.intensity === "hard" ? "Vigorous" : "Zone 2";
 
@@ -257,7 +257,7 @@ export function renderLogger(container, ctx) {
         <div class="set-row set-head"><span>Set</span>${cols.map((c) => `<span>${esc(c[1])}</span>`).join("")}<span></span></div>
         ${sets
           .map(
-            (s, i) => `<div class="set-row">
+            (s, i) => ctx.setIndex != null && i !== ctx.setIndex ? "" : `<div class="set-row">
               <span class="n">${i + 1}</span>
               ${cols
                 .map(([k, , ph]) => {
@@ -274,7 +274,7 @@ export function renderLogger(container, ctx) {
           )
           .join("")}
       </div>
-      <div class="btn-row">${doneBtn}<button type="button" class="btn sm ghost" data-l="add">${icon("plus", "sm")} Add set</button></div>`;
+      <div class="btn-row">${ctx.setIndex == null ? `${doneBtn}<button type="button" class="btn sm ghost" data-l="add">${icon("plus", "sm")} Add set</button>` : ""}</div>`;
     } else if (type === "cardio") {
       const c = l.cardio || {};
       body += `<div class="grid-form" style="grid-template-columns:repeat(3,minmax(0,1fr))">
@@ -286,6 +286,7 @@ export function renderLogger(container, ctx) {
     } else if (type === "intervals") {
       const presets = timerPresets(item, level);
       const pi = Math.min(l.preset || 0, Math.max(0, presets.length - 1));
+      if (item.ex === "shortint") body += `<div class="grid-form">${[0, 1].map((index) => `<label class="field"><span>${index ? "Second work movement (optional)" : "Work movement"}</span><select class="input" data-interval-move="${index}">${index ? '<option value="">Use the same movement</option>' : ""}${INTERVAL_MOVES.map((id) => `<option value="${id}" ${(l.moves?.[index] || (index === 0 ? "highknees" : "")) === id ? "selected" : ""}>${esc(EXERCISES[id].name)}</option>`).join("")}</select></label>`).join("")}</div>`;
       body += `${presets.length > 1 ? `<div class="seg" role="group" aria-label="Preset">${presets.map((pr, i) => `<button type="button" data-preset="${i}" aria-pressed="${i === pi}">${esc(pr.label)}</button>`).join("")}</div>` : ""}
         <div class="btn-row"><button type="button" class="btn primary" data-l="intervals">${icon("timer")} Start interval timer</button>${doneBtn}</div>
         <div class="grid-form" style="grid-template-columns:repeat(2,minmax(0,1fr))">
@@ -392,7 +393,7 @@ export function renderLogger(container, ctx) {
         while (l.sets.length <= i) l.sets.push({});
         const v = num(t.value);
         l.sets[i][k] = v == null ? null : k === "kg" ? fromUnit(v) : v;
-        if (v != null) l.done = true;
+        if (v != null && ctx.setIndex == null) l.done = true;
       });
     } else if (t.dataset.c) {
       save((l) => {
@@ -416,6 +417,12 @@ export function renderLogger(container, ctx) {
   // Rest timer after you log the reps of a set.
   container.addEventListener("change", (e) => {
     const t = e.target;
+    if (t.dataset.intervalMove != null) {
+      const index = Number(t.dataset.intervalMove);
+      if (![0, 1].includes(index) || (t.value && !INTERVAL_MOVES.includes(t.value))) return;
+      save((l) => { l.moves = Array.isArray(l.moves) ? l.moves : ["highknees"]; l.moves[index] = t.value; });
+      draw();
+    }
     if (t.dataset.k === "reps" && num(t.value) != null && (!p.settings || p.settings.autoRest !== false)) startRest(restSec);
   });
 
@@ -500,7 +507,7 @@ export function renderLogger(container, ctx) {
               while (l.sets.length <= i) l.sets.push({});
               if (l.sets[i].sec == null) l.sets[i].sec = secs;
             }
-            l.done = true;
+            if (ctx.setIndex == null) l.done = true;
           });
           draw();
         },
@@ -528,6 +535,7 @@ export function renderLogger(container, ctx) {
       const hr = { work: preset.workHr ? bpmRange(p, ...preset.workHr) : "", rest: preset.restHr ? bpmRange(p, ...preset.restHr) : "" };
       startIntervals({
         title: `${ex.name} · ${preset.label}`,
+        exId: item.ex, moves: l0.moves,
         preset,
         hr,
         onFinish: (rounds) => {

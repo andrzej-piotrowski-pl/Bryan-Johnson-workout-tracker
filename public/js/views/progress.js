@@ -30,7 +30,7 @@ export function render(el) {
 
   function lifts(selected) {
     return Object.entries(EXERCISES)
-      .filter(([, e]) => e.log === "load" || e.log === "reps")
+      .filter(([, e]) => !e.hidden && (e.log === "load" || e.log === "reps"))
       .map(([id, e]) => ({ id, name: e.name, hist: liftHistory(id).filter((h) => inProgressRange(h.date, selected)) }))
       .filter((x) => x.hist.length);
   }

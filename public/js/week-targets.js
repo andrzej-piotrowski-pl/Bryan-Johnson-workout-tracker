@@ -17,7 +17,7 @@ const LEVEL_TARGETS = [
   { zone2: 150, hard: 75 },
 ];
 const STRENGTH_KEYS = new Set(["mon", "wed", "fri"]);
-const JUMP_IDS = new Set(["pogo", "jumps", "powerskip", "heidens"]);
+const JUMP_IDS = new Set(["pogo", "jumps", "snapdown", "squatjump", "cmjump", "powerskip", "heidens"]);
 const BALANCE_IDS = new Set(["tree"]);
 const BALANCE_CATS = new Set(["Warm-up & balance", "Core & stability"]);
 const MOBILITY_CAT = "Mobility & stretching";

@@ -6,7 +6,8 @@ import { DAYS } from "../data/program.js";
 import { ADDONS } from "../data/addons/index.js";
 import { BRYAN_VIDEOS, WATCH } from "../data/videos.js";
 import { state } from "../store.js";
-import { rxFor } from "../plan.js";
+import { INTERVAL_MOVES, intervalPhases } from "../data/routines.js";
+import { rxFor, timerPresets } from "../plan.js";
 import { LEVELS, levelIndex, personalize } from "../personalize.js";
 import { esc } from "../util.js";
 import { EQUIPMENT_NAMES, icon } from "../components/icons.js";
@@ -19,12 +20,22 @@ import { thumbnail } from "../components/thumbs.js";
 function usages(exId) {
   const out = [];
   for (const d of DAYS) for (const b of d.blocks) for (const it of b.items) if (it.ex === exId) out.push({ where: `${d.name} · ${b.name}`, item: it });
+  for (const d of DAYS) for (const b of d.blocks) for (const it of b.items) if (it.alternative?.ex === exId) out.push({ where: `${d.name} · ${b.name} (optional replacement)`, item: it.alternative });
+  for (const d of DAYS) for (const b of d.blocks) for (const it of b.items) if (it.timer) {
+    const rx = LEVELS.map((_, level) => timerPresets(it, level).map((preset) => {
+      const phases = intervalPhases(it.ex, preset, it.ex === "shortint" && INTERVAL_MOVES.includes(exId) ? [exId] : undefined).filter((phase) => phase.ex === exId);
+      if (!phases.length) return "—";
+      return [...new Set(phases.map((phase) => phase.sec))].map((sec) => `${phases.filter((phase) => phase.sec === sec).length} × ${sec} s`).join(" + ");
+    }).filter((dose) => dose !== "—").join(" or ") || "—");
+    if (rx.some((dose) => dose !== "—")) out.push({ where: `${d.name} · ${EXERCISES[it.ex].name}${it.ex === "shortint" && exId !== "marching" ? " (work option)" : ""}`, item: { rx } });
+  }
   for (const a of ADDONS) for (const v of Object.values(a.variants)) for (const it of v.items) if (it.ex === exId) out.push({ where: `${a.name} · ${v.name}`, item: it });
   return out;
 }
 
 export function render(el, params) {
   if (params[0] && EXERCISES[params[0]]) return detail(el, params[0]);
+  const total = Object.values(EXERCISES).filter((ex) => !ex.hidden).length;
   const filters = { query: "", category: "all", equipment: "all", muscle: "all", origin: "all", sort: "original" };
   let io = null;
   const equipment = [...new Set(Object.values(EXERCISES).flatMap((ex) => ex.equipment || []))].sort((a, b) => (EQUIPMENT_NAMES[a] || a).localeCompare(EQUIPMENT_NAMES[b] || b));
@@ -38,7 +49,7 @@ export function render(el, params) {
       .map(
         ([id, e]) => `<a class="card ex-card" href="#/library/${id}">
           <div class="thumb" data-thumb="${id}"><span class="muted">${icon("rotate")}</span></div>
-          <div class="meta"><span class="eyebrow">${esc(e.cat)}</span><b>${esc(e.name)}</b>
+          <div class="meta"><span class="eyebrow">${esc(e.cat)}</span><b>${esc(e.name)}</b>${e.group ? `<small class="muted">${esc(e.group)}</small>` : ""}
           <small class="muted">${esc((e.equipment || []).map((g) => EQUIPMENT_NAMES[g] || g).join(" · ") || "No equipment")}</small>
           <span class="chips">${e.classic ? '<span class="badge-classic">classic</span>' : ""}${(e.bryanVideos || []).some((b) => typeof b.s === "number") ? `<span class="chip bryan">${icon("video", "sm")} Bryan</span>` : ""}</span></div>
         </a>`
@@ -48,7 +59,7 @@ export function render(el, params) {
 
   function draw() {
     el.innerHTML = `<div class="page">
-      <div class="section-title"><h2>Exercises</h2><span class="muted">${Object.keys(EXERCISES).length} exercises with animations, instructions and videos</span></div>
+      <div class="section-title"><h2>Exercises</h2><span class="muted">${total} exercises with animations, instructions and videos</span></div>
       <details class="card card-pad">
         <summary style="cursor:pointer;font-weight:650;display:flex;gap:8px;align-items:center">${icon("video")} Bryan's workout videos</summary>
         <div style="display:grid;gap:12px;margin-top:12px">
@@ -56,6 +67,7 @@ export function render(el, params) {
           <div data-watch></div>
         </div>
       </details>
+      <div class="card card-pad"><h3>Workout sequences</h3><p class="muted">Open a group to see its individual movements and their order.</p><div class="btn-row">${["dynamic", "shortint", "norwegian", "indoorhiit"].map((id) => `<a class="btn sm" href="#/library/${id}">${esc(EXERCISES[id].name)}</a>`).join("")}</div></div>
       <div class="lib-tools">
         <input class="input" type="search" data-filter="query" placeholder="Search names, equipment or muscles…" aria-label="Search exercises">
         <button type="button" class="btn ghost sm" data-clear-filters>Clear filters</button>
@@ -67,7 +79,7 @@ export function render(el, params) {
         ["origin", "Source", [["all", "All sources"], ["bryan", "Bryan's protocol and home alternatives"], ["classic", "Classic additions"], ["video", "Bryan demo with timestamp"]]],
         ["sort", "Sort", [["original", "Original order"], ["name", "Name: A to Z"], ["reverse", "Name: Z to A"], ["category", "Category, then name"]]],
       ].map(([key, title, options]) => `<label class="field"><span>${title}</span><select class="input" data-filter="${key}">${options.map(([id, name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join("")}</select></label>`).join("")}</div>
-      <p class="muted library-count" data-library-count role="status">${filterExercises(filters).length} of ${Object.keys(EXERCISES).length} exercises</p>
+      <p class="muted library-count" data-library-count role="status">${filterExercises(filters).length} of ${total} exercises</p>
       <div data-cards>${cards()}</div>
     </div>`;
     const vids = WATCH.map(([k]) => ({ kind: "bryan", title: BRYAN_VIDEOS[k].t.replace(/^Bryan( on X)?: /, ""), url: BRYAN_VIDEOS[k].u, id: youtubeId(BRYAN_VIDEOS[k].u), start: null })).filter((v) => v.id);
@@ -94,7 +106,7 @@ export function render(el, params) {
 
   function refresh() {
     el.querySelector("[data-cards]").innerHTML = cards();
-    el.querySelector("[data-library-count]").textContent = `${filterExercises(filters).length} of ${Object.keys(EXERCISES).length} exercises`;
+    el.querySelector("[data-library-count]").textContent = `${filterExercises(filters).length} of ${total} exercises`;
     observeThumbs();
   }
   el.addEventListener("input", (e) => {
@@ -138,13 +150,13 @@ function detail(el, id) {
               ? `<div class="table-wrap"><table><thead><tr><th>Where</th>${LEVELS.map((l, i) => `<th class="${i === cur ? "cur" : ""}">${esc(l.name)}</th>`).join("")}</tr></thead><tbody>${uses
                   .map((u) => `<tr><td>${esc(u.where)}</td>${LEVELS.map((_, i) => `<td class="${i === cur ? "cur" : ""}">${esc(personalize(rxFor(u.item, i), { ...p, level: LEVELS[i].id }))}</td>`).join("")}</tr>`)
                   .join("")}</tbody></table></div>`
-              : `<p class="muted">Not scheduled in the current plan.</p>`
+              : `<p class="muted">${ex.routine ? "Open an individual movement below for its doses in your plan." : "Not scheduled in the current plan."}</p>`
           }
         </section>
       </div>
     </div>
   </div>`;
   const panel = createExercisePanel(el.querySelector("[data-panel]"), { mode: "library" });
-  panel.show({ exId: id });
+  panel.show({ exId: id, item: ex.routine ? uses[0]?.item || { ex: id } : undefined, level: cur });
   return { destroy: () => panel.dispose() };
 }

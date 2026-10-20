@@ -1,3 +1,5 @@
+import { MOVEMENTS } from "./movements.js";
+
 // Every exercise in the plan.
 //
 //   name, cat         display name and library category
@@ -1752,3 +1754,14 @@ export const EXERCISES = {
     ],
   },
 };
+
+// Keep the old ids readable for saved logs and bookmarks.
+for (const [id, movement] of Object.entries(MOVEMENTS)) {
+  const { source, clip, part, ...details } = movement;
+  const original = EXERCISES[source];
+  const videos = original.clipVideos?.[clip] || original;
+  EXERCISES[id] = { ...original, ...details, group: original.name, hidden: false, videos: videos.videos, bryanVideos: videos.bryanVideos || [], clipVideos: undefined };
+  original.hidden = true;
+}
+for (const id of ["dynamic", "shortint", "norwegian", "indoorhiit"]) EXERCISES[id].hidden = true;
+for (const ex of Object.values(EXERCISES)) if (ex.hidden) ex.routine = true;

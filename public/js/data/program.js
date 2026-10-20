@@ -1,3 +1,5 @@
+import { splitItems } from "./split-items.js";
+
 // The weekly program: the six training days and their doses per training level.
 // rx and mins arrays are [New to training, Returning, Active, Well trained] (the
 // order of LEVELS in personalize.js); "—" means skip it at that level.
@@ -930,6 +932,22 @@ export const DAYS = [
     blocks: [],
   },
 ];
+
+for (const day of DAYS) for (const block of day.blocks) {
+  for (const item of block.items) {
+    if (["mon-strength-pushup", "mon-strength-row"].includes(item.id)) { item.pair = "push-row"; item.group = "Alternate push-ups and rows, one set each"; }
+    if (["fri-strength-floorpress", "fri-strength-chinup"].includes(item.id)) { item.pair = "press-pull"; item.group = "Alternate floor press and bar work, one set each"; }
+    if (["fri-strength-ohpress", "fri-strength-stepup"].includes(item.id)) { item.pair = "press-step"; item.group = "Alternate overhead press and step-ups, one set each"; }
+  }
+  block.items = splitItems(block.items);
+  const hinge = block.items.find((it) => it.id === "fri-strength-rdl");
+  if (hinge) {
+    hinge.rx[3] = "3 × 6–8, heaviest pair";
+    hinge.pair = [null, null, null, "hinge-jump"];
+    hinge.group = "Romanian deadlift · at Well trained, follow each set with jumps";
+    block.items.splice(block.items.indexOf(hinge) + 1, 0, { id: "fri-strength-rdl-jumps", ex: "cmjump", rx: ["—", "—", "—", "3 × 3, wait 20–30 s after each deadlift set"], pair: hinge.pair, group: hinge.group, legacyId: hinge.id });
+  }
+}
 
 export const TARGETS = [
   ["ok", "150 min of scheduled Zone 2 a week at {hr:60-70}, without relying on extra walks or outdoor activity. The easy 4×4 recoveries can add another 9 min when kept in Zone 2."],

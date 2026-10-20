@@ -24,12 +24,14 @@ animation style.
 
 Use `&samples=8` to inspect evenly spaced times, including the motion between keys,
 without rendering every authored pose. Run `npm test` for the animation checks:
-all 65 exercises and 90 clips, sampled at 60 frames per second, with reachable
+all registered exercises and clips, sampled at 60 frames per second, with reachable
 hand and foot targets and orthonormal hand/foot frames, plus skin, contact,
 mirroring and loop regressions. Rendered skin is also checked against equipment,
 including clearance between the head, pull-up bar and doorway beam.
 
 The step-up clips use a low aerobic step, and Poliquin heel taps use a slant board on the floor. Both preserve the existing exercise ids and logged history.
+
+Individual movement ids in `public/js/data/movements.js` reuse a single authored clip. Front-to-back and side-to-side leg swings have separate clips, as do two-leg and single-leg tibialis raises. Legacy combined ids remain available for saved logs and old links; workout and library screens use the individual ids. Interval groups select their demonstrations from the timed movement steps.
 
 ## Coordinates and units
 

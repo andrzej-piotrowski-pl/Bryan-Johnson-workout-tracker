@@ -1006,3 +1006,13 @@ td.cur, th.cur { background: var(--accent-soft); }
   .level-check-head h3 { font-size: 1.3rem; }
   .level-check-foot { align-items: flex-start; }
 }
+
+.item-group { padding: 14px 12px 6px; color: var(--muted); font-size: 0.8rem; font-weight: 650; }
+.routine { display: grid; gap: 8px; }
+.routine-steps { margin: 0; padding-left: 24px; display: grid; gap: 8px; }
+.routine-steps li { padding-left: 4px; }
+.routine-steps .muted { display: block; margin-top: 3px; font-size: 0.8rem; }
+.routine-steps a { font-size: 0.8rem; }
+.interval-stage.stage { width: 100%; height: 240px; aspect-ratio: auto; border: 1px solid var(--line); border-radius: 10px; }
+.timer:has(.interval-stage) .timer-ring { width: min(220px, 65vw); }
+.timer:has(.interval-stage) .phase { font-size: 1rem; padding: 0 12px; }

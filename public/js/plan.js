@@ -8,6 +8,33 @@ import { state, updateDay } from "./store.js";
 import { LEVELS, levelIndex } from "./personalize.js";
 import { addDays, todayIso, weekdayKey } from "./util.js";
 
+const scheduledItems = [...DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items)), ...ADDONS.flatMap((a) => Object.values(a.variants).flatMap((v) => v.items))];
+const itemsById = new Map(scheduledItems.map((item) => [item.id, item]));
+
+// Read old group logs in place; a child's own log always takes precedence.
+export function itemLog(log, scope, id) {
+  const bag = scope === "main" ? log?.items : log?.addons?.[scope]?.items;
+  if (bag?.[id]) return bag[id];
+  const item = itemsById.get(id);
+  const old = item?.legacyId && bag?.[item.legacyId];
+  if (!old || (item.id === "fri-strength-rdl-jumps" && old.splitMovements)) return null;
+  if (item.legacyEx === "dynamic" || item.id === "fri-strength-rdl-jumps") return { ex: item.ex, done: old.done, skipped: old.skipped, note: old.note, easier: old.easier, holdProgress: old.holdProgress };
+  if (item.legacyEx === "tibraise" && old.sets) return { ...old, ex: item.ex, sets: item.ex === "tibdouble" ? old.sets.slice(0, 1) : old.sets.slice(1) };
+  if (item.legacyEx === "deadhang" && old.sets) return { ...old, ex: item.ex, sets: old.sets.filter((_, i) => i % 2 === (item.ex === "hangpassive" ? 0 : 1)) };
+  return { ...old, ex: item.ex };
+}
+
+export function loggedExerciseId(log, id, entry) {
+  if (entry.ex && !EXERCISES[entry.ex]?.hidden) return entry.ex;
+  const level = logLevel(log) ?? levelIndex(state.profile);
+  const def = dayDef(log.session || weekdayKey(log.date));
+  const candidates = [...(def?.blocks.flatMap((b) => b.items) || []), ...scheduledItems.filter((it) => !it.id.match(/^(mon|tue|wed|thu|fri|sat)-/))];
+  const item = candidates.find((it) => (it.id === id || it.legacyId === id) && visible(it, level));
+  const bags = [log.items, ...Object.values(log.addons || {}).map((addon) => addon?.items)];
+  if (item?.legacyId === id && bags.some((bag) => bag?.[item.id])) return null;
+  return item?.ex || entry.ex;
+}
+
 export const dayDef = (key) => DAYS.find((d) => d.key === key) || null;
 export const isRestKey = (key) => {
   const d = dayDef(key);
@@ -71,7 +98,7 @@ export function progressOf(log) {
   if (!log) return { done: 0, total: 0 };
   const def = dayDef(log.session || weekdayKey(log.date));
   const items = sessionItems(def, logLevel(log) ?? levelIndex(state.profile));
-  return { done: items.filter((it) => log.items[it.id] && log.items[it.id].done).length, total: items.length };
+  return { done: items.filter((it) => itemLog(log, "main", it.id)?.done).length, total: items.length };
 }
 
 export function computeStatus(log) {
@@ -158,7 +185,7 @@ export function addonsForDate(date) {
 export function addonProgress(log, entry, lvl) {
   const items = entry.variant.items.filter((it) => visible(it, lvl)).filter(countable);
   const a = (log && log.addons && log.addons[entry.addon.id]) || {};
-  const done = items.filter((it) => a.items && a.items[it.id] && a.items[it.id].done).length;
+  const done = items.filter((it) => itemLog(log, entry.addon.id, it.id)?.done).length;
   return { done, total: items.length, skipped: !!a.skipped };
 }
 
@@ -250,7 +277,7 @@ export function liftHistory(exId) {
     let best = null;
     const scan = (items) => {
       for (const [id, l] of Object.entries(items || {})) {
-        if ((l.ex ? l.ex !== exId : !id.endsWith("-" + exId)) || !l.sets) continue;
+        if (loggedExerciseId(log, id, l) !== exId || !l.sets) continue;
         for (const st of l.sets) {
           const kg = Number(st.kg) || 0;
           const reps = Number(st.reps) || 0;

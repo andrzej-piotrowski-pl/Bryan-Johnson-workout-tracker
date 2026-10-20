@@ -1,6 +1,7 @@
 // Exercise detail: 3D animation, today's dose, the logger, how-to steps and videos.
 // One panel instance is reused as you click through exercises (one WebGL context).
 
+import { alternativeHtml, routineHtml, routineSteps } from "./routine.js";
 import { EXERCISES } from "../data/exercises.js";
 import { state } from "../store.js";
 import { personalize } from "../personalize.js";
@@ -40,12 +41,13 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
   const body = container.querySelector(".detail-body");
   let tab = "how";
   let current = null;
+  let movement = null;
 
   function drawTab() {
     const host = body.querySelector(".tab-body");
     if (!host || !current) return;
     body.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
-    const ex = EXERCISES[current.exId];
+    const ex = EXERCISES[movement || current.exId];
     if (tab === "videos") {
       host.innerHTML = "";
       videoCtrl = renderVideos(host, videosFor(ex), {
@@ -67,11 +69,12 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
     const ex = EXERCISES[ctx.exId];
     if (!ex) return;
     const p = state.profile;
-    if (!sameExercise) stage.load(ctx.exId);
+    if (!sameExercise) movement = ex.routine ? routineSteps(ctx.item || { ex: ctx.exId }, ctx.level || 0, ctx.date ? getItemLog(ctx.date, ctx.scope || "main", ctx.item?.id) || {} : {})[0]?.ex : null;
+    if (!sameExercise) stage.load(movement || ctx.exId);
     const item = ctx.item;
     const itemLog = item && ctx.date ? getItemLog(ctx.date, ctx.scope || "main", item.id) : null;
     const rx = item ? personalize((itemLog && itemLog.rxOverride) || rxFor(item, ctx.level), p) : "";
-    const vids = videosFor(ex);
+    const vids = videosFor(EXERCISES[movement || ctx.exId]);
     const bryanCount = vids.filter((v) => v.kind === "bryan").length;
     body.innerHTML = `
       <div style="display:grid;gap:8px">
@@ -84,6 +87,8 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
           ${(ex.muscles || []).map((m) => `<span class="chip accent">${esc(MUSCLE_NAMES[m] || m)}</span>`).join("")}
         </div>
       </div>
+      ${alternativeHtml(item, ctx.level)}
+      ${ex.routine ? `<div data-routine>${routineHtml(item || { ex: ctx.exId }, ctx.level || 0, itemLog || {})}</div>` : ""}
       ${mode === "log" && item && ctx.date ? '<div class="logger-host"></div>' : ""}
       <div class="tabs" role="tablist">
         <button type="button" role="tab" data-tab="how">How to</button>
@@ -101,6 +106,8 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
         onChange: ctx.onChange,
         // Keep the dose above the logger in step with an easier choice.
         onDraw: (log) => {
+          const routine = body.querySelector("[data-routine]");
+          if (routine) routine.innerHTML = routineHtml(item, ctx.level, log);
           const rxEl = body.querySelector(".rx");
           if (rxEl && item) rxEl.textContent = personalize((log && log.rxOverride) || rxFor(item, ctx.level), p);
         },
@@ -109,6 +116,14 @@ export function createExercisePanel(container, { mode = "log" } = {}) {
   }
 
   body.addEventListener("click", (e) => {
+    const step = e.target.closest("[data-movement]");
+    if (step) {
+      movement = step.dataset.movement;
+      stage.load(movement);
+      body.querySelectorAll("[data-movement]").forEach((button) => button.setAttribute("aria-pressed", String(button === step)));
+      drawTab();
+      return;
+    }
     const b = e.target.closest("[data-tab]");
     if (b) {
       tab = b.dataset.tab;

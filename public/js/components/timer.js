@@ -2,6 +2,9 @@
 // (planks, stretches), countdown for Zone 2 blocks, and a floating rest timer.
 // Beeps with Web Audio, vibrates on phones, keeps the screen awake while running.
 
+import { EXERCISES } from "../data/exercises.js";
+import { intervalPhases } from "../data/routines.js";
+import { createStagePanel } from "./stage-panel.js";
 import { state } from "../store.js";
 import { fmtSecs } from "../util.js";
 import { icon } from "./icons.js";
@@ -91,22 +94,31 @@ function runPhases({ title, phases, onFinish }) {
   let spokenHalfway = false;
   let spokenThirty = false;
   let spokenTen = false;
-  const workDone = () => phases.slice(0, i).filter((p) => p.kind === "work").length;
+  const isRoundEnd = (p) => p.kind === "work" && p.roundEnd !== false;
+  const workDone = () => phases.slice(0, i).filter(isRoundEnd).length;
+  const stageHost = document.createElement("div");
+  let stage = null;
+  if (phases.some((p) => p.ex)) {
+    stageHost.className = "interval-stage";
+    el.prepend(stageHost);
+    stage = createStagePanel(stageHost);
+  }
   wake().then((l) => (lock = l));
 
   function show() {
     const p = phases[i];
     el.dataset.kind = p.kind;
-    phaseEl.textContent = p.label;
+    phaseEl.textContent = p.ex ? `${p.label}: ${EXERCISES[p.ex].name}` : p.label;
     big.textContent = fmtSecs(Math.ceil(left));
     sub.textContent = p.sub || "";
     fg.setAttribute("stroke-dashoffset", String(C * (1 - left / p.sec)));
-    const totalWork = phases.filter((x) => x.kind === "work").length;
+    const totalWork = phases.filter(isRoundEnd).length;
     const currentWork = workDone() + (p.kind === "work" ? 1 : 0);
-    info.textContent = totalWork > 1 ? `Interval ${Math.min(currentWork, totalWork)} of ${totalWork}` : "";
+    info.textContent = p.total ? `Round ${p.round} of ${p.total}` : totalWork > 1 ? `Interval ${Math.min(currentWork, totalWork)} of ${totalWork}` : "";
 
     if (lastSpokenPhase !== i) {
       lastSpokenPhase = i;
+      if (p.ex && stage) stage.load(p.ex);
       spokenHalfway = false;
       spokenThirty = false;
       spokenTen = false;
@@ -176,10 +188,12 @@ function runPhases({ title, phases, onFinish }) {
     sub.textContent = "";
     fg.setAttribute("stroke-dashoffset", "0");
     el.querySelector(".btn-row").innerHTML = `<button class="btn primary" data-t="close">${icon("check")} Log it</button>`;
-    if (onFinish) onFinish(phases.filter((p) => p.kind === "work").length);
+    if (stage) { stage.dispose(); stage = null; }
+    if (onFinish) onFinish(phases.filter(isRoundEnd).length);
   }
   function stop(close = true) {
     clearInterval(timer);
+    if (stage) { stage.dispose(); stage = null; }
     if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
     if (lock) lock.release().catch(() => {});
     if (!finished && onFinish && workDone() > 0) onFinish(workDone(), true);
@@ -212,16 +226,11 @@ function runPhases({ title, phases, onFinish }) {
 }
 
 // Interval timer from a preset: { rounds, work, rest, blocks?, blockRest?, workHr?, restHr? }
-export function startIntervals({ title, preset, hr, onFinish }) {
-  const phases = [{ kind: "ready", label: "Get ready", sec: 10, sub: "First interval starts soon" }];
-  const blocks = preset.blocks || 1;
-  for (let b = 0; b < blocks; b++) {
-    for (let r = 0; r < preset.rounds; r++) {
-      phases.push({ kind: "work", label: "Work", sec: preset.work, sub: hr && hr.work ? `Aim for ${hr.work}` : "Hard" });
-      const lastRound = r === preset.rounds - 1;
-      if (!lastRound) phases.push({ kind: "rest", label: "Easy", sec: preset.rest, sub: hr && hr.rest ? `Recover at ${hr.rest}` : "Keep moving gently" });
-    }
-    if (b < blocks - 1) phases.push({ kind: "rest", label: "Block rest", sec: preset.blockRest || 180, sub: "Walk around, breathe" });
+export function startIntervals({ title, preset, hr, exId, moves, onFinish }) {
+  const phases = intervalPhases(exId, preset, moves);
+  for (const phase of phases) {
+    if (phase.kind === "work" && hr?.work) phase.sub = `Aim for ${hr.work}`;
+    else if (phase.kind === "rest" && hr?.rest) phase.sub += ` · ${hr.rest}`;
   }
   runPhases({ title, phases, onFinish });
 }

@@ -4,8 +4,9 @@ import { EQUIPMENT_NAMES } from "./icons.js";
 export function filterExercises({ query = "", category = "all", equipment = "all", muscle = "all", origin = "all", sort = "original" } = {}) {
   const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const list = Object.entries(EXERCISES).filter(([id, ex]) => {
+    if (ex.hidden) return false;
     const gear = ex.equipment || [];
-    const searchable = [id, ex.name, ex.cat, ...(ex.muscles || []).map((m) => m + " " + m.replace(/([a-z])([A-Z])/g, "$1 $2")), ...gear.map((g) => EQUIPMENT_NAMES[g] || g)].join(" ").toLowerCase();
+    const searchable = [id, ex.name, ex.cat, ex.group || "", ...(ex.muscles || []).map((m) => m + " " + m.replace(/([a-z])([A-Z])/g, "$1 $2")), ...gear.map((g) => EQUIPMENT_NAMES[g] || g)].join(" ").toLowerCase();
     return (category === "all" || ex.cat === category)
       && (equipment === "all" || (equipment === "none" ? !gear.length : gear.includes(equipment)))
       && (muscle === "all" || (ex.muscles || []).includes(muscle))

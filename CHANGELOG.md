@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.30.0] - 2026-10-20
+
+### Added
+- Individual library entries with instructions, videos and a focused demonstration for each movement.
+
+### Changed
+- **Plan change:** Combined warm-ups and exercise variations now appear as separate movements. Guided pairs alternate one set at a time, keeping the existing doses.
+- Interval groups list each movement and recovery in round order, with the timer showing the current movement.
+- Older combined workout logs remain readable without rewriting saved data.
+
 ## [1.29.1] - 2026-10-19
 
 ### Fixed
