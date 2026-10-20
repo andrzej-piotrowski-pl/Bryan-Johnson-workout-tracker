@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.34.2] - 2026-10-20
+
+### Fixed
+- Guided workouts group repeated interval movements so long routines fit on screen.
+- The full exercise demonstration stays visible while viewing longer instructions on desktop.
+
 ## [1.34.1] - 2026-10-20
 
 ### Added

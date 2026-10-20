@@ -119,11 +119,11 @@ export function startGuided(date, onExit) {
       ${s.item.bryan ? `<span class="chip bryan" style="justify-self:start">${esc(personalize(s.item.bryan, p))}</span>` : ""}
       ${s.setIndex != null ? `<p class="muted">Complete set ${s.setIndex + 1} of ${s.sets}, then continue to the next movement.</p>` : ""}
       ${alternativeHtml(s.item, s.level)}
-      ${ex.routine ? `<div data-routine>${routineHtml(s.item, s.level, itemLog || {})}</div>` : ""}
+      ${ex.routine ? `<div data-routine>${routineHtml(s.item, s.level, itemLog || {}, { compact: true })}</div>` : ""}
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
-    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = side.querySelector("[data-routine]"); if (host) host.innerHTML = routineHtml(s.item, s.level, log); voice.changed(); } });
+    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = side.querySelector("[data-routine]"); if (host) host.innerHTML = routineHtml(s.item, s.level, log, { compact: true }); voice.changed(); } });
     videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(demo), {
       groups: videoGroupsFor(demo),
       activeGroup: stage.clipIndex,

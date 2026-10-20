@@ -536,8 +536,10 @@ details[data-addon]:not([open]) .addon-chevron { transform: rotate(-90deg); }
 .guided-top .bar { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
 .guided-top .bar i { display: block; height: 100%; background: var(--accent); transition: width 0.3s; }
 .guided-main { overflow: auto; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr); }
-.guided-main .stage { aspect-ratio: auto; min-height: 50vh; height: 100%; border-bottom: 0; border-right: 1px solid var(--line); }
-.guided-side { padding: 20px; display: grid; gap: 14px; align-content: start; overflow: auto; }
+.guided-main > * { min-height: 0; min-width: 0; }
+.guided-main > :last-child { overflow: auto; }
+.guided-main .stage { aspect-ratio: auto; min-height: 0; height: 100%; border-bottom: 0; border-right: 1px solid var(--line); }
+.guided-side { padding: 16px; display: grid; gap: 10px; align-content: start; overflow: auto; }
 .guided-bottom { display: flex; gap: 10px; justify-content: space-between; align-items: center; padding: 12px 18px max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--surface); }
 .workout-radio { position: relative; display: flex; align-items: center; gap: 2px; flex: none; }
 .radio-host { display: flex; align-items: center; gap: 6px; }
@@ -1042,3 +1044,6 @@ td.cur, th.cur { background: var(--accent-soft); }
 .interval-stage.stage { width: 100%; height: 240px; aspect-ratio: auto; border: 1px solid var(--line); border-radius: 10px; }
 .timer:has(.interval-stage) .timer-ring { width: min(220px, 65vw); }
 .timer:has(.interval-stage) .phase { font-size: 1rem; padding: 0 12px; }
+
+.routine-compact { padding: 0; list-style: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.routine-compact li { padding: 0; }

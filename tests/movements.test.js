@@ -12,6 +12,8 @@ import { performanceHistory } from "../public/js/components/logger.js";
 import { blockItems, dayLoad, itemLog, liftHistory, progressOf, sessionItems, timerPresets } from "../public/js/plan.js";
 import { state } from "../public/js/store.js";
 
+import { routineHtml, routineSteps } from "../public/js/components/routine.js";
+
 const day = (key) => DAYS.find((d) => d.key === key);
 
 test("the library lists each movement with only its own animation and videos", () => {
@@ -125,4 +127,21 @@ test("new deadlift logs do not complete the separate jumps automatically", () =>
   assert.equal(itemLog(log, "main", "fri-strength-rdl-jumps"), null);
   delete log.items["fri-strength-rdl"].splitMovements;
   assert.equal(itemLog(log, "main", "fri-strength-rdl-jumps").done, true);
+});
+
+test("compact interval lists preserve every phase dose without repeating rows", () => {
+  for (const ex of ["shortint", "norwegian"]) {
+    const item = day(ex === "shortint" ? "tue" : "thu").blocks.flatMap((b) => b.items).find((it) => it.ex === ex);
+    for (let level = 0; level < 4; level++) {
+      for (let preset = 0; preset < timerPresets(item, level).length; preset++) {
+        const log = { preset, moves: ["highknees", "jacks"] };
+        const steps = routineSteps(item, level, log);
+        const html = routineHtml(item, level, log, { compact: true });
+        const doses = [...html.matchAll(/(\d+) × (\d+) s/g)];
+        assert.equal(doses.reduce((sum, m) => sum + Number(m[1]) * Number(m[2]), 0), steps.reduce((sum, step) => sum + step.sec, 0));
+        assert.ok((html.match(/<li>/g) || []).length <= 6);
+        assert.equal((routineHtml(item, level, log).match(/<li>/g) || []).length, steps.length);
+      }
+    }
+  }
 });
