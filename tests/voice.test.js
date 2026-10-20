@@ -1,0 +1,111 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { DAYS } from "../public/js/data/program.js";
+import { ADDONS } from "../public/js/data/addons/index.js";
+import { defaultProfile, LEVELS, personalize, bpmRange } from "../public/js/personalize.js";
+import { rxFor } from "../public/js/plan.js";
+import { CLOCK, VOICES, clockKey, durationText, exerciseScript, phaseLine, speechText } from "../public/js/voice/script.js";
+import { prepareManifest } from "../voice/service.js";
+
+const items = [...DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items)), ...ADDONS.flatMap((a) => Object.values(a.variants).flatMap((v) => v.items))];
+
+test("speech covers real prescriptions at every level, in both unit systems", () => {
+  for (const [level, { id }] of LEVELS.entries()) for (const units of ["metric", "imperial"]) {
+    const profile = { ...defaultProfile(), level: id, units, sex: level % 2 ? "male" : "female", maxDumbbellKg: 12 };
+    for (const item of items) {
+      const rx = rxFor(item, level);
+      if (!rx || rx === "—") continue;
+      const script = exerciseScript({ item, rx, profile, level });
+      const lines = [...script.intro, ...script.how, ...script.safety, ...script.sets];
+      assert(lines.length, item.id);
+      for (const line of lines) {
+        assert.doesNotMatch(line, /[×@{}—–]|\b(?:NaN|undefined|kg|lb|bpm)\b|\d/, `${item.id}: ${line}`);
+        assert(line.length < 500, `${item.id} clip is bounded`);
+      }
+      if (rx.includes("{kg:")) assert.match(script.intro.join(" "), units === "metric" ? /kilograms/ : /pounds/);
+      assert(!script.name.includes("{"));
+    }
+  }
+});
+
+test("equipment counts never become extra sets, and time and tempo survive", () => {
+  assert.equal(speechText("2 min holding 2 × 8–10 kg"), "two minutes holding two weights of eight to ten kilograms each");
+  assert.equal(speechText("1 × 12 @ 2 × 10 kg"), "one set of twelve reps at two weights of ten kilograms each");
+  assert.equal(speechText("1 × 25 + 1 × 10/leg single-leg"), "one set of twenty five reps, then one set of ten reps each leg single-leg");
+  assert.equal(speechText("2 × 15–20 s, knees down is fine"), "two sets of fifteen to twenty seconds, knees down is fine");
+  assert.equal(speechText("1–2 min, bodyweight, slow"), "one to two minutes, bodyweight, slow");
+  assert.match(speechText("2 × 8 @ 5.5–8 kg, down to a chair, 3 s down"), /five point five to eight kilograms, down to a chair, three seconds down/);
+  const item = items.find((it) => it.ex === "backwalkloaded");
+  const script = exerciseScript({ item, rx: "2 min holding 2 × 8–10 kg", level: 2 });
+  assert.equal(script.setCount, null);
+  assert.deepEqual(script.sets, []);
+});
+
+test("the spoken load matches personalisation, including an easier dose and heaviest weight", () => {
+  const item = items.find((it) => it.ex === "row");
+  const profile = { ...defaultProfile(), level: "active", units: "imperial", sex: "male", maxDumbbellKg: 12 };
+  const raw = rxFor(item, 2);
+  assert.match(personalize(raw, profile), /lb \(your heaviest\)/);
+  const result = prepareManifest({ itemId: item.id, level: 2, profile, easier: "dose", voice: "am_michael" });
+  const expected = speechText(rxFor(item, 1), profile);
+  assert.equal(result.intro.map((c) => c.text).join(" ").includes(expected), true);
+  assert.match(result.sets[0].text, /each side/);
+  assert.match(result.intro.map((c) => c.text).join(" "), /pounds/);
+  const easier = prepareManifest({ itemId: item.id, level: 2, easier: "version" });
+  assert.deepEqual(easier.how, []);
+  const retained = prepareManifest({ itemId: item.id, level: 2, easier: "version", doseLevel: 1 });
+  assert(retained.intro.map((c) => c.text).join(" ").includes(speechText(rxFor(item, 1), defaultProfile())));
+  assert.match(retained.effort.text, /two or three/);
+  const cardio = items.find((it) => it.ex === "zone2");
+  const cleared = prepareManifest({ itemId: cardio.id, level: 2, profile: { age: 30, hrMax: null }, timer: { type: "countdown", minutes: 10 } }, { hrMax: 230 });
+  assert(cleared.phases[1].text.includes(speechText(bpmRange(defaultProfile(), 60, 70))), "a pending cleared max HR uses the same estimate as the screen");
+});
+
+test("level-specific teaching and safety follow the actual movement", () => {
+  const make = (level) => {
+    const item = items.find((it) => it.ex === (level === 0 ? "backwalkplain" : "backwalkloaded"));
+    return exerciseScript({ item, rx: rxFor(item, level), profile: defaultProfile(), level });
+  };
+  assert(!make(0).how.join(" ").includes("a dumbbell in each hand"));
+  assert(make(2).how.join(" ").includes("dumbbell"));
+  assert(make(0).safety.some((s) => /Stop if you feel pain inside the knee/.test(s)));
+});
+
+test("hold, recovery and countdown cues use their own names and exact durations", () => {
+  assert.equal(durationText(75), "one minute and fifteen seconds");
+  assert.match(phaseLine({ kind: "work", label: "Other side", sec: 45 }, "hold"), /^Other side\. forty five seconds/);
+  assert.doesNotMatch(phaseLine({ kind: "work", label: "First side", sec: 20 }, "hold"), /Interval|Round|Work!/);
+  assert.match(phaseLine({ kind: "work", label: "Zone 2", sec: 1200, sub: "120–140 bpm" }, "countdown"), /^Zone two\. twenty minutes/);
+  assert.match(phaseLine({ kind: "rest", sec: 75 }), /one minute and fifteen seconds/);
+  assert(!phaseLine({ kind: "work", sec: 20, sub: "120–140 bpm" }).includes("beats"));
+  assert.equal(clockKey(20, 10, "work"), null);
+  assert.equal(clockKey(30, 10, "work"), "workTen");
+  assert.equal(clockKey(60, 30, "work"), "thirty");
+  assert.equal(clockKey(180, 60, "work"), "minute");
+  assert.equal(clockKey(240, 120, "work"), "halfway");
+  assert.equal(clockKey(75, 10, "rest"), "ten");
+  assert(!Object.values(CLOCK).some((s) => /great job/i.test(s)));
+});
+
+test("five voices include US men and women; cache keys include voice, speed and exact text", () => {
+  assert.equal(VOICES.length, 5);
+  assert(VOICES.some((v) => v.id.startsWith("am_")));
+  assert(VOICES.some((v) => v.id.startsWith("af_")));
+  const first = prepareManifest({ preview: true, voice: "af_heart" }).preview;
+  assert.equal(first.id, prepareManifest({ preview: true, voice: "af_heart" }).preview.id);
+  assert.notEqual(first.id, prepareManifest({ preview: true, voice: "am_michael" }).preview.id);
+  assert.notEqual(first.id, prepareManifest({ preview: true, pace: "brisk" }).preview.id);
+  assert.match(first.url, /^\/api\/voice\/audio\/[a-f0-9]{64}\.wav$/);
+});
+
+test("the local API accepts plan context, never arbitrary speech or invalid resource requests", () => {
+  const item = items.find((it) => it.ex === "row");
+  assert.throws(() => prepareManifest({ text: "Speak this for anyone" }), /Unknown workout/);
+  assert.throws(() => prepareManifest({ preview: true, voice: "unknown" }), /Unknown voice/);
+  assert.throws(() => prepareManifest({ itemId: item.id, level: 99 }), /Unknown workout/);
+  assert.throws(() => prepareManifest({ itemId: item.id, level: 1, restSec: 999999 }), /Invalid rest/);
+  assert.throws(() => prepareManifest({ itemId: item.id, level: 1, profile: { age: "arbitrary text" } }), /Invalid profile/);
+  assert.throws(() => prepareManifest({ itemId: item.id, level: 1, timer: { type: "hold", seconds: -1, sides: 1 } }), /Invalid hold/);
+  const hidden = items.find((it) => rxFor(it, 0) === "—");
+  assert.throws(() => prepareManifest({ itemId: hidden.id, level: 0 }), /not in this level/);
+});

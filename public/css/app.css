@@ -532,6 +532,18 @@ details[data-addon]:not([open]) .addon-chevron { transform: rotate(-90deg); }
 .guided-side { padding: 20px; display: grid; gap: 14px; align-content: start; overflow: auto; }
 .guided-bottom { display: flex; gap: 10px; justify-content: space-between; align-items: center; padding: 12px 18px max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--surface); }
 .workout-radio { position: relative; display: flex; align-items: center; gap: 2px; flex: none; }
+.radio-host { display: flex; align-items: center; gap: 6px; }
+.workout-coach { min-width: 0; }
+.coach-popup { position: relative; flex: none; }
+.coach-panel { display: grid; gap: 14px; }
+.coach-panel[hidden] { display: none; }
+.coach-toggle.is-on { color: var(--accent); background: var(--accent-soft); }
+.coach-voices { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.coach-voices .choice { min-width: 0; padding: 12px; }
+.coach-voices .choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.coach-status, .coach-note { font-size: 0.85rem; line-height: 1.5; }
+.guided-voice-status { margin: 0; padding: 0 20px; font-size: 0.82rem; }
+.guided-voice-status:not(:empty) { padding-top: 12px; }
 .radio-toggle { gap: 6px; }
 .radio-toggle .icon { width: 18px; height: 18px; }
 .radio-mute { color: var(--muted); }

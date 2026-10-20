@@ -9,6 +9,8 @@ import { state } from "../store.js";
 import { fmtSecs } from "../util.js";
 import { icon } from "./icons.js";
 import { openDialog } from "./ui.js";
+import { clockKey } from "../voice/script.js";
+import { cancelVoice, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoiceEnabled, unlockVoice, videoVoice, voiceEnabled, voiceStatus } from "../voice/player.js";
 
 let audio = null;
 export function beep(freq = 880, ms = 120, vol = 0.18) {
@@ -31,22 +33,8 @@ export function beep(freq = 880, ms = 120, vol = 0.18) {
   }
 }
 const buzz = (p) => navigator.vibrate && navigator.vibrate(p);
-
-export function speak(text) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  const p = state.profile;
-  if (p && p.settings && (p.settings.sound === false || p.settings.voiceCoach === false)) return;
-  try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 1.04;
-    u.pitch = 1.0;
-    u.lang = "en-US";
-    window.speechSynthesis.speak(u);
-  } catch {
-    /* speech is optional */
-  }
-}
+const timerListeners = new Set();
+export function onTimer(fn) { timerListeners.add(fn); return () => timerListeners.delete(fn); }
 
 async function wake() {
   try {
@@ -57,10 +45,18 @@ async function wake() {
 }
 
 // phases: [{ kind: "work" | "rest" | "ready", label, sec, sub }]
-function runPhases({ title, phases, onFinish }) {
+function runPhases({ title, phases, onFinish, voiceContext, voiceTimer }) {
+  for (const fn of timerListeners) fn(true);
+  stopRest();
+  cancelVoice();
+  videoVoice(false);
+  unlockVoice();
   const R = 120;
   const C = 2 * Math.PI * R;
-  let voiceOn = !(state.profile && state.profile.settings && state.profile.settings.voiceCoach === false);
+  let voiceOn = voiceEnabled();
+  let manifest = null;
+  let started = false;
+  let closed = false;
   const d = openDialog({
     title,
     sheet: false,
@@ -68,8 +64,9 @@ function runPhases({ title, phases, onFinish }) {
         <div class="timer-ring"><svg viewBox="0 0 280 280"><circle class="bg" cx="140" cy="140" r="${R}"/><circle class="fg" cx="140" cy="140" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
           <div class="timer-center"><span class="phase"></span><span class="big mono">0:00</span><span class="sub"></span></div></div>
         <div class="btn-row">
-          <button class="btn" data-t="pause">${icon("pause")} Pause</button>
-          <button class="btn" data-t="skip">${icon("skip")} Next</button>
+          <button class="btn primary" data-t="begin" hidden>Start without waiting</button>
+          <button class="btn" data-t="pause" disabled>${icon("pause")} Pause</button>
+          <button class="btn" data-t="skip" disabled>${icon("skip")} Next</button>
           <button class="btn sm ghost" data-t="voice" aria-label="Toggle voice coach">${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}</button>
           <button class="btn danger" data-t="stop">${icon("x")} Stop</button>
         </div>
@@ -91,9 +88,9 @@ function runPhases({ title, phases, onFinish }) {
   let lastWhole = null;
   let finished = false;
   let lastSpokenPhase = -1;
-  let spokenHalfway = false;
-  let spokenThirty = false;
-  let spokenTen = false;
+  const spoken = new Set();
+  let lastTick = Date.now();
+  const say = (clip) => voiceOn && playVoice(clip, { urgent: true });
   const isRoundEnd = (p) => p.kind === "work" && p.roundEnd !== false;
   const workDone = () => phases.slice(0, i).filter(isRoundEnd).length;
   const stageHost = document.createElement("div");
@@ -103,7 +100,7 @@ function runPhases({ title, phases, onFinish }) {
     el.prepend(stageHost);
     stage = createStagePanel(stageHost);
   }
-  wake().then((l) => (lock = l));
+  wake().then((l) => { if (closed) l?.release().catch(() => {}); else lock = l; });
 
   function show() {
     const p = phases[i];
@@ -119,58 +116,33 @@ function runPhases({ title, phases, onFinish }) {
     if (lastSpokenPhase !== i) {
       lastSpokenPhase = i;
       if (p.ex && stage) stage.load(p.ex);
-      spokenHalfway = false;
-      spokenThirty = false;
-      spokenTen = false;
-      if (p.kind === "ready") {
-        speak(p.sec >= 8 ? "Get ready. First interval starts soon." : "Get ready.");
-      } else if (p.kind === "work") {
-        if (p.sec <= 30) {
-          speak(totalWork > 1 ? `Work! Interval ${currentWork} of ${totalWork}.` : "Work!");
-        } else {
-          const mins = Math.round(p.sec / 60);
-          const hrText = p.sub ? `Target: ${p.sub}.` : "";
-          speak(`Work! Interval ${currentWork} of ${totalWork}. ${mins > 1 ? `${mins} minutes. ` : ""}${hrText}`);
-        }
-      } else if (p.kind === "rest") {
-        if (p.sec <= 30) {
-          speak("Rest.");
-        } else {
-          const mins = Math.round(p.sec / 60);
-          const hrText = p.sub ? `Target: ${p.sub}.` : "";
-          speak(`Recover. ${mins > 1 ? `${mins} minutes. ` : ""}${hrText}`);
-        }
-      }
+      spoken.clear();
+      lastWhole = Math.ceil(left);
+      if (started) say(manifest?.phases?.[i]);
     }
   }
   function next() {
+    cancelVoice();
     i += 1;
     if (i >= phases.length) return finish();
     left = phases[i].sec;
+    lastTick = Date.now();
     beep(phases[i].kind === "work" ? 1040 : 620, 320, 0.22);
     buzz(phases[i].kind === "work" ? [180, 80, 180] : 300);
     show();
   }
   function tick() {
+    const now = Date.now();
+    const elapsed = (now - lastTick) / 1000;
+    lastTick = now;
     if (paused) return;
-    left -= 0.1;
+    left -= elapsed;
     const whole = Math.ceil(left);
     if (whole !== lastWhole && whole <= 3 && whole > 0) beep(780, 90);
     const p = phases[i];
-    if (p && p.kind === "work") {
-      if (p.sec >= 120 && !spokenHalfway && whole === Math.round(p.sec / 2)) {
-        spokenHalfway = true;
-        speak("Halfway.");
-      }
-      if (p.sec >= 60 && !spokenThirty && whole === 30) {
-        spokenThirty = true;
-        speak("30 seconds left.");
-      }
-    } else if (p && p.kind === "rest") {
-      if (p.sec >= 30 && !spokenTen && whole === 10) {
-        spokenTen = true;
-        speak("10 seconds. Get ready.");
-      }
+    if (p) {
+      const key = clockKey(p.sec, whole, p.kind);
+      if (key && !spoken.has(key)) { spoken.add(key); say(manifest?.clock?.[key]); }
     }
     lastWhole = whole;
     if (left <= 0) next();
@@ -181,7 +153,8 @@ function runPhases({ title, phases, onFinish }) {
     clearInterval(timer);
     beep(1320, 500, 0.25);
     buzz([200, 100, 200, 100, 400]);
-    speak("Intervals complete. Great job!");
+    cancelVoice();
+    say(manifest?.clock?.done);
     el.dataset.kind = "done";
     phaseEl.textContent = "Done";
     big.textContent = "✓";
@@ -192,9 +165,12 @@ function runPhases({ title, phases, onFinish }) {
     if (onFinish) onFinish(phases.filter(isRoundEnd).length);
   }
   function stop(close = true) {
+    if (closed) return;
+    closed = true;
+    for (const fn of timerListeners) fn(false);
     clearInterval(timer);
     if (stage) { stage.dispose(); stage = null; }
-    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    cancelVoice();
     if (lock) lock.release().catch(() => {});
     if (!finished && onFinish && workDone() > 0) onFinish(workDone(), true);
     finished = true;
@@ -204,57 +180,87 @@ function runPhases({ title, phases, onFinish }) {
     const b = e.target.closest("[data-t]");
     if (!b) return;
     if (b.dataset.t === "pause") {
+      if (!started) return;
       paused = !paused;
       b.innerHTML = paused ? `${icon("play")} Resume` : `${icon("pause")} Pause`;
-      if (paused && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+      if (paused) cancelVoice();
     } else if (b.dataset.t === "voice") {
-      const pr = state.profile;
-      if (pr) {
-        pr.settings = pr.settings || {};
-        pr.settings.voiceCoach = !(pr.settings.voiceCoach !== false);
-        voiceOn = pr.settings.voiceCoach !== false;
-        b.innerHTML = `${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}`;
-        if (!voiceOn && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
-        else if (voiceOn) speak("Voice coach on");
-      }
-    } else if (b.dataset.t === "skip") next();
+      setVoiceEnabled(!voiceEnabled());
+      voiceOn = voiceEnabled();
+      b.innerHTML = `${icon(voiceOn ? "volume" : "mute", "sm")} ${voiceOn ? "Voice on" : "Voice off"}`;
+      if (voiceOn && !manifest) prepare();
+      else if (!voiceOn) begin();
+    } else if (b.dataset.t === "begin") begin();
+    else if (b.dataset.t === "skip" && started) next();
     else if (b.dataset.t === "stop" || b.dataset.t === "close") stop(true);
   });
-  beep(660, 160);
-  show();
-  timer = setInterval(tick, 100);
+  function begin() {
+    if (started || closed) return;
+    started = true; lastTick = Date.now(); lastSpokenPhase = -1;
+    el.querySelector('[data-t="begin"]').hidden = true;
+    el.querySelector('[data-t="pause"]').disabled = false;
+    el.querySelector('[data-t="skip"]').disabled = false;
+    beep(660, 160); show(); timer = setInterval(tick, 100);
+  }
+  async function prepare() {
+    try {
+      if (!voiceContext || !voiceEnabled()) return begin();
+      if (!voiceStatus.installed) await refreshVoiceStatus();
+      if (!voiceStatus.installed) {
+        const button = el.querySelector('[data-t="voice"]');
+        button.textContent = "Voice unavailable"; button.disabled = true;
+        button.title = "Download the local voice in Settings → Voice coach.";
+        return begin();
+      }
+      el.querySelector('[data-t="begin"]').hidden = started;
+      info.textContent = "Preparing coach audio. You can start the timer while it loads.";
+      manifest = await prepareVoice({ ...voiceContext, timer: voiceTimer });
+      const keys = new Set(phases.flatMap((p) => Array.from({ length: p.sec }, (_, n) => clockKey(p.sec, n + 1, p.kind))).filter(Boolean));
+      const essential = [manifest.phases[0], manifest.phases[1], ...[...keys].map((key) => manifest.clock[key]), manifest.clock.done];
+      await preloadVoice(essential, () => !closed && voiceEnabled());
+      if (!closed) { begin(); preloadVoice(manifest.phases.slice(2), () => !closed && voiceEnabled()); }
+    } catch { if (!closed) begin(); }
+  }
+  prepare();
 }
 
 // Interval timer from a preset: { rounds, work, rest, blocks?, blockRest?, workHr?, restHr? }
-export function startIntervals({ title, preset, hr, exId, moves, onFinish }) {
+export function startIntervals({ title, preset, hr, exId, moves, onFinish, voiceContext, presetIndex = 0 }) {
   const phases = intervalPhases(exId, preset, moves);
   for (const phase of phases) {
     if (phase.kind === "work" && hr?.work) phase.sub = `Aim for ${hr.work}`;
     else if (phase.kind === "rest" && hr?.rest) phase.sub += ` · ${hr.rest}`;
   }
-  runPhases({ title, phases, onFinish });
+  runPhases({ title, phases, onFinish, voiceContext, voiceTimer: { type: "intervals", preset: presetIndex, moves } });
 }
 
 // Hold timer: seconds per side, optionally both sides with a short switch.
-export function startHold({ title, seconds, sides = 1, onFinish }) {
+export function startHold({ title, seconds, sides = 1, onFinish, voiceContext }) {
   const phases = [{ kind: "ready", label: "Get set", sec: 5 }];
   for (let s = 0; s < sides; s++) {
     phases.push({ kind: "work", label: sides > 1 ? (s === 0 ? "First side" : "Other side") : "Hold", sec: seconds, sub: "Breathe slowly" });
     if (s < sides - 1) phases.push({ kind: "rest", label: "Switch", sec: 5 });
   }
-  runPhases({ title, phases, onFinish });
+  runPhases({ title, phases, onFinish, voiceContext, voiceTimer: { type: "hold", seconds, sides } });
 }
 
-export function startCountdown({ title, minutes, sub, onFinish }) {
-  runPhases({ title, phases: [{ kind: "ready", label: "Get ready", sec: 5 }, { kind: "work", label: "Go", sec: Math.round(minutes * 60), sub }], onFinish });
+export function startCountdown({ title, minutes, sub, onFinish, voiceContext }) {
+  runPhases({ title, phases: [{ kind: "ready", label: "Get ready", sec: 5 }, { kind: "work", label: "Go", sec: Math.round(minutes * 60), sub }], onFinish, voiceContext, voiceTimer: { type: "countdown", minutes } });
 }
 
 // Floating rest timer after a set. Tap it to dismiss.
 let restEl = null;
 let restTimer = null;
-export function startRest(seconds) {
+const restListeners = new Set();
+let restContext = null;
+export function onRest(fn) { restListeners.add(fn); return () => restListeners.delete(fn); }
+function restEvent(type, left, total) { for (const fn of restListeners) fn({ type, left, total, context: restContext }); }
+export function startRest(seconds, context = null) {
   stopRest();
+  restContext = context;
   let left = seconds;
+  let total = seconds;
+  let lastTick = Date.now();
   restEl = document.createElement("div");
   restEl.className = "rest-pill";
   restEl.setAttribute("role", "timer");
@@ -264,24 +270,33 @@ export function startRest(seconds) {
   restEl.addEventListener("click", (e) => {
     const b = e.target.closest("[data-r]");
     if (!b) return;
-    if (b.dataset.r === "add") left += 15;
+    if (b.dataset.r === "add") { left += 15; total += 15; restEvent("extend", Math.ceil(left), total); }
     else stopRest();
   });
+  restEvent("start", left, total);
+  let lastWhole = Math.ceil(left);
   restTimer = setInterval(() => {
-    left -= 1;
-    if (left <= 3 && left > 0) beep(780, 90);
+    const now = Date.now(); left -= (now - lastTick) / 1000; lastTick = now;
+    const whole = Math.ceil(left);
+    if (whole === lastWhole) return;
+    lastWhole = whole;
+    restEvent("tick", whole, total);
+    if (whole <= 3 && whole > 0) beep(780, 90);
     if (left <= 0) {
       beep(1040, 350, 0.22);
       buzz([150, 80, 150]);
-      stopRest();
+      restEvent("end", 0, total);
+      stopRest(false);
       return;
     }
-    out.textContent = fmtSecs(left);
-  }, 1000);
+    out.textContent = fmtSecs(whole);
+  }, 100);
 }
-export function stopRest() {
+export function stopRest(notify = true) {
   clearInterval(restTimer);
+  if (restEl && notify) restEvent("stop", 0, 0);
   if (restEl) restEl.remove();
   restEl = null;
+  restContext = null;
 }
 

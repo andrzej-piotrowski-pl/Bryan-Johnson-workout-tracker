@@ -1,0 +1,6 @@
+{
+  "name": "home-protocol-local-voice",
+  "private": true,
+  "type": "module",
+  "dependencies": { "sherpa-onnx-node": "1.13.8" }
+}

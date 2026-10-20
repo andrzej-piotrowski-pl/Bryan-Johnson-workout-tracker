@@ -10,8 +10,8 @@ A local web app that plans and tracks a six-day home workout built from **Bryan 
 - **Tracking**: sets × reps × weight, holds, cardio minutes and heart rate, interval rounds, notes per exercise and per day, effort and energy, extra activity (desk treadmill, walks…), body weight.
 - **Auto-save**: there is no Save button. Everything is written to your own computer as you type.
 - **Skipped days are fine**: skip with a reason and a note, swap sessions around; nothing moves on without you.
-- **Guided workout mode**, interval timer for the 20-second bursts and the Norwegian 4×4 with a spoken voice coach and heart-rate target announcements, hold and rest timers with beeps.
-- **Radio in guided workouts**: open **Radio** in the top bar to choose from 19 stations across electronic, rock, metal, hip-hop, dance, indie and more, with volume, quick mute and previous/next controls. FIP Electro is the default, and the app remembers your station and volume.
+- **Guided workout mode**, with an optional local voice coach: five English voices, personalised doses, set and timer cues, and form tips during rest. Interval, hold and rest timers also have beeps.
+- **Radio in guided workouts**: open **Radio** in the top bar to choose from 19 stations across electronic, rock, metal, hip-hop, dance, indie and more, with volume, mute and previous/next controls. FIP Electro is the default. Music gets quieter while the coach speaks, then returns to your chosen volume.
 - **Next time, on the plan's rule**: every strength exercise gets a one-line suggestion (repeat, add 1–2 kg for upper body or 2–4 kg for legs, or add a rep) showing how far along the two-sessions-at-the-top rule you are (for example “1 of 2 sessions at the top”). Tap **Use** to fill it in. After a level change the count starts fresh at the new level's range.
 - **Level check**: the plan's own move-up checkpoints (sessions and weeks at your level, plus the two questions for that level) in **Today → Notes & observations** and again after a guided workout. A **Level check ready** chip appears in the day header when both checks are done, and moving up first explains what the next level changes. A step-down reminder follows a long break. You always change level yourself; past logs keep theirs.
 - **Bryan's weekly targets**: one comparison in **Activity → This week**, showing your level's weekly targets alongside Bryan's full Well trained week, with what is left and which days count.
@@ -89,7 +89,7 @@ sudo tailscale serve --bg --https=10000 http://127.0.0.1:3030
 
 Then open `https://<device>.<tailnet>.ts.net:10000` on a Tailscale device. This stays within your tailnet. The app has no login, so do not expose it with Tailscale Funnel or a public port forward.
 
-`npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node.
+`npm install` only downloads three.js and three web fonts; the server itself uses nothing but Node. The optional [voice coach](#voice-coach) has a separate download.
 
 </details>
 
@@ -227,7 +227,26 @@ The inventory is collapsed by default in Settings. Open **Your equipment** when 
 
 ## Workout radio
 
-Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose from 19 stations grouped as **High energy**, **Upbeat** and **Chill**, play or pause, use the arrows for the previous or next station, and set the volume. The speaker button beside **Radio** mutes the stream without changing the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. Stations come from FIP (Radio France), Radio Paradise, KEXP, The Current, Fréquence 3 and Rinse FM. The streams need an internet connection.
+Open **Radio** in the guided workout's top bar. FIP Electro is the default; choose from 19 stations grouped as **High energy**, **Upbeat** and **Chill**, play or pause, use the arrows for the previous or next station, and set the volume. The speaker button **inside the Radio popup** mutes the stream without changing the volume. The music keeps playing while you move between exercises, and your station and volume are saved for next time. Stations come from FIP (Radio France), Radio Paradise, KEXP, The Current, Fréquence 3 and Rinse FM. The streams need an internet connection.
+
+## Voice coach
+
+Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**. Choose **Download local voice** once, then turn coaching on. The download runs on the computer hosting the app. Your PC, tablet and phone all play the same voice without running an AI model in the browser.
+
+Choose Heart or Bella (American women), Michael or Puck (American men), or Emma (British woman), then press **Preview**. Your voice, pace and coaching choice are saved. **Cues and form tips** adds short instructions during rests; **Essential cues only** keeps exercise, dose, set and timer announcements. The coach uses today's level, personal weights and units, including an easier dose selected for today. You still count your own reps.
+
+Logging reps or hold seconds starts the usual rest timer when automatic rest is enabled. During a guided rest, the coach reads one form cue that fits before the last ten seconds, then continues with another cue on a later rest. It can preview the next exercise after the last set. Timer beeps and voice have separate controls. Radio drops to 12% of your chosen volume while speech plays, then returns to that volume; mute stays muted. On phones that lock media volume, music is muted briefly during speech instead.
+
+The Kokoro model download is 132 MB, plus a native speech runtime. On Linux x64, the model and runtime use about 215 MB on disk. Generated audio is kept in a separate cache capped at 256 MB. Speech works offline after installation; radio still needs internet. First-time preparation can take a while on an older CPU. Timers let you **Start without waiting**, and skip any spoken cue that is not ready on time. The old operating-system speech voice has been removed.
+
+For a terminal install on the server, run `npm run voice:install`. Linux needs `tar` with bzip2 support. The main app starts normally without the voice download, including after an interrupted or failed install. The voice runs in a separate process and releases its memory after two idle minutes. Models and audio stay in the gitignored `.voice/` folder, separate from personal logs and backups. See [the voice implementation notes](docs/GUIDED-VOICE.md) for runtime details and checks.
+
+![Five local English voices with preview, pace and coaching controls](docs/screenshots/voice-settings.png)
+
+<p>
+<img src="docs/screenshots/guided-coach.png" width="69%" alt="Coach popup beside Radio in a guided workout">
+<img src="docs/screenshots/mobile-guided-coach.png" width="25%" alt="Voice coach controls on a phone">
+</p>
 
 ## Themes
 

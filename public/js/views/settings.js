@@ -18,6 +18,7 @@ import { openAnimBar } from "../components/anim-bar.js";
 import { createEquipmentEditor } from "../components/equipment-editor.js";
 import { createStagePanel } from "../components/stage-panel.js";
 import { thumbnail } from "../components/thumbs.js";
+import { createCoachControls } from "../components/coach-controls.js";
 
 const LB = 2.20462;
 const REST_PRESETS = [45, 60, 75, 90, 120];
@@ -40,6 +41,7 @@ export function render(el) {
   const previewEl = document.createElement("div");
   previewEl.className = "anim-preview stage";
   let equipmentEditor = null;
+  let coachControls = null;
   let preview = null;
   let disposed = false;
   function refreshVersion() {
@@ -111,9 +113,10 @@ export function render(el) {
         <label class="field rest-custom" ${customRest ? "" : "hidden"}><span>Custom rest (seconds)</span><input class="input" type="number" data-f="restCustom" min="1" max="3600" step="1" required value="${esc(st.restSec || 75)}"><small>Enter 1 to 3,600 seconds.</small></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("autoRest", st.autoRest !== false, "Start the rest timer automatically")}<span>Start the rest timer automatically when you log a set</span></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("sound", st.sound !== false, "Timer sounds")}<span>Timer beeps</span></label>
-        <label style="display:flex;gap:12px;align-items:center">${switchHtml("voiceCoach", st.voiceCoach !== false, "Voice coach for intervals")}<span>Interval voice coach: spoken cues for work, recovery and heart-rate targets</span></label>
         <label style="display:flex;gap:12px;align-items:center">${switchHtml("deskNotify", !!st.deskNotify, "Desk break notifications")}<span>Desk break notifications while this tab is in the background <small class="muted">(off by default; your browser asks for permission)</small></span></label>
       </section>
+
+      <section class="card card-pad" data-coach-settings></section>
 
       <section class="card card-pad" style="display:grid;gap:14px">
         <h3>Appearance</h3>
@@ -375,7 +378,10 @@ export function render(el) {
 
   function draw() {
     equipmentEditor?.destroy();
+    coachControls?.dispose();
     drawPage();
+    coachControls = createCoachControls();
+    el.querySelector("[data-coach-settings]").appendChild(coachControls.el);
     equipmentEditor = createEquipmentEditor(el.querySelector("[data-equipment-editor]"), { profile: p, save: updateProfile });
     const lc = el.querySelector("[data-level-check-host]");
     if (lc) mountLevelCheck(lc, { showStepDown: true, onChange: (type) => type === "level" && draw() });
@@ -392,6 +398,7 @@ export function render(el) {
   return {
     destroy() {
       equipmentEditor?.destroy();
+      coachControls?.dispose();
       disposed = true;
       previewObserver.disconnect();
       window.removeEventListener("hp:look", onLook);

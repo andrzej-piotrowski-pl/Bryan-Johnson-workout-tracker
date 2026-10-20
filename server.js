@@ -133,6 +133,11 @@ async function readAllDays() {
 async function handleApi(req, res, pathname) {
   const method = req.method;
 
+  if (pathname.startsWith("/api/voice/")) {
+    const { handleVoice } = await import("./voice/service.js");
+    return handleVoice(req, res, pathname, { readBody, send, fail, profile: () => readJson(PROFILE_FILE, {}) });
+  }
+
   if (pathname === "/api/info" && method === "GET") {
     return send(res, 200, { app: "bryan-johnson-workout-website", version: await appVersion(), storage: "server", dataDir: path.relative(ROOT, DATA_DIR) || "." });
   }

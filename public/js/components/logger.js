@@ -10,6 +10,7 @@ import { esc, fmtShort } from "../util.js";
 import { icon } from "./icons.js";
 import { openDialog, toast } from "./ui.js";
 import { startCountdown, startHold, startIntervals, startRest } from "./timer.js";
+import { voiceRequest } from "../voice/player.js";
 
 // "3 × 8–10 @ …" → { sets: 3, reps: "8–10", seconds: null, perSide: false }
 export function parseRx(rx) {
@@ -423,7 +424,7 @@ export function renderLogger(container, ctx) {
       save((l) => { l.moves = Array.isArray(l.moves) ? l.moves : ["highknees"]; l.moves[index] = t.value; });
       draw();
     }
-    if (t.dataset.k === "reps" && num(t.value) != null && (!p.settings || p.settings.autoRest !== false)) startRest(restSec);
+    if (["reps", "sec"].includes(t.dataset.k) && num(t.value) != null && (!p.settings || p.settings.autoRest !== false)) startRest(restSec, { itemId: item.id, scope, setIndex: Number(t.dataset.set) });
   });
 
   function currentTarget() {
@@ -498,6 +499,7 @@ export function renderLogger(container, ctx) {
       const secs = target.seconds || 30;
       startHold({
         title: ex.name,
+        voiceContext: voiceRequest(item, level, getItemLog(date, scope, item.id) || {}, restSec),
         seconds: secs,
         sides: target.perSide ? 2 : 1,
         onFinish: () => {
@@ -516,6 +518,7 @@ export function renderLogger(container, ctx) {
       const target = currentTarget();
       startCountdown({
         title: ex.name,
+        voiceContext: voiceRequest(item, level, getItemLog(date, scope, item.id) || {}, restSec),
         minutes: target.minutes,
         sub: `${cardioLabel}: ${bpmRange(p, ...cardioRange)}`,
         onFinish: () => {
@@ -535,6 +538,8 @@ export function renderLogger(container, ctx) {
       const hr = { work: preset.workHr ? bpmRange(p, ...preset.workHr) : "", rest: preset.restHr ? bpmRange(p, ...preset.restHr) : "" };
       startIntervals({
         title: `${ex.name} · ${preset.label}`,
+        voiceContext: voiceRequest(item, level, l0, restSec),
+        presetIndex: Math.min(l0.preset || 0, presets.length - 1),
         exId: item.ex, moves: l0.moves,
         preset,
         hr,

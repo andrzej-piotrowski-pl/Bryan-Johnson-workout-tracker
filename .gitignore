@@ -3,6 +3,7 @@
 
 # Dependencies
 node_modules/
+/.voice/
 
 # OS and editor clutter
 .DS_Store

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.32.0] - 2026-10-20
+
+### Added
+- Optional local Kokoro voice coach with five English voices, previews, pace and coaching controls.
+- Guided exercise doses, set announcements, form cues during rest and spoken interval, hold and cardio timers.
+- A Coach popup beside Radio, with a one-time model download and offline speech afterwards.
+
+### Changed
+- Radio gets much quieter while the coach speaks, then returns to your chosen volume.
+- Radio mute is now inside the Radio popup.
+- Replaced the operating-system speech voice with the selected local voice.
+
+### Fixed
+- Turning timer beeps off no longer silences voice coaching.
+- Timer voice controls now save their setting, and moving between guided exercises clears the previous rest timer.
+- Logging hold seconds can start the automatic rest timer, just like logging reps.
+
 ## [1.31.0] - 2026-10-20
 
 ### Added

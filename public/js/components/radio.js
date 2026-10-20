@@ -6,6 +6,7 @@ import { adjacentStation, DEFAULT_RADIO_STATION, DEFAULT_RADIO_VOLUME, RADIO_SOU
 import { state, updateProfile } from "../store.js";
 import { clamp, esc, h } from "../util.js";
 import { icon } from "./icons.js";
+import { onVoice } from "../voice/player.js";
 
 const TOPICS = [...new Set(RADIO_STATIONS.map((station) => station.mood))];
 
@@ -40,12 +41,12 @@ export function createWorkoutRadio() {
   let attempt = 0;
   let sourceKey = "";
   let disposed = false;
+  let ducked = false;
 
   const wrap = h(`<div class="workout-radio">
     <button type="button" class="btn sm ghost radio-toggle" data-radio="toggle" aria-expanded="false" aria-controls="workout-radio-panel" aria-label="Workout radio">
       ${icon("radio")}<span class="radio-toggle-text">Radio</span><span class="radio-eq" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
-    <button type="button" class="btn sm ghost icon-only radio-mute" data-radio="mute" aria-label="Mute radio" aria-pressed="false" title="Mute radio">${icon("volume", "sm")}</button>
     <div class="radio-panel" id="workout-radio-panel" data-radio="panel" role="group" aria-label="Workout radio" hidden>
       <div class="radio-head">
         <div class="radio-now">
@@ -55,6 +56,7 @@ export function createWorkoutRadio() {
         <button type="button" class="btn sm ghost icon-only" data-radio="close" aria-label="Close radio">${icon("x", "sm")}</button>
       </div>
       <div class="radio-controls">
+        <button type="button" class="btn sm ghost icon-only radio-mute" data-radio="mute" aria-label="Mute radio" aria-pressed="false" title="Mute radio">${icon("volume", "sm")}</button>
         <button type="button" class="btn sm icon-only" data-radio="prev" aria-label="Previous station" title="Previous station">${icon("chevronL")}</button>
         <button type="button" class="btn primary radio-play" data-radio="play" aria-label="Play radio">${icon("play")}<span>Play</span></button>
         <button type="button" class="btn sm icon-only" data-radio="next" aria-label="Next station" title="Next station">${icon("chevronR")}</button>
@@ -82,7 +84,17 @@ export function createWorkoutRadio() {
   const volumeInput = wrap.querySelector(".radio-volume input");
   const volumeOut = wrap.querySelector('[data-radio="volume"]');
   const audio = wrap.querySelector("audio");
-  audio.volume = volume;
+  function applyVolume() {
+    const target = volume * (ducked ? 0.12 : 1);
+    audio.volume = target;
+    // iOS can lock media volume; silence music during speech on those devices.
+    audio.muted = muted || (ducked && Math.abs(audio.volume - target) > 0.01);
+  }
+  applyVolume();
+  const stopVoiceListener = onVoice(({ speaking }) => {
+    ducked = speaking;
+    applyVolume();
+  });
 
   function setStatus(text, error = false) {
     statusEl.textContent = text;
@@ -99,7 +111,7 @@ export function createWorkoutRadio() {
 
   function toggleMute() {
     muted = !muted;
-    audio.muted = muted;
+    applyVolume();
     syncMute();
     if (muted) setStatus(intent ? "Muted" : "Paused");
     else if (intent && !audio.paused) setStatus(audio.readyState >= 3 ? "Live" : "Connecting…");
@@ -227,7 +239,7 @@ export function createWorkoutRadio() {
 
   volumeInput.addEventListener("input", () => {
     volume = clamp(Number(volumeInput.value), 0, 1);
-    audio.volume = volume;
+    applyVolume();
     volumeOut.textContent = `${Math.round(volume * 100)}%`;
   });
   volumeInput.addEventListener("change", remember);
@@ -281,6 +293,7 @@ export function createWorkoutRadio() {
     isOpen: () => open,
     dispose() {
       disposed = true;
+      stopVoiceListener();
       intent = false;
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKey, true);

@@ -20,6 +20,7 @@ import { mountLevelCheck } from "../components/level-check.js";
 import { weekTargets } from "../week-targets.js";
 import { confirmDialog, openDialog, ring, toast } from "../components/ui.js";
 import { blockKind, detailMode, sessionKind } from "../themes.js";
+import { unlockVoice } from "../voice/player.js";
 
 const ENERGY = ["Very low", "Low", "OK", "Good", "Great"];
 const STATUS_TEXT = { done: "Done", partial: "In progress", skipped: "Skipped" };
@@ -628,6 +629,7 @@ export function render(el, params) {
       return;
     }
     if (b.hasAttribute("data-guided")) {
+      unlockVoice();
       const { startGuided } = await import("./guided.js");
       startGuided(date, () => {
         draw();

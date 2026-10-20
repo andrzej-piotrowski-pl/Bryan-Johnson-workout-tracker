@@ -15,8 +15,11 @@ import { exerciseInfoHtml } from "../components/exercise-panel.js";
 import { renderVideos, videoGroupsFor, videosFor } from "../components/video.js";
 import { mountLevelCheck } from "../components/level-check.js";
 import { pauseDesk, resumeDesk } from "../components/desk.js";
-import { stopRest } from "../components/timer.js";
+import { onRest, onTimer, stopRest } from "../components/timer.js";
 import { createWorkoutRadio } from "../components/radio.js";
+import { createCoachControls } from "../components/coach-controls.js";
+import { createGuidedVoice } from "../voice/session.js";
+import { unlockVoice, videoVoice } from "../voice/player.js";
 
 function buildSteps(date) {
   const level = levelFor(date);
@@ -41,6 +44,7 @@ function stepDone(date, step) {
 }
 
 export function startGuided(date, onExit) {
+  unlockVoice();
   const steps = buildSteps(date);
   if (!steps.length) return;
   // Desk breaks stay quiet while the guided workout is open.
@@ -54,7 +58,7 @@ export function startGuided(date, onExit) {
       <div class="bar"><i></i></div>
       <div class="radio-host"></div>
     </div>
-    <div class="guided-main"><div class="stage-host"></div><div class="guided-side"></div></div>
+    <div class="guided-main"><div class="stage-host"></div><div><p class="guided-voice-status muted" role="status" aria-live="polite"></p><div class="guided-side"></div></div></div>
     <div class="guided-bottom">
       <button type="button" class="btn" data-g="prev">${icon("chevronL")} Back</button>
       <button type="button" class="btn ghost" data-g="skip">Skip ${icon("skip", "sm")}</button>
@@ -73,9 +77,15 @@ export function startGuided(date, onExit) {
   const bar = wrap.querySelector(".bar i");
   const count = wrap.querySelector('[data-g="count"]');
   const radio = createWorkoutRadio();
-  wrap.querySelector(".radio-host").appendChild(radio.el);
+  const voice = createGuidedVoice(date, steps, wrap.querySelector(".guided-voice-status"));
+  const stopRestListener = onRest((event) => voice.rest(event));
+  const stopTimerListener = onTimer((open) => voice.timer(open));
+  const coach = createCoachControls({ popup: true, onChange: () => voice.enter(i) });
+  wrap.querySelector(".radio-host").append(radio.el, coach.el);
+  wrap.addEventListener("input", () => voice.input());
 
   function finishScreen() {
+    stopRest(); voice.finish();
     const done = steps.filter((s) => stepDone(date, s)).length;
     stage.pause();
     side.innerHTML = `<span class="eyebrow">Finished</span><h2 class="display" style="font-size:2.2rem">Workout complete</h2>
@@ -89,7 +99,8 @@ export function startGuided(date, onExit) {
     if (lcHost) mountLevelCheck(lcHost, { compact: true, showStepDown: false });
   }
 
-  function show() {
+  function show(reason = "next") {
+    stopRest();
     if (i >= steps.length) return finishScreen();
     wrap.querySelector(".guided-bottom").hidden = false;
     const s = steps[i];
@@ -112,19 +123,21 @@ export function startGuided(date, onExit) {
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
-    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = side.querySelector("[data-routine]"); if (host) host.innerHTML = routineHtml(s.item, s.level, log); } });
+    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = side.querySelector("[data-routine]"); if (host) host.innerHTML = routineHtml(s.item, s.level, log); voice.changed(); } });
     videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(demo), {
       groups: videoGroupsFor(demo),
       activeGroup: stage.clipIndex,
       onSelectGroup: (gi) => stage.setClip(gi),
-      onSelectVideo: () => stage.setAutoAdvance(false),
-      onPlay: () => stage.setAutoAdvance(false),
+      onSelectVideo: () => { stage.setAutoAdvance(false); videoVoice(true); },
+      onPlay: () => { stage.setAutoAdvance(false); videoVoice(true); },
     });
     wrap.querySelector('[data-g="prev"]').disabled = i === 0;
+    voice.enter(i, reason);
   }
 
   function close() {
     stopRest();
+    stopRestListener(); stopTimerListener(); voice.dispose(); coach.dispose();
     resumeDesk("guided");
     radio.dispose();
     stage.dispose();
@@ -135,15 +148,16 @@ export function startGuided(date, onExit) {
   }
 
   function onKey(e) {
+    if (document.querySelector("#overlay-root > .overlay")) return;
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
     if (e.key === "Escape") close();
-    else if (e.target.closest && e.target.closest(".workout-radio")) return;
+    else if (e.target.closest && e.target.closest(".workout-radio, .workout-coach")) return;
     else if (e.key === "ArrowRight") {
       i = Math.min(steps.length, i + 1);
       show();
     } else if (e.key === "ArrowLeft") {
       i = Math.max(0, i - 1);
-      show();
+      show("back");
     }
   }
 
@@ -151,7 +165,8 @@ export function startGuided(date, onExit) {
     const movement = e.target.closest("[data-movement]");
     if (movement) {
       stage.load(movement.dataset.movement);
-      videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(EXERCISES[movement.dataset.movement]));
+      videoVoice(true);
+      videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(EXERCISES[movement.dataset.movement]), { onPlay: () => videoVoice(true), onSelectVideo: () => videoVoice(true) });
       return;
     }
     const b = e.target.closest("[data-g]");
@@ -160,7 +175,7 @@ export function startGuided(date, onExit) {
     if (a === "close") close();
     else if (a === "prev") {
       i = Math.max(0, i - 1);
-      show();
+      show("back");
     } else if (a === "skip") {
       i += 1;
       show();
