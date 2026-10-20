@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.35.5] - 2026-10-20
+
+### Changed
+- Document screenshot rules: default animation first, varied styles after, and updates only for substantial visual changes.
+
 ## [1.35.4] - 2026-10-20
 
 ### Changed

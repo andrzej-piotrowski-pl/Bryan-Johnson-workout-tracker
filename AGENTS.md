@@ -53,7 +53,8 @@ Don't create git tags or GitHub releases; the user handles those. If a version s
 - The app is a local Node server (`server.js`, no dependencies) serving a vanilla JS front end in `public/`. Keep it that way: no frameworks, build steps or new runtime dependencies without asking the user.
 - Run `npm start` and check the change in the browser (http://localhost:3030) before you commit it.
 - `data/` holds the user's personal profile and logs. Never commit it, never delete or rewrite it, and keep new code able to read data saved by older versions.
-- Update `README.md` and the screenshots in `docs/screenshots/` when a change makes them out of date.
+- Update `README.md` when a change makes it out of date. Regenerate screenshots in `docs/screenshots/` only when the pictured elements change substantially; minor changes do not need new screenshots.
+- In the opening section of `README.md`, use the default animation style for the first screenshot. Use randomly chosen, different animation styles for the other screenshots that show exercises.
 - When exercises, doses, form tips, timer cues or other spoken content change, rebuild and publish the shared audio packs for all five voices. Reuse the saved clips: a text change should regenerate only affected sentences, never the whole library. Keep shared speech free of personal profile data and check that the packs cover every training level.
 
 ## General
