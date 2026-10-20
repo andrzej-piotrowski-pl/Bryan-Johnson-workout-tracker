@@ -14,19 +14,17 @@ export function routineSteps(item, level, log = {}) {
 }
 
 export function routineHtml(item, level, log, { compact = false } = {}) {
-  let steps = routineSteps(item, level, log);
-  if (compact) {
-    const grouped = new Map();
+  const steps = routineSteps(item, level, log);
+  if (compact && steps.some((step) => step.round)) {
+    const rounds = [];
     for (const step of steps) {
-      const key = JSON.stringify([step.ex, step.sec, step.kind, step.kind === "rest" ? step.label : ""]);
-      const entry = grouped.get(key);
-      if (entry) entry.count += 1;
-      else grouped.set(key, { ...step, count: 1 });
+      if (step.round && rounds.at(-1)?.number !== step.round) rounds.push({ number: step.round, steps: [] });
+      rounds.at(-1).steps.push(step);
     }
-    steps = [...grouped.values()].map((step) => ({ ...step, dose: step.sec ? `${step.count} × ${step.sec} s${step.kind === "rest" ? ` · ${step.label}` : ""}` : step.dose }));
+    return `<div class="routine"><h4>Movement order · read across, then down</h4><ol class="routine-rounds">${rounds.map((round) => `<li><b>Round ${round.number}</b>${round.steps.map((step, index) => `<div class="routine-phase"><span aria-hidden="true">${index ? "→" : ""}</span><button type="button" data-movement="${esc(step.ex)}" title="${esc(EXERCISES[step.ex].name)}${step.label === "Block recovery" ? " · Block recovery" : ""}">${esc(step.label === "Block recovery" ? "March · block recovery" : EXERCISES[step.ex].name.replace(/ on the spot$/, ""))}</button><span>${step.sec} s</span></div>`).join("")}</li>`).join("")}</ol></div>`;
   }
   if (!steps.length) return "";
-  return `<div class="routine"><h4>Movement steps</h4><ol class="routine-steps${compact ? " routine-compact" : ""}">${steps.map((step) => `<li><button type="button" class="btn sm" data-movement="${esc(step.ex)}">${esc(EXERCISES[step.ex].name)}</button><span class="muted">${esc(step.dose)}</span><a href="#/library/${step.ex}" aria-label="Instructions for ${esc(EXERCISES[step.ex].name)}">Details</a></li>`).join("")}</ol></div>`;
+  return `<div class="routine"><h4>Movement steps</h4><ol class="routine-steps">${steps.map((step) => `<li><button type="button" class="btn sm" data-movement="${esc(step.ex)}">${esc(EXERCISES[step.ex].name)}</button><span class="muted">${esc(step.dose)}</span><a href="#/library/${step.ex}" aria-label="Instructions for ${esc(EXERCISES[step.ex].name)}">Details</a></li>`).join("")}</ol></div>`;
 }
 
 export function alternativeHtml(item, level) {

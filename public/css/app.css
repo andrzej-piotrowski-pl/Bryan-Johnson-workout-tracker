@@ -1045,5 +1045,18 @@ td.cur, th.cur { background: var(--accent-soft); }
 .timer:has(.interval-stage) .timer-ring { width: min(220px, 65vw); }
 .timer:has(.interval-stage) .phase { font-size: 1rem; padding: 0 12px; }
 
-.routine-compact { padding: 0; list-style: none; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.routine-compact li { padding: 0; }
+.guided-demo { display: grid; grid-template-rows: minmax(200px, 1fr) auto; overflow: auto; }
+.guided-demo > [data-routine]:not(:empty) { padding: 10px 12px; border-right: 1px solid var(--line); border-top: 1px solid var(--line); }
+.routine-rounds { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.routine-rounds > li { min-width: 0; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); font-size: 0.75rem; }
+.routine-rounds b { display: block; color: var(--muted); font-size: 0.7rem; }
+.routine-phase { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 3px; align-items: center; }
+.routine-phase button { padding: 2px 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; line-height: 1.2; cursor: pointer; }
+.routine-phase button:hover { text-decoration: underline; }
+.interval-choice-help { font-size: 0.8rem; line-height: 1.4; }
+@media (max-width: 900px) {
+  .guided-main { display: block; }
+  .guided-main .stage { height: 42vh; }
+  .guided-demo { display: block; overflow: visible; }
+  .routine-rounds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

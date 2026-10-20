@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.34.3] - 2026-10-20
+
+### Fixed
+- Guided intervals show every round in order beneath the demonstration, including recovery breaks.
+- Short-interval choices explain that the optional alternate movement is used every other work burst.
+
 ## [1.34.2] - 2026-10-20
 
 ### Fixed

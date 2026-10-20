@@ -58,7 +58,7 @@ export function startGuided(date, onExit) {
       <div class="bar"><i></i></div>
       <div class="radio-host"></div>
     </div>
-    <div class="guided-main"><div class="stage-host"></div><div><p class="guided-voice-status muted" role="status" aria-live="polite"></p><div class="guided-side"></div></div></div>
+    <div class="guided-main"><div class="guided-demo"><div class="stage-host"></div><div data-routine></div></div><div><p class="guided-voice-status muted" role="status" aria-live="polite"></p><div class="guided-side"></div></div></div>
     <div class="guided-bottom">
       <button type="button" class="btn" data-g="prev">${icon("chevronL")} Back</button>
       <button type="button" class="btn ghost" data-g="skip">Skip ${icon("skip", "sm")}</button>
@@ -88,6 +88,7 @@ export function startGuided(date, onExit) {
     stopRest(); voice.finish();
     const done = steps.filter((s) => stepDone(date, s)).length;
     stage.pause();
+    wrap.querySelector("[data-routine]").innerHTML = "";
     side.innerHTML = `<span class="eyebrow">Finished</span><h2 class="display" style="font-size:2.2rem">Workout complete</h2>
       <p>${done} of ${steps.length} steps done. You can record how it felt in the day's notes.</p>
       <div class="btn-row"><button type="button" class="btn primary" data-g="close">${icon("check")} Back to the day</button></div>
@@ -112,6 +113,7 @@ export function startGuided(date, onExit) {
     bar.style.width = `${(i / steps.length) * 100}%`;
     count.textContent = `${i + 1}/${steps.length}`;
     const itemLog = getItemLog(date, s.scope, s.item.id);
+    wrap.querySelector("[data-routine]").innerHTML = ex.routine ? routineHtml(s.item, s.level, itemLog || {}, { compact: true }) : "";
     side.innerHTML = `
       <span class="eyebrow">${esc(s.item.group || s.block)}${s.round ? ` · Round ${s.round} of ${s.rounds}` : ""}</span>
       <h2 class="display" style="font-size:2.1rem;line-height:1">${esc(s.item.label ? personalize(s.item.label, p) : ex.name)}</h2>
@@ -119,11 +121,10 @@ export function startGuided(date, onExit) {
       ${s.item.bryan ? `<span class="chip bryan" style="justify-self:start">${esc(personalize(s.item.bryan, p))}</span>` : ""}
       ${s.setIndex != null ? `<p class="muted">Complete set ${s.setIndex + 1} of ${s.sets}, then continue to the next movement.</p>` : ""}
       ${alternativeHtml(s.item, s.level)}
-      ${ex.routine ? `<div data-routine>${routineHtml(s.item, s.level, itemLog || {}, { compact: true })}</div>` : ""}
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
-    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = side.querySelector("[data-routine]"); if (host) host.innerHTML = routineHtml(s.item, s.level, log, { compact: true }); voice.changed(); } });
+    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = wrap.querySelector("[data-routine]"); if (host) host.innerHTML = ex.routine ? routineHtml(s.item, s.level, log, { compact: true }) : ""; voice.changed(); } });
     videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(demo), {
       groups: videoGroupsFor(demo),
       activeGroup: stage.clipIndex,
