@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.35.1] - 2026-10-20
+
+### Fixed
+- Hover along the guided progress bar to preview exercises, then click a position to jump directly to that step.
+
 ## [1.35.0] - 2026-10-20
 
 ### Added

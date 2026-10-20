@@ -51,14 +51,15 @@ export function startGuided(date, onExit) {
   pauseDesk("guided");
   let i = steps.findIndex((s) => !stepDone(date, s));
   if (i < 0) i = 0;
+  const stepLabels = steps.map((step, index) => `${index + 1}/${steps.length} · ${personalize(step.item.label || EXERCISES[step.item.ex].name, state.profile)}${step.setIndex != null ? ` · Set ${step.setIndex + 1} of ${step.sets}` : ""}`);
   const wrap = h(`<div class="guided" role="dialog" aria-modal="true" aria-label="Guided workout">
     <div class="guided-top">
       <button type="button" class="btn sm ghost" data-g="close">${icon("x")} Exit</button>
       <details class="guided-jump">
         <summary class="btn sm ghost mono" data-g="count" aria-label="Choose workout step"></summary>
-        <div class="radio-panel guided-step-list" role="group" aria-label="Workout steps">${steps.map((step, index) => `<button type="button" class="btn sm ghost" data-step-index="${index}"><span>${index + 1}/${steps.length} · ${esc(personalize(step.item.label || EXERCISES[step.item.ex].name, state.profile))}${step.setIndex != null ? ` · Set ${step.setIndex + 1} of ${step.sets}` : ""}</span><small class="muted">${esc(step.block)}</small></button>`).join("")}</div>
+        <div class="radio-panel guided-step-list" role="group" aria-label="Workout steps">${steps.map((step, index) => `<button type="button" class="btn sm ghost" data-step-index="${index}"><span>${esc(stepLabels[index])}</span><small class="muted">${esc(step.block)}</small></button>`).join("")}</div>
       </details>
-      <div class="bar"><i></i></div>
+      <div class="bar guided-progress"><i></i><div class="guided-progress-steps" role="group" aria-label="Jump to workout step">${stepLabels.map((label, index) => `<button type="button" data-step-index="${index}" aria-label="${esc(label)}"><span class="guided-progress-preview">${esc(label)}</span></button>`).join("")}</div></div>
       <div class="radio-host"></div>
     </div>
     <div class="guided-main"><div class="guided-demo"><div class="stage-host"></div><div data-routine></div></div><div><p class="guided-voice-status muted" role="status" aria-live="polite"></p><div class="guided-side"></div></div></div>
@@ -123,7 +124,7 @@ export function startGuided(date, onExit) {
     bar.style.width = `${(i / steps.length) * 100}%`;
     count.textContent = `${i + 1}/${steps.length}`;
     count.setAttribute("aria-label", `Step ${i + 1} of ${steps.length}. Choose workout step`);
-    jump.querySelectorAll("[data-step-index]").forEach((button) => button.setAttribute("aria-current", Number(button.dataset.stepIndex) === i ? "step" : "false"));
+    wrap.querySelectorAll("[data-step-index]").forEach((button) => button.setAttribute("aria-current", Number(button.dataset.stepIndex) === i ? "step" : "false"));
     const itemLog = getItemLog(date, s.scope, s.item.id);
     wrap.querySelector("[data-routine]").innerHTML = ex.routine ? routineHtml(s.item, s.level, itemLog || {}, { compact: true }) : "";
     side.innerHTML = `
@@ -163,6 +164,11 @@ export function startGuided(date, onExit) {
   function onKey(e) {
     if (document.querySelector("#overlay-root > .overlay")) return;
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (e.target.closest?.(".guided-progress") && ["ArrowLeft", "ArrowRight"].includes(e.key)) {
+      e.preventDefault();
+      (e.key === "ArrowRight" ? e.target.nextElementSibling : e.target.previousElementSibling)?.focus();
+      return;
+    }
     if (jump.open && e.target.closest?.(".guided-jump")) {
       if (e.key === "Escape") { jump.open = false; count.focus(); e.preventDefault(); }
       return;
