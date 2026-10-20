@@ -2,7 +2,7 @@ import { state, updateProfile } from "../store.js";
 import { esc, h } from "../util.js";
 import { icon } from "./icons.js";
 import { VOICES } from "../voice/script.js";
-import { cancelVoice, installVoice, onVoice, playVoice, prepareVoice, refreshVoiceStatus, selectedVoice, setVoiceEnabled, unlockVoice, voiceEnabled, voiceStatus } from "../voice/player.js";
+import { PREPARING_VOICE, cancelVoice, installVoice, onVoice, playVoice, prepareVoice, refreshVoiceStatus, selectedVoice, setVoiceEnabled, unlockVoice, voiceEnabled, voiceStatus } from "../voice/player.js";
 
 export function createCoachControls({ popup = false, onChange = () => {} } = {}) {
   const el = h(`<div class="workout-coach${popup ? " coach-popup" : ""}">
@@ -29,12 +29,13 @@ export function createCoachControls({ popup = false, onChange = () => {} } = {})
   function sync(status) {
     if (disposed) return;
     const enabled = voiceEnabled();
-    el.querySelector(".coach-status").textContent = status.message;
+    el.querySelector(".coach-status").textContent = status.preparing ? PREPARING_VOICE : status.message;
     const button = el.querySelector('[data-coach="enable"]');
     button.textContent = enabled ? "Turn coaching off" : "Turn coaching on";
     button.setAttribute("aria-pressed", String(enabled));
     button.disabled = !status.installed || status.installing;
     toggle?.classList.toggle("is-on", enabled && status.installed);
+    toggle?.setAttribute("aria-busy", String(status.preparing));
     toggle?.setAttribute("aria-label", `Voice coach, ${enabled && status.installed ? "on" : "off"}`);
     const install = el.querySelector('[data-coach="install"]');
     install.hidden = status.installed && !status.installing && !status.error;

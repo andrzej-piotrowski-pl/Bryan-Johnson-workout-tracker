@@ -1,6 +1,6 @@
 import { state } from "../store.js";
 import { getItemLog } from "../components/logger.js";
-import { cancelTeaching, cancelVoice, clipDuration, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, videoVoice, voiceEnabled, voiceRequest, voiceStatus } from "./player.js";
+import { PREPARING_VOICE, cancelTeaching, cancelVoice, clipDuration, playVoice, preloadVoice, prepareVoice, refreshVoiceStatus, setVoicePreparing, videoVoice, voiceEnabled, voiceRequest, voiceStatus } from "./player.js";
 
 export function createGuidedVoice(date, steps, statusEl) {
   let index = 0;
@@ -32,12 +32,14 @@ export function createGuidedVoice(date, steps, statusEl) {
     const enteredAt = ++activity;
     manifest = null; nextManifest = null; rest = null;
     cancelVoice(); videoVoice(false);
-    if (!steps[index] || !voiceEnabled()) { statusEl.textContent = ""; return; }
+    if (!steps[index] || !voiceEnabled()) { statusEl.textContent = ""; setVoicePreparing(false); return; }
+    statusEl.textContent = PREPARING_VOICE;
+    setVoicePreparing(true);
     requestKey = JSON.stringify(request(steps[index]));
     try {
       if (!voiceStatus.installed) await refreshVoiceStatus();
-      if (disposed || stamp !== token || !voiceEnabled() || !voiceStatus.installed) return;
-      statusEl.textContent = "Preparing coach audio…";
+      if (disposed || stamp !== token || !voiceEnabled()) return;
+      if (!voiceStatus.installed) { statusEl.textContent = ""; setVoicePreparing(false); return; }
       const current = await getManifest(steps[index]);
       if (disposed || stamp !== token) return;
       manifest = current;
@@ -51,6 +53,7 @@ export function createGuidedVoice(date, steps, statusEl) {
       await preloadVoice(lines, valid);
       if (!valid()) return;
       statusEl.textContent = "";
+      setVoicePreparing(false);
       if (enteredAt === activity && !timerOpen) playVoice(lines).then((played) => {
         if (played && valid()) {
           heard.add(key);
@@ -64,7 +67,7 @@ export function createGuidedVoice(date, steps, statusEl) {
         const next = await getManifest(steps[index + 1]);
         if (valid()) { nextManifest = next; preloadVoice([next.next, ...next.intro, ...next.safety], valid); }
       }
-    } catch (err) { if (!disposed && stamp === token) statusEl.textContent = err.message; }
+    } catch (err) { if (!disposed && stamp === token) { statusEl.textContent = err.message; voiceStatus.message = err.message; setVoicePreparing(false); } }
   }
   return {
     enter,
@@ -73,7 +76,7 @@ export function createGuidedVoice(date, steps, statusEl) {
       if (step && requestKey && requestKey !== JSON.stringify(request(step))) enter(index);
     },
     input() { lastInput = Date.now(); cancelTeaching(); },
-    timer(value) { timerOpen = value; activity += 1; cancelVoice(); statusEl.textContent = ""; },
+    timer(value) { timerOpen = value; activity += 1; cancelVoice(); statusEl.textContent = ""; setVoicePreparing(false); },
     rest(event) {
       const step = steps[index];
       if (!step || !manifest || timerOpen || event.context?.itemId !== step.item.id || event.context.scope !== step.scope) return;
@@ -111,7 +114,7 @@ export function createGuidedVoice(date, steps, statusEl) {
         }
       }
     },
-    finish() { token += 1; cancelVoice(); rest = null; statusEl.textContent = ""; if (manifest) playVoice(manifest.clock.finish, { urgent: true }); },
-    dispose() { disposed = true; token += 1; cancelVoice(); videoVoice(false); },
+    finish() { token += 1; cancelVoice(); rest = null; statusEl.textContent = ""; setVoicePreparing(false); if (manifest) playVoice(manifest.clock.finish, { urgent: true }); },
+    dispose() { disposed = true; token += 1; cancelVoice(); videoVoice(false); setVoicePreparing(false); },
   };
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.32.2] - 2026-10-20
+
+### Fixed
+- The Coach popup now shows when audio is preparing, explains the first-use wait and clears the message when speech is ready.
+
 ## [1.32.1] - 2026-10-20
 
 ### Added

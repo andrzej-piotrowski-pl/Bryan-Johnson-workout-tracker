@@ -12,9 +12,11 @@ let mutedByVideo = false;
 let finishSource = null;
 const buffers = new Map();
 const listeners = new Set();
-export const voiceStatus = { installed: false, installing: false, message: "Checking local voice…", blocked: false };
+export const PREPARING_VOICE = "Preparing coach audio… First use can take a few minutes, especially on slower computers. Your computer is creating and saving spoken instructions. Saved audio is quicker next time. You can keep exercising while it prepares.";
+export const voiceStatus = { installed: false, installing: false, preparing: false, message: "Checking local voice…", blocked: false };
 const notify = () => { for (const fn of listeners) fn({ ...voiceStatus, speaking }); };
 export function onVoice(fn) { listeners.add(fn); fn({ ...voiceStatus, speaking }); return () => listeners.delete(fn); }
+export function setVoicePreparing(value) { voiceStatus.preparing = value; notify(); }
 export const voiceEnabled = () => state.profile?.settings?.voiceCoach === true;
 export const selectedVoice = () => VOICES.find((v) => v.id === state.profile?.settings?.coachVoice) || VOICES[0];
 
@@ -46,7 +48,7 @@ export function cancelTeaching() { if (priority === 0) cancelVoice(); }
 export function videoVoice(value) { mutedByVideo = value; if (value) cancelVoice(); }
 export function setVoiceEnabled(value) {
   updateProfile((p) => { p.settings ||= {}; p.settings.voiceCoach = value; }, { silent: true });
-  if (!value) cancelVoice();
+  if (!value) { voiceStatus.preparing = false; cancelVoice(); }
   else { mutedByVideo = false; unlockVoice(); }
   notify();
 }

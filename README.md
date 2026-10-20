@@ -231,7 +231,7 @@ Open **Radio** in the guided workout's top bar. FIP Electro is the default; choo
 
 ## Voice coach
 
-Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**. Choose **Download local voice** once, then turn coaching on. The download runs on the computer hosting the app. Your PC, tablet and phone all play the same voice without running an AI model in the browser.
+Open **Coach** beside Radio in a guided workout, or **Settings → Voice coach**. Choose **Download local voice** once, then turn coaching on. The Coach popup shows **Preparing coach audio** until the opening speech is ready. First use can take a few minutes while your computer creates and saves spoken instructions; you can keep exercising while it prepares. Saved audio is quicker next time. The download runs on the computer hosting the app. Your PC, tablet and phone all play the same voice without running an AI model in the browser.
 
 Choose Heart or Bella (American women), Michael or Puck (American men), or Emma (British woman), then press **Preview**. Your voice, pace and coaching choice are saved. **Cues and form tips** adds short instructions during rests; **Essential cues only** keeps exercise, dose, set and timer announcements. The coach uses today's level, personal weights and units, including an easier dose selected for today. You still count your own reps.
 
