@@ -313,7 +313,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .today-layout { grid-template-areas: "head detail" "list detail"; grid-template-rows: auto 1fr; row-gap: 16px; }
 .day-head { grid-area: head; display: grid; gap: 16px; min-width: 0; }
 .day-list { grid-area: list; display: grid; gap: 16px; min-width: 0; align-content: start; }
-.today-layout > .detail-col { grid-area: detail; }
+.today-layout > .detail-col { grid-area: detail; position: sticky; top: calc(16px + var(--skinbar-space) + var(--today-nav-height, 0px)); max-height: calc(100dvh - 16px - var(--skinbar-space) - var(--today-nav-height, 0px) - var(--today-bottom-space, 16px)); overflow-y: auto; scrollbar-gutter: stable; }
 @media (max-width: 1180px) { .today-layout { grid-template-areas: "head" "list"; } }
 .inline-panel { list-style: none; margin: 6px 0 12px; }
 @media (max-width: 1180px) {
@@ -537,9 +537,9 @@ details[data-addon]:not([open]) .addon-chevron { transform: rotate(-90deg); }
 .guided-top .bar i { display: block; height: 100%; background: var(--accent); transition: width 0.3s; }
 .guided-main { overflow: auto; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr); }
 .guided-main > * { min-height: 0; min-width: 0; }
-.guided-main > :last-child { overflow: auto; }
+.guided-main > :last-child { overflow: auto; display: flex; flex-direction: column; }
 .guided-main .stage { aspect-ratio: auto; min-height: 0; height: 100%; border-bottom: 0; border-right: 1px solid var(--line); }
-.guided-side { padding: 16px; display: grid; gap: 10px; align-content: start; overflow: auto; }
+.guided-side { flex: none; padding: 16px; display: grid; gap: 10px; align-content: start; overflow: auto; }
 .guided-bottom { display: flex; gap: 10px; justify-content: space-between; align-items: center; padding: 12px 18px max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--surface); }
 .workout-radio { position: relative; display: flex; align-items: center; gap: 2px; flex: none; }
 .radio-host { display: flex; align-items: center; gap: 6px; }
@@ -552,7 +552,7 @@ details[data-addon]:not([open]) .addon-chevron { transform: rotate(-90deg); }
 .coach-voices .choice { min-width: 0; padding: 12px; }
 .coach-voices .choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .coach-status, .coach-note { font-size: 0.85rem; line-height: 1.5; }
-.guided-voice-status { margin: 0; padding: 0 20px; font-size: 0.82rem; }
+.guided-voice-status { flex: none; margin: auto 0 0; padding: 0 16px 12px; min-height: 3.5em; font-size: 0.82rem; }
 .guided-voice-status:not(:empty) { padding-top: 12px; }
 .radio-toggle { gap: 6px; }
 .radio-toggle .icon { width: 18px; height: 18px; }
@@ -1078,3 +1078,7 @@ td.cur, th.cur { background: var(--accent-soft); }
 .guided-progress-steps > button:is(:hover, :focus-visible) { background: var(--accent-soft); outline: 2px solid var(--accent); outline-offset: -2px; }
 .guided-progress-preview { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: max-content; max-width: min(400px, 80vw); padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-pop); font-size: 0.85rem; pointer-events: none; }
 .guided-progress-steps > button:is(:hover, :focus-visible) > .guided-progress-preview { display: block; }
+
+.guided-progress-steps > button[data-completion="done"] { background: var(--accent-soft); }
+.guided-progress-steps > button[data-completion="skipped"] { border-bottom: 2px dashed var(--muted); }
+.guided-progress-steps > button[aria-current="step"] { box-shadow: inset 0 -3px var(--accent); }

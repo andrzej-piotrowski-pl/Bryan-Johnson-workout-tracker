@@ -431,9 +431,11 @@ export function render(el, params) {
     syncDeskPause();
     const r = el.querySelector("[data-ring] .ring-wrap");
     if (r) r.classList.add("intro");
+    updatePanelTop();
   }
 
   function onLook() {
+    updatePanelTop();
     const mode = detailMode();
     if (mode === panelMode) return;
     panelMode = mode;
@@ -469,6 +471,7 @@ export function render(el, params) {
     selected = { scope, id };
     el.querySelectorAll(".item").forEach((li) => li.setAttribute("aria-selected", String(li.dataset.scope === scope && li.dataset.id === id)));
     showPanel(selected);
+    if (detailMode() !== "inline") el.querySelector(".detail-col").scrollTop = 0;
   }
 
   function panelCtx(found) {
@@ -832,27 +835,25 @@ export function render(el, params) {
   narrowView.addEventListener("change", onLook);
   draw();
 
-  // The detail panel is sticky and can be taller than the window: let it scroll first, then the page.
-  const onWheel = (e) => {
-    const col = el.querySelector(".detail-col");
-    if (!col || e.ctrlKey || e.deltaY === 0 || !col.offsetParent || col.getBoundingClientRect().top > window.innerHeight) return;
-    if (e.target.closest && e.target.closest(".modal, .sheet, .guided, textarea, select")) return;
-    const max = col.scrollHeight - col.clientHeight;
-    if (max <= 1) return;
-    const down = e.deltaY > 0;
-    if (down ? col.scrollTop < max - 1 : col.scrollTop > 0 && window.scrollY <= 0) {
-      e.preventDefault();
-      col.scrollTop += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
-    }
-  };
-  window.addEventListener("wheel", onWheel, { passive: false });
+  const navigation = document.querySelector(".sidebar");
+  function updatePanelTop() {
+    const nav = document.querySelector(".sidebar");
+    const height = nav && nav.offsetWidth > window.innerWidth / 2 ? nav.offsetHeight : 0;
+    el.style.setProperty("--today-nav-height", `${height}px`);
+    el.style.setProperty("--today-bottom-space", `${Math.max(16, parseFloat(getComputedStyle(el.closest(".main") || el).paddingBottom) || 0)}px`);
+  }
+  const navigationSize = new ResizeObserver(updatePanelTop);
+  if (navigation) navigationSize.observe(navigation);
+  updatePanelTop();
   return {
     destroy() {
       unsub();
       unsubDesk();
       window.removeEventListener("hp:look", onLook);
       narrowView.removeEventListener("change", onLook);
-      window.removeEventListener("wheel", onWheel);
+      navigationSize.disconnect();
+      el.style.removeProperty("--today-nav-height");
+      el.style.removeProperty("--today-bottom-space");
       if (panel) panel.dispose();
       delete document.documentElement.dataset.venue;
     },

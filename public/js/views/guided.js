@@ -40,6 +40,7 @@ function buildSteps(date) {
 
 function stepDone(date, step) {
   const log = getItemLog(date, step.scope, step.item.id);
+  if (log?.skipped) return false;
   return step.setIndex == null ? !!log?.done : !!log?.done || !!log?.completedSets?.[step.setIndex];
 }
 
@@ -62,7 +63,7 @@ export function startGuided(date, onExit) {
       <div class="bar guided-progress"><i></i><div class="guided-progress-steps" role="group" aria-label="Jump to workout step">${stepLabels.map((label, index) => `<button type="button" data-step-index="${index}" aria-label="${esc(label)}"><span class="guided-progress-preview">${esc(label)}</span></button>`).join("")}</div></div>
       <div class="radio-host"></div>
     </div>
-    <div class="guided-main"><div class="guided-demo"><div class="stage-host"></div><div data-routine></div></div><div><p class="guided-voice-status muted" role="status" aria-live="polite"></p><div class="guided-side"></div></div></div>
+    <div class="guided-main"><div class="guided-demo"><div class="stage-host"></div><div data-routine></div></div><div><div class="guided-side"></div><p class="guided-voice-status muted" role="status" aria-live="polite"></p></div></div>
     <div class="guided-bottom">
       <button type="button" class="btn" data-g="prev">${icon("chevronL")} Back</button>
       <button type="button" class="btn ghost" data-g="skip">Skip ${icon("skip", "sm")}</button>
@@ -104,7 +105,7 @@ export function startGuided(date, onExit) {
       <p>${done} of ${steps.length} steps done. You can record how it felt in the day's notes.</p>
       <div class="btn-row"><button type="button" class="btn primary" data-g="close">${icon("check")} Back to the day</button></div>
       <div data-level-check-host></div>`;
-    bar.style.width = "100%";
+    bar.style.width = `${done / steps.length * 100}%`;
     count.textContent = `${steps.length}/${steps.length}`;
     wrap.querySelector(".guided-bottom").hidden = true;
     const lcHost = side.querySelector("[data-level-check-host]");
@@ -121,10 +122,14 @@ export function startGuided(date, onExit) {
     const demoId = routineSteps(s.item, s.level, getItemLog(date, s.scope, s.item.id) || {})[0]?.ex || s.item.ex;
     const demo = EXERCISES[demoId];
     stage.load(demoId);
-    bar.style.width = `${(i / steps.length) * 100}%`;
+    bar.style.width = `${steps.filter((step) => stepDone(date, step)).length / steps.length * 100}%`;
     count.textContent = `${i + 1}/${steps.length}`;
     count.setAttribute("aria-label", `Step ${i + 1} of ${steps.length}. Choose workout step`);
-    wrap.querySelectorAll("[data-step-index]").forEach((button) => button.setAttribute("aria-current", Number(button.dataset.stepIndex) === i ? "step" : "false"));
+    wrap.querySelectorAll("[data-step-index]").forEach((button) => {
+      const index = Number(button.dataset.stepIndex);
+      button.setAttribute("aria-current", index === i ? "step" : "false");
+      button.dataset.completion = getItemLog(date, steps[index].scope, steps[index].item.id)?.skipped ? "skipped" : stepDone(date, steps[index]) ? "done" : "";
+    });
     const itemLog = getItemLog(date, s.scope, s.item.id);
     wrap.querySelector("[data-routine]").innerHTML = ex.routine ? routineHtml(s.item, s.level, itemLog || {}, { compact: true }) : "";
     side.innerHTML = `
@@ -137,7 +142,7 @@ export function startGuided(date, onExit) {
       <div class="logger-host${s.scope !== "main" ? " addon-scope" : ""}"></div>
       <details><summary style="cursor:pointer;font-weight:600">How to do it</summary><div style="margin-top:10px">${exerciseInfoHtml(ex)}</div></details>
       <details><summary style="cursor:pointer;font-weight:600">Videos</summary><div style="margin-top:10px" data-g="videos"></div></details>`;
-    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, onDraw: (log) => { const host = wrap.querySelector("[data-routine]"); if (host) host.innerHTML = ex.routine ? routineHtml(s.item, s.level, log, { compact: true }) : ""; voice.changed(); } });
+    renderLogger(side.querySelector(".logger-host"), { date, item: s.item, ex, level: s.level, scope: s.scope, setIndex: s.setIndex, manualCompletion: true, onDraw: (log) => { const host = wrap.querySelector("[data-routine]"); if (host) host.innerHTML = ex.routine ? routineHtml(s.item, s.level, log, { compact: true }) : ""; voice.changed(); } });
     videoCtrl = renderVideos(side.querySelector('[data-g="videos"]'), videosFor(demo), {
       groups: videoGroupsFor(demo),
       activeGroup: stage.clipIndex,
@@ -212,12 +217,15 @@ export function startGuided(date, onExit) {
       i = Math.max(0, i - 1);
       show("back");
     } else if (a === "skip") {
+      const s = steps[i];
+      editItem(date, s.scope, s.item, (l) => { l.skipped = true; l.done = false; });
       i += 1;
       show();
     } else if (a === "next") {
       if (i >= steps.length) return show();
       const s = steps[i];
       editItem(date, s.scope, s.item, (l) => {
+        l.skipped = false;
         if (s.setIndex == null) l.done = true;
         else {
           l.completedSets = l.completedSets || [];

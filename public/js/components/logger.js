@@ -245,7 +245,7 @@ export function renderLogger(container, ctx) {
       container.innerHTML = `<p class="muted">Choose movements from this list for your intervals, then record them in the interval block.</p>`;
       return;
     }
-    const doneBtn = `<button type="button" class="btn ${done ? "primary" : ""}" data-l="done">${icon("check")} ${done ? "Done" : "Mark done"}</button>`;
+    const doneBtn = ctx.manualCompletion ? "" : `<button type="button" class="btn ${done ? "primary" : ""}" data-l="done">${icon("check")} ${done ? "Done" : "Mark done"}</button>`;
 
     if (type === "reps" || type === "load" || type === "hold" || type === "carry") {
       const cols = [];
@@ -344,7 +344,7 @@ export function renderLogger(container, ctx) {
       <div data-easy-options hidden>
         ${hasEasier ? `<button type="button" class="choice" data-easy-choice="version"><b>Use the easier version</b><small>${esc(personalize(ex.easier, p))}</small></button>` : ""}
         ${prevRx ? `<button type="button" class="choice" data-easy-choice="dose"><b>Use the easier dose</b><small>${esc(prevName)}: ${esc(prevRx)}</small></button>` : ""}
-        <button type="button" class="choice" data-easy-choice="skip"><b>Skip this exercise today</b><small>Today's dose only; the rest of the session is unchanged.</small></button>
+        ${ctx.manualCompletion ? "" : `<button type="button" class="choice" data-easy-choice="skip"><b>Skip this exercise today</b><small>Today's dose only; the rest of the session is unchanged.</small></button>`}
         <p class="muted" data-easy-advice hidden>Sharp pain, tingling, numbness or a joint that gives way: stop this movement and get it checked before training it again.</p>
       </div>
       <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn" data-easy-cancel>Cancel</button></div>`;
@@ -380,7 +380,11 @@ export function renderLogger(container, ctx) {
   }
 
   const save = (fn) => {
-    editItem(date, scope, item, fn);
+    editItem(date, scope, item, (l) => {
+      const { done, skipped } = l;
+      fn(l);
+      if (ctx.manualCompletion) Object.assign(l, { done, skipped });
+    });
     if (ctx.onChange) ctx.onChange();
   };
 

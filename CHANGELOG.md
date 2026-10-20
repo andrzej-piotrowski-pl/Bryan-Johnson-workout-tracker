@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.35.2] - 2026-10-20
+
+### Fixed
+- Guided navigation leaves completion unchanged; the progress bar reflects completed steps only.
+- Use the bottom Skip and Done buttons to record guided exercise status; logging values alone no longer marks exercises done.
+- Today’s exercise panel follows the list, scrolls independently and returns to the animation when you select another exercise.
+- Coach-audio loading messages appear below the guided controls without moving them.
+
 ## [1.35.1] - 2026-10-20
 
 ### Fixed
