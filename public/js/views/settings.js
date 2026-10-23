@@ -8,7 +8,7 @@ import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
 import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone, addonSchedule, ADDON_EVERY_MAX } from "../plan.js";
 import { levelPickerHtml } from "../components/level-picker.js";
 import { mountLevelCheck } from "../components/level-check.js";
-import { esc, todayIso } from "../util.js";
+import { addDays, daysBetween, esc, fmtShort, todayIso, weekdayKey } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, openDialog, seg, switchHtml, toast } from "../components/ui.js";
 import { applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
@@ -68,15 +68,33 @@ export function render(el) {
     });
   }
 
+  function nextAddonDate(a) {
+    const sched = addonSchedule(a);
+    if (!sched || sched.mode !== "every") return null;
+    let since = sched.since || p().startDate;
+    if (!since) return null;
+    if (!sched.sunday && weekdayKey(since) === "sun") since = addDays(since, 1);
+    const today = todayIso();
+    const start = today > since ? today : since;
+    for (let i = 0; i < 15; i++) {
+      const date = addDays(start, i);
+      if (!sched.sunday && weekdayKey(date) === "sun") continue;
+      const offset = daysBetween(since, date);
+      if (offset >= 0 && offset % sched.every === 0) return date;
+    }
+    return null;
+  }
+
   function addonCardHtml(a, pr) {
     const sched = addonSchedule(a);
     const mode = sched ? sched.mode : "daily";
     const every = sched ? sched.every : DEFAULT_ADDON_EVERY;
     const sunday = sched ? sched.sunday : true;
+    const next = nextAddonDate(a);
     const name = esc(a.name);
     return `<div class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${name}</b><small class="muted">${esc(a.description)}</small></span>${switchHtml("addon:" + a.id, pr.addons && pr.addons[a.id], a.name)}
       <div class="addon-schedule">
-        <label class="addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select></label>
+        <label class="addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select>${next ? `<small class="addon-next">${next === todayIso() ? "Due today" : `Next ${fmtShort(next)}`}</small>` : ""}</label>
         <label class="addon-sunday">${switchHtml("addon-sunday:" + a.id, sunday, "Include Sunday", "sm")}<span>Include Sunday</span></label>
       </div>
     </div>`;
@@ -129,7 +147,7 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Add-ons</h3>
-        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. A repeat counts from the last day you complete or skip it, and the add-on stays available until you do.</p>
+        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. A repeat counts from the day you set it.</p>
         ${ADDONS.map((a) => addonCardHtml(a, pr)).join("")}
       </section>
 
@@ -220,17 +238,22 @@ export function render(el) {
       fillAnimThumbs();
     } else if (t.matches("[data-addon-repeat]")) {
       const v = t.value;
-      editAddonSchedule(t.dataset.addonRepeat, (sched) => {
+      const id = t.dataset.addonRepeat;
+      editAddonSchedule(id, (sched) => {
         sched.mode = v === "daily" ? "daily" : "every";
         if (v !== "daily") {
           sched.every = Number(v);
           sched.since = todayIso();
         }
       });
+      draw();
+      el.querySelector(`[data-addon-repeat="${id}"]`)?.focus();
     } else if (t.dataset.switch) {
       const name = t.dataset.switch;
       if (name.startsWith("addon-sunday:")) {
         editAddonSchedule(name.slice("addon-sunday:".length), (sched) => (sched.sunday = t.checked));
+        draw();
+        el.querySelector(`[data-switch="${name}"]`)?.focus();
         return;
       }
       if (name === "deskNotify" && t.checked && typeof Notification !== "undefined") {

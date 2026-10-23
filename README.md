@@ -354,7 +354,7 @@ For developers: [the animation system and adding styles](docs/ANIMATIONS.md#anim
 
 Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
 
-Each add-on has its own schedule in **Settings → Add-ons**: run it daily or every 1–7 days, and choose whether it appears on Sunday. An every-N-days repeat counts from the last day you complete or skip it, and the add-on stays available until you do. Posture still switches to its strength block on Wednesday and Saturday.
+Each add-on has its own schedule in **Settings → Add-ons**: run it daily or every 1–7 days, and choose whether it appears on Sunday. A repeat counts from the day you set it. Posture still switches to its strength block on Wednesday and Saturday.
 
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
 

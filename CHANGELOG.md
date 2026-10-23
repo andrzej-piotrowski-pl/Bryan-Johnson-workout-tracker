@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.36.3] - 2026-10-23
+
+### Fixed
+- Add-on repeats appear on their exact cycle days again; every 3 days no longer shows the add-on daily.
+
+### Changed
+- Each add-on repeat shows its next due date in Settings.
+
 ## [1.36.2] - 2026-10-23
 
 ### Fixed

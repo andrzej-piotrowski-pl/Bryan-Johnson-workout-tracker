@@ -182,67 +182,36 @@ export function addonSchedule(addon) {
   };
 }
 
-// The variant an add-on uses on a date, before the repeat setting decides
-// whether to show it. Posture, for example, switches to its strength block on
-// Wednesday and Saturday.
+// The variant an add-on uses on a date. Posture, for example, switches to its
+// strength block on Wednesday and Saturday.
 function addonEntryFor(addon, date) {
   const v = addon.schedule[weekdayKey(date)];
   const variantKey = v && v !== "optional" && addon.variants[v] ? v : Object.keys(addon.variants)[0];
   return { addon, variantKey, variant: addon.variants[variantKey], optional: v === "optional" };
 }
 
-function addonHasLog(addon, log) {
-  if (!log) return false;
-  if (addon.id === "desk") return !!((Number(log.desk?.move) || 0) + (Number(log.desk?.squats) || 0));
-  return !!log.addons?.[addon.id];
-}
-
-function addonCompletedOn(addon, date, log) {
-  if (!log) return false;
-  if (addon.id === "desk") return addonHasLog(addon, log);
-  const entryLog = log.addons?.[addon.id];
-  if (!entryLog) return false;
-  if (entryLog.skipped) return true;
-  const entry = addonEntryFor(addon, date);
-  const lvl = logLevel(log) ?? levelIndex(state.profile);
-  const items = entry.variant.items.filter((it) => visible(it, lvl)).filter(countable);
-  return items.length > 0 && items.every((it) => itemLog(log, addon.id, it.id)?.done);
-}
-
-// The last day this add-on was completed or skipped, on or before the date
-// being shown. That is the anchor for an every-N-days repeat.
-function lastAddonDone(addon, date) {
-  let last = null;
-  for (const d of Object.keys(state.days)) {
-    if (d > date) continue;
-    if (addonCompletedOn(addon, d, state.days[d]) && (!last || d > last)) last = d;
-  }
-  return last;
-}
-
-function addonRunsOn(addon, date, log) {
+function addonRunsOn(addon, date) {
   const schedule = addonSchedule(addon);
   if (!schedule) return true;
   if (weekdayKey(date) === "sun" && !schedule.sunday) return false;
   if (schedule.mode === "daily") return true;
-  // Keep a day's card while it has a partial log, even after the repeat is done.
-  if (addonHasLog(addon, log)) return true;
-  const since = schedule.since || (state.profile && state.profile.startDate);
-  const last = lastAddonDone(addon, date);
-  if (!last) return !since || daysBetween(since, date) >= 0;
-  // Once due, the add-on stays available until it is completed or skipped.
-  return daysBetween(last, date) >= schedule.every;
+  let since = schedule.since || (state.profile && state.profile.startDate);
+  if (!since) return true;
+  // Start on the first allowed day, so a weekly run set on a Sunday with Sunday
+  // off still lands on Monday rather than never.
+  if (!schedule.sunday && weekdayKey(since) === "sun") since = addDays(since, 1);
+  const offset = daysBetween(since, date);
+  return offset >= 0 && offset % schedule.every === 0;
 }
 
 export function addonsForDate(date) {
   const p = state.profile || {};
   const enabled = p.addons || {};
   const wk = weekdayKey(date);
-  const log = state.days[date];
   return ADDONS.filter((a) => enabled[a.id])
     .map((a) => {
       const custom = addonSchedule(a);
-      if (custom && !addonRunsOn(a, date, log)) return null;
+      if (custom && !addonRunsOn(a, date)) return null;
       if (!custom && !a.schedule[wk]) return null;
       return addonEntryFor(a, date);
     })
