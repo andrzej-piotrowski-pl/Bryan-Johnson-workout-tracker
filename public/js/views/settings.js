@@ -68,14 +68,16 @@ export function render(el) {
       <section class="card card-pad" style="display:grid;gap:16px">
         <h3>Your details</h3>
         <p class="muted" style="font-size:0.86rem">Your details set your suggested starting weights and heart-rate zones: max ${hrMax(pr)} bpm, Zone 2 ${bpmRange(pr, 60, 70)}.</p>
-        <div class="grid-form">
-          <label class="field"><span>Name</span><input class="input" data-f="name" value="${esc(pr.name || "")}"></label>
+        <div class="profile-row">
+          <label class="field profile-name"><span>Name</span><input class="input" data-f="name" value="${esc(pr.name || "")}"></label>
           <label class="field"><span>Age</span><input class="input" data-f="age" inputmode="numeric" value="${esc(pr.age)}"></label>
           <label class="field"><span>Weight (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="weight" inputmode="decimal" value="${esc(w(pr.weightKg))}"></label>
           <label class="field"><span>Height (${imperial() ? "in" : "cm"})</span><input class="input" data-f="height" inputmode="decimal" value="${esc(hgt(pr.heightCm))}"></label>
         </div>
-        <div class="field"><span>Sex (scales starting weights)</span>${seg("sex", SEXES, pr.sex)}</div>
-        <div class="field"><span>Units</span>${seg("units", [{ id: "metric", name: "Metric (kg, cm)" }, { id: "imperial", name: "Imperial (lb, in)" }], pr.units, "accent")}</div>
+        <div class="profile-pair">
+          <div class="field"><span>Sex (scales starting weights)</span>${seg("sex", SEXES, pr.sex)}</div>
+          <div class="field"><span>Units</span>${seg("units", [{ id: "metric", name: "Metric (kg, cm)" }, { id: "imperial", name: "Imperial (lb, in)" }], pr.units, "accent")}</div>
+        </div>
         <div class="grid-form">
           <label class="field"><span>Heaviest dumbbell (${imperial() ? "lb" : "kg"})</span><input class="input" data-f="maxdb" inputmode="decimal" value="${esc(w(pr.maxDumbbellKg))}"></label>
           <label class="field"><span>Measured max heart rate</span><input class="input" data-f="hrmax" inputmode="numeric" value="${esc(pr.hrMax ?? "")}" placeholder="estimated from age"></label>

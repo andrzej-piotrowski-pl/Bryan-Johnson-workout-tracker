@@ -258,6 +258,14 @@ textarea.input { min-height: 90px; resize: vertical; line-height: 1.5; }
 .input.num { font-family: var(--font-mono); text-align: center; padding: 6px 4px; min-height: 36px; }
 .input::placeholder { color: var(--muted); opacity: 0.75; }
 .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px; }
+.profile-row { display: grid; grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr)); gap: 14px; }
+.profile-row .profile-name .input { font-size: 1.05rem; font-weight: 600; }
+.profile-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+@media (max-width: 640px) {
+  .profile-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .profile-row .profile-name { grid-column: 1 / -1; }
+  .profile-pair { grid-template-columns: minmax(0, 1fr); }
+}
 
 .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
 .seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 9px; font-weight: 600; font-size: 0.86rem; color: var(--ink-2); cursor: pointer; }

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.35.6] - 2026-10-23
+
+### Changed
+- Settings shows name, age, weight and height on one line, with the name field largest, and sex beside units.
+
 ## [1.35.5] - 2026-10-20
 
 ### Changed
