@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.36.4] - 2026-10-23
+
+### Fixed
+- The Sunday toggle no longer shifts the repeat cycle; it only hides the add-on on Sundays.
+
+### Changed
+- Removed the redundant "Every 1 day" repeat option; Daily covers it.
+
 ## [1.36.3] - 2026-10-23
 
 ### Fixed

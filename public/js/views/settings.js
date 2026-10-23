@@ -5,10 +5,10 @@ import { ADDONS } from "../data/addons/index.js";
 import { CATEGORIES, EXERCISES } from "../data/exercises.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
 import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
-import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone, addonSchedule, ADDON_EVERY_MAX } from "../plan.js";
+import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone, addonRunsOn, addonSchedule, ADDON_EVERY_MAX } from "../plan.js";
 import { levelPickerHtml } from "../components/level-picker.js";
 import { mountLevelCheck } from "../components/level-check.js";
-import { addDays, daysBetween, esc, fmtShort, todayIso, weekdayKey } from "../util.js";
+import { addDays, esc, fmtShort, todayIso } from "../util.js";
 import { icon } from "../components/icons.js";
 import { confirmDialog, openDialog, seg, switchHtml, toast } from "../components/ui.js";
 import { applyLook, currentSkin, detailMode, skinById, skinPickerHtml } from "../themes.js";
@@ -71,16 +71,13 @@ export function render(el) {
   function nextAddonDate(a) {
     const sched = addonSchedule(a);
     if (!sched || sched.mode !== "every") return null;
-    let since = sched.since || p().startDate;
+    const since = sched.since || p().startDate;
     if (!since) return null;
-    if (!sched.sunday && weekdayKey(since) === "sun") since = addDays(since, 1);
     const today = todayIso();
     const start = today > since ? today : since;
     for (let i = 0; i < 15; i++) {
       const date = addDays(start, i);
-      if (!sched.sunday && weekdayKey(date) === "sun") continue;
-      const offset = daysBetween(since, date);
-      if (offset >= 0 && offset % sched.every === 0) return date;
+      if (addonRunsOn(a, date)) return date;
     }
     return null;
   }
@@ -94,7 +91,7 @@ export function render(el) {
     const name = esc(a.name);
     return `<div class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${name}</b><small class="muted">${esc(a.description)}</small></span>${switchHtml("addon:" + a.id, pr.addons && pr.addons[a.id], a.name)}
       <div class="addon-schedule">
-        <label class="addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select>${next ? `<small class="addon-next">${next === todayIso() ? "Due today" : `Next ${fmtShort(next)}`}</small>` : ""}</label>
+        <label class="addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX - 1 }, (_, i) => i + 2).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} days</option>`).join("")}</select>${next ? `<small class="addon-next">${next === todayIso() ? "Due today" : `Next ${fmtShort(next)}`}</small>` : ""}</label>
         <label class="addon-sunday">${switchHtml("addon-sunday:" + a.id, sunday, "Include Sunday", "sm")}<span>Include Sunday</span></label>
       </div>
     </div>`;
@@ -147,7 +144,7 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Add-ons</h3>
-        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. A repeat counts from the day you set it.</p>
+        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats (daily or every 2–7 days), and decide whether it appears on Sunday. A repeat counts from the day you set it; Sunday only changes whether the add-on appears that day.</p>
         ${ADDONS.map((a) => addonCardHtml(a, pr)).join("")}
       </section>
 

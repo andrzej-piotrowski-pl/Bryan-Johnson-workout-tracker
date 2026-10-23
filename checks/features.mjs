@@ -4,7 +4,7 @@ import { EXERCISES } from "../public/js/data/exercises.js";
 import { ADDONS } from "../public/js/data/addons/index.js";
 import { defaultProfile } from "../public/js/personalize.js";
 import { state } from "../public/js/store.js";
-import { addonsForDate, currentReadiness } from "../public/js/plan.js";
+import { addonsForDate, addonSchedule, currentReadiness } from "../public/js/plan.js";
 import { nextTimeRecommendation } from "../public/js/components/logger.js";
 import { levelCheckHtml } from "../public/js/components/level-check.js";
 import { weekTargets } from "../public/js/week-targets.js";
@@ -194,6 +194,11 @@ assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "The a
 assert(!addonsForDate("2026-10-27").some((a) => a.addon.id === "posture"), "Then the next day is free");
 assert(!addonsForDate("2026-10-28").some((a) => a.addon.id === "posture"), "And the day after is free");
 assert(addonsForDate("2026-10-29").some((a) => a.addon.id === "posture"), "The next repeat is 3 days later");
+assert(!addonsForDate("2026-11-01").some((a) => a.addon.id === "posture"), "Sunday is off");
+assert(!addonsForDate("2026-11-02").some((a) => a.addon.id === "posture"), "Sunday does not move the cycle to Monday");
+assert(addonsForDate("2026-11-04").some((a) => a.addon.id === "posture"), "The cycle stays on calendar days");
+state.profile.addonSchedules.posture = { mode: "every", every: 1, sunday: true, since: "2026-10-23" };
+assert.equal(addonSchedule(ADDONS.find((a) => a.id === "posture")).mode, "daily", "Every 1 day is treated as daily");
 state.profile.addonSchedules.posture = { mode: "daily", every: 1, sunday: false, since: "2026-10-17" };
 assert(!addonsForDate("2026-10-25").some((a) => a.addon.id === "posture"), "Sunday can be turned off");
 assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "The add-on returns on Monday");
@@ -204,9 +209,8 @@ assert.equal(sunday?.variantKey, "daily", "Sunday uses the add-on's first varian
 assert.equal(addonsForDate("2026-10-21").find((a) => a.addon.id === "posture")?.variantKey, "strength", "Wednesday keeps the posture strength block");
 state.profile.addonSchedules.posture = { mode: "every", every: 7, sunday: false, since: "2026-10-18" };
 assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "Sunday stays off");
-assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "A weekly run set on Sunday starts Monday");
-assert(!addonsForDate("2026-10-20").some((a) => a.addon.id === "posture"), "It does not show daily");
-assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "The next weekly run is 7 days later");
+assert(!addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "Sunday does not shift the weekly cycle to Monday");
+assert(!addonsForDate("2026-10-25").some((a) => a.addon.id === "posture"), "The next Sunday is off too");
 
 // ---------- desk streak, snooze and workout pause ----------
 state.days = {

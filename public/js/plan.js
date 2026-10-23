@@ -174,9 +174,11 @@ export const ADDON_EVERY_MAX = 7;
 export function addonSchedule(addon) {
   const saved = state.profile && state.profile.addonSchedules && state.profile.addonSchedules[addon.id];
   if (!saved) return null;
+  const rawEvery = Math.round(Number(saved.every));
+  const every = Math.min(ADDON_EVERY_MAX, Math.max(2, Number.isFinite(rawEvery) && rawEvery > 1 ? rawEvery : 2));
   return {
-    mode: saved.mode === "every" ? "every" : "daily",
-    every: Math.min(ADDON_EVERY_MAX, Math.max(1, Math.round(Number(saved.every) || 1))),
+    mode: saved.mode === "every" && Number.isFinite(rawEvery) && rawEvery > 1 ? "every" : "daily",
+    every,
     sunday: saved.sunday !== false,
     since: saved.since || null,
   };
@@ -190,16 +192,13 @@ function addonEntryFor(addon, date) {
   return { addon, variantKey, variant: addon.variants[variantKey], optional: v === "optional" };
 }
 
-function addonRunsOn(addon, date) {
+export function addonRunsOn(addon, date) {
   const schedule = addonSchedule(addon);
   if (!schedule) return true;
   if (weekdayKey(date) === "sun" && !schedule.sunday) return false;
   if (schedule.mode === "daily") return true;
-  let since = schedule.since || (state.profile && state.profile.startDate);
+  const since = schedule.since || (state.profile && state.profile.startDate);
   if (!since) return true;
-  // Start on the first allowed day, so a weekly run set on a Sunday with Sunday
-  // off still lands on Monday rather than never.
-  if (!schedule.sunday && weekdayKey(since) === "sun") since = addDays(since, 1);
   const offset = daysBetween(since, date);
   return offset >= 0 && offset % schedule.every === 0;
 }
