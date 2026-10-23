@@ -185,22 +185,48 @@ state.profile.addons.desk = false;
 assert(!addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks stays off until enabled");
 
 // Each add-on keeps its own repeat and Sunday settings.
-state.profile = { ...baseProfile(), addons: { posture: true }, addonSchedules: { posture: { mode: "daily", every: 2, sunday: false, since: "2026-10-17" } } };
+const posture = ADDONS.find((a) => a.id === "posture");
+const postureDone = (date) => ({
+  date,
+  addons: { posture: { items: Object.fromEntries(Object.values(posture.variants).flatMap((v) => v.items).map((it) => [it.id, { ex: it.ex, done: true }])) } },
+});
+
+state.profile = { ...baseProfile(), addons: { posture: true }, addonSchedules: { posture: { mode: "every", every: 2, sunday: true, since: "2026-10-17" } } };
+state.days = { "2026-10-17": postureDone("2026-10-17") };
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "posture"), "A completed add-on stays visible that day");
+assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "The day after a completion is free");
+assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "The add-on is due 2 days after completion");
+assert(addonsForDate("2026-10-20").some((a) => a.addon.id === "posture"), "An uncompleted add-on stays available");
+state.days["2026-10-19"] = postureDone("2026-10-19");
+assert(!addonsForDate("2026-10-20").some((a) => a.addon.id === "posture"), "Completing it starts the next 2-day count");
+assert(addonsForDate("2026-10-21").some((a) => a.addon.id === "posture"), "The next repeat is due 2 days later");
+state.days["2026-10-20"] = { date: "2026-10-20", addons: { posture: { skipped: true } } };
+assert(!addonsForDate("2026-10-21").some((a) => a.addon.id === "posture"), "A skip starts the next count too");
+assert(addonsForDate("2026-10-22").some((a) => a.addon.id === "posture"), "Due 2 days after a skip");
+state.days = {};
+state.profile.addonSchedules.posture = { mode: "daily", every: 2, sunday: false, since: "2026-10-17" };
 assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "Sunday can be turned off");
 assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "The add-on returns on Monday");
-state.profile.addonSchedules.posture = { mode: "every", every: 2, sunday: true, since: "2026-10-17" };
-assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "posture"), "The first day of a repeat counts");
-assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "The day between repeats is free");
-assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "The add-on returns every second day");
 state.profile.addonSchedules.posture = { mode: "daily", every: 2, sunday: true, since: "2026-10-17" };
 const sunday = addonsForDate("2026-10-18").find((a) => a.addon.id === "posture");
 assert.equal(sunday?.optional, true, "Sunday keeps its optional label when included");
 assert.equal(sunday?.variantKey, "daily", "Sunday uses the add-on's first variant");
 assert.equal(addonsForDate("2026-10-21").find((a) => a.addon.id === "posture")?.variantKey, "strength", "Wednesday keeps the posture strength block");
+
+// The repeat counts from the last completion, not the day the setting changed.
+state.profile = { ...baseProfile(), addons: { posture: true }, addonSchedules: { posture: { mode: "every", every: 5, sunday: true, since: "2026-10-23" } } };
+state.days = { "2026-10-20": postureDone("2026-10-20") };
+assert(!addonsForDate("2026-10-24").some((a) => a.addon.id === "posture"), "The repeat waits from the last completion");
+assert(addonsForDate("2026-10-25").some((a) => a.addon.id === "posture"), "Due 5 days after the last completion");
+assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "It stays available after the due day");
+state.days = {};
+state.profile.addonSchedules.posture = { mode: "every", every: 5, sunday: true, since: "2026-10-17" };
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "posture"), "The first day is due");
+assert(addonsForDate("2026-10-23").some((a) => a.addon.id === "posture"), "An uncompleted add-on does not disappear");
 state.profile.addonSchedules.posture = { mode: "every", every: 7, sunday: false, since: "2026-10-18" };
-assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "A weekly repeat set on Sunday starts Monday");
+assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "A new weekly repeat is due on Monday");
 assert(!addonsForDate("2026-10-25").some((a) => a.addon.id === "posture"), "Sunday stays off");
-assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "The next weekly repeat lands on Monday");
+assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "An uncompleted weekly add-on stays available");
 
 // ---------- desk streak, snooze and workout pause ----------
 state.days = {

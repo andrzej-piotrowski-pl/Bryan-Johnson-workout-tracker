@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.36.2] - 2026-10-23
+
+### Fixed
+- Add-on repeats now count from the last completed or skipped day and stay available until done, instead of appearing only on exact cycle days.
+
 ## [1.36.1] - 2026-10-23
 
 ### Changed

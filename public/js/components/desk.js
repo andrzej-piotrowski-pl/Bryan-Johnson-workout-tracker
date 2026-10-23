@@ -5,6 +5,7 @@
 // breaks you tap are written to the day log; nothing here counts as training.
 
 import { state } from "../store.js";
+import { addonsForDate } from "../plan.js";
 import { addDays, fmtSecs, todayIso } from "../util.js";
 import { toast } from "./ui.js";
 import { beep } from "./timer.js";
@@ -53,6 +54,19 @@ function startTicker() {
   ticker = setInterval(tick, 1000);
 }
 
+// The desk card can be set to repeat every few days. Stop the countdown when
+// today is not a desk day, so reminders do not keep running while the card is
+// hidden. Checked once a minute rather than every second.
+let scheduleChecked = 0;
+let scheduleOn = true;
+function deskScheduled() {
+  const now = Date.now();
+  if (now - scheduleChecked < 60000) return scheduleOn;
+  scheduleChecked = now;
+  scheduleOn = addonsForDate(todayIso()).some((a) => a.addon.id === "desk");
+  return scheduleOn;
+}
+
 // Optional system notification while the app tab is in the background. Off
 // until it is turned on in Settings.
 function notify(kind) {
@@ -71,6 +85,10 @@ function notify(kind) {
 
 function tick() {
   if (!desk.running || desk.pauses.size) return;
+  if (!deskScheduled()) {
+    stopDesk();
+    return;
+  }
   const now = Date.now();
   let changed = false;
   for (const [kind, key, wait] of [["move", "nextMoveAt", MOVE_MS], ["squats", "nextSquatAt", SQUAT_MS]]) {
@@ -109,6 +127,7 @@ export function deskState() {
 
 export function startDesk() {
   load();
+  scheduleChecked = 0;
   desk.running = true;
   desk.startedAt = Date.now();
   desk.nextMoveAt = Date.now() + MOVE_MS;

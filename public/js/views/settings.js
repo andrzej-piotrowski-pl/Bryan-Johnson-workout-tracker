@@ -129,7 +129,7 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Add-ons</h3>
-        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. Repeats count from the day you set them.</p>
+        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. A repeat counts from the last day you complete or skip it, and the add-on stays available until you do.</p>
         ${ADDONS.map((a) => addonCardHtml(a, pr)).join("")}
       </section>
 
