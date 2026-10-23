@@ -76,8 +76,8 @@ export function seg(name, options, value, cls = "") {
     .join("")}</div>`;
 }
 
-export function switchHtml(name, checked, label = "") {
-  return `<label class="switch"><input type="checkbox" data-switch="${esc(name)}" ${checked ? "checked" : ""} aria-label="${esc(label)}"><span></span></label>`;
+export function switchHtml(name, checked, label = "", cls = "") {
+  return `<label class="switch${cls ? ` ${esc(cls)}` : ""}"><input type="checkbox" data-switch="${esc(name)}" ${checked ? "checked" : ""} aria-label="${esc(label)}"><span></span></label>`;
 }
 
 export function ring(done, total, size = 64) {

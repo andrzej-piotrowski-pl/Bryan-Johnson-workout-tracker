@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.36.1] - 2026-10-23
+
+### Changed
+- Add-on repeat and Sunday controls sit on one compact line in Settings.
+
 ## [1.36.0] - 2026-10-23
 
 ### Added

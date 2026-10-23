@@ -76,8 +76,8 @@ export function render(el) {
     const name = esc(a.name);
     return `<div class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${name}</b><small class="muted">${esc(a.description)}</small></span>${switchHtml("addon:" + a.id, pr.addons && pr.addons[a.id], a.name)}
       <div class="addon-schedule">
-        <label class="field addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select></label>
-        <label class="addon-sunday">${switchHtml("addon-sunday:" + a.id, sunday, "Include Sunday")}<span>Include Sunday</span></label>
+        <label class="addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select></label>
+        <label class="addon-sunday">${switchHtml("addon-sunday:" + a.id, sunday, "Include Sunday", "sm")}<span>Include Sunday</span></label>
       </div>
     </div>`;
   }
