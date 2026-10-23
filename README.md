@@ -354,6 +354,8 @@ For developers: [the animation system and adding styles](docs/ANIMATIONS.md#anim
 
 Add-ons are optional blocks shown after the main session, picked on first run (and in Settings). They are tracked exactly like the main session: tick-offs, sets, notes, plus their own daily metrics.
 
+Each add-on has its own schedule in **Settings → Add-ons**: run it daily or every 1–7 days, and choose whether it appears on Sunday. A repeat counts from the day you set it, and posture still switches to its strength block on Wednesday and Saturday.
+
 **Posture correction** (included): 8–10 minutes a day from Bryan's posture guide (string cue, wall slides, band pull-aparts, face pulls, external rotation, gentle neck work) with his two physical-therapist exercises to fatigue on Wednesday and Saturday, plus chin tucks and a doorway stretch marked as "classic, not Bryan's". It also tracks neck stiffness (0–10) and reminds you every two weeks to take a side photo and do a wall check.
 
 **Desk breaks** (separate add-on, off until you turn it on): two gentle countdowns from Bryan's posture habits — stand and move 2–3 minutes every 30 minutes, and 10 squats every 45 minutes. Its card sits after the other add-ons on **Today** and stays available before, during and after the workout. Tap **Done** to log a break, or **Not now, 5 min** to keep the log honest and be reminded again shortly. The countdowns pause while a workout is under way and resume afterwards. Today shows your daily count and streak; it is separate from the workout and adds no training volume. In **Settings → During workouts** you can turn on optional browser notifications so a due break reaches you while the app is in another window (off by default; the browser asks for permission).

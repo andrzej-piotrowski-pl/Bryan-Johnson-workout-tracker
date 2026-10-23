@@ -184,6 +184,24 @@ assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "hang"), "Dead han
 state.profile.addons.desk = false;
 assert(!addonsForDate("2026-10-17").some((a) => a.addon.id === "desk"), "Desk breaks stays off until enabled");
 
+// Each add-on keeps its own repeat and Sunday settings.
+state.profile = { ...baseProfile(), addons: { posture: true }, addonSchedules: { posture: { mode: "daily", every: 2, sunday: false, since: "2026-10-17" } } };
+assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "Sunday can be turned off");
+assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "The add-on returns on Monday");
+state.profile.addonSchedules.posture = { mode: "every", every: 2, sunday: true, since: "2026-10-17" };
+assert(addonsForDate("2026-10-17").some((a) => a.addon.id === "posture"), "The first day of a repeat counts");
+assert(!addonsForDate("2026-10-18").some((a) => a.addon.id === "posture"), "The day between repeats is free");
+assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "The add-on returns every second day");
+state.profile.addonSchedules.posture = { mode: "daily", every: 2, sunday: true, since: "2026-10-17" };
+const sunday = addonsForDate("2026-10-18").find((a) => a.addon.id === "posture");
+assert.equal(sunday?.optional, true, "Sunday keeps its optional label when included");
+assert.equal(sunday?.variantKey, "daily", "Sunday uses the add-on's first variant");
+assert.equal(addonsForDate("2026-10-21").find((a) => a.addon.id === "posture")?.variantKey, "strength", "Wednesday keeps the posture strength block");
+state.profile.addonSchedules.posture = { mode: "every", every: 7, sunday: false, since: "2026-10-18" };
+assert(addonsForDate("2026-10-19").some((a) => a.addon.id === "posture"), "A weekly repeat set on Sunday starts Monday");
+assert(!addonsForDate("2026-10-25").some((a) => a.addon.id === "posture"), "Sunday stays off");
+assert(addonsForDate("2026-10-26").some((a) => a.addon.id === "posture"), "The next weekly repeat lands on Monday");
+
 // ---------- desk streak, snooze and workout pause ----------
 state.days = {
   "2026-10-15": { date: "2026-10-15", desk: { move: 2, squats: 0 } },

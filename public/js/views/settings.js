@@ -5,7 +5,7 @@ import { ADDONS } from "../data/addons/index.js";
 import { CATEGORIES, EXERCISES } from "../data/exercises.js";
 import { exportAll, importAll, resetAll, state, updateProfile } from "../store.js";
 import { SEXES, bpmRange, hrMax, levelIndex } from "../personalize.js";
-import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone } from "../plan.js";
+import { blockItems, dayDef, levelFor, sessionKeyFor, sessionsDone, addonSchedule, ADDON_EVERY_MAX } from "../plan.js";
 import { levelPickerHtml } from "../components/level-picker.js";
 import { mountLevelCheck } from "../components/level-check.js";
 import { esc, todayIso } from "../util.js";
@@ -23,6 +23,7 @@ import { REPO, openChangelogDialog } from "../components/changelog.js";
 
 const LB = 2.20462;
 const REST_PRESETS = [45, 60, 75, 90, 120];
+const DEFAULT_ADDON_EVERY = 2;
 
 export function render(el) {
   const p = () => state.profile;
@@ -58,6 +59,28 @@ export function render(el) {
     preview.load(previewEx);
     fillAnimThumbs();
   }, { rootMargin: "200px" });
+
+  function editAddonSchedule(id, fn) {
+    updateProfile((pr) => {
+      pr.addonSchedules = pr.addonSchedules || {};
+      const sched = pr.addonSchedules[id] || (pr.addonSchedules[id] = { mode: "daily", every: DEFAULT_ADDON_EVERY, sunday: true });
+      fn(sched);
+    });
+  }
+
+  function addonCardHtml(a, pr) {
+    const sched = addonSchedule(a);
+    const mode = sched ? sched.mode : "daily";
+    const every = sched ? sched.every : DEFAULT_ADDON_EVERY;
+    const sunday = sched ? sched.sunday : true;
+    const name = esc(a.name);
+    return `<div class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${name}</b><small class="muted">${esc(a.description)}</small></span>${switchHtml("addon:" + a.id, pr.addons && pr.addons[a.id], a.name)}
+      <div class="addon-schedule">
+        <label class="field addon-repeat"><span>Repeat</span><select class="input" data-addon-repeat="${esc(a.id)}" aria-label="How often ${name} runs"><option value="daily"${mode === "daily" ? " selected" : ""}>Daily</option>${Array.from({ length: ADDON_EVERY_MAX }, (_, i) => i + 1).map((n) => `<option value="${n}"${mode === "every" && n === every ? " selected" : ""}>Every ${n} day${n === 1 ? "" : "s"}</option>`).join("")}</select></label>
+        <label class="addon-sunday">${switchHtml("addon-sunday:" + a.id, sunday, "Include Sunday")}<span>Include Sunday</span></label>
+      </div>
+    </div>`;
+  }
 
   function drawPage() {
     const pr = p();
@@ -106,7 +129,8 @@ export function render(el) {
 
       <section class="card card-pad" style="display:grid;gap:12px">
         <h3>Add-ons</h3>
-        ${ADDONS.map((a) => `<div class="addon-card">${icon(a.icon || "sparkle")}<span style="display:grid;gap:4px"><b>${esc(a.name)}</b><small class="muted">${esc(a.description)}</small></span>${switchHtml("addon:" + a.id, pr.addons && pr.addons[a.id], a.name)}</div>`).join("")}
+        <p class="muted" style="font-size:0.86rem">Turn each add-on on or off, choose how often it repeats, and decide whether it appears on Sunday. Repeats count from the day you set them.</p>
+        ${ADDONS.map((a) => addonCardHtml(a, pr)).join("")}
       </section>
 
       <section class="card card-pad" style="display:grid;gap:14px">
@@ -194,8 +218,21 @@ export function render(el) {
       } catch {}
       preview?.load(previewEx);
       fillAnimThumbs();
+    } else if (t.matches("[data-addon-repeat]")) {
+      const v = t.value;
+      editAddonSchedule(t.dataset.addonRepeat, (sched) => {
+        sched.mode = v === "daily" ? "daily" : "every";
+        if (v !== "daily") {
+          sched.every = Number(v);
+          sched.since = todayIso();
+        }
+      });
     } else if (t.dataset.switch) {
       const name = t.dataset.switch;
+      if (name.startsWith("addon-sunday:")) {
+        editAddonSchedule(name.slice("addon-sunday:".length), (sched) => (sched.sunday = t.checked));
+        return;
+      }
       if (name === "deskNotify" && t.checked && typeof Notification !== "undefined") {
         try {
           const req = Notification.requestPermission();

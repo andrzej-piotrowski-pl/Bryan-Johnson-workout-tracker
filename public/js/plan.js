@@ -6,7 +6,7 @@ import { EXERCISES } from "./data/exercises.js";
 import { ADDONS } from "./data/addons/index.js";
 import { state, updateDay } from "./store.js";
 import { LEVELS, levelIndex } from "./personalize.js";
-import { addDays, todayIso, weekdayKey } from "./util.js";
+import { addDays, daysBetween, todayIso, weekdayKey } from "./util.js";
 
 const scheduledItems = [...DAYS.flatMap((d) => d.blocks.flatMap((b) => b.items)), ...ADDONS.flatMap((a) => Object.values(a.variants).flatMap((v) => v.items))];
 const itemsById = new Map(scheduledItems.map((item) => [item.id, item]));
@@ -167,17 +167,49 @@ export function editDay(date, fn, opts) {
 
 // ---------- add-ons ----------
 
+export const ADDON_EVERY_MAX = 7;
+
+// The schedule a user picks in Settings, or null to keep the add-on's built-in
+// weekday table. Every add-on is saved under its own id.
+export function addonSchedule(addon) {
+  const saved = state.profile && state.profile.addonSchedules && state.profile.addonSchedules[addon.id];
+  if (!saved) return null;
+  return {
+    mode: saved.mode === "every" ? "every" : "daily",
+    every: Math.min(ADDON_EVERY_MAX, Math.max(1, Math.round(Number(saved.every) || 1))),
+    sunday: saved.sunday !== false,
+    since: saved.since || null,
+  };
+}
+
+function addonRunsOn(addon, date) {
+  const schedule = addonSchedule(addon);
+  if (!schedule) return true;
+  if (weekdayKey(date) === "sun" && !schedule.sunday) return false;
+  if (schedule.mode === "daily") return true;
+  let since = schedule.since || (state.profile && state.profile.startDate);
+  if (!since) return true;
+  // Start the cycle on the first allowed day, so an every-7-day run set on a
+  // Sunday with Sunday off still lands on Monday rather than never.
+  if (!schedule.sunday && weekdayKey(since) === "sun") since = addDays(since, 1);
+  const offset = daysBetween(since, date);
+  return offset >= 0 && offset % schedule.every === 0;
+}
+
 export function addonsForDate(date) {
   const p = state.profile || {};
   const enabled = p.addons || {};
   const wk = weekdayKey(date);
   return ADDONS.filter((a) => enabled[a.id])
     .map((a) => {
+      const custom = addonSchedule(a);
+      if (custom && !addonRunsOn(a, date)) return null;
       const v = a.schedule[wk];
-      if (!v) return null;
-      const optional = v === "optional";
-      const variantKey = optional ? Object.keys(a.variants)[0] : v;
-      return { addon: a, variantKey, variant: a.variants[variantKey], optional };
+      if (!custom && !v) return null;
+      // A custom repeat keeps the add-on's usual variant for that weekday, so
+      // posture still switches to its strength block on Wednesday and Saturday.
+      const variantKey = v && v !== "optional" && a.variants[v] ? v : Object.keys(a.variants)[0];
+      return { addon: a, variantKey, variant: a.variants[variantKey], optional: v === "optional" };
     })
     .filter(Boolean);
 }

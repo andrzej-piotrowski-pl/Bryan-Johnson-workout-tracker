@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.36.0] - 2026-10-23
+
+### Added
+- Each add-on has its own repeat setting: daily or every 1–7 days, with or without Sunday.
+
 ## [1.35.6] - 2026-10-23
 
 ### Changed
